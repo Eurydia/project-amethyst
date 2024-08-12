@@ -1,26 +1,37 @@
 import {
 	createTheme,
 	CssBaseline,
+	responsiveFontSizes,
 	ThemeProvider,
 } from "@mui/material";
+import { thTH } from "@mui/material/locale";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import "dayjs/locale/th";
 import {
 	createBrowserRouter,
 	RouterProvider,
 } from "react-router-dom";
-import { HomePage } from "./pages/HomePage";
-import { MainView } from "./views/MainView";
-import { PickupRoutePage } from "./pages/PickupRoutePage/PickupRoutePage";
-import { pickupRoutePageLoader } from "./pages/PickupRoutePage/loader";
-import { vehiclePageLoader } from "./pages/VehiclePage/loader";
-import { VehiclePage } from "./pages/VehiclePage/VehiclePage";
+import { DailyRecordDraftPage } from "./pages/DailyRecordDraftPage";
 import { DriverPage } from "./pages/DriverPage/DriverPage";
 import { driverPageLoader } from "./pages/DriverPage/loader";
+import { HomePage } from "./pages/HomePage";
+import { PickupRouteIndexPage } from "./pages/PickupRouteIndexPage";
+import { pickupRoutePageLoader } from "./pages/PickupRoutePage/loader";
+import { PickupRoutePage } from "./pages/PickupRoutePage/PickupRoutePage";
+import { vehiclePageLoader } from "./pages/VehiclePage/loader";
+import { VehiclePage } from "./pages/VehiclePage/VehiclePage";
+import { MainView } from "./views/MainView";
 
-const theme = createTheme({
-	palette: {
-		mode: "light",
+let theme = createTheme(
+	{
+		palette: {
+			mode: "light",
+		},
 	},
-});
+	thTH,
+);
+theme = responsiveFontSizes(theme);
 
 const routes = createBrowserRouter([
 	{
@@ -32,17 +43,30 @@ const routes = createBrowserRouter([
 				element: <HomePage />,
 			},
 			{
-				path: "pickup-route/:routeId",
-				element: <PickupRoutePage />,
-				loader: pickupRoutePageLoader,
+				path: "สายรถ",
+				children: [
+					{
+						index: true,
+						element: <PickupRouteIndexPage />,
+					},
+					{
+						path: ":routeId",
+						element: <PickupRoutePage />,
+						loader: pickupRoutePageLoader,
+					},
+				],
 			},
 			{
-				path: "vehicle/:vehicleId",
+				path: "บันทึกประจำวัน/แบบร่าง",
+				element: <DailyRecordDraftPage />,
+			},
+			{
+				path: "ทะเบียนรถ/:vehicleId",
 				element: <VehiclePage />,
 				loader: vehiclePageLoader,
 			},
 			{
-				path: "driver/:driverId",
+				path: "คนขับ/:driverId",
 				element: <DriverPage />,
 				loader: driverPageLoader,
 			},
@@ -52,9 +76,14 @@ const routes = createBrowserRouter([
 
 export const App = () => {
 	return (
-		<ThemeProvider theme={theme}>
-			<CssBaseline />
-			<RouterProvider router={routes} />
-		</ThemeProvider>
+		<LocalizationProvider
+			dateAdapter={AdapterDayjs}
+			adapterLocale="th"
+		>
+			<ThemeProvider theme={theme}>
+				<CssBaseline />
+				<RouterProvider router={routes} />
+			</ThemeProvider>
+		</LocalizationProvider>
 	);
 };

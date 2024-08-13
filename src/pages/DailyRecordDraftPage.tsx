@@ -1,6 +1,7 @@
 import {
 	Autocomplete,
 	Button,
+	Select,
 	Stack,
 	TextField,
 	Typography,
@@ -96,7 +97,6 @@ export const DailyRecordDraftPage: FC = () => {
 					ref={ref}
 					autoFocus
 					label="เรื่อง"
-					variant="outlined"
 				/>
 				<TextField
 					multiline

@@ -45,16 +45,13 @@ export const AttendanceChecklistWidget: FC =
 			Record<string, ReactNode>
 		>({});
 
-		const updateAttendance = (
-			index: number,
-			mode: string,
-		) => {
+		const updateAttendance = (key: string) => {
 			setAttendance((prev) => {
 				const next = {
 					...prev,
 				};
 
-				const entry = next[mode + index];
+				const entry = next[key];
 				const value =
 					entry === undefined ? (
 						<Fragment>
@@ -71,7 +68,7 @@ export const AttendanceChecklistWidget: FC =
 							</Typography>
 						</Fragment>
 					) : undefined;
-				next[mode + index] = value;
+				next[key] = value;
 				return next;
 			});
 		};
@@ -152,8 +149,7 @@ export const AttendanceChecklistWidget: FC =
 										}
 										onClick={() =>
 											updateAttendance(
-												index,
-												"checkin",
+												"checkin" + index,
 											)
 										}
 										control={<Checkbox />}
@@ -168,8 +164,7 @@ export const AttendanceChecklistWidget: FC =
 										}
 										onClick={() =>
 											updateAttendance(
-												index,
-												"checkout",
+												"checkout" + index,
 											)
 										}
 										control={<Checkbox />}

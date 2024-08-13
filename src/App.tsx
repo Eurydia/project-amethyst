@@ -57,18 +57,54 @@ const routes = createBrowserRouter([
 				],
 			},
 			{
-				path: "บันทึกประจำวัน/แบบร่าง",
-				element: <DailyRecordDraftPage />,
+				path: "บันทึกประจำวัน",
+
+				children: [
+					{
+						index: true,
+						element: null,
+					},
+					{
+						path: "แบบร่าง",
+						element: <DailyRecordDraftPage />,
+					},
+					{
+						path: ":dailyRecordId",
+						element: null,
+					},
+					{
+						path: ":dailyRecordId/แก้ไข",
+						element: null,
+					},
+				],
 			},
 			{
-				path: "ทะเบียนรถ/:vehicleId",
-				element: <VehiclePage />,
-				loader: vehiclePageLoader,
+				path: "ทะเบียนรถ",
+				children: [
+					{
+						index: true,
+						element: null,
+					},
+					{
+						path: ":vehicleId",
+						element: <VehiclePage />,
+						loader: vehiclePageLoader,
+					},
+				],
 			},
 			{
-				path: "คนขับ/:driverId",
-				element: <DriverPage />,
-				loader: driverPageLoader,
+				path: "คนขับ",
+				children: [
+					{
+						index: true,
+						element: null,
+					},
+					{
+						path: ":driverId",
+						element: <DriverPage />,
+						loader: driverPageLoader,
+					},
+				],
 			},
 		],
 	},

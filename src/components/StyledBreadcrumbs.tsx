@@ -18,14 +18,12 @@ export const StyledBreadcrumbs: FC<
 		.split("/")
 		.filter((path) => path.trim().length > 0)
 		.map(decodeURIComponent);
+
 	const items = paths.map((path, index) => {
 		return (
-			<Link
-				key={"item" + index}
-				to={paths.slice(1, index + 1).join("/")}
-			>
-				<Typography>{path}</Typography>
-			</Link>
+			<Typography key={path + index}>
+				{path}
+			</Typography>
 		);
 	});
 	return <Breadcrumbs>{items}</Breadcrumbs>;

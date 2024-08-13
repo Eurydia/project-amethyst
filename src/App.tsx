@@ -22,6 +22,7 @@ import { PickupRoutePage } from "./pages/PickupRoutePage/PickupRoutePage";
 import { vehiclePageLoader } from "./pages/VehiclePage/loader";
 import { VehiclePage } from "./pages/VehiclePage/VehiclePage";
 import { MainView } from "./views/MainView";
+import { DriverDraftPage } from "./pages/DriverDraftPage";
 
 let theme = createTheme(
 	{
@@ -43,11 +44,15 @@ const routes = createBrowserRouter([
 				element: <HomePage />,
 			},
 			{
-				path: "สายรถ",
+				path: "pickup-routes",
 				children: [
 					{
 						index: true,
 						element: <PickupRouteIndexPage />,
+					},
+					{
+						path: "draft",
+						element: null,
 					},
 					{
 						path: ":routeId",
@@ -57,7 +62,7 @@ const routes = createBrowserRouter([
 				],
 			},
 			{
-				path: "บันทึกประจำวัน",
+				path: "daily-records",
 
 				children: [
 					{
@@ -65,7 +70,7 @@ const routes = createBrowserRouter([
 						element: null,
 					},
 					{
-						path: "แบบร่าง",
+						path: "draft",
 						element: <DailyRecordDraftPage />,
 					},
 					{
@@ -73,17 +78,21 @@ const routes = createBrowserRouter([
 						element: null,
 					},
 					{
-						path: ":dailyRecordId/แก้ไข",
+						path: ":dailyRecordId/edit",
 						element: null,
 					},
 				],
 			},
 			{
-				path: "ทะเบียนรถ",
+				path: "vehicles",
 				children: [
 					{
 						index: true,
 						element: null,
+					},
+					{
+						path: "draft",
+						element: <DriverDraftPage />,
 					},
 					{
 						path: ":vehicleId",
@@ -93,11 +102,15 @@ const routes = createBrowserRouter([
 				],
 			},
 			{
-				path: "คนขับ",
+				path: "drivers",
 				children: [
 					{
 						index: true,
 						element: null,
+					},
+					{
+						path: "draft",
+						element: <DriverDraftPage />,
 					},
 					{
 						path: ":driverId",

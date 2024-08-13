@@ -1,7 +1,14 @@
+import {
+	fakerTH,
+	fakerTR,
+} from "@faker-js/faker";
 import { SaveRounded } from "@mui/icons-material";
 import {
 	Autocomplete,
 	Button,
+	ListItemText,
+	Menu,
+	MenuItem,
 	Select,
 	Stack,
 	TextField,
@@ -20,50 +27,18 @@ import {
 } from "react";
 import { useSubmit } from "react-router-dom";
 
-const option = [
-	{
-		label: "เคลมรถ",
-		value: "เคลมรถ",
-		category: "ระบบ",
+let uuid = 0;
+const option = fakerTH.helpers.multiple(
+	() => {
+		return {
+			label: fakerTH.person.firstName(),
+			id: uuid++,
+		};
 	},
-	{
-		label: "ร้องเรียนคนขับ",
-		value: "ร้องเรียนคนขับ",
-		category: "ระบบ",
-	},
-	{
-		label: "สายหนึ่ง",
-		value: "สายหนึ่ง",
-		category: "สายรถ",
-	},
-	{
-		label: "สายสอง",
-		value: "สายสอง",
-		category: "สายรถ",
-	},
-	{
-		label: "นายแดง",
-		value: "นายแดง",
-		category: "คนขับรถ",
-	},
-	{
-		label: "นายเขียว",
-		value: "นายเขียว",
-		category: "คนขับรถ",
-	},
-	{
-		label: "กก 1",
-		value: "กก 1",
-		category: "รถ",
-	},
-	{
-		label: "กก 2",
-		value: "กก 2",
-		category: "รถ",
-	},
-];
+	{ count: 8 },
+);
 
-export const DailyRecordDraftPage: FC = () => {
+export const DriverDraftPage: FC = () => {
 	const submit = useSubmit();
 	const tauriSaveNewDailyRecord = () =>
 		submit({}, { action: "/" });
@@ -74,7 +49,7 @@ export const DailyRecordDraftPage: FC = () => {
 	return (
 		<Stack spacing={2}>
 			<Typography variant="h1">
-				แบบร่าง บันทึกประจำวัน
+				แบบร่าง ร้องเรียนคนขับ
 			</Typography>
 			<Stack spacing={2}>
 				<Stack
@@ -94,35 +69,43 @@ export const DailyRecordDraftPage: FC = () => {
 						format="HH:mm น."
 					/>
 				</Stack>
+				<Select
+					defaultValue=""
+					displayEmpty
+					renderValue={(value) => {
+						if (value === "") {
+							return "เลือกคนขับ";
+						}
+						return value;
+					}}
+				>
+					<MenuItem
+						disabled
+						value=""
+					>
+						เลือกคนขับ
+					</MenuItem>
+					{option.map((item) => (
+						<MenuItem
+							key={item.id}
+							value={item.id}
+						>
+							<ListItemText>
+								{item.label}
+							</ListItemText>
+						</MenuItem>
+					))}
+				</Select>
 				<TextField
 					autoFocus
-					label="เรื่อง"
+					placeholder="เรื่อง"
 				/>
 				<TextField
 					multiline
 					minRows={5}
-					label="รายละเอียด"
+					placeholder="รายละเอียด"
 				/>
 			</Stack>
-			<Autocomplete
-				disablePortal
-				freeSolo
-				multiple
-				disableCloseOnSelect
-				ChipProps={{
-					sx: {
-						borderRadius: 0,
-					},
-				}}
-				options={option}
-				groupBy={(option) => option.category}
-				renderInput={(params) => (
-					<TextField
-						{...params}
-						label="หัวข้อที่เกี่ยวข้อง"
-					/>
-				)}
-			/>
 			<Stack
 				spacing={2}
 				direction="row"

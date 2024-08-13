@@ -8,49 +8,35 @@ import {
 	Toolbar,
 	Typography,
 } from "@mui/material";
+import dayjs from "dayjs";
 import {
 	FC,
-	Fragment,
+	lazy,
 	useEffect,
-	useRef,
 	useState,
 } from "react";
-import {
-	Link,
-	Outlet,
-	useLocation,
-} from "react-router-dom";
-import { StyledBreadcrumbs } from "../components/StyledBreadcrumbs";
-import dayjs from "dayjs";
-import useEnhancedEffect from "@mui/material/utils/useEnhancedEffect";
+import { Link, Outlet } from "react-router-dom";
 import { AddressBar } from "../components/AddressBar";
 
 const ROUTES = [
-	"สายรถ",
-	"บันทึกประจำวัน",
-	"ทะเบียนรถ",
-	"คนขับ",
+	{ path: "/", label: "Home" },
+	{ path: "pickup-routes", label: "Routes" },
+	{ path: "daily-records", label: "Records" },
+	{ path: "vehicles", label: "Vehicles" },
+	{ path: "drivers", label: "Drivers" },
 ];
 
-export const MainView: FC = () => {
-	const { pathname } = useLocation();
+const CLOCK_FORMAT = "HH:mm, dddd DD MMMM YYYY ";
 
+export const MainView: FC = () => {
 	const [clock, setClock] = useState(
-		dayjs()
-			.locale("th")
-			.format(
-				"วันddddที่ DD MMMM YYYY เวลา HH:mm น.",
-			),
+		dayjs().locale("th").format(CLOCK_FORMAT),
 	);
 
 	useEffect(() => {
 		const id = setInterval(() => {
 			setClock(
-				dayjs()
-					.locale("th")
-					.format(
-						"วันddddที่ DD MMMM YYYY เวลา HH:mm น.",
-					),
+				dayjs().locale("th").format(CLOCK_FORMAT),
 			);
 		}, 1000);
 		return () => clearInterval(id);
@@ -63,7 +49,13 @@ export const MainView: FC = () => {
 				variant="outlined"
 				color="default"
 			>
-				<Toolbar variant="dense">
+				<Toolbar
+					variant="dense"
+					sx={{
+						display: "flex",
+						justifyContent: "space-between",
+					}}
+				>
 					<Stack
 						direction="row"
 						spacing={2}
@@ -74,33 +66,21 @@ export const MainView: FC = () => {
 							/>
 						}
 					>
-						<Link to="/">
-							<Typography>หน้าแรก</Typography>
-						</Link>
-						{ROUTES.map((route, index) => (
+						{ROUTES.map((route) => (
 							<Link
-								to={route}
-								key={"item" + index}
+								to={route.path}
+								key={"item" + route.path}
 							>
-								<Typography>{route}</Typography>
+								<Typography>
+									{route.label}
+								</Typography>
 							</Link>
 						))}
 					</Stack>
+					<Typography>{clock}</Typography>
 				</Toolbar>
 			</AppBar>
 			<Box marginY={8}>
-				<Toolbar
-					variant="dense"
-					disableGutters
-					sx={{
-						display: "flex",
-						justifyContent: "space-between",
-						alignItems: "flex-end",
-					}}
-				>
-					<AddressBar />
-					<Typography>{clock}</Typography>
-				</Toolbar>
 				<Paper
 					variant="outlined"
 					sx={{

@@ -13,6 +13,7 @@ import {
 	FormControlLabel,
 	Checkbox,
 	useTheme,
+	Button,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { matchSorter } from "match-sorter";
@@ -23,6 +24,7 @@ import {
 	useState,
 } from "react";
 import { Link } from "react-router-dom";
+import { filterItems } from "../core/filter";
 
 const items = fakerTH.helpers.multiple(
 	() => {
@@ -41,47 +43,32 @@ export const AttendanceChecklistWidget: FC =
 	() => {
 		const { palette } = useTheme();
 		const [search, setSearch] = useState("");
-		const [attendance, setAttendance] = useState<
-			Record<string, ReactNode>
+
+		const [checked, setCheck] = useState<
+			Record<string, boolean | undefined>
 		>({});
 
+		/**
+		 * The attendance status should not have toggle behavior.
+		 * Once the status is set, it is locked to prevent misclicks.
+		 */
 		const updateAttendance = (key: string) => {
-			setAttendance((prev) => {
-				const next = {
-					...prev,
-				};
+			if (checked[key] !== undefined) {
+				return;
+			}
 
-				const entry = next[key];
-				const value =
-					entry === undefined ? (
-						<Fragment>
-							<Typography>
-								{dayjs()
-									.locale("th")
-									.format("HH:mm น.")}
-							</Typography>
-							<Typography
-								fontWeight="bold"
-								color={palette.error.main}
-							>
-								สาย 45 นาที
-							</Typography>
-						</Fragment>
-					) : undefined;
-				next[key] = value;
+			setCheck((prev) => {
+				const next = { ...prev };
+				next[key] = true;
 				return next;
 			});
 		};
 
-		const searchedItems = search
-			.split(" ")
-			.reduceRight(
-				(results, term) =>
-					matchSorter(results, term, {
-						keys: ["fname", "plate", "route"],
-					}),
-				items,
-			);
+		const searchedItems = filterItems(
+			items,
+			search.split(" "),
+			["fname", "plate", "route"],
+		);
 
 		return (
 			<TableContainer
@@ -121,36 +108,54 @@ export const AttendanceChecklistWidget: FC =
 							>
 								<TableCell>
 									<Link
-										to={"สายรถ/" + item.route}
+										to={"pickup-routes/" + index}
 									>
 										{item.route}
 									</Link>
 								</TableCell>
 								<TableCell>
-									<Link
-										to={"ทะเบียนรถ/" + item.plate}
-									>
+									<Link to={"vehicles/" + index}>
 										{item.plate}
 									</Link>
 								</TableCell>
 								<TableCell>
-									<Link
-										to={"คนขับ/" + item.fname}
-									>
+									<Link to={"drivers/" + index}>
 										{item.fname}
 									</Link>
 								</TableCell>
 								<TableCell>
 									<FormControlLabel
 										label={
-											attendance[
+											checked[
 												"checkin" + index
-											]
+											] ? (
+												<Fragment>
+													<Typography>
+														{dayjs()
+															.locale("th")
+															.format("HH:mm น.")}
+													</Typography>
+													<Typography
+														fontWeight="bold"
+														color={
+															palette.error.main
+														}
+													>
+														สาย 45 นาที
+													</Typography>
+												</Fragment>
+											) : null
 										}
 										onClick={() =>
 											updateAttendance(
 												"checkin" + index,
 											)
+										}
+										disabled={
+											checked["checkin" + index]
+										}
+										checked={
+											checked["checkin" + index]
 										}
 										control={<Checkbox />}
 									/>
@@ -158,14 +163,36 @@ export const AttendanceChecklistWidget: FC =
 								<TableCell>
 									<FormControlLabel
 										label={
-											attendance[
+											checked[
 												"checkout" + index
-											]
+											] ? (
+												<Fragment>
+													<Typography>
+														{dayjs()
+															.locale("th")
+															.format("HH:mm น.")}
+													</Typography>
+													<Typography
+														fontWeight="bold"
+														color={
+															palette.error.main
+														}
+													>
+														สาย 45 นาที
+													</Typography>
+												</Fragment>
+											) : null
 										}
 										onClick={() =>
 											updateAttendance(
 												"checkout" + index,
 											)
+										}
+										disabled={
+											checked["checkout" + index]
+										}
+										checked={
+											checked["checkout" + index]
 										}
 										control={<Checkbox />}
 									/>

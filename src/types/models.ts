@@ -1,10 +1,10 @@
-export type DailyRecord = {
+export type DailyRecordModel = {
 	id: string;
 
 	datetime_iso: string;
 	title: string;
 	topics: string;
-	details: string;
+	content: string;
 };
 
 export type VehicleClaimRecord = {
@@ -38,13 +38,13 @@ export type CheckupRecord = {
 	driver_driving_license_images: string;
 };
 
-export type PickupRoute = {
+export type PickupRouteModel = {
 	id: string;
-	label: string;
+	name: string;
 	assigned_vehicle_ids: string;
 };
 
-export type Vehicle = {
+export type VehicleModel = {
 	id: string;
 
 	vendor_name: string;
@@ -53,14 +53,17 @@ export type Vehicle = {
 	registered_city: string;
 	images: string;
 	vehicle_assigned_routes: string;
+	vehicle_assigned_driver: string;
 };
 
-export type Driver = {
+export type DriverModel = {
 	id: string;
 
 	images: string;
 	name: string;
 	surname: string;
 	contact: string;
-	liscense_images: string;
+	license_images: string;
+
+	assigned_vehicle: string;
 };

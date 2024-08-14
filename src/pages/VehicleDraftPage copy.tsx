@@ -1,7 +1,14 @@
+import {
+	fakerTH,
+	fakerTR,
+} from "@faker-js/faker";
 import { SaveRounded } from "@mui/icons-material";
 import {
 	Autocomplete,
 	Button,
+	ListItemText,
+	Menu,
+	MenuItem,
 	Select,
 	Stack,
 	TextField,
@@ -17,43 +24,38 @@ import {
 	useEffect,
 	useReducer,
 	useRef,
+	useState,
 } from "react";
 import { useSubmit } from "react-router-dom";
+import { DriverSelect } from "../components/DriverSelect";
+import {
+	DriverModel,
+	VehicleModel,
+} from "../types/models";
+import { VehicleSelect } from "../components/VehicleSelect";
 
-const option = [
-	{
-		label: "สายหนึ่ง",
-		value: "สายหนึ่ง",
-		category: "สายรถ",
-	},
-	{
-		label: "สายสอง",
-		value: "สายสอง",
-		category: "สายรถ",
-	},
-	{
-		label: "นายแดง",
-		value: "นายแดง",
-		category: "คนขับรถ",
-	},
-	{
-		label: "นายเขียว",
-		value: "นายเขียว",
-		category: "คนขับรถ",
-	},
-	{
-		label: "กก 1",
-		value: "กก 1",
-		category: "รถ",
-	},
-	{
-		label: "กก 2",
-		value: "กก 2",
-		category: "รถ",
-	},
-];
+let uuid = 0;
+const options: VehicleModel[] =
+	fakerTH.helpers.multiple(
+		() => {
+			return {
+				images: "",
+				vendor_name: fakerTR.company.name(),
+				license_plate: fakerTR.vehicle.vrm(),
+				registered_city: fakerTR.location.city(),
+				vehicle_assigned_driver: "",
+				vehicle_assigned_routes: "",
+				vehicle_class: fakerTR.vehicle.type(),
 
-export const DailyRecordDraftPage: FC = () => {
+				id: (uuid++).toString(),
+			};
+		},
+		{ count: 8 },
+	);
+
+export const VehicleDraftPage: FC = () => {
+	const [vehicle, setVehicle] =
+		useState<VehicleModel | null>(null);
 	const submit = useSubmit();
 	const tauriSaveNewDailyRecord = () =>
 		submit({}, { action: "/" });
@@ -64,7 +66,7 @@ export const DailyRecordDraftPage: FC = () => {
 	return (
 		<Stack spacing={2}>
 			<Typography variant="h1">
-				แบบร่าง บันทึกทั่วไป
+				แบบร่าง แจ้งเคลม
 			</Typography>
 			<Stack spacing={2}>
 				<Stack
@@ -84,27 +86,14 @@ export const DailyRecordDraftPage: FC = () => {
 						format="HH:mm น."
 					/>
 				</Stack>
-				<Autocomplete
-					disablePortal
-					freeSolo
-					multiple
-					disableCloseOnSelect
-					ChipProps={{
-						sx: {
-							borderRadius: 0,
-						},
-					}}
-					options={option}
-					groupBy={(option) => option.category}
-					renderInput={(params) => (
-						<TextField
-							{...params}
-							placeholder="หัวข้อที่เกี่ยวข้อง"
-						/>
-					)}
+				<VehicleSelect
+					options={options}
+					value={vehicle}
+					onChange={setVehicle}
 				/>
 				<TextField
 					autoFocus
+					required
 					placeholder="เรื่อง"
 				/>
 				<TextField
@@ -113,7 +102,6 @@ export const DailyRecordDraftPage: FC = () => {
 					placeholder="รายละเอียด"
 				/>
 			</Stack>
-
 			<Stack
 				spacing={2}
 				direction="row"

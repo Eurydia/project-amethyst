@@ -25,29 +25,31 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { filterItems } from "../core/filter";
+import {
+	AddRounded,
+	TurnSlightRightRounded,
+} from "@mui/icons-material";
 
 let uuid = 0;
-const routes = fakerTH.helpers.uniqueArray(() => {
-	return {
-		label: fakerTH.location.city(),
-		id: uuid++,
-		vehicles: fakerTH.helpers.uniqueArray(
-			fakerTH.vehicle.vrm,
-			3,
-		),
-	};
-}, 8);
+const routes = fakerTH.helpers.multiple(
+	() => {
+		return {
+			label: fakerTH.location.city(),
+			id: uuid++,
+			vehicles: fakerTH.helpers.uniqueArray(
+				fakerTH.vehicle.vrm,
+				3,
+			),
+		};
+	},
+	{ count: 8 },
+);
 
 export const PickupRouteIndexPage: FC = () => {
 	const submit = useSubmit();
 	const [search, setSearch] = useState("");
 
-	const navigateToDraft = () => {
-		submit(
-			{},
-			{ action: "/pickup-routes/draft" },
-		);
-	};
+	const navigateToDraft = () => {};
 
 	const searchedRoutes = filterItems(
 		routes,
@@ -57,9 +59,7 @@ export const PickupRouteIndexPage: FC = () => {
 
 	return (
 		<Stack spacing={2}>
-			<Typography variant="h1">
-				สายรถทั้งหมด
-			</Typography>
+			<Typography variant="h1">สายรถ</Typography>
 			<TableContainer>
 				<Toolbar
 					disableGutters
@@ -71,16 +71,49 @@ export const PickupRouteIndexPage: FC = () => {
 						gap: 1,
 					}}
 				>
-					<Button
-						disableElevation
-						variant="contained"
-						onClick={navigateToDraft}
+					<Stack
+						useFlexGap
+						direction="row"
+						spacing={1}
+						flexWrap="wrap"
 					>
-						เพิ่มสายรถ
-					</Button>
+						<Button
+							disableElevation
+							variant="contained"
+							startIcon={<AddRounded />}
+							onClick={() =>
+								submit(
+									{},
+									{
+										action: "/pickup-routes/new",
+									},
+								)
+							}
+						>
+							เพิ่มสายรถ
+						</Button>
+						<Button
+							startIcon={
+								<TurnSlightRightRounded />
+							}
+							disableElevation
+							variant="contained"
+							onClick={() =>
+								submit(
+									{},
+									{
+										action:
+											"/pickup-routes/draft",
+									},
+								)
+							}
+						>
+							เขียนบันทึกสายรถ
+						</Button>
+					</Stack>
 					<TextField
 						fullWidth
-						label="ค้นหา"
+						placeholder="ค้นหา"
 						value={search}
 						onChange={(e) =>
 							setSearch(e.target.value)
@@ -105,7 +138,7 @@ export const PickupRouteIndexPage: FC = () => {
 										<Typography>
 											<Link
 												to={
-													"/pickup-routes/" +
+													"/pickup-routes/id/" +
 													route.id
 												}
 											>

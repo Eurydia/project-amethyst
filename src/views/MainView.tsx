@@ -26,7 +26,8 @@ const ROUTES = [
 	{ path: "drivers", label: "Drivers" },
 ];
 
-const CLOCK_FORMAT = "HH:mm, dddd DD MMMM YYYY ";
+const CLOCK_FORMAT =
+	"HH:mm น., วันddddที่ D MMMM YYYY ";
 
 export const MainView: FC = () => {
 	const [clock, setClock] = useState(

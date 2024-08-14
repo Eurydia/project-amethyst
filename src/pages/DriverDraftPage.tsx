@@ -24,21 +24,32 @@ import {
 	useEffect,
 	useReducer,
 	useRef,
+	useState,
 } from "react";
 import { useSubmit } from "react-router-dom";
+import { DriverSelect } from "../components/DriverSelect";
+import { DriverModel } from "../types/models";
 
 let uuid = 0;
-const option = fakerTH.helpers.multiple(
-	() => {
-		return {
-			label: fakerTH.person.firstName(),
-			id: uuid++,
-		};
-	},
-	{ count: 8 },
-);
+const options: DriverModel[] =
+	fakerTH.helpers.multiple(
+		() => {
+			return {
+				name: fakerTH.person.firstName(),
+				surname: fakerTH.person.lastName(),
+				contact: fakerTR.phone.number(),
+				assigned_vehicle: "",
+				images: "",
+				license_images: "",
+				id: (uuid++).toString(),
+			};
+		},
+		{ count: 8 },
+	);
 
 export const DriverDraftPage: FC = () => {
+	const [driver, setDriver] =
+		useState<DriverModel | null>(null);
 	const submit = useSubmit();
 	const tauriSaveNewDailyRecord = () =>
 		submit({}, { action: "/" });
@@ -69,35 +80,14 @@ export const DriverDraftPage: FC = () => {
 						format="HH:mm น."
 					/>
 				</Stack>
-				<Select
-					defaultValue=""
-					displayEmpty
-					renderValue={(value) => {
-						if (value === "") {
-							return "เลือกคนขับ";
-						}
-						return value;
-					}}
-				>
-					<MenuItem
-						disabled
-						value=""
-					>
-						เลือกคนขับ
-					</MenuItem>
-					{option.map((item) => (
-						<MenuItem
-							key={item.id}
-							value={item.id}
-						>
-							<ListItemText>
-								{item.label}
-							</ListItemText>
-						</MenuItem>
-					))}
-				</Select>
+				<DriverSelect
+					options={options}
+					value={driver}
+					onChange={setDriver}
+				/>
 				<TextField
 					autoFocus
+					required
 					placeholder="เรื่อง"
 				/>
 				<TextField

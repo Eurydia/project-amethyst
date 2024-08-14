@@ -48,24 +48,79 @@ const routes = createBrowserRouter([
 				element: <HomePage />,
 			},
 			{
-				path: "daily-records",
-
+				path: "records",
 				children: [
 					{
 						index: true,
 						element: null,
 					},
 					{
-						path: "draft",
-						element: <DailyRecordDraftPage />,
+						path: "general",
+						children: [
+							{
+								path: "draft",
+								element: <DailyRecordDraftPage />,
+							},
+							{
+								path: "id/:id",
+								element: null,
+							},
+							{
+								path: "id/:id/edit",
+								element: null,
+							},
+						],
 					},
 					{
-						path: "id/:dailyRecordId",
-						element: null,
+						path: "driver",
+						children: [
+							{
+								path: "draft",
+								element: <DriverDraftPage />,
+							},
+							{
+								path: "id/:dailyRecordId",
+								element: null,
+							},
+							{
+								path: "id/:dailyRecordId/edit",
+								element: null,
+							},
+						],
 					},
 					{
-						path: "id/:dailyRecordId/edit",
-						element: null,
+						path: "vehicle",
+						children: [
+							{
+								path: "draft",
+								element: <VehicleDraftPage />,
+							},
+							{
+								path: "id/:id",
+								element: null,
+							},
+							{
+								path: "id/:id/edit",
+								element: null,
+							},
+						],
+					},
+					{
+						path: "pickup-route",
+						children: [
+							{
+								path: "draft",
+								element: <PickupRouteDraftPage />,
+							},
+							{
+								path: "id/:recordId",
+								element: null,
+							},
+							{
+								path: "id/:recordId/edit",
+								element: null,
+							},
+						],
 					},
 				],
 			},
@@ -75,10 +130,6 @@ const routes = createBrowserRouter([
 					{
 						index: true,
 						element: <PickupRouteIndexPage />,
-					},
-					{
-						path: "draft",
-						element: <PickupRouteDraftPage />,
 					},
 					{
 						path: "new",
@@ -103,13 +154,17 @@ const routes = createBrowserRouter([
 						element: null,
 					},
 					{
-						path: "draft",
-						element: <VehicleDraftPage />,
+						path: "new",
+						element: null,
 					},
 					{
 						path: "id/:vehicleId",
 						element: <VehiclePage />,
 						loader: vehiclePageLoader,
+					},
+					{
+						path: "id/:vehicleId/edit",
+						element: null,
 					},
 				],
 			},
@@ -125,11 +180,12 @@ const routes = createBrowserRouter([
 						element: null,
 					},
 					{
-						path: "draft",
-						element: <DriverDraftPage />,
+						path: "id/:driverId",
+						element: <DriverPage />,
+						loader: driverPageLoader,
 					},
 					{
-						path: "id/:driverId",
+						path: "id/:driverId/edit",
 						element: <DriverPage />,
 						loader: driverPageLoader,
 					},

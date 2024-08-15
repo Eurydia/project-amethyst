@@ -1,12 +1,15 @@
 import {
 	Autocomplete,
+	InputAdornment,
 	TextField,
 } from "@mui/material";
 import { DriverModel } from "../types/models";
 import { FC, SyntheticEvent } from "react";
 import { filterItems } from "../core/filter";
+import { PersonRounded } from "@mui/icons-material";
 
 type DriverSelectProps = {
+	showError?: boolean;
 	options: DriverModel[];
 	value: DriverModel | null;
 	onChange: (value: DriverModel | null) => void;
@@ -14,7 +17,8 @@ type DriverSelectProps = {
 export const DriverSelect: FC<
 	DriverSelectProps
 > = (props) => {
-	const { options, value, onChange } = props;
+	const { options, value, onChange, showError } =
+		props;
 
 	const handleChange = (
 		_: SyntheticEvent,
@@ -25,9 +29,18 @@ export const DriverSelect: FC<
 
 	return (
 		<Autocomplete
-			renderInput={(params) => (
+			renderInput={({ InputProps, ...rest }) => (
 				<TextField
-					{...params}
+					{...rest}
+					InputProps={{
+						...InputProps,
+						startAdornment: (
+							<InputAdornment position="start">
+								<PersonRounded />
+							</InputAdornment>
+						),
+					}}
+					error={showError}
 					placeholder="คนขับ"
 				/>
 			)}

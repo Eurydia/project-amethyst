@@ -1,3 +1,4 @@
+import { injectStyle } from "react-toastify/inject-style";
 import {
 	createTheme,
 	CssBaseline,
@@ -15,18 +16,22 @@ import {
 import { DailyRecordDraftPage } from "./pages/DailyRecordDraftPage";
 import { DriverPage } from "./pages/DriverPage/DriverPage";
 import { driverPageLoader } from "./pages/DriverPage/loader";
-import { HomePage } from "./pages/HomePage";
 import { PickupRouteIndexPage } from "./pages/PickupRouteIndexPage";
 import { pickupRoutePageLoader } from "./pages/PickupRoutePage/loader";
 import { PickupRoutePage } from "./pages/PickupRoutePage/PickupRoutePage";
 import { vehiclePageLoader } from "./pages/VehiclePage/loader";
 import { VehiclePage } from "./pages/VehiclePage/VehiclePage";
 import { MainView } from "./views/MainView";
-import { DriverDraftPage } from "./pages/DriverDraftPage";
+import { DriverDraftPage } from "./pages/DriverDraftPage/DriverDraftPage";
 import { VehicleDraftPage } from "./pages/VehicleDraftPage";
 import { PickupRouteDraftPage } from "./pages/PickupRouteDraftPage";
 import { PickupRouteNewPage } from "./pages/PickupRouteNewPage";
 import { PickupRouteEditPage } from "./pages/PickupRouteEditPage";
+import { driverDraftPageLoader } from "./pages/DriverDraftPage/loader";
+import { HomePage } from "./pages/HomePage/HomePage";
+import { homePageLoader } from "./pages/HomePage/loader";
+import { DriverIndexPage } from "pages/DriverIndexPage/DriverIndexPage";
+import { driverIndexPageLoader } from "pages/DriverIndexPage/loader";
 
 let theme = createTheme(
 	{
@@ -38,6 +43,8 @@ let theme = createTheme(
 );
 theme = responsiveFontSizes(theme);
 
+injectStyle();
+
 const routes = createBrowserRouter([
 	{
 		path: "/",
@@ -46,6 +53,7 @@ const routes = createBrowserRouter([
 			{
 				index: true,
 				element: <HomePage />,
+				loader: homePageLoader,
 			},
 			{
 				path: "records",
@@ -77,6 +85,7 @@ const routes = createBrowserRouter([
 							{
 								path: "draft",
 								element: <DriverDraftPage />,
+								loader: driverDraftPageLoader,
 							},
 							{
 								path: "id/:dailyRecordId",
@@ -173,7 +182,8 @@ const routes = createBrowserRouter([
 				children: [
 					{
 						index: true,
-						element: null,
+						element: <DriverIndexPage />,
+						loader: driverIndexPageLoader,
 					},
 					{
 						path: "new",

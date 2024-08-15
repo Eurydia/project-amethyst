@@ -17,6 +17,7 @@ import {
 } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { AddressBar } from "../components/AddressBar";
+import { ToastContainer } from "react-toastify";
 
 const ROUTES = [
 	{ path: "/", label: "Home" },
@@ -45,10 +46,11 @@ export const MainView: FC = () => {
 
 	return (
 		<Container maxWidth="md">
+			<ToastContainer />
 			<AppBar
 				enableColorOnDark
-				variant="outlined"
 				color="default"
+				elevation={0}
 			>
 				<Toolbar
 					variant="dense"
@@ -83,7 +85,7 @@ export const MainView: FC = () => {
 			</AppBar>
 			<Box marginY={8}>
 				<Paper
-					variant="outlined"
+					elevation={0}
 					sx={{
 						padding: 4,
 					}}

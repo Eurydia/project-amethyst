@@ -5,8 +5,9 @@ import {
 	TableHead,
 	TableRow,
 	TableSortLabel,
+	Typography,
 } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { TableHeaderDefinition } from "../types/generics";
 
 type EnhancedTableHeaderProps<T extends Object> =
@@ -122,20 +123,30 @@ export const SortableTable = <T extends Object>(
 				onRequestSort={handleRequestSort}
 			/>
 			<TableBody>
-				{sortedItems.map((item, rowIndex) => (
-					<TableRow
-						key={"row" + rowIndex}
-						hover
-					>
-						{headers.map((header, cellIndex) => (
-							<TableCell
-								key={`cell${cellIndex}${rowIndex}`}
-							>
-								{header.render(item)}
-							</TableCell>
-						))}
+				{sortedItems.length === 0 ? (
+					<TableRow hover>
+						<TableCell colSpan={headers.length}>
+							ไม่มีรายการให้แเสดง
+						</TableCell>
 					</TableRow>
-				))}
+				) : (
+					sortedItems.map((item, rowIndex) => (
+						<TableRow
+							key={"row" + rowIndex}
+							hover
+						>
+							{headers.map(
+								(header, cellIndex) => (
+									<TableCell
+										key={`cell${cellIndex}${rowIndex}`}
+									>
+										{header.render(item)}
+									</TableCell>
+								),
+							)}
+						</TableRow>
+					))
+				)}
 			</TableBody>
 		</Table>
 	);

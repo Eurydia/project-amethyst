@@ -1,6 +1,9 @@
-import { toast } from "react-toastify";
+import { postDriverReport } from "$backend/database/put";
+import { DriverSelect } from "$components/DriverSelect";
+import { DriverModel } from "$types/models";
 import { SaveRounded } from "@mui/icons-material";
 import {
+	Autocomplete,
 	Button,
 	Stack,
 	TextField,
@@ -16,10 +19,8 @@ import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
+import { toast } from "react-toastify";
 import { DriverDraftPageLoaderData } from "./loader";
-import { postDriverReport } from "$backend/database/post";
-import { DriverSelect } from "$components/DriverSelect";
-import { DriverModel } from "$types/models";
 
 export const DriverDraftPage: FC = () => {
 	const { drivers } =
@@ -29,7 +30,7 @@ export const DriverDraftPage: FC = () => {
 		dayjs().locale("th"),
 	);
 	const [fieldTime, setFieldTime] = useState(
-		dayjs(),
+		dayjs().locale("th"),
 	);
 	const [fieldTitle, setFieldTitle] =
 		useState("");
@@ -160,6 +161,17 @@ export const DriverDraftPage: FC = () => {
 					onChange={handleContentChange}
 					minRows={5}
 					placeholder="รายละเอียด"
+				/>
+				<Autocomplete
+					options={[]}
+					multiple
+					freeSolo
+					renderInput={(param) => (
+						<TextField
+							{...param}
+							placeholder="หัวข้อที่เกี่ยวข้อง"
+						/>
+					)}
 				/>
 			</Stack>
 			<Stack

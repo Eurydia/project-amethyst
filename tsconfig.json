@@ -9,7 +9,9 @@
 		"paths": {
 			"$components/*": ["./components/*"],
 			"$backend/*": ["./api/tauri/*"],
-			"$types/*": ["./types/*"]
+			"$types/*": ["./types/*"],
+			"$pages/*": ["./pages/*"],
+			"$views/*": ["./views/*"]
 		},
 
 		/* Bundler mode */

@@ -13,25 +13,27 @@ import {
 	createBrowserRouter,
 	RouterProvider,
 } from "react-router-dom";
-import { DailyRecordDraftPage } from "./pages/DailyRecordDraftPage";
-import { DriverPage } from "./pages/DriverPage/DriverPage";
-import { driverPageLoader } from "./pages/DriverPage/loader";
-import { PickupRouteIndexPage } from "./pages/PickupRouteIndexPage";
-import { pickupRoutePageLoader } from "./pages/PickupRoutePage/loader";
-import { PickupRoutePage } from "./pages/PickupRoutePage/PickupRoutePage";
-import { vehiclePageLoader } from "./pages/VehiclePage/loader";
-import { VehiclePage } from "./pages/VehiclePage/VehiclePage";
-import { MainView } from "./views/MainView";
-import { DriverDraftPage } from "./pages/DriverDraftPage/DriverDraftPage";
-import { VehicleDraftPage } from "./pages/VehicleDraftPage";
-import { PickupRouteDraftPage } from "./pages/PickupRouteDraftPage";
-import { PickupRouteNewPage } from "./pages/PickupRouteNewPage";
-import { PickupRouteEditPage } from "./pages/PickupRouteEditPage";
-import { driverDraftPageLoader } from "./pages/DriverDraftPage/loader";
-import { HomePage } from "./pages/HomePage/HomePage";
-import { homePageLoader } from "./pages/HomePage/loader";
-import { DriverIndexPage } from "pages/DriverIndexPage/DriverIndexPage";
-import { driverIndexPageLoader } from "pages/DriverIndexPage/loader";
+import { DailyRecordDraftPage } from "$pages/DailyRecordDraftPage";
+import {
+	DriverDraftPage,
+	driverDraftPageLoader,
+} from "$pages/DriverDraftPage";
+import { DriverIndexPage } from "$pages/DriverIndexPage/DriverIndexPage";
+import { driverIndexPageLoader } from "$pages/DriverIndexPage/loader";
+import { DriverPage } from "$pages/DriverPage/DriverPage";
+import { driverPageLoader } from "$pages/DriverPage/loader";
+import { HomePage } from "$pages/HomePage/HomePage";
+import { homePageLoader } from "$pages/HomePage/loader";
+import { PickupRouteDraftPage } from "$pages/PickupRouteDraftPage";
+import { PickupRouteEditPage } from "$pages/PickupRouteEditPage";
+import { PickupRouteIndexPage } from "$pages/PickupRouteIndexPage";
+import { PickupRouteNewPage } from "$pages/PickupRouteNewPage";
+import { pickupRoutePageLoader } from "$pages/PickupRoutePage/loader";
+import { PickupRoutePage } from "$pages/PickupRoutePage/PickupRoutePage";
+import { VehicleDraftPage } from "$pages/VehicleDraftPage";
+import { vehiclePageLoader } from "$pages/VehiclePage/loader";
+import { VehiclePage } from "$pages/VehiclePage/VehiclePage";
+import { MainView } from "$views/MainView";
 
 let theme = createTheme(
 	{

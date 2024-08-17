@@ -162,17 +162,6 @@ export const DriverDraftPage: FC = () => {
 					minRows={5}
 					placeholder="รายละเอียด"
 				/>
-				<Autocomplete
-					options={[]}
-					multiple
-					freeSolo
-					renderInput={(param) => (
-						<TextField
-							{...param}
-							placeholder="หัวข้อที่เกี่ยวข้อง"
-						/>
-					)}
-				/>
 			</Stack>
 			<Stack
 				spacing={2}

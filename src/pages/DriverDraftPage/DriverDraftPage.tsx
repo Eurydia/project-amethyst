@@ -21,9 +21,10 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverDraftPageLoaderData } from "./loader";
+import { MultiSelectAutocomplete } from "$components/MultiSelectAutocomplete";
 
 export const DriverDraftPage: FC = () => {
-	const { drivers } =
+	const { drivers, topics } =
 		useLoaderData() as DriverDraftPageLoaderData;
 
 	const [fieldDate, setFieldDate] = useState(
@@ -36,6 +37,9 @@ export const DriverDraftPage: FC = () => {
 		useState("");
 	const [fieldContent, setFieldContent] =
 		useState("");
+	const [fieldTopics, setFieldTopics] = useState<
+		string[]
+	>([]);
 
 	const submit = useSubmit();
 
@@ -161,6 +165,12 @@ export const DriverDraftPage: FC = () => {
 					onChange={handleContentChange}
 					minRows={5}
 					placeholder="รายละเอียด"
+				/>
+				<MultiSelectAutocomplete
+					options={topics}
+					value={fieldTopics}
+					onChange={setFieldTopics}
+					placeholder="ค้นหาหัวข้อ"
 				/>
 			</Stack>
 			<Stack

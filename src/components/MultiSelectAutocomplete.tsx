@@ -1,7 +1,5 @@
 import {
 	CancelRounded,
-	CheckBoxOutlineBlankRounded,
-	CheckBoxRounded,
 	SearchRounded,
 } from "@mui/icons-material";
 import {
@@ -14,7 +12,6 @@ import {
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
-	ListSubheader,
 	Stack,
 	TextField,
 	Toolbar,
@@ -22,23 +19,17 @@ import {
 	Typography,
 } from "@mui/material";
 import { matchSorter } from "match-sorter";
-import { FC, ReactNode, useState } from "react";
+import { FC, useState } from "react";
 
 type MultiSelectAutocompleteProps = {
 	options: string[];
 	value: string[];
-	placeholder?: string;
 	onChange: (value: string[]) => void;
 };
 export const MultiSelectAutocomplete: FC<
 	MultiSelectAutocompleteProps
 > = (props) => {
-	const {
-		options,
-		value,
-		placeholder,
-		onChange,
-	} = props;
+	const { options, value, onChange } = props;
 
 	const [search, setSearch] = useState("");
 

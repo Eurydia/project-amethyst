@@ -170,7 +170,6 @@ export const DriverDraftPage: FC = () => {
 					options={topics}
 					value={fieldTopics}
 					onChange={setFieldTopics}
-					placeholder="ค้นหาหัวข้อ"
 				/>
 			</Stack>
 			<Stack

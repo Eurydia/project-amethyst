@@ -33,6 +33,8 @@ import {
 import { filterItems } from "../../core/filter";
 import {
 	AddRounded,
+	ContentCopy,
+	ContentCopyRounded,
 	FlagRounded,
 	SearchRounded,
 	TurnSlightRightRounded,
@@ -89,10 +91,9 @@ const HEADER_DEFINITION: TableHeaderDefinition<PreparedDriverData>[] =
 			label: "เบอร์ติดต่อ",
 			compare: (_) => 0,
 			render: (item) => (
-				<Typography
-					sx={{
-						cursor: "pointer",
-					}}
+				<Button
+					variant="text"
+					endIcon={<ContentCopyRounded />}
 					onClick={() => {
 						navigator.clipboard.writeText(
 							item.contact,
@@ -101,7 +102,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<PreparedDriverData>[] =
 					}}
 				>
 					{item.contact}
-				</Typography>
+				</Button>
 			),
 		},
 	];

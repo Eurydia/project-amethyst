@@ -2,23 +2,32 @@ import {
 	DriverModel,
 	VehicleModel,
 } from "$types/models";
-import { fakerTH } from "@faker-js/faker";
+import { fa, fakerTH } from "@faker-js/faker";
 
 let driverId = 0;
 const drivers: DriverModel[] =
 	fakerTH.helpers.multiple(
 		() => {
+			const id = driverId.toString();
+			driverId++;
 			return {
-				current_pickup_route: "",
+				current_pickup_route_id: "",
+				current_vehicle_id: id,
 				previous_vehicles: "",
 				previous_pickup_routes: "",
 				images: "",
 				license_images: "",
-				current_vehicle: driverId.toString(),
+				license_type:
+					fakerTH.helpers.arrayElement([
+						"ประเภท 1",
+						"ประเภท 2",
+						"ประเภท 3",
+						"ประเภท 4",
+					]),
 				name: fakerTH.person.firstName(),
 				surname: fakerTH.person.lastName(),
 				contact: fakerTH.phone.number(),
-				id: (driverId++).toString(),
+				id: id,
 			};
 		},
 		{ count: 10 },

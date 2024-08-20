@@ -26,7 +26,7 @@ export const driverIndexPageLoader: LoaderFunction =
 		const driverDataRequets: Promise<PreparedDriverData>[] =
 			drivers.map(async (driver) => {
 				const vehicle = await getVehicleWithId(
-					driver.current_vehicle,
+					driver.current_vehicle_id,
 				);
 
 				let license_plate = "";

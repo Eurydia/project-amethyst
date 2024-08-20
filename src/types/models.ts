@@ -113,11 +113,12 @@ export type DriverModel = {
 	name: string;
 	surname: string;
 	contact: string;
+	license_type: string;
 	license_images: string;
 
 	// (Optional) Satellite data linked to the driver
-	current_vehicle: string;
-	current_pickup_route: string;
+	current_vehicle_id: string;
+	current_pickup_route_id: string;
 
 	// (Optional) Historical data linked to the driver
 	previous_vehicles: string;

@@ -22,18 +22,20 @@ import {
 	TableRow,
 	Typography,
 } from "@mui/material";
+import { DriveEtaTwoTone } from "@mui/icons-material";
 
 export const DriverPage: FC = () => {
-	const { driverId } =
+	const { driverData, vehicleData } =
 		useLoaderData() as DriverPageLoaderData;
 	const submit = useSubmit();
+
+	const { name, surname } = driverData;
 
 	return (
 		<Stack>
 			<Typography variant="h1">
-				คนขับ "{driverId}"
+				ข้อมูลคนขับ "{name} {surname}"
 			</Typography>
-
 			<List
 				disablePadding
 				subheader={
@@ -50,29 +52,37 @@ export const DriverPage: FC = () => {
 				<ListItem>
 					<ListItemText
 						primary="ชื่อ-สกุล"
-						secondary="นายสมเดช แสนสุข"
+						secondary={`${name} ${surname}`}
 					/>
 				</ListItem>
 				<ListItem>
 					<ListItemText
 						primary="เบอร์โทรศัพท์"
-						secondary="000-000-0000"
+						secondary={driverData.contact}
 					/>
 				</ListItem>
 				<ListItem>
 					<ListItemText
 						primary="รถที่มอบหมาย"
 						secondary={
-							<Link to="/vehicle/AAAAAA">
-								กก 1234
-							</Link>
+							vehicleData === null ? (
+								"ไม่มีรถที่ได้รับมอบหมาย"
+							) : (
+								<Link
+									to={
+										"/vehicles/" + vehicleData.id
+									}
+								>
+									{vehicleData.license_plate}
+								</Link>
+							)
 						}
 					/>
 				</ListItem>
 				<ListItem>
 					<ListItemText
 						primary="ประเภทใบขับขี่"
-						secondary="ประเภท 1"
+						secondary={driverData.license_type}
 					/>
 				</ListItem>
 			</List>

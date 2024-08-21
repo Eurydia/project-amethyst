@@ -22,7 +22,14 @@ import {
 	TableRow,
 	Typography,
 } from "@mui/material";
-import { DriveEtaTwoTone } from "@mui/icons-material";
+import {
+	CopyAllRounded,
+	DriveEtaTwoTone,
+	FolderRounded,
+	Launch,
+	OpenInNew,
+} from "@mui/icons-material";
+import { toast } from "react-toastify";
 
 export const DriverPage: FC = () => {
 	const { driverData, vehicleData } =
@@ -31,61 +38,101 @@ export const DriverPage: FC = () => {
 
 	const { name, surname } = driverData;
 
+	const handleCopyContact = () => {
+		navigator.clipboard.writeText(
+			driverData.contact,
+		);
+		toast.info("คัดลอกเบอร์โทรศัพท์แล้ว", {
+			icon: false,
+		});
+	};
+
 	return (
-		<Stack>
-			<Typography variant="h1">
-				ข้อมูลคนขับ "{name} {surname}"
-			</Typography>
-			<List
-				disablePadding
-				subheader={
-					<ListSubheader
-						disableGutters
-						disableSticky
-					>
-						<Typography variant="h2">
-							ข้อมูลทั่วไป
-						</Typography>
-					</ListSubheader>
-				}
+		<Stack spacing={2}>
+			<Typography
+				fontSize="x-large"
+				fontWeight="bold"
 			>
-				<ListItem>
-					<ListItemText
-						primary="ชื่อ-สกุล"
-						secondary={`${name} ${surname}`}
-					/>
-				</ListItem>
-				<ListItem>
-					<ListItemText
-						primary="เบอร์โทรศัพท์"
-						secondary={driverData.contact}
-					/>
-				</ListItem>
-				<ListItem>
-					<ListItemText
-						primary="รถที่มอบหมาย"
-						secondary={
-							vehicleData === null ? (
-								"ไม่มีรถที่ได้รับมอบหมาย"
-							) : (
-								<Link
-									to={
-										"/vehicles/" + vehicleData.id
-									}
-								>
-									{vehicleData.license_plate}
-								</Link>
-							)
-						}
-					/>
-				</ListItem>
-				<ListItem>
-					<ListItemText
-						primary="ประเภทใบขับขี่"
-						secondary={driverData.license_type}
-					/>
-				</ListItem>
-			</List>
+				ข้อมูลคนขับรถ
+			</Typography>
+			<Typography variant="h1">
+				{name} {surname}
+			</Typography>
+			<Box>
+				<Button
+					disableElevation
+					disableRipple
+					variant="contained"
+				>
+					แก้ไขข้อมูล
+				</Button>
+			</Box>
+			<Typography variant="h2">
+				ข้อมูลทั่วไป
+			</Typography>
+			<Stack
+				useFlexGap
+				spacing={1}
+				flexWrap="wrap"
+			>
+				<Typography>
+					ชื่อ-สกุล: {name} {surname}
+				</Typography>
+				<Stack
+					spacing={1}
+					direction="row"
+					useFlexGap
+					flexWrap="wrap"
+					alignItems="baseline"
+				>
+					<Typography>เบอร์โทรศัพท์:</Typography>
+					<Typography
+						display="flex"
+						flexDirection="row"
+						flexWrap="wrap"
+						alignItems="baseline"
+						onClick={handleCopyContact}
+						sx={{
+							cursor: "pointer",
+							textDecorationLine: "underline",
+						}}
+					>
+						{driverData.contact}
+						<CopyAllRounded fontSize="inherit" />
+					</Typography>
+				</Stack>
+				<Typography>
+					ประเภทใบขับขี่:{" "}
+					{driverData.license_type}
+				</Typography>
+				<Stack
+					spacing={1}
+					direction="row"
+					useFlexGap
+					flexWrap="wrap"
+					alignItems="baseline"
+				>
+					<Typography>รถที่มอบหมาย:</Typography>
+					{vehicleData === null ? (
+						"ไม่มีรถที่ได้รับมอบหมาย"
+					) : (
+						<Typography
+							to={
+								"/vehicles/id/" + vehicleData.id
+							}
+							component={Link}
+							display="flex"
+							flexDirection="row"
+							flexWrap="wrap"
+							alignItems="center"
+							justifyContent="flex-end"
+						>
+							{vehicleData.license_plate}
+							<Launch fontSize="inherit" />
+						</Typography>
+					)}
+				</Stack>
+			</Stack>
 			<Typography variant="h2">
 				ประวัติการตรวจสารเสพติด
 			</Typography>
@@ -111,7 +158,6 @@ export const DriverPage: FC = () => {
 					</TableBody>
 				</Table>
 			</TableContainer>
-
 			<Typography variant="h3">
 				ประวัติการร้องเรียน
 			</Typography>
@@ -139,7 +185,6 @@ export const DriverPage: FC = () => {
 					</TableBody>
 				</Table>
 			</TableContainer>
-
 			<Gallery />
 		</Stack>
 	);
@@ -172,16 +217,26 @@ const Gallery = () => {
 	const openInTauri = () => {};
 
 	return (
-		<Box>
+		<Stack spacing={1}>
 			<Typography variant="h2">
 				ภาพประกอบ
 			</Typography>
-			<Button variant="contained">
-				เพิ่มรูปภาพ
-			</Button>
+			<Box>
+				<Button
+					variant="contained"
+					disableElevation
+					startIcon={<FolderRounded />}
+				>
+					จัดการรูปภาพ
+				</Button>
+			</Box>
 			<Stack
 				direction="row"
 				overflow="auto"
+				width="100%"
+				spacing={1}
+				useFlexGap
+				flexWrap="wrap"
 			>
 				{images.map(
 					({ label, imgPath }, index) => (
@@ -201,6 +256,6 @@ const Gallery = () => {
 					),
 				)}
 			</Stack>
-		</Box>
+		</Stack>
 	);
 };

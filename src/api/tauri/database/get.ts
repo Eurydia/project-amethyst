@@ -2,7 +2,7 @@ import {
 	DriverModel,
 	VehicleModel,
 } from "$types/models";
-import { fa, fakerTH } from "@faker-js/faker";
+import { fakerTH } from "@faker-js/faker";
 
 let driverId = 0;
 const drivers: DriverModel[] =

@@ -6,13 +6,14 @@ import {
 import { DriverModel } from "$types/models";
 
 export type DriverDraftPageLoaderData = {
-	drivers: DriverModel[];
+	driverData: DriverModel;
 	topics: string[];
 };
 export const driverDraftPageLoader: LoaderFunction =
-	async () => {
+	async ({ params }) => {
+		const { id } = params;
+
 		const topics = await getTopicAll();
-		const drivers = await getDriverAll();
 
 		const loaderData: DriverDraftPageLoaderData =
 			{

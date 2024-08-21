@@ -19,6 +19,7 @@ import {
 	Box,
 	InputAdornment,
 	Tooltip,
+	ButtonGroup,
 } from "@mui/material";
 import {
 	FC,
@@ -35,6 +36,7 @@ import {
 	AddRounded,
 	ContentCopy,
 	ContentCopyRounded,
+	EditRounded,
 	FlagRounded,
 	SearchRounded,
 	TurnSlightRightRounded,
@@ -154,12 +156,20 @@ const TableToolbar: FC<TableToolbarProps> = (
 						)
 					}
 				>
-					เพิ่มคนขับรถ
+					ลงทะเบียนคนขับรถ
 				</Button>
 				<Button
-					startIcon={<FlagRounded />}
+					startIcon={<EditRounded />}
+					disableElevation
+					disableRipple
+					variant="outlined"
+				>
+					บันทึกผลการตรวจสารเสพติด
+				</Button>
+				<Button
 					disableElevation
 					variant="outlined"
+					startIcon={<FlagRounded />}
 					onClick={() =>
 						submit(
 							{},

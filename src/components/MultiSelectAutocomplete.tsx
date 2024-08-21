@@ -1,5 +1,6 @@
 import {
 	CancelRounded,
+	CloseRounded,
 	SearchRounded,
 } from "@mui/icons-material";
 import {
@@ -112,7 +113,7 @@ export const MultiSelectAutocomplete: FC<
 									disabled={value.length === 0}
 									onClick={() => onChange([])}
 								>
-									<CancelRounded />
+									<CloseRounded />
 								</IconButton>
 							</span>
 						</Tooltip>
@@ -123,7 +124,7 @@ export const MultiSelectAutocomplete: FC<
 					disablePadding
 					sx={{
 						overflow: "auto",
-						maxHeight: 150,
+						maxHeight: 200,
 						display: "flex",
 						flexDirection: "row",
 						flexWrap: "wrap",

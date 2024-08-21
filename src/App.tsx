@@ -34,6 +34,11 @@ import { VehicleDraftPage } from "$pages/VehicleDraftPage";
 import { vehiclePageLoader } from "$pages/VehiclePage/loader";
 import { VehiclePage } from "$pages/VehiclePage/VehiclePage";
 import { MainView } from "$views/MainView";
+import {
+	DriverNewPage,
+	driverNewPageLoader,
+} from "$pages/DriverNewPage";
+import { ToastContainer } from "react-toastify";
 
 let theme = createTheme(
 	{
@@ -82,7 +87,25 @@ const routes = createBrowserRouter([
 						],
 					},
 					{
-						path: "driver",
+						path: "driver-report",
+						children: [
+							{
+								path: "draft",
+								element: <DriverDraftPage />,
+								loader: driverDraftPageLoader,
+							},
+							{
+								path: "id/:recordId",
+								element: null,
+							},
+							{
+								path: "id/:recordId/edit",
+								element: null,
+							},
+						],
+					},
+					{
+						path: "driver-health-checkup",
 						children: [
 							{
 								path: "draft",
@@ -189,7 +212,8 @@ const routes = createBrowserRouter([
 					},
 					{
 						path: "new",
-						element: null,
+						element: <DriverNewPage />,
+						loader: driverNewPageLoader,
 					},
 					{
 						path: "id/:driverId",
@@ -198,8 +222,7 @@ const routes = createBrowserRouter([
 					},
 					{
 						path: "id/:driverId/edit",
-						element: <DriverPage />,
-						loader: driverPageLoader,
+						element: null,
 					},
 				],
 			},
@@ -213,8 +236,9 @@ export const App = () => {
 			dateAdapter={AdapterDayjs}
 			adapterLocale="th"
 		>
+			<CssBaseline />
+			<ToastContainer icon={false} />
 			<ThemeProvider theme={theme}>
-				<CssBaseline />
 				<RouterProvider router={routes} />
 			</ThemeProvider>
 		</LocalizationProvider>

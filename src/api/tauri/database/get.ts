@@ -1,5 +1,6 @@
 import {
 	DriverModel,
+	DriverReportModel,
 	VehicleModel,
 } from "$types/models";
 import { fakerTH } from "@faker-js/faker";
@@ -97,3 +98,24 @@ export const getTopicAll = async (): Promise<
 > => {
 	return [...new Set(topics.split(" "))];
 };
+
+export const getDriverReportAll =
+	async (): Promise<DriverReportModel[]> => {
+		return [];
+	};
+
+export const getDriverReportWithDriverId = async (
+	driverId: string,
+) => {
+	return [];
+};
+
+export const getDriverDrugTestAll =
+	async (): Promise<DriverReportModel[]> => {
+		return [];
+	};
+
+export const getDriverDrugTestWithDriverId =
+	async (driverId: string) => {
+		return [];
+	};

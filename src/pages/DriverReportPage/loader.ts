@@ -9,7 +9,7 @@ export type DriverDraftPageLoaderData = {
 	drivers: DriverModel[];
 	topics: string[];
 };
-export const driverDraftPageLoader: LoaderFunction =
+export const driverReportPageLoader: LoaderFunction =
 	async () => {
 		const topics = await getTopicAll();
 		const drivers = await getDriverAll();

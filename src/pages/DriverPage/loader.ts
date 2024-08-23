@@ -1,9 +1,13 @@
 import {
+	getDriverDrugTestAll,
+	getDriverDrugTestWithDriverId,
+	getDriverReportWithDriverId,
 	getDriverWithId,
 	getVehicleWithId,
 } from "$backend/database/get";
 import {
 	DriverModel,
+	DriverReportModel,
 	VehicleModel,
 } from "$types/models";
 import {
@@ -14,6 +18,8 @@ import {
 export type DriverPageLoaderData = {
 	driverData: DriverModel;
 	vehicleData: VehicleModel | null;
+	driverReports: DriverReportModel[];
+	driverDrugTestReports: DriverReportModel[];
 };
 
 export const driverPageLoader: LoaderFunction =
@@ -40,10 +46,18 @@ export const driverPageLoader: LoaderFunction =
 		const vehicleData = await getVehicleWithId(
 			driverData.current_vehicle_id,
 		);
+		const driverReports =
+			await getDriverReportWithDriverId(driverId);
+		const driverDrugTestReports =
+			await getDriverDrugTestWithDriverId(
+				driverId,
+			);
 
 		const loaderData: DriverPageLoaderData = {
 			driverData,
 			vehicleData,
+			driverReports,
+			driverDrugTestReports,
 		};
 
 		return loaderData;

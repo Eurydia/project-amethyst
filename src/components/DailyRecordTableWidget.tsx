@@ -38,7 +38,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<RecordModel>[] =
 			render: (item) =>
 				dayjs(item.datetime_iso)
 					.locale("th")
-					.format("HH:mm น. "),
+					.format("HH:mm น."),
 		},
 		{
 			key: "title",
@@ -198,7 +198,7 @@ export const RecordTable: FC<RecordTableProps> = (
 			/>
 			<SortableTable
 				headers={HEADER_DEFINITION}
-				defaultOrder="desc"
+				defaultSortOrder="desc"
 				defaultOrderBy="datetime_iso"
 				rows={searchedEntries}
 			/>

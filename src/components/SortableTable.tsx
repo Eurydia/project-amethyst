@@ -70,20 +70,21 @@ type SortableTableProps<T extends Object> = {
 	rows: T[];
 	headers: TableHeaderDefinition<T>[];
 	defaultOrderBy: keyof T;
-	defaultOrder: "asc" | "desc";
+	defaultSortOrder: "asc" | "desc";
 };
 export const SortableTable = <T extends Object>(
 	props: SortableTableProps<T>,
 ) => {
 	const {
 		rows,
-		defaultOrder,
+		defaultSortOrder,
 		defaultOrderBy,
 		headers,
 	} = props;
 
-	const [order, setOrder] =
-		useState(defaultOrder);
+	const [order, setOrder] = useState(
+		defaultSortOrder,
+	);
 	const [orderBy, setOrderBy] = useState<keyof T>(
 		defaultOrderBy,
 	);

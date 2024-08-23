@@ -227,7 +227,7 @@ export const DriverIndexPage: FC = () => {
 				/>
 				<SortableTable
 					headers={HEADER_DEFINITION}
-					defaultOrder="asc"
+					defaultSortOrder="asc"
 					defaultOrderBy="name"
 					rows={searchedRoutes}
 				/>

@@ -6,26 +6,31 @@ export type RecordModel = {
 	topics: string;
 };
 
-export type DriverReportModel = {
-	id: string;
+export type DriverReportFormData = {
 	datetime_iso: string;
 	title: string;
 	content: string;
+	topics: string;
 
 	driver_id: string;
 	driver_name: string;
 	driver_surname: string;
-
-	// This field is intentionally left out to avoid outdated contact information.
-	// driver_contact: string;
-
-	// // (Optional) Satellite data
-	// vehicle_id: string;
-	// vehicle_vendor: string;
-	// vehicle_class: string;
-	// vehicle_license_plate: string;
-	// vehicle_registered_city: string;
 };
+
+export type DriverReportModel =
+	DriverReportFormData & {
+		id: string;
+
+		// This field is intentionally left out to avoid outdated contact information.
+		// driver_contact: string;
+
+		// // (Optional) Satellite data
+		// vehicle_id: string;
+		// vehicle_vendor: string;
+		// vehicle_class: string;
+		// vehicle_license_plate: string;
+		// vehicle_registered_city: string;
+	};
 
 // The model is intended to act as a snapshot of the travel record.
 // Since the relevant information can change over time, this model contains the information at the time of the travel record rather than storing the route, driver and vehicle ids.
@@ -106,21 +111,24 @@ export type VehicleModel = {
 	previous_drivers: string;
 };
 
-export type DriverModel = {
-	id: string;
-
-	images: string;
+export type DriverFormData = {
 	name: string;
 	surname: string;
 	contact: string;
 	license_type: string;
+};
+
+export type DriverModel = DriverFormData & {
+	id: string;
+
+	images: string;
 	license_images: string;
 
 	// (Optional) Satellite data linked to the driver
 	current_vehicle_id: string;
 	current_pickup_route_id: string;
 
-	// (Optional) Historical data linked to the driver
-	previous_vehicles: string;
-	previous_pickup_routes: string;
+	// // (Optional) Historical data linked to the driver
+	// // previous_vehicles: string;
+	// // previous_pickup_routes: string;
 };

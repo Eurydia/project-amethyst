@@ -13,12 +13,18 @@ type DriverSelectProps = {
 	options: DriverModel[];
 	value: DriverModel | null;
 	onChange: (value: DriverModel | null) => void;
+	disabled?: boolean;
 };
 export const DriverSelect: FC<
 	DriverSelectProps
 > = (props) => {
-	const { options, value, onChange, showError } =
-		props;
+	const {
+		options,
+		value,
+		onChange,
+		showError,
+		disabled,
+	} = props;
 
 	const handleChange = (
 		_: SyntheticEvent,
@@ -29,6 +35,7 @@ export const DriverSelect: FC<
 
 	return (
 		<Autocomplete
+			disabled={disabled}
 			renderInput={({ InputProps, ...rest }) => (
 				<TextField
 					{...rest}

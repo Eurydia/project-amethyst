@@ -15,9 +15,9 @@ import {
 } from "react-router-dom";
 import { DailyRecordDraftPage } from "$pages/DailyRecordDraftPage";
 import {
-	DriverDraftPage,
-	driverDraftPageLoader,
-} from "$pages/DriverDraftPage";
+	DriverReportPage,
+	driverReportPageLoader,
+} from "$pages/DriverReportPage";
 import { DriverIndexPage } from "$pages/DriverIndexPage/DriverIndexPage";
 import { driverIndexPageLoader } from "$pages/DriverIndexPage/loader";
 import { DriverPage } from "$pages/DriverPage/DriverPage";
@@ -39,6 +39,10 @@ import {
 	driverNewPageLoader,
 } from "$pages/DriverNewPage";
 import { ToastContainer } from "react-toastify";
+import {
+	driverReportWithIdPageLoader,
+	DriverReportWithIdPage,
+} from "$pages/DriverReportWithIdPage";
 
 let theme = createTheme(
 	{
@@ -87,12 +91,12 @@ const routes = createBrowserRouter([
 						],
 					},
 					{
-						path: "driver-report",
+						path: "driver",
 						children: [
 							{
 								path: "draft",
-								element: <DriverDraftPage />,
-								loader: driverDraftPageLoader,
+								element: <DriverReportPage />,
+								loader: driverReportPageLoader,
 							},
 							{
 								path: "id/:recordId",
@@ -100,24 +104,6 @@ const routes = createBrowserRouter([
 							},
 							{
 								path: "id/:recordId/edit",
-								element: null,
-							},
-						],
-					},
-					{
-						path: "driver-health-checkup",
-						children: [
-							{
-								path: "draft",
-								element: <DriverDraftPage />,
-								loader: driverDraftPageLoader,
-							},
-							{
-								path: "id/:dailyRecordId",
-								element: null,
-							},
-							{
-								path: "id/:dailyRecordId/edit",
 								element: null,
 							},
 						],
@@ -222,6 +208,15 @@ const routes = createBrowserRouter([
 					},
 					{
 						path: "id/:driverId/edit",
+						element: null,
+					},
+					{
+						path: "id/:driverId/report",
+						element: <DriverReportWithIdPage />,
+						loader: driverReportWithIdPageLoader,
+					},
+					{
+						path: "id/:driverId/report-drug",
 						element: null,
 					},
 				],

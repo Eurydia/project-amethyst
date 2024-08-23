@@ -1,4 +1,7 @@
+import { postDriver } from "$backend/database/put";
 import { DriverLicenseSelect } from "$components/DriverLicenseSelect";
+import { DriverRegisterForm } from "$components/DriverRegisterForm";
+import { DriverFormData } from "$types/models";
 import { AddRounded } from "@mui/icons-material";
 import {
 	Stack,
@@ -8,43 +11,28 @@ import {
 } from "@mui/material";
 import { ChangeEvent, FC, useState } from "react";
 import { useSubmit } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const DriverNewPage: FC = () => {
 	const submit = useSubmit();
 	const [fieldName, setFieldName] = useState("");
-	const [fieldLastName, setFieldLastName] =
-		useState("");
-	const [fieldContact, setFieldContact] =
-		useState("");
-	const [fieldLicenseType, setFieldLicenseType] =
-		useState<string | null>("type1");
 
-	const handleFieldContactChange = (
-		event: ChangeEvent<HTMLInputElement>,
+	const handleSubmit = async (
+		formData: DriverFormData,
 	) => {
-		setFieldContact(event.target.value);
-	};
-	const handleFieldNameChange = (
-		event: ChangeEvent<HTMLInputElement>,
-	) => {
-		setFieldName(event.target.value);
-	};
-	const handleFieldLastNameChange = (
-		event: ChangeEvent<HTMLInputElement>,
-	) => {
-		setFieldLastName(event.target.value);
+		postDriver(formData)
+			.then(() => {
+				toast.success("บันทึกสำเร็จ");
+				submit({}, { action: "/" });
+			})
+			.catch((error) => {
+				console.error(error);
+				toast.error("บันทึกล้มเหลว");
+			});
 	};
 
-	const tauriSaveNewDailyRecord = () =>
+	const handleCancel = () =>
 		submit({}, { action: "/" });
-
-	const cancelSave = () =>
-		submit({}, { action: "/" });
-
-	const missingFieldName =
-		fieldName.trim().normalize() === "";
-	const missingFieldLastName =
-		fieldLastName.trim().normalize() === "";
 
 	return (
 		<Stack spacing={2}>
@@ -53,60 +41,16 @@ export const DriverNewPage: FC = () => {
 					ลงทะเบียนคนขับรถ
 				</Typography>
 			</Stack>
-			<DriverLicenseSelect
-				onChange={setFieldLicenseType}
-				value={fieldLicenseType}
+			<DriverRegisterForm
+				initFormData={{
+					name: "",
+					surname: "",
+					contact: "",
+					license_type: "",
+				}}
+				onSubmit={handleSubmit}
+				onCancel={handleCancel}
 			/>
-			<Stack
-				useFlexGap
-				spacing={1}
-				direction="row"
-			>
-				<TextField
-					required
-					fullWidth
-					autoFocus
-					error={missingFieldName}
-					value={fieldName}
-					onChange={handleFieldNameChange}
-					placeholder="ชื่อ"
-				/>
-				<TextField
-					required
-					fullWidth
-					error={missingFieldLastName}
-					value={fieldLastName}
-					onChange={handleFieldLastNameChange}
-					placeholder="นามสกุล"
-				/>
-			</Stack>
-			<TextField
-				fullWidth
-				placeholder="เบอร์ติดต่อ"
-				value={fieldContact}
-				onChange={handleFieldContactChange}
-			/>
-			<Stack
-				useFlexGap
-				spacing={2}
-				direction="row"
-			>
-				<Button
-					disableElevation
-					startIcon={<AddRounded />}
-					variant="contained"
-					onClick={tauriSaveNewDailyRecord}
-				>
-					ลงทะเบียน
-				</Button>
-				<Button
-					disableElevation
-					variant="outlined"
-					onClick={cancelSave}
-				>
-					ยกเลิก
-				</Button>
-			</Stack>
 		</Stack>
 	);
 };

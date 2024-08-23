@@ -1,0 +1,51 @@
+import { postDriverReport } from "$backend/database/put";
+import { DriverReportForm } from "$components/DriverReportForm";
+import { DriverReportFormData } from "$types/models";
+import { Stack, Typography } from "@mui/material";
+import { FC } from "react";
+import {
+	useLoaderData,
+	useSubmit,
+} from "react-router-dom";
+import { toast } from "react-toastify";
+import { DriverReportDraftWithIdPageLoaderData } from "./loader";
+
+export const DriverReportWithIdPage: FC = () => {
+	const { driver, topics, initFormData } =
+		useLoaderData() as DriverReportDraftWithIdPageLoaderData;
+
+	const submit = useSubmit();
+
+	const handleSubmit = async (
+		formData: DriverReportFormData,
+	) => {
+		postDriverReport(formData)
+			.then(() => {
+				toast.success("บันทึกสำเร็จ");
+				submit({}, { action: "/" });
+			})
+			.catch((error) => {
+				console.error(error);
+				toast.error("บันทึกล้มเหลว");
+			});
+	};
+
+	const handleCancel = () =>
+		submit({}, { action: "/" });
+
+	return (
+		<Stack spacing={2}>
+			<Typography variant="h1">
+				แบบร่าง รายงานปัญหาคนขับรถ
+			</Typography>
+			<DriverReportForm
+				drivers={[]}
+				topics={topics}
+				initFormData={initFormData}
+				onSubmit={handleSubmit}
+				onCancel={handleCancel}
+				selectedDriver={driver}
+			/>
+		</Stack>
+	);
+};

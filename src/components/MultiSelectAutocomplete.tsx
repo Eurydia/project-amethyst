@@ -1,5 +1,4 @@
 import {
-	CancelRounded,
 	CloseRounded,
 	SearchRounded,
 } from "@mui/icons-material";
@@ -20,7 +19,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { matchSorter } from "match-sorter";
-import { FC, useState } from "react";
+import { FC, useMemo, useState } from "react";
 
 type MultiSelectAutocompleteProps = {
 	options: string[];
@@ -49,19 +48,23 @@ export const MultiSelectAutocomplete: FC<
 			onChange(value.filter((v) => v !== option));
 		};
 
-	const filteredOptions = matchSorter(
-		[...new Set([...options, ...value])],
-		search,
-	);
-
-	if (
-		filteredOptions.length === 0 &&
-		search.trim().normalize() !== ""
-	) {
-		filteredOptions.push(
-			search.trim().normalize(),
+	const filteredOptions = useMemo(() => {
+		const selected = new Set([
+			...options,
+			...value,
+		]);
+		const items = matchSorter(
+			[...selected],
+			search,
 		);
-	}
+		if (
+			items.length === 0 &&
+			search.trim().normalize() !== ""
+		) {
+			items.push(search.trim().normalize());
+		}
+		return items;
+	}, [search, options, value]);
 
 	return (
 		<Box>
@@ -143,6 +146,7 @@ export const MultiSelectAutocomplete: FC<
 								}}
 							>
 								<ListItemButton
+									disableRipple
 									onClick={createToggleHandler(
 										option,
 									)}

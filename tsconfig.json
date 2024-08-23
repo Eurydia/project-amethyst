@@ -11,7 +11,8 @@
 			"$backend/*": ["./api/tauri/*"],
 			"$types/*": ["./types/*"],
 			"$pages/*": ["./pages/*"],
-			"$views/*": ["./views/*"]
+			"$views/*": ["./views/*"],
+			"$hooks/*": ["./hooks/*"]
 		},
 
 		/* Bundler mode */

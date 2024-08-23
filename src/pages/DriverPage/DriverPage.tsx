@@ -1,39 +1,93 @@
+import { SortableTable } from "$components/SortableTable";
+import { TableHeaderDefinition } from "$types/generics";
+import { DriverReportModel } from "$types/models";
+import {
+	AddRounded,
+	EditRoad,
+	EditRounded,
+	FlagRounded,
+	FolderRounded,
+	SearchRounded,
+} from "@mui/icons-material";
+import {
+	Box,
+	Button,
+	InputAdornment,
+	Stack,
+	Table,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	TextField,
+	Toolbar,
+	Tooltip,
+	Typography,
+} from "@mui/material";
+import dayjs from "dayjs";
 import { FC } from "react";
-import { DriverPageLoaderData } from "./loader";
 import {
 	Link,
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
-import {
-	Box,
-	Button,
-	List,
-	ListItem,
-	ListItemButton,
-	ListItemText,
-	ListSubheader,
-	Stack,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Typography,
-} from "@mui/material";
-import {
-	CopyAllRounded,
-	DriveEtaTwoTone,
-	FolderRounded,
-	Launch,
-	OpenInNew,
-} from "@mui/icons-material";
 import { toast } from "react-toastify";
+import { DriverPageLoaderData } from "./loader";
+import { DriverReportModelTable } from "$components/DriverReportModelTable";
+import { filterItems } from "core/filter";
+
+const TABLE_HEADERS: TableHeaderDefinition<DriverReportModel>[] =
+	[
+		{
+			key: "datetime_iso",
+			label: "เวลาและวันที่",
+			compare: (a, b) =>
+				dayjs(a.datetime_iso)
+					.locale("th")
+					.unix() -
+				dayjs(b.datetime_iso).locale("th").unix(),
+			render: (item) =>
+				dayjs(item.datetime_iso)
+					.locale("th")
+					.format("dd/MMM/YYYY HH:mm น."),
+		},
+		{
+			key: "title",
+			label: "เรื่อง",
+			compare: () => 0,
+			render: (item) => item.title,
+		},
+		{
+			key: "topics",
+			label: "หัวข้อที่เกี่ยวข้อง",
+			compare: () => 0,
+			render: (item) => item.topics,
+		},
+	];
+
+const filterDriverReportModel = (
+	search: string,
+	rows: DriverReportModel[],
+) => {
+	const searchTokens = search
+		.normalize()
+		.split(" ")
+		.map((term) => term.trim())
+		.filter((term) => term.length > 0);
+
+	return filterItems(rows, searchTokens, [
+		"title",
+		"topics",
+	]);
+};
 
 export const DriverPage: FC = () => {
-	const { driverData, vehicleData } =
-		useLoaderData() as DriverPageLoaderData;
+	const {
+		driverData,
+		vehicleData,
+		driverReports,
+		driverDrugTestReports,
+	} = useLoaderData() as DriverPageLoaderData;
 	const submit = useSubmit();
 
 	const { name, surname } = driverData;
@@ -49,27 +103,19 @@ export const DriverPage: FC = () => {
 
 	return (
 		<Stack spacing={2}>
-			<Typography
-				fontSize="x-large"
-				fontWeight="bold"
-			>
-				ข้อมูลคนขับรถ
-			</Typography>
 			<Typography variant="h1">
-				{name} {surname}
+				ข้อมูลคนขับรถ
 			</Typography>
 			<Box>
 				<Button
-					disableElevation
+					startIcon={<EditRounded />}
 					disableRipple
+					disableElevation
 					variant="contained"
 				>
-					แก้ไขข้อมูล
+					แก้ไขข้อมูลคนขับรถ
 				</Button>
 			</Box>
-			<Typography variant="h2">
-				ข้อมูลทั่วไป
-			</Typography>
 			<Stack
 				useFlexGap
 				spacing={1}
@@ -79,27 +125,36 @@ export const DriverPage: FC = () => {
 					ชื่อ-สกุล: {name} {surname}
 				</Typography>
 				<Stack
+					useFlexGap
 					spacing={1}
 					direction="row"
-					useFlexGap
 					flexWrap="wrap"
 					alignItems="baseline"
 				>
-					<Typography>เบอร์โทรศัพท์:</Typography>
-					<Typography
-						display="flex"
-						flexDirection="row"
-						flexWrap="wrap"
-						alignItems="baseline"
-						onClick={handleCopyContact}
-						sx={{
-							cursor: "pointer",
-							textDecorationLine: "underline",
-						}}
+					<Typography>เบอร์ติดต่อ:</Typography>
+					<Tooltip
+						arrow
+						title={
+							<Typography>
+								กดเพื่อคัดลอก
+							</Typography>
+						}
+						placement="top"
 					>
-						{driverData.contact}
-						<CopyAllRounded fontSize="inherit" />
-					</Typography>
+						<Typography
+							display="flex"
+							flexDirection="row"
+							flexWrap="wrap"
+							alignItems="baseline"
+							onClick={handleCopyContact}
+							sx={{
+								cursor: "pointer",
+								textDecorationLine: "underline",
+							}}
+						>
+							{driverData.contact}
+						</Typography>
+					</Tooltip>
 				</Stack>
 				<Typography>
 					ประเภทใบขับขี่:{" "}
@@ -128,7 +183,6 @@ export const DriverPage: FC = () => {
 							justifyContent="flex-end"
 						>
 							{vehicleData.license_plate}
-							<Launch fontSize="inherit" />
 						</Typography>
 					)}
 				</Stack>
@@ -136,55 +190,52 @@ export const DriverPage: FC = () => {
 			<Typography variant="h2">
 				ประวัติการตรวจสารเสพติด
 			</Typography>
-			<TableContainer>
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableCell>เวลาและวันที่</TableCell>
-							<TableCell>สถานะ</TableCell>
-							<TableCell>หมายเหตุ</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						<TableRow>
-							<TableCell>
-								09 ก.ย. 2567 10:00 น.
-							</TableCell>
-							<TableCell>
-								ไม่พบสารเสพติด
-							</TableCell>
-							<TableCell>-</TableCell>
-						</TableRow>
-					</TableBody>
-				</Table>
-			</TableContainer>
-			<Typography variant="h3">
+			<DriverReportModelTable
+				slotToolbar={
+					<Button
+						startIcon={<AddRounded />}
+						disableElevation
+						variant="contained"
+						onClick={() =>
+							submit(
+								{},
+								{ action: "./report-drug" },
+							)
+						}
+					>
+						บันทึกผลการตรวจสารเสพติด
+					</Button>
+				}
+				rows={driverDrugTestReports}
+				label="ประวัติการตรวจสารเสพติด"
+				headers={TABLE_HEADERS}
+				defaultSortOrder="asc"
+				defaultSortBy="datetime_iso"
+				filterFn={filterDriverReportModel}
+			/>
+			<Typography variant="h2">
 				ประวัติการร้องเรียน
 			</Typography>
-			<TableContainer>
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableCell>เวลาและวันที่</TableCell>
-							<TableCell>เรื่อง</TableCell>
-							<TableCell>ผู้รับผิดชอบ</TableCell>
-							<TableCell>...</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						<TableRow>
-							<TableCell>
-								09 ก.ย. 2567 10:00
-							</TableCell>
-							<TableCell>ปกติ</TableCell>
-							<TableCell>
-								ที่นั่งที่สองจากด้านหน้ามีการชำรุด
-							</TableCell>
-							<TableCell>...</TableCell>
-						</TableRow>
-					</TableBody>
-				</Table>
-			</TableContainer>
+			<DriverReportModelTable
+				slotToolbar={
+					<Button
+						startIcon={<FlagRounded />}
+						disableElevation
+						variant="contained"
+						onClick={() =>
+							submit({}, { action: "./report" })
+						}
+					>
+						รายงานปัญหาคนขับรถ
+					</Button>
+				}
+				rows={driverReports}
+				label="ประวัติการร้องเรียน"
+				headers={TABLE_HEADERS}
+				defaultSortOrder="asc"
+				defaultSortBy="datetime_iso"
+				filterFn={filterDriverReportModel}
+			/>
 			<Gallery />
 		</Stack>
 	);

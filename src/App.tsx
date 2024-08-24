@@ -1,4 +1,36 @@
-import { injectStyle } from "react-toastify/inject-style";
+import { DailyRecordDraftPage } from "$pages/DailyRecordDraftPage";
+import {
+	DriverIndexPage,
+	driverIndexPageLoader,
+} from "$pages/DriverIndexPage";
+import {
+	DriverInfoPage,
+	driverInfoPageLoader,
+} from "$pages/DriverInfoPage";
+import {
+	DriverNewPage,
+	driverNewPageLoader,
+} from "$pages/DriverNewPage";
+import {
+	DriverReportGeneralNewPage,
+	driverReportGeneralNewPageLoader,
+} from "$pages/DriverReportGeneralNewPage";
+import {
+	DriverInfoReportGeneralPage,
+	driverInfoReportGeneralPageLoader,
+} from "$pages/DriverInfoReportGeneralPage";
+import { HomePage } from "$pages/HomePage/HomePage";
+import { homePageLoader } from "$pages/HomePage/loader";
+import { PickupRouteDraftPage } from "$pages/PickupRouteDraftPage";
+import { PickupRouteEditPage } from "$pages/PickupRouteEditPage";
+import { PickupRouteIndexPage } from "$pages/PickupRouteIndexPage";
+import { PickupRouteNewPage } from "$pages/PickupRouteNewPage";
+import { pickupRoutePageLoader } from "$pages/PickupRoutePage/loader";
+import { PickupRoutePage } from "$pages/PickupRoutePage/PickupRoutePage";
+import { VehicleDraftPage } from "$pages/VehicleDraftPage";
+import { vehiclePageLoader } from "$pages/VehiclePage/loader";
+import { VehiclePage } from "$pages/VehiclePage/VehiclePage";
+import { MainView } from "$views/MainView";
 import {
 	createTheme,
 	CssBaseline,
@@ -13,36 +45,8 @@ import {
 	createBrowserRouter,
 	RouterProvider,
 } from "react-router-dom";
-import { DailyRecordDraftPage } from "$pages/DailyRecordDraftPage";
-import {
-	DriverReportPage,
-	driverReportPageLoader,
-} from "$pages/DriverReportPage";
-import { DriverIndexPage } from "$pages/DriverIndexPage/DriverIndexPage";
-import { driverIndexPageLoader } from "$pages/DriverIndexPage/loader";
-import { DriverPage } from "$pages/DriverPage/DriverPage";
-import { driverPageLoader } from "$pages/DriverPage/loader";
-import { HomePage } from "$pages/HomePage/HomePage";
-import { homePageLoader } from "$pages/HomePage/loader";
-import { PickupRouteDraftPage } from "$pages/PickupRouteDraftPage";
-import { PickupRouteEditPage } from "$pages/PickupRouteEditPage";
-import { PickupRouteIndexPage } from "$pages/PickupRouteIndexPage";
-import { PickupRouteNewPage } from "$pages/PickupRouteNewPage";
-import { pickupRoutePageLoader } from "$pages/PickupRoutePage/loader";
-import { PickupRoutePage } from "$pages/PickupRoutePage/PickupRoutePage";
-import { VehicleDraftPage } from "$pages/VehicleDraftPage";
-import { vehiclePageLoader } from "$pages/VehiclePage/loader";
-import { VehiclePage } from "$pages/VehiclePage/VehiclePage";
-import { MainView } from "$views/MainView";
-import {
-	DriverNewPage,
-	driverNewPageLoader,
-} from "$pages/DriverNewPage";
 import { ToastContainer } from "react-toastify";
-import {
-	driverReportWithIdPageLoader,
-	DriverReportWithIdPage,
-} from "$pages/DriverReportWithIdPage";
+import { injectStyle } from "react-toastify/inject-style";
 
 let theme = createTheme(
 	{
@@ -86,24 +90,6 @@ const routes = createBrowserRouter([
 							},
 							{
 								path: "id/:id/edit",
-								element: null,
-							},
-						],
-					},
-					{
-						path: "driver",
-						children: [
-							{
-								path: "draft",
-								element: <DriverReportPage />,
-								loader: driverReportPageLoader,
-							},
-							{
-								path: "id/:recordId",
-								element: null,
-							},
-							{
-								path: "id/:recordId/edit",
 								element: null,
 							},
 						],
@@ -192,32 +178,86 @@ const routes = createBrowserRouter([
 				path: "drivers",
 				children: [
 					{
-						index: true,
+						index: true, // List all drivers
 						element: <DriverIndexPage />,
 						loader: driverIndexPageLoader,
 					},
 					{
-						path: "new",
+						path: "new", // Create new driver
 						element: <DriverNewPage />,
 						loader: driverNewPageLoader,
 					},
 					{
-						path: "id/:driverId",
-						element: <DriverPage />,
-						loader: driverPageLoader,
+						path: "info/:driverId", // Show driver info
+						element: <DriverInfoPage />,
+						loader: driverInfoPageLoader,
 					},
 					{
-						path: "id/:driverId/edit",
+						path: "info/:driverId/edit", // Edit driver info
 						element: null,
 					},
 					{
-						path: "id/:driverId/report",
-						element: <DriverReportWithIdPage />,
-						loader: driverReportWithIdPageLoader,
+						path: "info/:driverId/report", // Report driver
+						element: (
+							<DriverInfoReportGeneralPage />
+						),
+						loader:
+							driverInfoReportGeneralPageLoader,
 					},
 					{
-						path: "id/:driverId/report-drug",
+						path: "info/:driverId/report-health", // Report driver health
 						element: null,
+					},
+					{
+						path: "report",
+						children: [
+							{
+								path: "general",
+								children: [
+									{
+										index: true, // List all general report
+										element: null,
+									},
+									{
+										path: "new", // Create new general report
+										element: (
+											<DriverReportGeneralNewPage />
+										),
+										loader:
+											driverReportGeneralNewPageLoader,
+									},
+									{
+										path: "info/:reportId", // Show general report
+										element: null,
+									},
+									{
+										path: "info/:reportId/edit", // Edit report
+										element: null,
+									},
+								],
+							},
+							{
+								path: "medical",
+								children: [
+									{
+										index: true, // List all medical report
+										element: null,
+									},
+									{
+										path: "new", // Create new medical report
+										element: null,
+									},
+									{
+										path: "info/:reportId", // Show medical report
+										element: null,
+									},
+									{
+										path: "info/:reportId/edit", // Edit medical report
+										element: null,
+									},
+								],
+							},
+						],
 					},
 				],
 			},

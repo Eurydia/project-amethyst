@@ -99,23 +99,22 @@ export const getTopicAll = async (): Promise<
 	return [...new Set(topics.split(" "))];
 };
 
-export const getDriverReportAll =
+export const getDriverGeneralReportAll =
 	async (): Promise<DriverReportModel[]> => {
 		return [];
 	};
 
-export const getDriverReportWithDriverId = async (
-	driverId: string,
-) => {
-	return [];
-};
+export const getDriverGeneralReportAllWithDriverId =
+	async (driverId: string) => {
+		return [];
+	};
 
-export const getDriverDrugTestAll =
+export const getDriverMedicalReportAll =
 	async (): Promise<DriverReportModel[]> => {
 		return [];
 	};
 
-export const getDriverDrugTestWithDriverId =
+export const getDriverMedicalReportAllWithDriverId =
 	async (driverId: string) => {
 		return [];
 	};

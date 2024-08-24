@@ -1,29 +1,20 @@
-import { SortableTable } from "$components/SortableTable";
+import { DriverReportModelTable } from "$components/DriverReportModelTable";
 import { TableHeaderDefinition } from "$types/generics";
 import { DriverReportModel } from "$types/models";
 import {
 	AddRounded,
-	EditRoad,
 	EditRounded,
 	FlagRounded,
 	FolderRounded,
-	SearchRounded,
 } from "@mui/icons-material";
 import {
 	Box,
 	Button,
-	InputAdornment,
 	Stack,
-	Table,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	TextField,
-	Toolbar,
 	Tooltip,
 	Typography,
 } from "@mui/material";
+import { filterItems } from "core/filter";
 import dayjs from "dayjs";
 import { FC } from "react";
 import {
@@ -32,9 +23,7 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { toast } from "react-toastify";
-import { DriverPageLoaderData } from "./loader";
-import { DriverReportModelTable } from "$components/DriverReportModelTable";
-import { filterItems } from "core/filter";
+import { DriverInfoPageLoaderData } from "./loader";
 
 const TABLE_HEADERS: TableHeaderDefinition<DriverReportModel>[] =
 	[
@@ -81,13 +70,14 @@ const filterDriverReportModel = (
 	]);
 };
 
-export const DriverPage: FC = () => {
+export const DriverInfoPage: FC = () => {
 	const {
 		driverData,
 		vehicleData,
-		driverReports,
-		driverDrugTestReports,
-	} = useLoaderData() as DriverPageLoaderData;
+		driverGeneralReportEntries: driverReports,
+		driverMedicalReportEntries:
+			driverDrugTestReports,
+	} = useLoaderData() as DriverInfoPageLoaderData;
 	const submit = useSubmit();
 
 	const { name, surname } = driverData;

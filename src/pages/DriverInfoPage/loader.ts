@@ -1,7 +1,6 @@
 import {
-	getDriverDrugTestAll,
-	getDriverDrugTestWithDriverId,
-	getDriverReportWithDriverId,
+	getDriverMedicalReportAllWithDriverId,
+	getDriverGeneralReportAllWithDriverId,
 	getDriverWithId,
 	getVehicleWithId,
 } from "$backend/database/get";
@@ -15,14 +14,14 @@ import {
 	LoaderFunction,
 } from "react-router-dom";
 
-export type DriverPageLoaderData = {
+export type DriverInfoPageLoaderData = {
 	driverData: DriverModel;
 	vehicleData: VehicleModel | null;
-	driverReports: DriverReportModel[];
-	driverDrugTestReports: DriverReportModel[];
+	driverGeneralReportEntries: DriverReportModel[];
+	driverMedicalReportEntries: DriverReportModel[];
 };
 
-export const driverPageLoader: LoaderFunction =
+export const driverInfoPageLoader: LoaderFunction =
 	async ({ params }) => {
 		const { driverId } = params;
 		if (driverId === undefined) {
@@ -46,18 +45,20 @@ export const driverPageLoader: LoaderFunction =
 		const vehicleData = await getVehicleWithId(
 			driverData.current_vehicle_id,
 		);
-		const driverReports =
-			await getDriverReportWithDriverId(driverId);
-		const driverDrugTestReports =
-			await getDriverDrugTestWithDriverId(
+		const driverGeneralReportEntries =
+			await getDriverGeneralReportAllWithDriverId(
+				driverId,
+			);
+		const driverMedicalReportEntries =
+			await getDriverMedicalReportAllWithDriverId(
 				driverId,
 			);
 
-		const loaderData: DriverPageLoaderData = {
+		const loaderData: DriverInfoPageLoaderData = {
 			driverData,
 			vehicleData,
-			driverReports,
-			driverDrugTestReports,
+			driverGeneralReportEntries,
+			driverMedicalReportEntries,
 		};
 
 		return loaderData;

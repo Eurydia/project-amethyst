@@ -12,13 +12,13 @@ import {
 } from "$types/models";
 import dayjs from "dayjs";
 
-export type DriverReportDraftWithIdPageLoaderData =
+export type DriverInfoReportGeneralPageLoaderData =
 	{
 		driver: DriverModel;
 		topics: string[];
 		initFormData: DriverReportFormData;
 	};
-export const driverReportWithIdPageLoader: LoaderFunction =
+export const driverInfoReportGeneralPageLoader: LoaderFunction =
 	async ({ params }) => {
 		const { driverId } = params;
 		if (driverId === undefined) {
@@ -48,7 +48,7 @@ export const driverReportWithIdPageLoader: LoaderFunction =
 			title: "",
 			topics: "",
 		};
-		const loaderData: DriverReportDraftWithIdPageLoaderData =
+		const loaderData: DriverInfoReportGeneralPageLoaderData =
 			{
 				initFormData,
 				topics,

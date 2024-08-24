@@ -11,7 +11,6 @@ import {
 	Box,
 	Button,
 	Stack,
-	Tooltip,
 	Typography,
 } from "@mui/material";
 import { filterItems } from "core/filter";
@@ -24,7 +23,6 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverInfoPageLoaderData } from "./loader";
-import { StyledTextWavy } from "$components/StyledTextWavy";
 import { CopiableText } from "$components/CopiableText";
 
 const TABLE_HEADERS: TableHeaderDefinition<DriverReportModel>[] =
@@ -76,22 +74,12 @@ export const DriverInfoPage: FC = () => {
 	const {
 		driverData,
 		vehicleData,
-		driverGeneralReportEntries: driverReports,
-		driverMedicalReportEntries:
-			driverDrugTestReports,
+		driverGeneralReportEntries,
+		driverMedicalReportEntries,
 	} = useLoaderData() as DriverInfoPageLoaderData;
 	const submit = useSubmit();
 
 	const { name, surname } = driverData;
-
-	const handleCopyContact = () => {
-		navigator.clipboard.writeText(
-			driverData.contact,
-		);
-		toast.info("คัดลอกเบอร์โทรศัพท์แล้ว", {
-			icon: false,
-		});
-	};
 
 	return (
 		<Stack spacing={2}>
@@ -104,6 +92,9 @@ export const DriverInfoPage: FC = () => {
 					disableRipple
 					disableElevation
 					variant="contained"
+					onClick={() =>
+						submit({}, { action: "./edit" })
+					}
 				>
 					แก้ไขข้อมูลคนขับรถ
 				</Button>
@@ -120,7 +111,7 @@ export const DriverInfoPage: FC = () => {
 					flexWrap="wrap"
 					alignItems="baseline"
 				>
-					<Typography>ชื่อ-สกุล:</Typography>
+					<Typography>ชื่อ-นามสกุล:</Typography>
 					<CopiableText
 						children={`${name} ${surname}`}
 					/>
@@ -187,7 +178,7 @@ export const DriverInfoPage: FC = () => {
 						บันทึกผลการตรวจสารเสพติด
 					</Button>
 				}
-				rows={driverDrugTestReports}
+				rows={driverMedicalReportEntries}
 				label="ประวัติการตรวจสารเสพติด"
 				headers={TABLE_HEADERS}
 				defaultSortOrder="asc"
@@ -213,7 +204,7 @@ export const DriverInfoPage: FC = () => {
 						รายงานปัญหาคนขับรถ
 					</Button>
 				}
-				rows={driverReports}
+				rows={driverGeneralReportEntries}
 				label="ประวัติการร้องเรียน"
 				headers={TABLE_HEADERS}
 				defaultSortOrder="asc"

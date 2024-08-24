@@ -50,7 +50,7 @@ export const DriverRegisterForm: FC<
 	) => {
 		// Remove all non-digit characters
 		setFieldContact(
-			e.target.value.replace(/[^\d+-]/g, ""),
+			e.target.value.replace(/[^\d+-\s]/g, ""),
 		);
 	};
 

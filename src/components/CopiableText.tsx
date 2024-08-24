@@ -1,7 +1,4 @@
-import {
-	Tooltip,
-	Typography,
-} from "@mui/material";
+import { Typography } from "@mui/material";
 import { FC } from "react";
 import { toast } from "react-toastify";
 
@@ -17,24 +14,16 @@ export const CopiableText: FC<
 	};
 
 	return (
-		<Tooltip
-			title={
-				<Typography>กดเพื่อคัดลอก</Typography>
-			}
-			placement="top"
-			arrow
+		<Typography
+			onClick={handleCopy}
+			sx={{
+				cursor: "pointer",
+				textDecoration: "underline",
+				textDecorationStyle: "wavy",
+				textDecorationThickness: "from-font",
+			}}
 		>
-			<Typography
-				onClick={handleCopy}
-				sx={{
-					cursor: "pointer",
-					textDecoration: "underline",
-					textDecorationStyle: "wavy",
-					textDecorationThickness: "from-font",
-				}}
-			>
-				{children}
-			</Typography>
-		</Tooltip>
+			{children}
+		</Typography>
 	);
 };

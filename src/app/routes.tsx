@@ -4,6 +4,10 @@ import {
 	driverIndexPageLoader,
 } from "$pages/DriverIndexPage";
 import {
+	DriverInfoEditPage,
+	driverInfoEditPageLoader,
+} from "$pages/DriverInfoEditPage";
+import {
 	DriverInfoPage,
 	driverInfoPageLoader,
 } from "$pages/DriverInfoPage";
@@ -171,7 +175,8 @@ export const routes = createBrowserRouter([
 					},
 					{
 						path: "info/:driverId/edit", // Edit driver info
-						element: null,
+						element: <DriverInfoEditPage />,
+						loader: driverInfoEditPageLoader,
 					},
 					{
 						path: "info/:driverId/report/general", // New general report for driver

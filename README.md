@@ -8,7 +8,7 @@
 - [OO] driver/                                    : List all drivers
 - [OO] driver/new                                 : Register new driver
 - [OO] driver/info/[driverId]                     : List info about a driver
-- [  ] driver/info/[driverId]/edit                : Edit info about a driver
+- [OO] driver/info/[driverId]/edit                : Edit info about a driver
 - [OO] driver/info/[driverId]/report/general      : Create a general report on a driver
 - [OO] driver/info/[driverId]/report/medical      : Create a medical report on a driver
 - [  ] driver/report/general                      : List all general report entires

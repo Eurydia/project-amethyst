@@ -14,6 +14,7 @@ import { VehicleSelect } from "./VehicleSelect";
 
 type DriverRegisterFormProps = {
 	vehicles: VehicleModel[];
+	initVehicle: VehicleModel | null;
 	initFormData: DriverFormData;
 	onSubmit: (formData: DriverFormData) => void;
 	onCancel: () => void;
@@ -23,6 +24,7 @@ export const DriverRegisterForm: FC<
 > = (props) => {
 	const {
 		initFormData,
+		initVehicle,
 		vehicles,
 		onCancel,
 		onSubmit,
@@ -41,7 +43,7 @@ export const DriverRegisterForm: FC<
 			initFormData.license_type,
 		);
 	const [fieldVehicle, setFieldVehicle] =
-		useState<VehicleModel | null>(null);
+		useState<VehicleModel | null>(initVehicle);
 
 	const handleFieldContactChange = (
 		e: ChangeEvent<

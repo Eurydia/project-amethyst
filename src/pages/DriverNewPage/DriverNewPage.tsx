@@ -41,6 +41,7 @@ export const DriverNewPage: FC = () => {
 			</Stack>
 			<DriverRegisterForm
 				vehicles={vehicles}
+				initVehicle={null}
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={handleCancel}

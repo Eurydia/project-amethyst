@@ -1,4 +1,6 @@
+import { CopiableText } from "$components/CopiableText";
 import { DriverReportModelTable } from "$components/DriverReportModelTable";
+import { StyledTextWavy } from "$components/StyledTextWavy";
 import { TableHeaderDefinition } from "$types/generics";
 import { DriverReportModel } from "$types/models";
 import {
@@ -8,6 +10,7 @@ import {
 	FolderRounded,
 } from "@mui/icons-material";
 import {
+	Alert,
 	Box,
 	Button,
 	Stack,
@@ -21,9 +24,7 @@ import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
-import { toast } from "react-toastify";
 import { DriverInfoPageLoaderData } from "./loader";
-import { CopiableText } from "$components/CopiableText";
 
 const TABLE_HEADERS: TableHeaderDefinition<DriverReportModel>[] =
 	[
@@ -86,6 +87,24 @@ export const DriverInfoPage: FC = () => {
 			<Typography variant="h1">
 				ข้อมูลคนขับรถ
 			</Typography>
+			<Alert
+				icon={false}
+				severity="info"
+			>
+				<Typography>
+					พ่อสามารถกดที่ข้อความ{" "}
+					<StyledTextWavy
+						variant="body1"
+						variantMapping={{
+							body1: "span",
+						}}
+						display="inline"
+					>
+						แบบนี้
+					</StyledTextWavy>{" "}
+					เพื่อคัดลอกเนื้อหาของข้อความได้
+				</Typography>
+			</Alert>
 			<Box>
 				<Button
 					startIcon={<EditRounded />}

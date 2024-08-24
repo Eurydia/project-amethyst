@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { DriverInfoEditPageLoaderData } from "./loader";
 
 export const DriverInfoEditPage: FC = () => {
-	const { initFormData, vehicles } =
+	const { initFormData, initVehicle, vehicles } =
 		useLoaderData() as DriverInfoEditPageLoaderData;
 	const submit = useSubmit();
 
@@ -28,7 +28,6 @@ export const DriverInfoEditPage: FC = () => {
 				toast.error("แก้ไขล้มเหลว");
 			});
 	};
-
 	const handleCancel = () =>
 		submit({}, { action: "/" });
 
@@ -39,6 +38,7 @@ export const DriverInfoEditPage: FC = () => {
 			</Typography>
 			<DriverRegisterForm
 				vehicles={vehicles}
+				initVehicle={initVehicle}
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={handleCancel}

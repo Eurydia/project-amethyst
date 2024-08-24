@@ -24,10 +24,8 @@ const drivers: DriverModel[] =
 				license_images: "",
 				license_type:
 					fakerTH.helpers.arrayElement([
-						"ประเภท 1",
-						"ประเภท 2",
-						"ประเภท 3",
-						"ประเภท 4",
+						"1",
+						"2",
 					]),
 				name: fakerTH.person.firstName(),
 				surname: fakerTH.person.lastName(),

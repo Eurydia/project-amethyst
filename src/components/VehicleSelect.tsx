@@ -34,6 +34,9 @@ export const VehicleSelect: FC<
 			onChange={handleChange}
 			value={value}
 			options={options}
+			isOptionEqualToValue={(option, value) =>
+				option.id === value.id
+			}
 			getOptionLabel={(option) =>
 				`${option.license_plate} (${option.vendor})`
 			}

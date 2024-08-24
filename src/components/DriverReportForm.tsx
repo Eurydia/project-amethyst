@@ -1,7 +1,6 @@
 import {
 	DriverModel,
 	DriverReportFormData,
-	DriverReportModel,
 } from "$types/models";
 import { SaveRounded } from "@mui/icons-material";
 import {

@@ -24,6 +24,8 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverInfoPageLoaderData } from "./loader";
+import { StyledTextWavy } from "$components/StyledTextWavy";
+import { CopiableText } from "$components/CopiableText";
 
 const TABLE_HEADERS: TableHeaderDefinition<DriverReportModel>[] =
 	[
@@ -111,9 +113,18 @@ export const DriverInfoPage: FC = () => {
 				spacing={1}
 				flexWrap="wrap"
 			>
-				<Typography>
-					ชื่อ-สกุล: {name} {surname}
-				</Typography>
+				<Stack
+					useFlexGap
+					spacing={1}
+					direction="row"
+					flexWrap="wrap"
+					alignItems="baseline"
+				>
+					<Typography>ชื่อ-สกุล:</Typography>
+					<CopiableText
+						children={`${name} ${surname}`}
+					/>
+				</Stack>
 				<Stack
 					useFlexGap
 					spacing={1}
@@ -122,29 +133,9 @@ export const DriverInfoPage: FC = () => {
 					alignItems="baseline"
 				>
 					<Typography>เบอร์ติดต่อ:</Typography>
-					<Tooltip
-						arrow
-						title={
-							<Typography>
-								กดเพื่อคัดลอก
-							</Typography>
-						}
-						placement="top"
-					>
-						<Typography
-							display="flex"
-							flexDirection="row"
-							flexWrap="wrap"
-							alignItems="baseline"
-							onClick={handleCopyContact}
-							sx={{
-								cursor: "pointer",
-								textDecorationLine: "underline",
-							}}
-						>
-							{driverData.contact}
-						</Typography>
-					</Tooltip>
+					<CopiableText>
+						{driverData.contact}
+					</CopiableText>
 				</Stack>
 				<Typography>
 					ประเภทใบขับขี่:{" "}
@@ -178,7 +169,7 @@ export const DriverInfoPage: FC = () => {
 				</Stack>
 			</Stack>
 			<Typography variant="h2">
-				ประวัติการตรวจสารเสพติด
+				ประวัติผลการตรวจสารเสพติด
 			</Typography>
 			<DriverReportModelTable
 				slotToolbar={
@@ -189,7 +180,7 @@ export const DriverInfoPage: FC = () => {
 						onClick={() =>
 							submit(
 								{},
-								{ action: "./report-drug" },
+								{ action: "./report/medical" },
 							)
 						}
 					>
@@ -213,7 +204,10 @@ export const DriverInfoPage: FC = () => {
 						disableElevation
 						variant="contained"
 						onClick={() =>
-							submit({}, { action: "./report" })
+							submit(
+								{},
+								{ action: "./report/general" },
+							)
 						}
 					>
 						รายงานปัญหาคนขับรถ

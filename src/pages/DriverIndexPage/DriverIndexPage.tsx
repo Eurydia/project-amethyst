@@ -1,28 +1,27 @@
+import { SortableTable } from "$components/SortableTable";
+import { TableHeaderDefinition } from "$types/generics";
 import {
-	Stack,
-	Card,
-	CardHeader,
-	CardActionArea,
-	Typography,
+	AddRounded,
+	ContentCopyRounded,
+	CopyAllRounded,
+	EditRounded,
+	FlagRounded,
+	SearchRounded,
+} from "@mui/icons-material";
+import {
 	Button,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Toolbar,
-	List,
-	ListItem,
-	ListItemText,
-	TextField,
-	Box,
+	IconButton,
 	InputAdornment,
+	Stack,
+	TableContainer,
+	TextField,
+	Toolbar,
 	Tooltip,
-	ButtonGroup,
+	Typography,
 } from "@mui/material";
 import {
 	FC,
+	Fragment,
 	SyntheticEvent,
 	useState,
 } from "react";
@@ -31,24 +30,14 @@ import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
-import { filterItems } from "../../core/filter";
-import {
-	AddRounded,
-	ContentCopy,
-	ContentCopyRounded,
-	EditRounded,
-	FlagRounded,
-	SearchRounded,
-	TurnSlightRightRounded,
-} from "@mui/icons-material";
+import { toast } from "react-toastify";
 import {
 	DriverIndexPageLoaderData,
 	PreparedDriverData,
 } from "./loader";
-import { SortableTable } from "$components/SortableTable";
-import { TableHeaderDefinition } from "$types/generics";
-import { DriverModel } from "$types/models";
-import { toast } from "react-toastify";
+import { filterItems } from "core/filter";
+import { StyledTextLink } from "$components/StyledTextLink";
+import { StyledTextWavy } from "$components/StyledTextWavy";
 
 const HEADER_DEFINITION: TableHeaderDefinition<PreparedDriverData>[] =
 	[
@@ -59,7 +48,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<PreparedDriverData>[] =
 			render: (item) => (
 				<Typography>
 					{item.license_plate === "" ? (
-						"-"
+						"ไม่มี"
 					) : (
 						<Link to={"/vehicles/id/" + item.id}>
 							{item.license_plate}
@@ -74,9 +63,11 @@ const HEADER_DEFINITION: TableHeaderDefinition<PreparedDriverData>[] =
 			compare: (a, b) =>
 				a.name.localeCompare(b.name),
 			render: (item) => (
-				<Link to={"/drivers/id/" + item.id}>
-					<Typography>{item.name}</Typography>
-				</Link>
+				<Typography>
+					<Link to={"/drivers/info/" + item.id}>
+						{item.name}
+					</Link>
+				</Typography>
 			),
 		},
 		{
@@ -93,18 +84,26 @@ const HEADER_DEFINITION: TableHeaderDefinition<PreparedDriverData>[] =
 			label: "เบอร์ติดต่อ",
 			compare: (_) => 0,
 			render: (item) => (
-				<Button
-					variant="text"
-					endIcon={<ContentCopyRounded />}
-					onClick={() => {
-						navigator.clipboard.writeText(
-							item.contact,
-						);
-						toast.info("คัดลอกเบอร์ติดต่อแล้ว");
-					}}
+				<Tooltip
+					arrow
+					placement="top"
+					title={
+						<Typography>
+							คัดลอกเบอร์ติดต่อ
+						</Typography>
+					}
 				>
-					{item.contact}
-				</Button>
+					<StyledTextWavy
+						onClick={() => {
+							navigator.clipboard.writeText(
+								item.contact,
+							);
+							toast.info("คัดลอกเบอร์ติดต่อแล้ว");
+						}}
+					>
+						{item.contact}
+					</StyledTextWavy>
+				</Tooltip>
 			),
 		},
 	];
@@ -163,6 +162,15 @@ const TableToolbar: FC<TableToolbarProps> = (
 					disableElevation
 					disableRipple
 					variant="outlined"
+					onClick={() =>
+						submit(
+							{},
+							{
+								action:
+									"/drivers/report/medical/new",
+							},
+						)
+					}
 				>
 					บันทึกผลการตรวจสารเสพติด
 				</Button>
@@ -174,7 +182,8 @@ const TableToolbar: FC<TableToolbarProps> = (
 						submit(
 							{},
 							{
-								action: "/records/driver/draft",
+								action:
+									"/drivers/report/general/new",
 							},
 						)
 					}

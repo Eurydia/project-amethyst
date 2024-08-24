@@ -1,20 +1,16 @@
 import { postDriverReport } from "$backend/database/put";
 import { DriverReportForm } from "$components/DriverReportForm";
 import { DriverReportFormData } from "$types/models";
-import {
-	Alert,
-	Stack,
-	Typography,
-} from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
 import { toast } from "react-toastify";
-import { DriverInfoReportGeneralPageLoaderData } from "./loader";
+import { DriverInfoReportMedicalPageLoaderData } from "./loader";
 
-export const DriverInfoReportGeneralPage: FC =
+export const DriverInfoReportMedicalPage: FC =
 	() => {
 		const {
 			driver,
@@ -22,7 +18,7 @@ export const DriverInfoReportGeneralPage: FC =
 			initFormData,
 			drivers,
 		} =
-			useLoaderData() as DriverInfoReportGeneralPageLoaderData;
+			useLoaderData() as DriverInfoReportMedicalPageLoaderData;
 
 		const submit = useSubmit();
 
@@ -46,7 +42,7 @@ export const DriverInfoReportGeneralPage: FC =
 		return (
 			<Stack spacing={2}>
 				<Typography variant="h1">
-					รายงานปัญหาคนขับรถ
+					บันทึกผลการตรวจสารเสพติด
 				</Typography>
 				<DriverReportForm
 					drivers={drivers}

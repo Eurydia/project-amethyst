@@ -56,7 +56,9 @@ const EnhancedTableHeader = <T extends Object>(
 									headCell.key,
 								)}
 							>
-								{headCell.label}
+								<Typography>
+									{headCell.label}
+								</Typography>
 							</TableSortLabel>
 						</TableCell>
 					),

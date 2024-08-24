@@ -1,14 +1,19 @@
+import {
+	DriverFormData,
+	VehicleModel,
+} from "$types/models";
 import { AddRounded } from "@mui/icons-material";
 import {
+	Button,
 	Stack,
 	TextField,
-	Button,
 } from "@mui/material";
 import { ChangeEvent, FC, useState } from "react";
 import { DriverLicenseSelect } from "./DriverLicenseSelect";
-import { DriverFormData } from "$types/models";
+import { VehicleSelect } from "./VehicleSelect";
 
 type DriverRegisterFormProps = {
+	vehicles: VehicleModel[];
 	initFormData: DriverFormData;
 	onSubmit: (formData: DriverFormData) => void;
 	onCancel: () => void;
@@ -16,8 +21,13 @@ type DriverRegisterFormProps = {
 export const DriverRegisterForm: FC<
 	DriverRegisterFormProps
 > = (props) => {
-	const { initFormData, onCancel, onSubmit } =
-		props;
+	const {
+		initFormData,
+		vehicles,
+		onCancel,
+		onSubmit,
+	} = props;
+
 	const [fieldName, setFieldName] = useState(
 		initFormData.name,
 	);
@@ -30,35 +40,33 @@ export const DriverRegisterForm: FC<
 		useState<string | null>(
 			initFormData.license_type,
 		);
+	const [fieldVehicle, setFieldVehicle] =
+		useState<VehicleModel | null>(null);
 
 	const handleFieldContactChange = (
-		event: ChangeEvent<HTMLInputElement>,
+		e: ChangeEvent<
+			HTMLInputElement | HTMLTextAreaElement
+		>,
 	) => {
-		setFieldContact(event.target.value);
-	};
-	const handleFieldNameChange = (
-		event: ChangeEvent<HTMLInputElement>,
-	) => {
-		setFieldName(event.target.value);
-	};
-	const handleFieldLastNameChange = (
-		event: ChangeEvent<HTMLInputElement>,
-	) => {
-		setFielSurname(event.target.value);
+		// Remove all non-digit characters
+		setFieldContact(
+			e.target.value.replace(/[^\d+-]/g, ""),
+		);
 	};
 
 	const handleSubmit = () => {
-		if (
-			missingFieldName ||
-			missingFieldLastName
-		) {
+		if (isFormIncomplete) {
 			return;
 		}
 		const formData: DriverFormData = {
-			name: fieldName,
-			surname: fieldSurname,
-			contact: fieldContact,
+			name: fieldName.trim().normalize(),
+			surname: fieldSurname.trim().normalize(),
+			contact: fieldContact.trim().normalize(),
 			license_type: fieldLicenseType || "",
+			current_vehicle_id:
+				fieldVehicle !== null
+					? fieldVehicle.id
+					: "",
 		};
 		onSubmit(formData);
 	};
@@ -70,12 +78,11 @@ export const DriverRegisterForm: FC<
 	const missingFieldLastName =
 		fieldSurname.trim().normalize() === "";
 
+	const isFormIncomplete =
+		missingFieldName || missingFieldLastName;
+
 	return (
-		<Stack>
-			<DriverLicenseSelect
-				value={fieldLicenseType}
-				onChange={setFieldLicenseType}
-			/>
+		<Stack spacing={2}>
 			<Stack
 				useFlexGap
 				spacing={1}
@@ -87,7 +94,9 @@ export const DriverRegisterForm: FC<
 					autoFocus
 					error={missingFieldName}
 					value={fieldName}
-					onChange={handleFieldNameChange}
+					onChange={(e) =>
+						setFieldName(e.target.value)
+					}
 					placeholder="ชื่อ"
 				/>
 				<TextField
@@ -95,7 +104,9 @@ export const DriverRegisterForm: FC<
 					fullWidth
 					error={missingFieldLastName}
 					value={fieldSurname}
-					onChange={handleFieldLastNameChange}
+					onChange={(e) =>
+						setFielSurname(e.target.value)
+					}
 					placeholder="นามสกุล"
 				/>
 			</Stack>
@@ -105,12 +116,22 @@ export const DriverRegisterForm: FC<
 				value={fieldContact}
 				onChange={handleFieldContactChange}
 			/>
+			<VehicleSelect
+				options={vehicles}
+				value={fieldVehicle}
+				onChange={setFieldVehicle}
+			/>
+			<DriverLicenseSelect
+				value={fieldLicenseType}
+				onChange={setFieldLicenseType}
+			/>
 			<Stack
 				useFlexGap
 				spacing={2}
 				direction="row"
 			>
 				<Button
+					disabled={isFormIncomplete}
 					disableElevation
 					startIcon={<AddRounded />}
 					variant="contained"

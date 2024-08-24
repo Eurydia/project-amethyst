@@ -116,17 +116,13 @@ export type DriverFormData = {
 	surname: string;
 	contact: string;
 	license_type: string;
+	current_vehicle_id: string;
 };
 
 export type DriverModel = DriverFormData & {
 	id: string;
 
-	images: string;
-	license_images: string;
-
-	// (Optional) Satellite data linked to the driver
-	current_vehicle_id: string;
-	current_pickup_route_id: string;
+	images: string; // Commas separated image paths
 
 	// // (Optional) Historical data linked to the driver
 	// // previous_vehicles: string;

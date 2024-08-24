@@ -1,15 +1,27 @@
-import { getTopicAll } from "$backend/database/get";
+import { getVehicleAll } from "$backend/database/get";
+import {
+	DriverFormData,
+	VehicleModel,
+} from "$types/models";
 import { LoaderFunction } from "react-router-dom";
 
 export type DriverNewPageLoaderData = {
-	topics: string[];
+	vehicles: VehicleModel[];
+	initFormData: DriverFormData;
 };
 export const driverNewPageLoader: LoaderFunction =
 	async () => {
-		const topics = await getTopicAll();
-
+		const vehicles = await getVehicleAll();
+		const initFormData: DriverFormData = {
+			name: "",
+			surname: "",
+			contact: "",
+			license_type: "1",
+			current_vehicle_id: "",
+		};
 		const loaderData: DriverNewPageLoaderData = {
-			topics,
+			vehicles,
+			initFormData,
 		};
 		return loaderData;
 	};

@@ -8,6 +8,14 @@ import {
 	driverInfoPageLoader,
 } from "$pages/DriverInfoPage";
 import {
+	DriverInfoReportGeneralPage,
+	driverInfoReportGeneralPageLoader,
+} from "$pages/DriverInfoReportGeneralPage";
+import {
+	DriverInfoReportMedicalPage,
+	driverInfoReportMedicalPageLoader,
+} from "$pages/DriverInfoReportMedicalPage";
+import {
 	DriverNewPage,
 	driverNewPageLoader,
 } from "$pages/DriverNewPage";
@@ -15,10 +23,6 @@ import {
 	DriverReportGeneralNewPage,
 	driverReportGeneralNewPageLoader,
 } from "$pages/DriverReportGeneralNewPage";
-import {
-	DriverInfoReportGeneralPage,
-	driverInfoReportGeneralPageLoader,
-} from "$pages/DriverInfoReportGeneralPage";
 import { HomePage } from "$pages/HomePage/HomePage";
 import { homePageLoader } from "$pages/HomePage/loader";
 import { PickupRouteDraftPage } from "$pages/PickupRouteDraftPage";
@@ -31,36 +35,9 @@ import { VehicleDraftPage } from "$pages/VehicleDraftPage";
 import { vehiclePageLoader } from "$pages/VehiclePage/loader";
 import { VehiclePage } from "$pages/VehiclePage/VehiclePage";
 import { MainView } from "$views/MainView";
-import {
-	createTheme,
-	CssBaseline,
-	responsiveFontSizes,
-	ThemeProvider,
-} from "@mui/material";
-import { thTH } from "@mui/material/locale";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import "dayjs/locale/th";
-import {
-	createBrowserRouter,
-	RouterProvider,
-} from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import { injectStyle } from "react-toastify/inject-style";
+import { createBrowserRouter } from "react-router-dom";
 
-let theme = createTheme(
-	{
-		palette: {
-			mode: "light",
-		},
-	},
-	thTH,
-);
-theme = responsiveFontSizes(theme);
-
-injectStyle();
-
-const routes = createBrowserRouter([
+export const routes = createBrowserRouter([
 	{
 		path: "/",
 		element: <MainView />,
@@ -197,7 +174,7 @@ const routes = createBrowserRouter([
 						element: null,
 					},
 					{
-						path: "info/:driverId/report", // Report driver
+						path: "info/:driverId/report/general", // New general report for driver
 						element: (
 							<DriverInfoReportGeneralPage />
 						),
@@ -205,8 +182,12 @@ const routes = createBrowserRouter([
 							driverInfoReportGeneralPageLoader,
 					},
 					{
-						path: "info/:driverId/report-health", // Report driver health
-						element: null,
+						path: "info/:driverId/report/medical", // New medical report for driver
+						element: (
+							<DriverInfoReportMedicalPage />
+						),
+						loader:
+							driverInfoReportMedicalPageLoader,
 					},
 					{
 						path: "report",
@@ -264,18 +245,3 @@ const routes = createBrowserRouter([
 		],
 	},
 ]);
-
-export const App = () => {
-	return (
-		<LocalizationProvider
-			dateAdapter={AdapterDayjs}
-			adapterLocale="th"
-		>
-			<CssBaseline />
-			<ToastContainer icon={false} />
-			<ThemeProvider theme={theme}>
-				<RouterProvider router={routes} />
-			</ThemeProvider>
-		</LocalizationProvider>
-	);
-};

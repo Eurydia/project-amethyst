@@ -11,16 +11,15 @@ import {
 	DriverReportFormData,
 } from "$types/models";
 import dayjs from "dayjs";
-import "dayjs/locale/th";
 
-export type DriverInfoReportGeneralPageLoaderData =
+export type DriverInfoReportMedicalPageLoaderData =
 	{
 		drivers: DriverModel[];
 		driver: DriverModel;
 		topics: string[];
 		initFormData: DriverReportFormData;
 	};
-export const driverInfoReportGeneralPageLoader: LoaderFunction =
+export const driverInfoReportMedicalPageLoader: LoaderFunction =
 	async ({ params }) => {
 		const { driverId } = params;
 		if (driverId === undefined) {
@@ -50,11 +49,7 @@ export const driverInfoReportGeneralPageLoader: LoaderFunction =
 			title: "",
 			topics: "",
 		};
-		console.info(
-			"initFormData",
-			dayjs().locale("th").format(),
-		);
-		const loaderData: DriverInfoReportGeneralPageLoaderData =
+		const loaderData: DriverInfoReportMedicalPageLoaderData =
 			{
 				drivers,
 				initFormData,

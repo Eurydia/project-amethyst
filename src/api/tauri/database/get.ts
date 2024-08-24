@@ -1,9 +1,13 @@
 import {
 	DriverModel,
 	DriverReportModel,
+	PickupRouteModel,
 	VehicleModel,
 } from "$types/models";
-import { fakerTH } from "@faker-js/faker";
+import {
+	fakerTH,
+	fakerTR,
+} from "@faker-js/faker";
 
 let driverId = 0;
 const drivers: DriverModel[] =
@@ -117,4 +121,28 @@ export const getDriverMedicalReportAll =
 export const getDriverMedicalReportAllWithDriverId =
 	async (driverId: string) => {
 		return [];
+	};
+
+let pickupRouteId = 0;
+const pickupRoutes: PickupRouteModel[] =
+	fakerTH.helpers.multiple(
+		() => {
+			const id = pickupRouteId.toString();
+			pickupRouteId++;
+			return {
+				arrival_time: "08:00",
+				departure_time: "17:00",
+				assigned_vehicle_ids: "",
+				name: fakerTH.location.city(),
+				id,
+			};
+		},
+		{
+			count: 10,
+		},
+	);
+
+export const getPickupRouteAll =
+	async (): Promise<PickupRouteModel[]> => {
+		return pickupRoutes;
 	};

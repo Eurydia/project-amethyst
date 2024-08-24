@@ -6,7 +6,10 @@ import {
 import { DriverModel } from "../types/models";
 import { FC, SyntheticEvent } from "react";
 import { filterItems } from "../core/filter";
-import { PersonRounded } from "@mui/icons-material";
+import {
+	LockRounded,
+	PersonRounded,
+} from "@mui/icons-material";
 
 type DriverSelectProps = {
 	showError?: boolean;
@@ -44,6 +47,15 @@ export const DriverSelect: FC<
 						startAdornment: (
 							<InputAdornment position="start">
 								<PersonRounded />
+							</InputAdornment>
+						),
+						endAdornment: (
+							<InputAdornment position="end">
+								{disabled ? (
+									<LockRounded />
+								) : (
+									InputProps.endAdornment
+								)}
 							</InputAdornment>
 						),
 					}}

@@ -1,21 +1,19 @@
 import { postDriver } from "$backend/database/put";
-import { DriverLicenseSelect } from "$components/DriverLicenseSelect";
 import { DriverRegisterForm } from "$components/DriverRegisterForm";
 import { DriverFormData } from "$types/models";
-import { AddRounded } from "@mui/icons-material";
+import { Stack, Typography } from "@mui/material";
+import { FC } from "react";
 import {
-	Stack,
-	Typography,
-	TextField,
-	Button,
-} from "@mui/material";
-import { ChangeEvent, FC, useState } from "react";
-import { useSubmit } from "react-router-dom";
+	useLoaderData,
+	useSubmit,
+} from "react-router-dom";
 import { toast } from "react-toastify";
+import { DriverNewPageLoaderData } from "./loader";
 
 export const DriverNewPage: FC = () => {
+	const { initFormData, vehicles } =
+		useLoaderData() as DriverNewPageLoaderData;
 	const submit = useSubmit();
-	const [fieldName, setFieldName] = useState("");
 
 	const handleSubmit = async (
 		formData: DriverFormData,
@@ -42,12 +40,8 @@ export const DriverNewPage: FC = () => {
 				</Typography>
 			</Stack>
 			<DriverRegisterForm
-				initFormData={{
-					name: "",
-					surname: "",
-					contact: "",
-					license_type: "",
-				}}
+				vehicles={vehicles}
+				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={handleCancel}
 			/>

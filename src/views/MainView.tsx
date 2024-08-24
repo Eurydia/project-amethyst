@@ -3,6 +3,12 @@ import {
 	Box,
 	Container,
 	Divider,
+	Drawer,
+	List,
+	ListItem,
+	ListItemButton,
+	ListItemIcon,
+	ListItemText,
 	Paper,
 	Stack,
 	Toolbar,
@@ -11,24 +17,41 @@ import {
 import dayjs from "dayjs";
 import {
 	FC,
-	lazy,
+	Fragment,
 	useEffect,
 	useState,
 } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { AddressBar } from "../components/AddressBar";
 import { ToastContainer } from "react-toastify";
-
-const ROUTES = [
-	{ path: "/", label: "Home" },
-	{ path: "pickup-routes", label: "Routes" },
-	{ path: "daily-records", label: "Records" },
-	{ path: "vehicles", label: "Vehicles" },
-	{ path: "drivers", label: "Drivers" },
-];
 
 const CLOCK_FORMAT =
 	"HH:mm น., วันddddที่ D MMMM YYYY ";
+
+const PRIMARY_ROUTES = [
+	{ path: "/", label: "หน้าแรก" },
+	{
+		path: "pickup-routes",
+		label: "สมุดบันสายรถ",
+	},
+	{
+		path: "vehicles",
+		label: "สมุดบันทึกทะเบียนรถ",
+	},
+	{
+		path: "drivers",
+		label: "รายชื่อคนขับรถ",
+	},
+];
+const SECONDARY_ROUTES = [
+	{
+		path: "/drivers/report/general",
+		label: "สมุดบันทึกประวัติการรายงานคนขับรถ",
+	},
+	{
+		path: "/drivers/report/medical",
+		label: "สมุดบันทึกผลการตรวจสารเสพติด",
+	},
+];
 
 export const MainView: FC = () => {
 	const [clock, setClock] = useState(
@@ -45,12 +68,16 @@ export const MainView: FC = () => {
 	}, []);
 
 	return (
-		<Container maxWidth="md">
+		<Box>
 			<ToastContainer />
 			<AppBar
 				enableColorOnDark
 				color="default"
 				elevation={0}
+				sx={{
+					zIndex: (theme) =>
+						theme.zIndex.drawer + 1,
+				}}
 			>
 				<Toolbar
 					variant="dense"
@@ -61,7 +88,9 @@ export const MainView: FC = () => {
 				>
 					<Stack
 						direction="row"
-						spacing={2}
+						spacing={1}
+						useFlexGap
+						flexWrap="wrap"
 						divider={
 							<Divider
 								flexItem
@@ -69,10 +98,10 @@ export const MainView: FC = () => {
 							/>
 						}
 					>
-						{ROUTES.map((route) => (
+						{PRIMARY_ROUTES.map((route) => (
 							<Link
 								to={route.path}
-								key={"item" + route.path}
+								key={"prim-route" + route.path}
 							>
 								<Typography>
 									{route.label}
@@ -82,17 +111,20 @@ export const MainView: FC = () => {
 					</Stack>
 					<Typography>{clock}</Typography>
 				</Toolbar>
+				<Divider flexItem />
 			</AppBar>
-			<Box marginY={8}>
-				<Paper
-					elevation={0}
-					sx={{
-						padding: 4,
-					}}
-				>
-					<Outlet />
-				</Paper>
-			</Box>
-		</Container>
+			<Container maxWidth="md">
+				<Box marginTop={8}>
+					<Paper
+						elevation={0}
+						sx={{
+							padding: 4,
+						}}
+					>
+						<Outlet />
+					</Paper>
+				</Box>
+			</Container>
+		</Box>
 	);
 };

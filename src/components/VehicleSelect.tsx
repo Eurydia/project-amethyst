@@ -35,7 +35,7 @@ export const VehicleSelect: FC<
 			value={value}
 			options={options}
 			getOptionLabel={(option) =>
-				option.license_plate
+				`${option.license_plate} (${option.vendor})`
 			}
 			filterOptions={(options, params) =>
 				filterItems(
@@ -43,7 +43,7 @@ export const VehicleSelect: FC<
 					params.inputValue
 						.normalize()
 						.split(" "),
-					["vendor_name", "license_plate"],
+					["vendor", "license_plate"],
 				)
 			}
 		/>

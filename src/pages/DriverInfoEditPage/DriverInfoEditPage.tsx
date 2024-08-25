@@ -1,6 +1,5 @@
 import { postDriver } from "$backend/database/put";
-import { DriverRegisterForm } from "$components/DriverRegisterForm";
-import { DriverFormData } from "$types/models";
+import { DriverForm } from "$components/DriverRegisterForm";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -9,9 +8,10 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverInfoEditPageLoaderData } from "./loader";
+import { DriverFormData } from "$types/form-data";
 
 export const DriverInfoEditPage: FC = () => {
-	const { initFormData, initVehicle, vehicles } =
+	const { initFormData } =
 		useLoaderData() as DriverInfoEditPageLoaderData;
 	const submit = useSubmit();
 
@@ -36,9 +36,7 @@ export const DriverInfoEditPage: FC = () => {
 			<Typography variant="h1">
 				แก้ไขข้อมูลคนขับรถ
 			</Typography>
-			<DriverRegisterForm
-				vehicles={vehicles}
-				initVehicle={initVehicle}
+			<DriverForm
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={handleCancel}

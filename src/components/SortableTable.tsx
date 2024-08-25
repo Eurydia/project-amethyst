@@ -5,10 +5,15 @@ import {
 	TableHead,
 	TableRow,
 	TableSortLabel,
+	Tooltip,
 	Typography,
 } from "@mui/material";
 import { useState } from "react";
 import { TableHeaderDefinition } from "../types/generics";
+import {
+	ArrowDownward,
+	ArrowUpwardRounded,
+} from "@mui/icons-material";
 
 type EnhancedTableHeaderProps<T extends Object> =
 	{
@@ -32,38 +37,59 @@ const EnhancedTableHeader = <T extends Object>(
 		(key: keyof T) => () =>
 			onRequestSort(key);
 
+	const renderedHeaders = headerDefinitions.map(
+		(headCell, index) => {
+			const sortDisabled =
+				headCell.compare === null;
+			if (sortDisabled) {
+				return (
+					<TableCell key={"header" + index}>
+						<Typography>
+							{headCell.label}
+						</Typography>
+					</TableCell>
+				);
+			}
+
+			const isActive = orderBy === headCell.key;
+			const sortOrder = isActive
+				? order
+				: undefined;
+
+			const toolTipTitle = isActive ? (
+				<Typography>
+					{sortOrder === "asc"
+						? "น้อยขึ้นไปมาก"
+						: "มากลงไปน้อย"}
+				</Typography>
+			) : null;
+
+			return (
+				<TableCell
+					key={"header" + index}
+					sortDirection={sortOrder}
+				>
+					<Tooltip title={toolTipTitle}>
+						<TableSortLabel
+							active={isActive}
+							direction={sortOrder}
+							onClick={createSortHandler(
+								headCell.key,
+							)}
+						>
+							<Typography>
+								{headCell.label}
+							</Typography>
+						</TableSortLabel>
+					</Tooltip>
+				</TableCell>
+			);
+		},
+	);
+
 	return (
 		<TableHead>
-			<TableRow>
-				{headerDefinitions.map(
-					(headCell, index) => (
-						<TableCell
-							key={"header" + index}
-							sortDirection={
-								orderBy === headCell.key
-									? order
-									: false
-							}
-						>
-							<TableSortLabel
-								active={orderBy === headCell.key}
-								direction={
-									orderBy === headCell.key
-										? order
-										: "asc"
-								}
-								onClick={createSortHandler(
-									headCell.key,
-								)}
-							>
-								<Typography>
-									{headCell.label}
-								</Typography>
-							</TableSortLabel>
-						</TableCell>
-					),
-				)}
-			</TableRow>
+			<TableRow>{renderedHeaders}</TableRow>
 		</TableHead>
 	);
 };

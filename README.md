@@ -1,5 +1,33 @@
 # Amethyst
 
+## Requirement
+
+- A pickup route is a contract with fixed arrival and departure time
+- A vehicle is assigned one pickup route
+- The arrival and depature times are tracked
+- Late arrivals and late depatures incur a penalty
+
+### Driver
+
+On a driver, we need general information:
+
+- Name and surname
+- Type of driver license
+- contact information
+
+But also administrative information in the form of their legal documents.
+For these documents, it is better to store them dynamically on the file system rather than in a database.
+
+We want to keep track of a few things:
+
+- General report (accident, operational reports)
+- Medical report history (doping test)
+- Vehicle assignment history
+
+For the general and medical reports, they have the same structure. They are time-stamped entries in a database with a title, details, topics, and the driver they are about. In this case, the topics serve as tags and aid the search for a specific report.
+
+The vehicle assignment history contains the previous vehicles the driver has been assigned to. An entry should contain the vehicle ID, the start date, and the end date in addition to the driver ID.
+
 ## Path summary
 
 ### Driver-related paths

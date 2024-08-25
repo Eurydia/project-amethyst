@@ -1,7 +1,3 @@
-import {
-	DriverModel,
-	DriverReportFormData,
-} from "$types/models";
 import { SaveRounded } from "@mui/icons-material";
 import {
 	Stack,
@@ -16,6 +12,8 @@ import dayjs, { Dayjs } from "dayjs";
 import { FC, useState } from "react";
 import { DriverSelect } from "./DriverSelect";
 import { MultiSelectAutocomplete } from "./MultiSelectAutocomplete";
+import { DriverReportFormData } from "$types/form-data";
+import { DriverModel } from "$types/models";
 
 type DriverReportFormProps = {
 	selectedDriver: DriverModel | null;

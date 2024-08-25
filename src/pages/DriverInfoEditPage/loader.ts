@@ -1,20 +1,11 @@
-import {
-	getDriverWithId,
-	getVehicleAll,
-	getVehicleWithId,
-} from "$backend/database/get";
-import {
-	DriverFormData,
-	VehicleModel,
-} from "$types/models";
+import { getDriverWithId } from "$backend/database/get";
+import { DriverFormData } from "$types/form";
 import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
 
 export type DriverInfoEditPageLoaderData = {
-	vehicles: VehicleModel[];
-	initVehicle: VehicleModel | null;
 	initFormData: DriverFormData;
 };
 export const driverInfoEditPageLoader: LoaderFunction =
@@ -38,18 +29,10 @@ export const driverInfoEditPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-		const vehicles = await getVehicleAll();
-		const initVehicle = await getVehicleWithId(
-			driverData.current_vehicle_id,
-		);
-		const initFormData: DriverFormData =
-			driverData;
 
 		const loaderData: DriverInfoEditPageLoaderData =
 			{
-				vehicles,
-				initVehicle,
-				initFormData,
+				initFormData: driverData,
 			};
 		return loaderData;
 	};

@@ -1,7 +1,3 @@
-import {
-	DriverFormData,
-	VehicleModel,
-} from "$types/models";
 import { AddRounded } from "@mui/icons-material";
 import {
 	Button,
@@ -10,25 +6,18 @@ import {
 } from "@mui/material";
 import { ChangeEvent, FC, useState } from "react";
 import { DriverLicenseSelect } from "./DriverLicenseSelect";
-import { VehicleSelect } from "./VehicleSelect";
+import { DriverFormData } from "$types/form-data";
 
-type DriverRegisterFormProps = {
-	vehicles: VehicleModel[];
-	initVehicle: VehicleModel | null;
+type DriverFormProps = {
 	initFormData: DriverFormData;
 	onSubmit: (formData: DriverFormData) => void;
 	onCancel: () => void;
 };
-export const DriverRegisterForm: FC<
-	DriverRegisterFormProps
-> = (props) => {
-	const {
-		initFormData,
-		initVehicle,
-		vehicles,
-		onCancel,
-		onSubmit,
-	} = props;
+export const DriverForm: FC<DriverFormProps> = (
+	props,
+) => {
+	const { initFormData, onCancel, onSubmit } =
+		props;
 
 	const [fieldName, setFieldName] = useState(
 		initFormData.name,
@@ -42,18 +31,13 @@ export const DriverRegisterForm: FC<
 		useState<string | null>(
 			initFormData.license_type,
 		);
-	const [fieldVehicle, setFieldVehicle] =
-		useState<VehicleModel | null>(initVehicle);
 
 	const handleFieldContactChange = (
 		e: ChangeEvent<
 			HTMLInputElement | HTMLTextAreaElement
 		>,
 	) => {
-		// Remove all non-digit characters
-		setFieldContact(
-			e.target.value.replace(/[^\d+-\s]/g, ""),
-		);
+		setFieldContact(e.target.value);
 	};
 
 	const handleSubmit = () => {
@@ -65,10 +49,6 @@ export const DriverRegisterForm: FC<
 			surname: fieldSurname.trim().normalize(),
 			contact: fieldContact.trim().normalize(),
 			license_type: fieldLicenseType || "",
-			current_vehicle_id:
-				fieldVehicle !== null
-					? fieldVehicle.id
-					: "",
 		};
 		onSubmit(formData);
 	};
@@ -117,11 +97,6 @@ export const DriverRegisterForm: FC<
 				placeholder="เบอร์ติดต่อ"
 				value={fieldContact}
 				onChange={handleFieldContactChange}
-			/>
-			<VehicleSelect
-				options={vehicles}
-				value={fieldVehicle}
-				onChange={setFieldVehicle}
 			/>
 			<DriverLicenseSelect
 				value={fieldLicenseType}

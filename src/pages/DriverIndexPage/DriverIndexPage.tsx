@@ -1,27 +1,27 @@
 import { SortableTable } from "$components/SortableTable";
+import { StyledTextWavy } from "$components/StyledTextWavy";
 import { TableHeaderDefinition } from "$types/generics";
 import {
 	AddRounded,
-	ContentCopyRounded,
-	CopyAllRounded,
 	EditRounded,
 	FlagRounded,
 	SearchRounded,
 } from "@mui/icons-material";
 import {
+	Alert,
+	AlertTitle,
 	Button,
-	IconButton,
+	Collapse,
 	InputAdornment,
 	Stack,
 	TableContainer,
 	TextField,
 	Toolbar,
-	Tooltip,
 	Typography,
 } from "@mui/material";
+import { filterItems } from "core/filter";
 import {
 	FC,
-	Fragment,
 	SyntheticEvent,
 	useState,
 } from "react";
@@ -35,16 +35,13 @@ import {
 	DriverIndexPageLoaderData,
 	PreparedDriverData,
 } from "./loader";
-import { filterItems } from "core/filter";
-import { StyledTextLink } from "$components/StyledTextLink";
-import { StyledTextWavy } from "$components/StyledTextWavy";
 
 const HEADER_DEFINITION: TableHeaderDefinition<PreparedDriverData>[] =
 	[
 		{
 			key: "license_plate",
 			label: "ทะเบียนรถ",
-			compare: (_) => 0,
+			compare: null,
 			render: (item) => (
 				<Typography>
 					{item.license_plate === "" ? (
@@ -82,28 +79,18 @@ const HEADER_DEFINITION: TableHeaderDefinition<PreparedDriverData>[] =
 		{
 			key: "contact",
 			label: "เบอร์ติดต่อ",
-			compare: (_) => 0,
+			compare: null,
 			render: (item) => (
-				<Tooltip
-					arrow
-					placement="top"
-					title={
-						<Typography>
-							คัดลอกเบอร์ติดต่อ
-						</Typography>
-					}
+				<StyledTextWavy
+					onClick={() => {
+						navigator.clipboard.writeText(
+							item.contact,
+						);
+						toast.info("คัดลอกเบอร์ติดต่อแล้ว");
+					}}
 				>
-					<StyledTextWavy
-						onClick={() => {
-							navigator.clipboard.writeText(
-								item.contact,
-							);
-							toast.info("คัดลอกเบอร์ติดต่อแล้ว");
-						}}
-					>
-						{item.contact}
-					</StyledTextWavy>
-				</Tooltip>
+					{item.contact}
+				</StyledTextWavy>
 			),
 		},
 	];
@@ -193,7 +180,7 @@ const TableToolbar: FC<TableToolbarProps> = (
 			</Stack>
 			<TextField
 				fullWidth
-				placeholder="ค้นหา"
+				placeholder="ค้นหาคนขับรถ"
 				InputProps={{
 					startAdornment: (
 						<InputAdornment position="start">

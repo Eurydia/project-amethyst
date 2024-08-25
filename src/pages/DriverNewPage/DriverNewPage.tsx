@@ -1,6 +1,5 @@
 import { postDriver } from "$backend/database/put";
-import { DriverRegisterForm } from "$components/DriverRegisterForm";
-import { DriverFormData } from "$types/models";
+import { DriverForm } from "$components/DriverRegisterForm";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -9,14 +8,15 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverNewPageLoaderData } from "./loader";
+import { DriverRegisterFormData } from "$types/FormData";
 
 export const DriverNewPage: FC = () => {
-	const { initFormData, vehicles } =
+	const { initFormData } =
 		useLoaderData() as DriverNewPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = async (
-		formData: DriverFormData,
+		formData: DriverRegisterFormData,
 	) => {
 		postDriver(formData)
 			.then(() => {
@@ -39,9 +39,7 @@ export const DriverNewPage: FC = () => {
 					ลงทะเบียนคนขับรถ
 				</Typography>
 			</Stack>
-			<DriverRegisterForm
-				vehicles={vehicles}
-				initVehicle={null}
+			<DriverForm
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={handleCancel}

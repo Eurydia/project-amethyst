@@ -179,7 +179,7 @@ export const DriverInfoPage: FC = () => {
 				</Stack>
 			</Stack>
 			<Typography variant="h2">
-				ประวัติผลการตรวจสารเสพติด
+				ประวัติการตรวจสารเสพติด
 			</Typography>
 			<DriverReportModelTable
 				slotToolbar={

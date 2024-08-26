@@ -3,6 +3,7 @@ import {
 	SearchRounded,
 } from "@mui/icons-material";
 import {
+	Alert,
 	Box,
 	Checkbox,
 	IconButton,
@@ -196,48 +197,55 @@ export const TopicMultiSelect: FC<
 	}, [search, options, value]);
 
 	return (
-		<Box>
-			<Stack spacing={1}>
-				<CustomToolbar
-					search={search}
-					onSearchChange={setSearch}
-				/>
-				<Stack
-					useFlexGap
-					spacing={1}
-					direction="row"
-					flexWrap="wrap"
-					alignItems="center"
+		<Stack spacing={1}>
+			<CustomToolbar
+				search={search}
+				onSearchChange={setSearch}
+			/>
+			<Alert
+				severity="info"
+				icon={false}
+			>
+				<Typography>
+					Search for topics below, if the desired
+					topic does not exist, it will create one
+				</Typography>
+			</Alert>
+			<Typography
+				sx={{
+					display: "flex",
+					flexDirection: "row",
+					flexWrap: "wrap",
+					alignItems: "center",
+					gap: 1,
+				}}
+			>
+				เลือกแล้ว {value.length} หัวข้อ
+				<Tooltip
+					arrow
+					title={
+						<Typography>
+							ยกเลิกหัวข้อทั้งหมด
+						</Typography>
+					}
 				>
-					<Typography>
-						เลือกแล้ว {value.length} หัวข้อ
-					</Typography>
-					<Tooltip
-						arrow
-						title={
-							<Typography>
-								ยกเลิกหัวข้อทั้งหมด
-							</Typography>
-						}
-					>
-						<span>
-							<IconButton
-								size="small"
-								disabled={value.length === 0}
-								onClick={() => onChange([])}
-							>
-								<CloseRounded />
-							</IconButton>
-						</span>
-					</Tooltip>
-				</Stack>
-				<CustomList
-					options={filteredOptions}
-					selectedOptions={value}
-					registeredOptions={options}
-					toggleHandler={toggleHandler}
-				/>
-			</Stack>
-		</Box>
+					<span>
+						<IconButton
+							size="small"
+							disabled={value.length === 0}
+							onClick={() => onChange([])}
+						>
+							<CloseRounded />
+						</IconButton>
+					</span>
+				</Tooltip>
+			</Typography>
+			<CustomList
+				options={filteredOptions}
+				selectedOptions={value}
+				registeredOptions={options}
+				toggleHandler={toggleHandler}
+			/>
+		</Stack>
 	);
 };

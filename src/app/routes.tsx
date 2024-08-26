@@ -23,6 +23,8 @@ import {
 	DriverNewPage,
 	driverNewPageLoader,
 } from "$pages/DriverNewPage";
+import { DriverReportGeneralIndexPage } from "$pages/DriverReportGeneralIndexPage";
+import { driverReportGeneralIndexPageLoader } from "$pages/DriverReportGeneralIndexPage/loader";
 import {
 	DriverReportGeneralNewPage,
 	driverReportGeneralNewPageLoader,
@@ -204,7 +206,11 @@ export const routes = createBrowserRouter([
 								children: [
 									{
 										index: true, // List all general report
-										element: null,
+										element: (
+											<DriverReportGeneralIndexPage />
+										),
+										loader:
+											driverReportGeneralIndexPageLoader,
 									},
 									{
 										path: "new", // Create new general report

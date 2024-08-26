@@ -1,4 +1,3 @@
-import { DriverReportModel } from "$types/models";
 import {
 	InputAdornment,
 	TableContainer,
@@ -7,38 +6,34 @@ import {
 } from "@mui/material";
 import {
 	ChangeEvent,
-	FC,
-	ReactNode,
 	useMemo,
 	useState,
 } from "react";
 import { SortableTable } from "./SortableTable";
 import { TableHeaderDefinition } from "$types/generics";
 import { SearchRounded } from "@mui/icons-material";
+import { filterItems } from "$core/filter";
 
-type DriverReportModelTableProps = {
-	label: string;
-	slotToolbar?: ReactNode;
-	rows: DriverReportModel[];
-	headers: TableHeaderDefinition<DriverReportModel>[];
-	defaultSortBy: keyof DriverReportModel;
+type DriverReportTableProps<T extends Object> = {
+	searchPlaceholder?: string;
+	searchKeys: (keyof T)[];
+	headers: TableHeaderDefinition<T>[];
+	rows: T[];
+	defaultSortBy: keyof T;
 	defaultSortOrder: "asc" | "desc";
-	filterFn: (
-		search: string,
-		rows: DriverReportModel[],
-	) => DriverReportModel[];
 };
-export const DriverReportModelTable: FC<
-	DriverReportModelTableProps
-> = (props) => {
+export const DriverReportTable = <
+	T extends Object,
+>(
+	props: DriverReportTableProps<T>,
+) => {
 	const {
 		rows,
-		headers,
+		searchKeys,
 		defaultSortBy,
 		defaultSortOrder,
-		filterFn,
-		slotToolbar,
-		label,
+		headers,
+		searchPlaceholder,
 	} = props;
 	const [search, setSearch] = useState("");
 
@@ -50,8 +45,17 @@ export const DriverReportModelTable: FC<
 		setSearch(e.target.value);
 	};
 	const filteredRows = useMemo(() => {
-		return filterFn(search, rows);
-	}, [search, rows]);
+		const tokens = search
+			.split(" ")
+			.map((token) => token.trim())
+			.filter((token) => token !== "");
+
+		return filterItems(
+			rows,
+			tokens,
+			searchKeys.map((key) => key.toString()),
+		);
+	}, [search, rows, searchKeys]);
 
 	return (
 		<TableContainer>
@@ -65,7 +69,6 @@ export const DriverReportModelTable: FC<
 					alignItems: "flex-start",
 				}}
 			>
-				{slotToolbar}
 				<TextField
 					fullWidth
 					InputProps={{
@@ -75,7 +78,7 @@ export const DriverReportModelTable: FC<
 							</InputAdornment>
 						),
 					}}
-					placeholder={"ค้นหา" + label}
+					placeholder={searchPlaceholder}
 					value={search}
 					onChange={handleSearchChange}
 				/>

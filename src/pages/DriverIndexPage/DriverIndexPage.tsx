@@ -1,17 +1,14 @@
+import { DriverReportGeneralButton } from "$components/DriverReportGeneralButton";
+import { DriverReportMedicalButton } from "$components/DriverReportMedicalButton";
 import { SortableTable } from "$components/SortableTable";
 import { StyledTextWavy } from "$components/StyledTextWavy";
 import { TableHeaderDefinition } from "$types/generics";
 import {
 	AddRounded,
-	EditRounded,
-	FlagRounded,
 	SearchRounded,
 } from "@mui/icons-material";
 import {
-	Alert,
-	AlertTitle,
 	Button,
-	Collapse,
 	InputAdornment,
 	Stack,
 	TableContainer,
@@ -144,39 +141,14 @@ const TableToolbar: FC<TableToolbarProps> = (
 				>
 					ลงทะเบียนคนขับรถ
 				</Button>
-				<Button
-					startIcon={<EditRounded />}
-					disableElevation
-					disableRipple
+				<DriverReportMedicalButton
 					variant="outlined"
-					onClick={() =>
-						submit(
-							{},
-							{
-								action:
-									"/drivers/report/medical/new",
-							},
-						)
-					}
-				>
-					บันทึกผลการตรวจสารเสพติด
-				</Button>
-				<Button
-					disableElevation
+					path="/drivers/report/medical/new"
+				/>
+				<DriverReportGeneralButton
 					variant="outlined"
-					startIcon={<FlagRounded />}
-					onClick={() =>
-						submit(
-							{},
-							{
-								action:
-									"/drivers/report/general/new",
-							},
-						)
-					}
-				>
-					รายงานปัญหาคนขับรถ
-				</Button>
+					path="/drivers/report/general/new"
+				/>
 			</Stack>
 			<TextField
 				fullWidth

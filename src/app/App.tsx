@@ -8,6 +8,7 @@ import "dayjs/locale/th";
 import { RouterProvider } from "react-router-dom";
 import { routes } from "./routes";
 import { theme } from "./theme";
+import { ToastContainer } from "react-toastify";
 
 export const App = () => {
 	return (
@@ -15,6 +16,7 @@ export const App = () => {
 			dateAdapter={AdapterDayjs}
 			adapterLocale="th"
 		>
+			<ToastContainer />
 			<ThemeProvider theme={theme}>
 				<CssBaseline enableColorScheme />
 				<RouterProvider router={routes} />

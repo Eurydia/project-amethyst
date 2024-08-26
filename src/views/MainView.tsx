@@ -3,13 +3,6 @@ import {
 	Box,
 	Container,
 	Divider,
-	Drawer,
-	List,
-	ListItem,
-	ListItemButton,
-	ListItemIcon,
-	ListItemText,
-	Paper,
 	Stack,
 	Toolbar,
 	Typography,
@@ -19,10 +12,10 @@ import {
 	FC,
 	Fragment,
 	useEffect,
+	useRef,
 	useState,
 } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 
 const CLOCK_FORMAT =
 	"HH:mm น., วันddddที่ D MMMM YYYY ";
@@ -42,10 +35,11 @@ const PRIMARY_ROUTES = [
 		label: "รายชื่อคนขับรถ",
 	},
 ];
+
 const SECONDARY_ROUTES = [
 	{
 		path: "/drivers/report/general",
-		label: "สมุดบันทึกประวัติการรายงานคนขับรถ",
+		label: "ประวัติการร้องเรียนคนขับรถ",
 	},
 	{
 		path: "/drivers/report/medical",
@@ -54,9 +48,27 @@ const SECONDARY_ROUTES = [
 ];
 
 export const MainView: FC = () => {
+	const appBarRef = useRef<HTMLElement | null>(
+		null,
+	);
+	const [appBarHeight, setAppBarHeight] =
+		useState("0px");
+
 	const [clock, setClock] = useState(
 		dayjs().locale("th").format(CLOCK_FORMAT),
 	);
+
+	useEffect(() => {
+		if (appBarRef.current === null) {
+			return;
+		}
+		const height =
+			appBarRef.current.getBoundingClientRect()
+				.height;
+		const roundedHeight = Math.ceil(height);
+		const heightInPx = `${roundedHeight}px`;
+		setAppBarHeight(heightInPx);
+	}, [appBarRef]);
 
 	useEffect(() => {
 		const id = setInterval(() => {
@@ -68,63 +80,71 @@ export const MainView: FC = () => {
 	}, []);
 
 	return (
-		<Box>
-			<ToastContainer />
+		<Fragment>
 			<AppBar
-				enableColorOnDark
-				color="default"
+				ref={appBarRef}
 				elevation={0}
-				sx={{
-					zIndex: (theme) =>
-						theme.zIndex.drawer + 1,
-				}}
+				variant="outlined"
+				color="default"
 			>
 				<Toolbar
 					variant="dense"
 					sx={{
-						display: "flex",
+						flexWrap: "wrap",
+						flexDirection: "row",
 						justifyContent: "space-between",
 					}}
 				>
 					<Stack
-						direction="row"
-						spacing={1}
 						useFlexGap
+						spacing={2}
+						flexDirection="row"
 						flexWrap="wrap"
-						divider={
-							<Divider
-								flexItem
-								orientation="vertical"
-							/>
-						}
 					>
-						{PRIMARY_ROUTES.map((route) => (
-							<Link
-								to={route.path}
-								key={"prim-route" + route.path}
-							>
-								<Typography>
+						{PRIMARY_ROUTES.map(
+							(route, index) => (
+								<Typography
+									key={"route" + index}
+									component={Link}
+									to={route.path}
+								>
 									{route.label}
 								</Typography>
-							</Link>
-						))}
+							),
+						)}
 					</Stack>
 					<Typography>{clock}</Typography>
 				</Toolbar>
 				<Divider flexItem />
+				<Toolbar
+					variant="dense"
+					sx={{
+						flexWrap: "wrap",
+						flexDirection: "row",
+						gap: 2,
+					}}
+				>
+					{SECONDARY_ROUTES.map(
+						(route, index) => (
+							<Typography
+								key={"route" + index}
+								component={Link}
+								to={route.path}
+							>
+								{route.label}
+							</Typography>
+						),
+					)}
+				</Toolbar>
 			</AppBar>
 			<Container maxWidth="md">
-				<Box marginTop={8}>
-					<Paper
-						elevation={0}
-						sx={{
-							padding: 4,
-						}}
-					>
-						<Outlet />
-					</Paper>
+				<Box
+					marginTop={appBarHeight}
+					paddingY={2}
+				>
+					<Outlet />
 				</Box>
 			</Container>
-		</Box>
+		</Fragment>
 	);
 };

@@ -1,23 +1,17 @@
 import { CopiableText } from "$components/CopiableText";
-import { DriverReportModelTable } from "$components/DriverReportModelTable";
 import { TableHeaderDefinition } from "$types/generics";
 import { DriverReportModel } from "$types/models";
 import {
-	AddRounded,
 	EditRounded,
-	FlagRounded,
 	FolderRounded,
 } from "@mui/icons-material";
 import {
 	Alert,
-	Box,
 	Button,
-	Divider,
 	Stack,
 	Toolbar,
 	Typography,
 } from "@mui/material";
-import { filterItems } from "core/filter";
 import dayjs from "dayjs";
 import { FC } from "react";
 import {
@@ -25,49 +19,43 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { DriverInfoPageLoaderData } from "./loader";
+import { DriverReportTable } from "$components/DriverReportTable";
+import { DriverReportGeneralButton } from "$components/DriverReportGeneralButton";
+import { DriverReportMedicalButton } from "$components/DriverReportMedicalButton";
 
 const TABLE_HEADERS: TableHeaderDefinition<DriverReportModel>[] =
 	[
 		{
 			key: "datetime_iso",
-			label: "เวลาและวันที่",
+			label: "วัน-เวลา",
 			compare: (a, b) =>
 				dayjs(a.datetime_iso).unix() -
 				dayjs(b.datetime_iso).unix(),
-			render: (item) =>
-				dayjs(item.datetime_iso).format(
-					"dd/MMM/YYYY HH:mm น.",
-				),
+			render: (item) => (
+				<Typography>
+					{dayjs(item.datetime_iso).format(
+						"HH:mm น. DD/MM/YYYY ",
+					)}
+				</Typography>
+			),
 		},
 		{
 			key: "title",
 			label: "เรื่อง",
 			compare: null,
-			render: (item) => item.title,
+			render: (item) => (
+				<Typography>{item.title}</Typography>
+			),
 		},
 		{
 			key: "topics",
 			label: "หัวข้อที่เกี่ยวข้อง",
 			compare: null,
-			render: (item) => item.topics,
+			render: (item) => (
+				<Typography>{item.topics}</Typography>
+			),
 		},
 	];
-
-const filterDriverReportModel = (
-	search: string,
-	rows: DriverReportModel[],
-) => {
-	const searchTokens = search
-		.normalize()
-		.split(" ")
-		.map((term) => term.trim())
-		.filter((term) => term.length > 0);
-
-	return filterItems(rows, searchTokens, [
-		"title",
-		"topics",
-	]);
-};
 
 const IMAGES = [
 	"https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&q=20",
@@ -198,56 +186,34 @@ export const DriverInfoPage: FC = () => {
 				<Typography variant="h2">
 					ประวัติการตรวจสารเสพติด
 				</Typography>
-				<DriverReportModelTable
-					slotToolbar={
-						<Button
-							startIcon={<AddRounded />}
-							disableElevation
-							variant="contained"
-							onClick={() =>
-								submit(
-									{},
-									{ action: "./report/medical" },
-								)
-							}
-						>
-							บันทึกผลการตรวจสารเสพติด
-						</Button>
-					}
+				<DriverReportMedicalButton
+					path="./report/medical"
+					variant="contained"
+				/>
+				<DriverReportTable
 					rows={driverMedicalReportEntries}
-					label="ประวัติการตรวจสารเสพติด"
+					searchKeys={["title", "topics"]}
+					searchPlaceholder="ค้นหาประวัติการตรวจสารเสพติด"
 					headers={TABLE_HEADERS}
 					defaultSortOrder="asc"
 					defaultSortBy="datetime_iso"
-					filterFn={filterDriverReportModel}
 				/>
 			</Stack>
 			<Stack spacing={1}>
 				<Typography variant="h2">
 					ประวัติการร้องเรียน
 				</Typography>
-				<DriverReportModelTable
-					slotToolbar={
-						<Button
-							startIcon={<FlagRounded />}
-							disableElevation
-							variant="contained"
-							onClick={() =>
-								submit(
-									{},
-									{ action: "./report/general" },
-								)
-							}
-						>
-							รายงานปัญหาคนขับรถ
-						</Button>
-					}
+				<DriverReportGeneralButton
+					path="./report/general"
+					variant="contained"
+				/>
+				<DriverReportTable
 					rows={driverGeneralReportEntries}
-					label="ประวัติการร้องเรียน"
+					searchPlaceholder="ค้นหาประวัติการร้องเรียน"
 					headers={TABLE_HEADERS}
 					defaultSortOrder="asc"
 					defaultSortBy="datetime_iso"
-					filterFn={filterDriverReportModel}
+					searchKeys={["title", "topics"]}
 				/>
 			</Stack>
 		</Stack>

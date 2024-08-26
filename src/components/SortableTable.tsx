@@ -10,10 +10,6 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { TableHeaderDefinition } from "../types/generics";
-import {
-	ArrowDownward,
-	ArrowUpwardRounded,
-} from "@mui/icons-material";
 
 type EnhancedTableHeaderProps<T extends Object> =
 	{
@@ -155,7 +151,9 @@ export const SortableTable = <T extends Object>(
 				{sortedItems.length === 0 ? (
 					<TableRow hover>
 						<TableCell colSpan={headers.length}>
-							ไม่มีรายการให้แเสดง
+							<Typography>
+								ไม่มีรายการให้แเสดง
+							</Typography>
 						</TableCell>
 					</TableRow>
 				) : (

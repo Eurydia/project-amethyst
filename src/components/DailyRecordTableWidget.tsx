@@ -22,7 +22,6 @@ import {
 } from "react-router-dom";
 import { filterItems } from "../core/filter";
 import { TableHeaderDefinition } from "../types/generics";
-import { RecordModel } from "../types/models";
 import { SortableTable } from "./SortableTable";
 
 const HEADER_DEFINITION: TableHeaderDefinition<RecordModel>[] =
@@ -83,9 +82,6 @@ const TableToolbar: FC<TableToolbarProps> = (
 				alignItems: "flex-start",
 			}}
 		>
-			<Typography fontWeight="bold">
-				บันทึกประจำวัน
-			</Typography>
 			<Stack
 				useFlexGap
 				flexWrap="wrap"

@@ -4,10 +4,8 @@ import {
 	PickupRouteModel,
 	VehicleModel,
 } from "$types/models";
-import {
-	fakerTH,
-	fakerTR,
-} from "@faker-js/faker";
+import { fakerTH } from "@faker-js/faker";
+import dayjs from "dayjs";
 
 let driverId = 0;
 const drivers: DriverModel[] =
@@ -101,9 +99,40 @@ export const getTopicAll = async (): Promise<
 	return [...new Set(topics.split(" "))];
 };
 
+let driverGeneralReportId = 0;
+const driverGeneralReports: DriverReportModel[] =
+	fakerTH.helpers
+		.multiple(
+			() => {
+				const id =
+					driverGeneralReportId.toString();
+				driverGeneralReportId++;
+				return fakerTH.helpers.multiple(
+					() => ({
+						datetime_iso: dayjs(
+							fakerTH.date.past(),
+						).format(),
+						title: fakerTH.lorem.sentence(),
+						content: fakerTH.lorem.paragraph(),
+						topics: fakerTH.helpers
+							.arrayElements(topics.split(" "), 3)
+							.join(","),
+						driver_id:
+							driverGeneralReportId.toString(),
+						id,
+					}),
+					{ count: 3 },
+				);
+			},
+			{
+				count: 10,
+			},
+		)
+		.flat();
+
 export const getDriverGeneralReportAll =
 	async (): Promise<DriverReportModel[]> => {
-		return [];
+		return driverGeneralReports;
 	};
 
 export const getDriverGeneralReportAllWithDriverId =
@@ -111,9 +140,35 @@ export const getDriverGeneralReportAllWithDriverId =
 		return [];
 	};
 
+let driverMedicalReportId = 0;
+const driverMedicalReports: DriverReportModel[] =
+	fakerTH.helpers.multiple(
+		() => {
+			const id = driverMedicalReportId.toString();
+			driverMedicalReportId++;
+			return {
+				datetime_iso: dayjs(
+					fakerTH.date.past(),
+				).format(),
+				title: fakerTH.lorem.sentence(),
+				content: fakerTH.lorem.paragraph(),
+				topics: fakerTH.helpers
+					.arrayElements(topics.split(" "), 3)
+					.join(","),
+				driver_id: (
+					driverMedicalReportId % 10
+				).toString(),
+				id,
+			};
+		},
+		{
+			count: 10,
+		},
+	);
+
 export const getDriverMedicalReportAll =
 	async (): Promise<DriverReportModel[]> => {
-		return [];
+		return driverMedicalReports;
 	};
 
 export const getDriverMedicalReportAllWithDriverId =

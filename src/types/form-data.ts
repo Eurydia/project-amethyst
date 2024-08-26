@@ -1,14 +1,14 @@
-import {
-	DriverModel,
-	DriverReportModel,
-} from "./models";
+import { DriverModel } from "./models";
 
 export type DriverFormData = Omit<
 	DriverModel,
 	"id" | "images"
 >;
 
-export type DriverReportFormData = Omit<
-	DriverReportModel,
-	"id"
->;
+export type DriverReportFormData = {
+	datetime: string;
+	title: string;
+	content: string;
+	topics: string[];
+	driver: DriverModel | null;
+};

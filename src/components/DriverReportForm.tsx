@@ -11,14 +11,13 @@ import {
 import dayjs, { Dayjs } from "dayjs";
 import { FC, useState } from "react";
 import { DriverSelect } from "./DriverSelect";
-import { MultiSelectAutocomplete } from "./MultiSelectAutocomplete";
+import { TopicMultiSelect } from "./MultiSelectAutocomplete";
 import { DriverReportFormData } from "$types/form-data";
 import { DriverModel } from "$types/models";
 
 type DriverReportFormProps = {
-	selectedDriver: DriverModel | null;
-	drivers: DriverModel[];
-	topics: string[];
+	driverOptions: DriverModel[];
+	topicOptions: string[];
 	initFormData: DriverReportFormData;
 	onSubmit: (
 		formData: DriverReportFormData,
@@ -29,29 +28,30 @@ export const DriverReportForm: FC<
 	DriverReportFormProps
 > = (props) => {
 	const {
-		drivers,
-		selectedDriver,
-		topics,
+		driverOptions,
+		topicOptions,
 		initFormData,
 		onSubmit,
 		onCancel,
 	} = props;
 
 	const [fieldDate, setFieldDate] = useState(
-		dayjs(initFormData.datetime_iso).locale("th"),
+		dayjs(initFormData.datetime),
 	);
 	const [fieldTime, setFieldTime] = useState(
-		dayjs(initFormData.datetime_iso).locale("th"),
+		dayjs(initFormData.datetime),
 	);
 	const [fieldTitle, setFieldTitle] = useState(
 		initFormData.title,
 	);
 	const [fieldContent, setFieldContent] =
 		useState(initFormData.content);
-	const [fieldTopics, setFieldTopics] =
-		useState<string>(initFormData.topics);
-	const [fieldDriver, setFieldDriver] =
-		useState<DriverModel | null>(selectedDriver);
+	const [fieldTopics, setFieldTopics] = useState(
+		initFormData.topics,
+	);
+	const [fieldDriver, setFieldDriver] = useState(
+		initFormData.driver,
+	);
 
 	const handleDateChange = (
 		value: Dayjs | null,
@@ -88,40 +88,41 @@ export const DriverReportForm: FC<
 	const handleFieldTopicsChange = (
 		values: string[],
 	) => {
-		setFieldTopics(values.join(","));
+		setFieldTopics(values);
 	};
 
 	const handleSubmit = async () => {
-		if (fieldDriver === null) {
-			return;
-		}
-		if (fieldTitle.trim() === "") {
+		if (isFormIncomplete) {
 			return;
 		}
 
-		const localeDateTime = fieldDate
+		const datetime = fieldDate
 			.set("hour", fieldTime.hour())
 			.set("minute", fieldTime.minute())
 			.set("second", fieldTime.second())
 			.set("millisecond", fieldTime.millisecond())
 			.format();
 
-		onSubmit({
+		const formData: DriverReportFormData = {
 			content: fieldContent,
-			datetime_iso: localeDateTime,
-			driver_id: fieldDriver.id,
+			datetime: datetime,
+			driver: fieldDriver,
 			title: fieldTitle,
 			topics: fieldTopics,
-			driver_name: fieldDriver.name,
-			driver_surname: fieldDriver.surname,
-		});
+		};
+
+		onSubmit(formData);
 	};
 
 	const handleCancel = () => onCancel();
 
-	const isFormComplete =
-		fieldDriver !== null &&
-		fieldTitle.trim() !== "";
+	const shouldLockDriver =
+		initFormData.driver !== null;
+	const isDriverEmpty = fieldDriver === null;
+	const isTitleEmpty = fieldTitle.trim() === "";
+
+	const isFormIncomplete =
+		isDriverEmpty || isTitleEmpty;
 
 	return (
 		<Stack spacing={2}>
@@ -145,9 +146,9 @@ export const DriverReportForm: FC<
 				/>
 			</Stack>
 			<DriverSelect
-				showError={fieldDriver === null}
-				disabled={selectedDriver !== null}
-				options={drivers}
+				showError={isDriverEmpty}
+				disabled={shouldLockDriver}
+				options={driverOptions}
 				value={fieldDriver}
 				onChange={setFieldDriver}
 			/>
@@ -155,7 +156,7 @@ export const DriverReportForm: FC<
 				autoFocus
 				required
 				fullWidth
-				error={fieldTitle.trim() === ""}
+				error={isTitleEmpty}
 				value={fieldTitle}
 				onChange={handleTitleChange}
 				placeholder="เรื่อง"
@@ -168,11 +169,9 @@ export const DriverReportForm: FC<
 				minRows={5}
 				placeholder="รายละเอียด"
 			/>
-			<MultiSelectAutocomplete
-				options={topics}
-				value={fieldTopics
-					.split(",")
-					.filter((t) => t.trim() !== "")}
+			<TopicMultiSelect
+				options={topicOptions}
+				value={fieldTopics}
 				onChange={handleFieldTopicsChange}
 			/>
 			<Stack
@@ -180,7 +179,7 @@ export const DriverReportForm: FC<
 				direction="row"
 			>
 				<Button
-					disabled={!isFormComplete}
+					disabled={isFormIncomplete}
 					disableElevation
 					startIcon={<SaveRounded />}
 					variant="contained"

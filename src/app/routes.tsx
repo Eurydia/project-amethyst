@@ -27,6 +27,8 @@ import {
 	DriverReportGeneralNewPage,
 	driverReportGeneralNewPageLoader,
 } from "$pages/DriverReportGeneralNewPage";
+import { DriverReportMedicalNewPage } from "$pages/DriverReportMedicalNewPage/DriverReportMedicalNewPage";
+import { driverReportMedicalNewPageLoader } from "$pages/DriverReportMedicalNewPage/loader";
 import { HomePage } from "$pages/HomePage/HomePage";
 import { homePageLoader } from "$pages/HomePage/loader";
 import { PickupRouteDraftPage } from "$pages/PickupRouteDraftPage";
@@ -231,7 +233,11 @@ export const routes = createBrowserRouter([
 									},
 									{
 										path: "new", // Create new medical report
-										element: null,
+										element: (
+											<DriverReportMedicalNewPage />
+										),
+										loader:
+											driverReportMedicalNewPageLoader,
 									},
 									{
 										path: "info/:reportId", // Show medical report

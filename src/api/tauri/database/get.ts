@@ -94,7 +94,7 @@ export const getVehicleWithId = async (
 	return vehicle;
 };
 
-const topics = fakerTH.word.words(100);
+const topics = fakerTH.word.words(10);
 export const getTopicAll = async (): Promise<
 	string[]
 > => {

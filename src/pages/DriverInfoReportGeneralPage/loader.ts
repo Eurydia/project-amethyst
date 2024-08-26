@@ -6,18 +6,15 @@ import {
 	getDriverWithId,
 	getTopicAll,
 } from "$backend/database/get";
-import {
-	DriverModel,
-	DriverReportFormData,
-} from "$types/models";
+import { DriverModel } from "$types/models";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
+import { DriverReportFormData } from "$types/form-data";
 
 export type DriverInfoReportGeneralPageLoaderData =
 	{
-		drivers: DriverModel[];
-		driver: DriverModel;
-		topics: string[];
+		driverOptions: DriverModel[];
+		topicOptions: string[];
 		initFormData: DriverReportFormData;
 	};
 export const driverInfoReportGeneralPageLoader: LoaderFunction =
@@ -39,27 +36,20 @@ export const driverInfoReportGeneralPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-		const topics = await getTopicAll();
-		const drivers: DriverModel[] = [driver];
+		const topicOptions = await getTopicAll();
+		const driverOptions: DriverModel[] = [driver];
 		const initFormData: DriverReportFormData = {
+			datetime: dayjs().format(),
+			driver,
 			content: "",
-			datetime_iso: dayjs().format(),
-			driver_id: driver.id,
-			driver_name: driver.name,
-			driver_surname: driver.surname,
 			title: "",
-			topics: "",
+			topics: [],
 		};
-		console.info(
-			"initFormData",
-			dayjs().locale("th").format(),
-		);
 		const loaderData: DriverInfoReportGeneralPageLoaderData =
 			{
-				drivers,
+				driverOptions,
 				initFormData,
-				topics,
-				driver,
+				topicOptions,
 			};
 
 		return loaderData;

@@ -1,19 +1,26 @@
 import { postDriverReport } from "$backend/database/put";
 import { DriverReportForm } from "$components/DriverReportForm";
-import { DriverReportFormData } from "$types/models";
-import { Stack, Typography } from "@mui/material";
-import dayjs from "dayjs";
-import { FC, useState } from "react";
+import {
+	Alert,
+	Stack,
+	Typography,
+} from "@mui/material";
+import { FC } from "react";
 import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverReportGeneralNewPageLoaderData } from "./loader";
+import { DriverReportFormData } from "$types/form-data";
 
 export const DriverReportGeneralNewPage: FC =
 	() => {
-		const { drivers, topics, initFormData } =
+		const {
+			driverOptions,
+			topicOptions,
+			initFormData,
+		} =
 			useLoaderData() as DriverReportGeneralNewPageLoaderData;
 
 		const submit = useSubmit();
@@ -40,11 +47,16 @@ export const DriverReportGeneralNewPage: FC =
 				<Typography variant="h1">
 					รายงานปัญหาคนขับรถ
 				</Typography>
+				<Alert
+					severity="info"
+					icon={false}
+				>
+					<Typography>TBA</Typography>
+				</Alert>
 				<DriverReportForm
-					drivers={drivers}
+					driverOptions={driverOptions}
 					initFormData={initFormData}
-					selectedDriver={null}
-					topics={topics}
+					topicOptions={topicOptions}
 					onSubmit={handleSubmit}
 					onCancel={handleCancel}
 				/>

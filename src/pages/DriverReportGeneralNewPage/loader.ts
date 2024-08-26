@@ -2,37 +2,35 @@ import {
 	getDriverAll,
 	getTopicAll,
 } from "$backend/database/get";
-import {
-	DriverModel,
-	DriverReportFormData,
-} from "$types/models";
+import { DriverReportFormData } from "$types/form-data";
+import { DriverModel } from "$types/models";
 import dayjs from "dayjs";
 import { LoaderFunction } from "react-router-dom";
 
 export type DriverReportGeneralNewPageLoaderData =
 	{
-		drivers: DriverModel[];
-		topics: string[];
+		driverOptions: DriverModel[];
+		topicOptions: string[];
 		initFormData: DriverReportFormData;
 	};
 export const driverReportGeneralNewPageLoader: LoaderFunction =
 	async () => {
-		const topics = await getTopicAll();
-		const drivers = await getDriverAll();
+		const topicOptions = await getTopicAll();
+		const driverOptions = await getDriverAll();
+
 		const initFormData: DriverReportFormData = {
-			datetime_iso: dayjs().locale("th").format(),
+			datetime: dayjs().format(),
 			content: "",
-			driver_id: "",
-			driver_name: "",
-			driver_surname: "",
-			topics: "",
 			title: "",
+			driver: null,
+			topics: [],
 		};
+
 		const loaderData: DriverReportGeneralNewPageLoaderData =
 			{
 				initFormData,
-				topics,
-				drivers,
+				topicOptions,
+				driverOptions,
 			};
 
 		return loaderData;

@@ -44,13 +44,13 @@ const TABLE_HEADERS: TableHeaderDefinition<DriverReportModel>[] =
 		{
 			key: "title",
 			label: "เรื่อง",
-			compare: () => 0,
+			compare: null,
 			render: (item) => item.title,
 		},
 		{
 			key: "topics",
 			label: "หัวข้อที่เกี่ยวข้อง",
-			compare: () => 0,
+			compare: null,
 			render: (item) => item.topics,
 		},
 	];
@@ -87,24 +87,6 @@ export const DriverInfoPage: FC = () => {
 			<Typography variant="h1">
 				ข้อมูลคนขับรถ
 			</Typography>
-			<Alert
-				icon={false}
-				severity="info"
-			>
-				<Typography>
-					พ่อสามารถกดที่ข้อความ{" "}
-					<StyledTextWavy
-						variant="body1"
-						variantMapping={{
-							body1: "span",
-						}}
-						display="inline"
-					>
-						แบบนี้
-					</StyledTextWavy>{" "}
-					เพื่อคัดลอกเนื้อหาของข้อความได้
-				</Typography>
-			</Alert>
 			<Box>
 				<Button
 					startIcon={<EditRounded />}
@@ -151,32 +133,6 @@ export const DriverInfoPage: FC = () => {
 					ประเภทใบขับขี่:{" "}
 					{driverData.license_type}
 				</Typography>
-				<Stack
-					spacing={1}
-					direction="row"
-					useFlexGap
-					flexWrap="wrap"
-					alignItems="baseline"
-				>
-					<Typography>รถที่มอบหมาย:</Typography>
-					{vehicleData === null ? (
-						"ไม่มีรถที่ได้รับมอบหมาย"
-					) : (
-						<Typography
-							to={
-								"/vehicles/id/" + vehicleData.id
-							}
-							component={Link}
-							display="flex"
-							flexDirection="row"
-							flexWrap="wrap"
-							alignItems="center"
-							justifyContent="flex-end"
-						>
-							{vehicleData.license_plate}
-						</Typography>
-					)}
-				</Stack>
 			</Stack>
 			<Typography variant="h2">
 				ประวัติการตรวจสารเสพติด

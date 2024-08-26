@@ -1,13 +1,11 @@
 import {
-	getDriverMedicalReportAllWithDriverId,
 	getDriverGeneralReportAllWithDriverId,
+	getDriverMedicalReportAllWithDriverId,
 	getDriverWithId,
-	getVehicleWithId,
 } from "$backend/database/get";
 import {
 	DriverModel,
 	DriverReportModel,
-	VehicleModel,
 } from "$types/models";
 import {
 	json,
@@ -16,7 +14,6 @@ import {
 
 export type DriverInfoPageLoaderData = {
 	driverData: DriverModel;
-	vehicleData: VehicleModel | null;
 	driverGeneralReportEntries: DriverReportModel[];
 	driverMedicalReportEntries: DriverReportModel[];
 };
@@ -42,9 +39,6 @@ export const driverInfoPageLoader: LoaderFunction =
 			);
 		}
 
-		const vehicleData = await getVehicleWithId(
-			driverData.current_vehicle_id,
-		);
 		const driverGeneralReportEntries =
 			await getDriverGeneralReportAllWithDriverId(
 				driverId,
@@ -56,7 +50,6 @@ export const driverInfoPageLoader: LoaderFunction =
 
 		const loaderData: DriverInfoPageLoaderData = {
 			driverData,
-			vehicleData,
 			driverGeneralReportEntries,
 			driverMedicalReportEntries,
 		};

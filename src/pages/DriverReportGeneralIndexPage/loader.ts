@@ -1,4 +1,5 @@
 import {
+	getDriverAll,
 	getDriverGeneralReportAll,
 	getDriverWithId,
 } from "$backend/database/get";
@@ -8,6 +9,7 @@ import { LoaderFunction } from "react-router-dom";
 export type DriverReportGeneralIndexPageLoaderData =
 	{
 		entries: DriverReport[];
+		drivers: string[];
 	};
 
 export const driverReportGeneralIndexPageLoader: LoaderFunction =
@@ -47,9 +49,16 @@ export const driverReportGeneralIndexPageLoader: LoaderFunction =
 			entries.push(entry);
 		}
 
+		const drivers = (await getDriverAll()).map(
+			(driver) => {
+				return `${driver.name} ${driver.surname}`.normalize();
+			},
+		);
+
 		const loaderData: DriverReportGeneralIndexPageLoaderData =
 			{
 				entries,
+				drivers,
 			};
 		return loaderData;
 	};

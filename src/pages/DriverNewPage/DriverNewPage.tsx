@@ -1,14 +1,21 @@
 import { postDriver } from "$backend/database/put";
 import { DriverForm } from "$components/DriverRegisterForm";
-import { Stack, Typography } from "@mui/material";
-import { FC } from "react";
+import {
+	Alert,
+	Box,
+	Container,
+	Paper,
+	Stack,
+	Typography,
+} from "@mui/material";
+import { FC, Fragment } from "react";
 import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverNewPageLoaderData } from "./loader";
-import { DriverRegisterFormData } from "$types/FormData";
+import { DriverFormData } from "$types/form-data";
 
 export const DriverNewPage: FC = () => {
 	const { initFormData } =
@@ -16,7 +23,7 @@ export const DriverNewPage: FC = () => {
 	const submit = useSubmit();
 
 	const handleSubmit = async (
-		formData: DriverRegisterFormData,
+		formData: DriverFormData,
 	) => {
 		postDriver(formData)
 			.then(() => {
@@ -29,21 +36,28 @@ export const DriverNewPage: FC = () => {
 			});
 	};
 
-	const handleCancel = () =>
+	const handleCancel = () => {
 		submit({}, { action: "/" });
+	};
 
 	return (
-		<Stack spacing={2}>
-			<Stack spacing={1}>
-				<Typography variant="h1">
-					ลงทะเบียนคนขับรถ
-				</Typography>
+		<Stack spacing={1}>
+			<Typography variant="h1">
+				ลงทะเบียนคนขับรถ
+			</Typography>
+			<Stack spacing={2}>
+				<Alert
+					severity="info"
+					icon={false}
+				>
+					TBA
+				</Alert>
+				<DriverForm
+					initFormData={initFormData}
+					onSubmit={handleSubmit}
+					onCancel={handleCancel}
+				/>
 			</Stack>
-			<DriverForm
-				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={handleCancel}
-			/>
 		</Stack>
 	);
 };

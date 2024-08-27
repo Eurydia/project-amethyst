@@ -3,8 +3,6 @@ import {
 	SearchRounded,
 } from "@mui/icons-material";
 import {
-	Alert,
-	Box,
 	Checkbox,
 	IconButton,
 	InputAdornment,
@@ -16,95 +14,12 @@ import {
 	Stack,
 	TextField,
 	Toolbar,
-	Tooltip,
 	Typography,
 } from "@mui/material";
 import { matchSorter } from "match-sorter";
 import { FC, useMemo, useState } from "react";
-
-type CustomToolbarProps = {
-	search: string;
-	onSearchChange: (value: string) => void;
-};
-const CustomToolbar: FC<CustomToolbarProps> = (
-	props,
-) => {
-	const { search, onSearchChange } = props;
-
-	const handleSearchChange = (
-		e: React.ChangeEvent<HTMLInputElement>,
-	) => {
-		onSearchChange(e.target.value);
-	};
-
-	return (
-		<Toolbar
-			disableGutters
-			variant="dense"
-			sx={{
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "flex-start",
-				gap: 1,
-			}}
-		>
-			<TextField
-				fullWidth
-				InputProps={{
-					startAdornment: (
-						<InputAdornment position="start">
-							<SearchRounded />
-						</InputAdornment>
-					),
-				}}
-				placeholder="ค้นหาหัวข้อ"
-				value={search}
-				onChange={handleSearchChange}
-			/>
-		</Toolbar>
-	);
-};
-
-type CustomListItemProps = {
-	isNew: boolean;
-	isChecked: boolean;
-	label: string;
-	onToggle: () => void;
-};
-const CustomListItem: FC<CustomListItemProps> = (
-	props,
-) => {
-	const { isNew, isChecked, label, onToggle } =
-		props;
-
-	return (
-		<ListItem
-			disableGutters
-			disablePadding
-			sx={{
-				display: "inline",
-				width: "auto",
-			}}
-		>
-			<ListItemButton
-				disableRipple
-				onClick={onToggle}
-			>
-				<ListItemIcon>
-					<Checkbox
-						disableRipple
-						checked={isChecked}
-					/>
-				</ListItemIcon>
-				<ListItemText>
-					<Typography>
-						{isNew ? `${label} (ใหม่)` : label}
-					</Typography>
-				</ListItemText>
-			</ListItemButton>
-		</ListItem>
-	);
-};
+import { TypographyAlert } from "./TypographyAlert";
+import { TypographyTooltip } from "./TypographyTooltip";
 
 type CustomListProps = {
 	options: string[];
@@ -123,19 +38,43 @@ const CustomList: FC<CustomListProps> = (
 	} = props;
 
 	const renderedOptions = options.map(
-		(option, index) => (
-			<CustomListItem
-				key={"option" + index}
-				isNew={
-					!registeredOptions.includes(option)
-				}
-				isChecked={selectedOptions.includes(
-					option,
-				)}
-				label={option}
-				onToggle={toggleHandler(option)}
-			/>
-		),
+		(option, index) => {
+			const isNew =
+				!registeredOptions.includes(option);
+			const onToggle = toggleHandler(option);
+			const isChecked =
+				selectedOptions.includes(option);
+			const label = isNew
+				? `${option} (ใหม่)`
+				: option;
+
+			return (
+				<ListItem
+					key={"option" + index}
+					disableGutters
+					disablePadding
+					sx={{
+						display: "inline",
+						width: "auto",
+					}}
+				>
+					<ListItemButton
+						disableRipple
+						onClick={onToggle}
+					>
+						<ListItemIcon>
+							<Checkbox
+								disableRipple
+								checked={isChecked}
+							/>
+						</ListItemIcon>
+						<ListItemText>
+							<Typography>{label}</Typography>
+						</ListItemText>
+					</ListItemButton>
+				</ListItem>
+			);
+		},
 	);
 
 	return (
@@ -198,48 +137,54 @@ export const TopicMultiSelect: FC<
 
 	return (
 		<Stack spacing={1}>
-			<CustomToolbar
-				search={search}
-				onSearchChange={setSearch}
-			/>
-			<Alert
-				severity="info"
-				icon={false}
-			>
-				<Typography>
-					Search for topics below, if the desired
-					topic does not exist, it will create one
-				</Typography>
-			</Alert>
-			<Typography
+			<Toolbar
+				disableGutters
+				variant="dense"
 				sx={{
 					display: "flex",
-					flexDirection: "row",
-					flexWrap: "wrap",
-					alignItems: "center",
+					flexDirection: "column",
+					alignItems: "flex-start",
 					gap: 1,
 				}}
 			>
-				เลือกแล้ว {value.length} หัวข้อ
-				<Tooltip
-					arrow
-					title={
-						<Typography>
-							ยกเลิกหัวข้อทั้งหมด
-						</Typography>
+				<TextField
+					fullWidth
+					InputProps={{
+						startAdornment: (
+							<InputAdornment position="start">
+								<SearchRounded />
+							</InputAdornment>
+						),
+					}}
+					placeholder="ค้นหาหัวข้อ"
+					value={search}
+					onChange={(e) =>
+						setSearch(e.target.value)
 					}
-				>
-					<span>
-						<IconButton
-							size="small"
-							disabled={value.length === 0}
-							onClick={() => onChange([])}
-						>
-							<CloseRounded />
-						</IconButton>
-					</span>
-				</Tooltip>
-			</Typography>
+				/>
+			</Toolbar>
+			<TypographyAlert severity="info">
+				Search for topics below, if the desired
+				topic does not exist, it will create one
+			</TypographyAlert>
+			<Stack
+				direction="row"
+				flexWrap="wrap"
+				alignItems="center"
+				spacing={1}
+			>
+				<Typography>
+					เลือกแล้ว {value.length} หัวข้อ
+				</Typography>
+				<TypographyTooltip title="ยกเลิกหัวข้อที่เลือกแล้ว">
+					<IconButton
+						size="small"
+						onClick={() => onChange([])}
+					>
+						<CloseRounded />
+					</IconButton>
+				</TypographyTooltip>
+			</Stack>
 			<CustomList
 				options={filteredOptions}
 				selectedOptions={value}

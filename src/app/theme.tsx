@@ -11,11 +11,23 @@ let theme = createTheme(
 		},
 		typography: {
 			fontSize: 18,
+			fontFamily: "'Sarabun',sans-serif",
 		},
 		components: {
+			MuiTypography: {
+				defaultProps: {
+					variantMapping: {
+						body1: "span",
+						body2: "span",
+					},
+				},
+			},
 			MuiCssBaseline: {
 				styleOverrides: (themeParam) => {
 					return {
+						body: {
+							scrollbarGutter: "stable",
+						},
 						a: {
 							color:
 								themeParam.palette.primary.main,

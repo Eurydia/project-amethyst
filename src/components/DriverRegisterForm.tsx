@@ -1,12 +1,12 @@
+import { DriverFormData } from "$types/form-data";
 import { AddRounded } from "@mui/icons-material";
 import {
-	Button,
-	Stack,
-	TextField,
+	Grid,
+	TextField
 } from "@mui/material";
 import { ChangeEvent, FC, useState } from "react";
 import { DriverLicenseSelect } from "./DriverLicenseSelect";
-import { DriverFormData } from "$types/form-data";
+import { TypographyButton } from "./TypographyButton";
 
 type DriverFormProps = {
 	initFormData: DriverFormData;
@@ -28,9 +28,7 @@ export const DriverForm: FC<DriverFormProps> = (
 	const [fieldContact, setFieldContact] =
 		useState(initFormData.contact);
 	const [fieldLicenseType, setFieldLicenseType] =
-		useState<string | null>(
-			initFormData.license_type,
-		);
+		useState(initFormData.license_type);
 
 	const handleFieldContactChange = (
 		e: ChangeEvent<
@@ -48,7 +46,7 @@ export const DriverForm: FC<DriverFormProps> = (
 			name: fieldName.trim().normalize(),
 			surname: fieldSurname.trim().normalize(),
 			contact: fieldContact.trim().normalize(),
-			license_type: fieldLicenseType || "",
+			license_type: fieldLicenseType,
 		};
 		onSubmit(formData);
 	};
@@ -64,11 +62,14 @@ export const DriverForm: FC<DriverFormProps> = (
 		missingFieldName || missingFieldLastName;
 
 	return (
-		<Stack spacing={2}>
-			<Stack
-				useFlexGap
-				spacing={1}
-				direction="row"
+		<Grid
+			container
+			spacing={1}
+		>
+			<Grid
+				item
+				xs={12}
+				md={6}
 			>
 				<TextField
 					required
@@ -81,6 +82,12 @@ export const DriverForm: FC<DriverFormProps> = (
 					}
 					placeholder="ชื่อ"
 				/>
+			</Grid>
+			<Grid
+				item
+				xs={12}
+				md={6}
+			>
 				<TextField
 					required
 					fullWidth
@@ -91,39 +98,50 @@ export const DriverForm: FC<DriverFormProps> = (
 					}
 					placeholder="นามสกุล"
 				/>
-			</Stack>
-			<TextField
-				fullWidth
-				placeholder="เบอร์ติดต่อ"
-				value={fieldContact}
-				onChange={handleFieldContactChange}
-			/>
-			<DriverLicenseSelect
-				value={fieldLicenseType}
-				onChange={setFieldLicenseType}
-			/>
-			<Stack
-				useFlexGap
-				spacing={2}
-				direction="row"
+			</Grid>
+			<Grid
+				item
+				xs={12}
 			>
-				<Button
+				<TextField
+					fullWidth
+					placeholder="เบอร์ติดต่อ"
+					value={fieldContact}
+					onChange={handleFieldContactChange}
+				/>
+			</Grid>
+			<Grid
+				item
+				xs={12}
+			>
+				<DriverLicenseSelect
+					value={fieldLicenseType}
+					onChange={setFieldLicenseType}
+				/>
+			</Grid>
+			<Grid
+				item
+				xs={12}
+				display="flex"
+				flexDirection="row"
+				flexWrap="wrap"
+				gap={1}
+			>
+				<TypographyButton
 					disabled={isFormIncomplete}
-					disableElevation
 					startIcon={<AddRounded />}
 					variant="contained"
 					onClick={handleSubmit}
 				>
 					ลงทะเบียน
-				</Button>
-				<Button
-					disableElevation
+				</TypographyButton>
+				<TypographyButton
 					variant="outlined"
 					onClick={handleCancel}
 				>
 					ยกเลิก
-				</Button>
-			</Stack>
-		</Stack>
+				</TypographyButton>
+			</Grid>
+		</Grid>
 	);
 };

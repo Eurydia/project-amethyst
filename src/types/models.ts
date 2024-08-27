@@ -32,6 +32,6 @@ export type DriverModel = {
 	name: string;
 	surname: string;
 	contact: string;
-	license_type: string;
+	license_type: "ท.1" | "ท.2";
 	images: string; // Commas separated image paths
 };

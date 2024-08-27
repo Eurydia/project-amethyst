@@ -1,4 +1,3 @@
-import { CopiableText } from "$components/CopiableText";
 import { TableHeaderDefinition } from "$types/generics";
 import { DriverReportModel } from "$types/models";
 import {
@@ -7,22 +6,27 @@ import {
 } from "@mui/icons-material";
 import {
 	Alert,
+	Box,
 	Button,
+	Container,
+	List,
+	ListItem,
+	ListItemText,
 	Stack,
+	styled,
 	Toolbar,
 	Typography,
+	TypographyProps,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import {
+	Link,
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
 import { DriverInfoPageLoaderData } from "./loader";
-import { DriverReportTable } from "$components/DriverReportTable";
-import { DriverReportGeneralButton } from "$components/DriverReportGeneralButton";
-import { DriverReportMedicalButton } from "$components/DriverReportMedicalButton";
-
+import { toast } from "react-toastify";
 const TABLE_HEADERS: TableHeaderDefinition<DriverReportModel>[] =
 	[
 		{
@@ -64,59 +68,67 @@ const IMAGES = [
 	"https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&q=20",
 ];
 
+type InfoItemProps = {
+	label: string;
+	value: ReactNode;
+};
+const InfoItem: FC<InfoItemProps> = (props) => {
+	const { label, value } = props;
+	return (
+		<Stack
+			spacing={1}
+			direction="row"
+			flexWrap="wrap"
+			useFlexGap
+		>
+			<Typography>{label}</Typography>
+			{value}
+		</Stack>
+	);
+};
+
+const StyledTypography = styled(Typography)({
+	textDecorationThickness: "from-font",
+	textDecorationLine: "underline",
+	textDecorationStyle: "wavy",
+	cursor: "pointer",
+});
+
 type GalleryProps = {
 	images: string[];
 };
 const Gallery: FC<GalleryProps> = (props) => {
 	const { images } = props;
 	return (
-		<Stack spacing={1}>
-			<Toolbar
-				disableGutters
-				variant="dense"
-			>
-				<Button
-					variant="contained"
-					disableElevation
-					startIcon={<FolderRounded />}
-				>
-					เปิดคลังภาพ
-				</Button>
-			</Toolbar>
-			<Stack
-				direction="row"
-				overflow="auto"
-				width="100%"
-				spacing={1}
-				useFlexGap
-				flexWrap="nowrap"
-			>
-				{images.map((image, index) => (
-					<img
-						key={"gallery" + index}
-						src={image}
-						width="33%"
-						style={{
-							objectPosition: "50% 50%",
-							aspectRatio: "1/1",
-							objectFit: "cover",
-						}}
-					/>
-				))}
-			</Stack>
+		<Stack
+			direction="row"
+			overflow="auto"
+			width="100%"
+			spacing={1}
+			useFlexGap
+			flexWrap="nowrap"
+		>
+			{images.map((image, index) => (
+				<img
+					key={"gallery" + index}
+					src={image}
+					width="33%"
+					style={{
+						maxWidth: "200px",
+						objectPosition: "50% 50%",
+						aspectRatio: "1/1",
+						objectFit: "cover",
+					}}
+				/>
+			))}
 		</Stack>
 	);
 };
 
 export const DriverInfoPage: FC = () => {
-	const {
-		driverData,
-		driverGeneralReportEntries,
-		driverMedicalReportEntries,
-	} = useLoaderData() as DriverInfoPageLoaderData;
+	const { driverData } =
+		useLoaderData() as DriverInfoPageLoaderData;
 	const submit = useSubmit();
-
-	const { name, surname } = driverData;
 
 	return (
 		<Stack spacing={2}>
@@ -129,93 +141,75 @@ export const DriverInfoPage: FC = () => {
 			>
 				<Typography>TBA</Typography>
 			</Alert>
-			<Stack spacing={1}>
-				<Toolbar
-					variant="dense"
-					disableGutters
+			<Toolbar
+				variant="dense"
+				disableGutters
+				sx={{
+					gap: 1,
+					flexWrap: "wrap",
+					flexDirection: "row",
+				}}
+			>
+				<Button
+					variant="outlined"
+					disableElevation
+					startIcon={<EditRounded />}
+					onClick={() =>
+						submit({}, { action: "./edit" })
+					}
 				>
-					<Button
-						startIcon={<EditRounded />}
-						disableRipple
-						disableElevation
-						variant="contained"
-						onClick={() =>
-							submit({}, { action: "./edit" })
-						}
-					>
-						แก้ไขข้อมูลคนขับรถ
-					</Button>
-				</Toolbar>
-				<Stack
-					useFlexGap
-					spacing={1}
-					flexWrap="wrap"
+					แก้ไขข้อมูล
+				</Button>
+				<Button
+					variant="outlined"
+					disableElevation
+					startIcon={<FolderRounded />}
 				>
-					<Stack
-						useFlexGap
-						spacing={1}
-						direction="row"
-						flexWrap="wrap"
-						alignItems="baseline"
-					>
-						<Typography>ชื่อ-นามสกุล:</Typography>
-						<CopiableText
-							children={`${name} ${surname}`}
-						/>
-					</Stack>
-					<Stack
-						useFlexGap
-						spacing={1}
-						direction="row"
-						flexWrap="wrap"
-						alignItems="baseline"
-					>
-						<Typography>เบอร์ติดต่อ:</Typography>
-						<CopiableText>
+					เปิดแฟ้มภาพ
+				</Button>
+			</Toolbar>
+			<Stack spacing={2}>
+				<InfoItem
+					label="ชื่อและนามสกุล:"
+					value={
+						<StyledTypography
+							onClick={() => {
+								window.navigator.clipboard.writeText(
+									`${driverData.name} ${driverData.surname}`,
+								);
+								toast.info(
+									"คัดลอกชื่อและนามสกุลแล้ว",
+								);
+							}}
+						>
+							{driverData.name}{" "}
+							{driverData.surname}
+						</StyledTypography>
+					}
+				/>
+				<InfoItem
+					label="เบอร์ติดต่อ:"
+					value={
+						<StyledTypography
+							onClick={() => {
+								window.navigator.clipboard.writeText(
+									`${driverData.name} ${driverData.surname}`,
+								);
+								toast.info(
+									"คัดลอกเบอร์ติดต่อแล้ว",
+								);
+							}}
+						>
 							{driverData.contact}
-						</CopiableText>
-					</Stack>
-					<Typography>
-						ประเภทใบขับขี่:{" "}
-						{driverData.license_type}
-					</Typography>
-				</Stack>
-				<Gallery images={IMAGES} />
-			</Stack>
-			<Stack spacing={1}>
-				<Typography variant="h2">
-					ประวัติการตรวจสารเสพติด
-				</Typography>
-				<DriverReportMedicalButton
-					path="./report/medical"
-					variant="contained"
+						</StyledTypography>
+					}
 				/>
-				<DriverReportTable
-					rows={driverMedicalReportEntries}
-					searchKeys={["title", "topics"]}
-					searchPlaceholder="ค้นหาประวัติการตรวจสารเสพติด"
-					headers={TABLE_HEADERS}
-					defaultSortOrder="asc"
-					defaultSortBy="datetime_iso"
+				<InfoItem
+					label="ประเภทของใบขับขี่:"
+					value={driverData.license_type}
 				/>
 			</Stack>
-			<Stack spacing={1}>
-				<Typography variant="h2">
-					ประวัติการร้องเรียน
-				</Typography>
-				<DriverReportGeneralButton
-					path="./report/general"
-					variant="contained"
-				/>
-				<DriverReportTable
-					rows={driverGeneralReportEntries}
-					searchPlaceholder="ค้นหาประวัติการร้องเรียน"
-					headers={TABLE_HEADERS}
-					defaultSortOrder="asc"
-					defaultSortBy="datetime_iso"
-					searchKeys={["title", "topics"]}
-				/>
-			</Stack>
+			<Gallery images={IMAGES} />
 		</Stack>
 	);
 };

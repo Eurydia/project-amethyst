@@ -1,30 +1,30 @@
 import { MedicalServicesRounded } from "@mui/icons-material";
-import { Box, Button } from "@mui/material";
+import { ButtonProps } from "@mui/material";
 import { FC } from "react";
 import { useSubmit } from "react-router-dom";
+import { TypographyButton } from "./TypographyButton";
 
-type DriverReportMedicalButtonProps = {
-	path: string;
-	variant: "contained" | "outlined";
-};
+type DriverReportMedicalButtonProps =
+	ButtonProps & {
+		path: string;
+	};
 export const DriverReportMedicalButton: FC<
 	DriverReportMedicalButtonProps
 > = (props) => {
-	const { path, variant } = props;
+	const { path, ...rest } = props;
 	const submit = useSubmit();
 	const handleClick = () => {
 		submit({}, { action: path });
 	};
 	return (
-		<Box>
-			<Button
-				startIcon={<MedicalServicesRounded />}
-				disableElevation
-				variant={variant}
-				onClick={handleClick}
-			>
-				บันทึกผลการตรวจสารเสพติด
-			</Button>
-		</Box>
+		<TypographyButton
+			startIcon={<MedicalServicesRounded />}
+			{...rest}
+			disableElevation
+			disableRipple
+			onClick={handleClick}
+		>
+			บันทึกผลการตรวจสารเสพติด
+		</TypographyButton>
 	);
 };

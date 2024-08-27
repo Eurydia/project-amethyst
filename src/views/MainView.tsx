@@ -1,10 +1,16 @@
 import {
+	ContactEmergency,
+	KeyboardArrowUpRounded,
+} from "@mui/icons-material";
+import {
 	AppBar,
 	Box,
 	Container,
 	Divider,
+	Fab,
 	Stack,
 	Toolbar,
+	Tooltip,
 	Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
@@ -90,7 +96,6 @@ export const MainView: FC = () => {
 				<Toolbar
 					variant="dense"
 					sx={{
-						flexWrap: "wrap",
 						flexDirection: "row",
 						justifyContent: "space-between",
 					}}
@@ -137,7 +142,27 @@ export const MainView: FC = () => {
 					)}
 				</Toolbar>
 			</AppBar>
-			<Container maxWidth="md">
+			<Tooltip
+				arrow
+				placement="left"
+				title={
+					<Typography>กลับขึ้นด้านบน</Typography>
+				}
+			>
+				<Fab
+					sx={{
+						position: "fixed",
+						bottom: 16,
+						right: 16,
+					}}
+					size="medium"
+					color="primary"
+					href="#"
+				>
+					<KeyboardArrowUpRounded />
+				</Fab>
+			</Tooltip>
+			<Container maxWidth="lg">
 				<Box
 					marginTop={appBarHeight}
 					paddingY={2}

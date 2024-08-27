@@ -2,6 +2,7 @@ import { postDriverReport } from "$backend/database/put";
 import { DriverReportForm } from "$components/DriverReportForm";
 import {
 	Alert,
+	Container,
 	Stack,
 	Typography,
 } from "@mui/material";
@@ -43,23 +44,25 @@ export const DriverReportMedicalNewPage: FC =
 			submit({}, { action: "/" });
 
 		return (
-			<Stack spacing={2}>
-				<Typography variant="h1">
-					บันทึกผลการตรวจสารเสพติด
-				</Typography>
-				<Alert
-					severity="info"
-					icon={false}
-				>
-					<Typography>TBA</Typography>
-				</Alert>
-				<DriverReportForm
-					driverOptions={driverOptions}
-					initFormData={initFormData}
-					topicOptions={topicOptions}
-					onSubmit={handleSubmit}
-					onCancel={handleCancel}
-				/>
-			</Stack>
+			<Container maxWidth="md">
+				<Stack spacing={2}>
+					<Typography variant="h1">
+						บันทึกผลการตรวจสารเสพติด
+					</Typography>
+					<Alert
+						severity="info"
+						icon={false}
+					>
+						<Typography>TBA</Typography>
+					</Alert>
+					<DriverReportForm
+						driverOptions={driverOptions}
+						initFormData={initFormData}
+						topicOptions={topicOptions}
+						onSubmit={handleSubmit}
+						onCancel={handleCancel}
+					/>
+				</Stack>
+			</Container>
 		);
 	};

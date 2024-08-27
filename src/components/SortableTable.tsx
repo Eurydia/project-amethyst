@@ -5,22 +5,20 @@ import {
 	TableHead,
 	TableRow,
 	TableSortLabel,
-	Tooltip,
 	Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { TableHeaderDefinition } from "../types/generics";
+import { TypographyTooltip } from "./TypographyTooltip";
 
-type EnhancedTableHeaderProps<T extends Object> =
-	{
-		headerDefinitions: TableHeaderDefinition<T>[];
-		order: "asc" | "desc";
-		orderBy: keyof T;
-		onRequestSort: (key: keyof T) => void;
-	};
-
-const EnhancedTableHeader = <T extends Object>(
-	props: EnhancedTableHeaderProps<T>,
+type TableHeaderProps<T extends Object> = {
+	headerDefinitions: TableHeaderDefinition<T>[];
+	order: "asc" | "desc";
+	orderBy: keyof T;
+	onRequestSort: (key: keyof T) => void;
+};
+const TableHeader = <T extends Object>(
+	props: TableHeaderProps<T>,
 ) => {
 	const {
 		headerDefinitions,
@@ -52,32 +50,37 @@ const EnhancedTableHeader = <T extends Object>(
 				? order
 				: undefined;
 
-			const toolTipTitle = isActive ? (
-				<Typography>
-					{sortOrder === "asc"
+			let header: ReactNode = (
+				<TableSortLabel
+					active={isActive}
+					direction={sortOrder}
+					onClick={createSortHandler(
+						headCell.key,
+					)}
+				>
+					<Typography>
+						{headCell.label}
+					</Typography>
+				</TableSortLabel>
+			);
+			if (isActive) {
+				const toolTipTitle =
+					sortOrder === "asc"
 						? "น้อยขึ้นไปมาก"
-						: "มากลงไปน้อย"}
-				</Typography>
-			) : null;
+						: "มากลงไปน้อย";
+				header = (
+					<TypographyTooltip title={toolTipTitle}>
+						{header}
+					</TypographyTooltip>
+				);
+			}
 
 			return (
 				<TableCell
 					key={"header" + index}
 					sortDirection={sortOrder}
 				>
-					<Tooltip title={toolTipTitle}>
-						<TableSortLabel
-							active={isActive}
-							direction={sortOrder}
-							onClick={createSortHandler(
-								headCell.key,
-							)}
-						>
-							<Typography>
-								{headCell.label}
-							</Typography>
-						</TableSortLabel>
-					</Tooltip>
+					{header}
 				</TableCell>
 			);
 		},
@@ -125,6 +128,7 @@ export const SortableTable = <T extends Object>(
 	let target = headers.find(
 		(header) => header.key === orderBy,
 	);
+
 	if (target === undefined) {
 		sortedItems.sort((_) => 0);
 	} else {
@@ -139,42 +143,43 @@ export const SortableTable = <T extends Object>(
 		}
 	}
 
+	let tableBody: ReactNode = (
+		<TableRow hover>
+			<TableCell colSpan={headers.length}>
+				<Typography>
+					ไม่มีรายการในตาราง
+				</Typography>
+			</TableCell>
+		</TableRow>
+	);
+	if (sortedItems.length !== 0) {
+		tableBody = sortedItems.map(
+			(item, rowIndex) => (
+				<TableRow
+					key={"row" + rowIndex}
+					hover
+				>
+					{headers.map((header, cellIndex) => (
+						<TableCell
+							key={`cell${cellIndex}${rowIndex}`}
+						>
+							{header.render(item)}
+						</TableCell>
+					))}
+				</TableRow>
+			),
+		);
+	}
+
 	return (
 		<Table>
-			<EnhancedTableHeader
+			<TableHeader
 				headerDefinitions={headers}
 				order={order}
 				orderBy={orderBy}
 				onRequestSort={handleRequestSort}
 			/>
-			<TableBody>
-				{sortedItems.length === 0 ? (
-					<TableRow hover>
-						<TableCell colSpan={headers.length}>
-							<Typography>
-								ไม่มีรายการให้แเสดง
-							</Typography>
-						</TableCell>
-					</TableRow>
-				) : (
-					sortedItems.map((item, rowIndex) => (
-						<TableRow
-							key={"row" + rowIndex}
-							hover
-						>
-							{headers.map(
-								(header, cellIndex) => (
-									<TableCell
-										key={`cell${cellIndex}${rowIndex}`}
-									>
-										{header.render(item)}
-									</TableCell>
-								),
-							)}
-						</TableRow>
-					))
-				)}
-			</TableBody>
+			<TableBody>{tableBody}</TableBody>
 		</Table>
 	);
 };

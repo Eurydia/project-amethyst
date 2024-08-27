@@ -25,14 +25,7 @@ export const driverIndexPageLoader: LoaderFunction =
 		// Slight optimization: Fetch all vehicle data in parallel
 		const driverDataRequets: Promise<PreparedDriverData>[] =
 			drivers.map(async (driver) => {
-				const vehicle = await getVehicleWithId(
-					driver.current_vehicle_id,
-				);
-
 				let license_plate = "";
-				if (vehicle !== null) {
-					license_plate = vehicle.license_plate;
-				}
 
 				return {
 					id: driver.id,

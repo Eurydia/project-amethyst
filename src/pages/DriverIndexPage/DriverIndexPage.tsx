@@ -1,14 +1,12 @@
-import { DriverReportGeneralButton } from "$components/DriverReportGeneralButton";
-import { DriverReportMedicalButton } from "$components/DriverReportMedicalButton";
 import { SortableTable } from "$components/SortableTable";
-import { StyledTextWavy } from "$components/StyledTextWavy";
+import { TypographyAlert } from "$components/TypographyAlert";
+import { TypographyButton } from "$components/TypographyButton";
 import { TableHeaderDefinition } from "$types/generics";
 import {
 	AddRounded,
 	SearchRounded,
 } from "@mui/icons-material";
 import {
-	Button,
 	InputAdornment,
 	Stack,
 	TableContainer,
@@ -17,11 +15,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { filterItems } from "core/filter";
-import {
-	FC,
-	SyntheticEvent,
-	useState,
-} from "react";
+import { FC, useMemo, useState } from "react";
 import {
 	Link,
 	useLoaderData,
@@ -39,38 +33,30 @@ const HEADER_DEFINITION: TableHeaderDefinition<PreparedDriverData>[] =
 			key: "license_plate",
 			label: "ทะเบียนรถ",
 			compare: null,
-			render: (item) => (
-				<Typography>
-					{item.license_plate === "" ? (
-						"ไม่มี"
-					) : (
-						<Link to={"/vehicles/id/" + item.id}>
-							{item.license_plate}
-						</Link>
-					)}
-				</Typography>
-			),
+			render: (item) =>
+				item.license_plate === "" ? (
+					<Typography>ไม่มี</Typography>
+				) : (
+					<Typography
+						component={Link}
+						to={"/vehicles/id/" + item.id}
+					>
+						{item.license_plate}
+					</Typography>
+				),
 		},
 		{
 			key: "name",
-			label: "ชื่อ",
+			label: "ชื่อและนามสกุล",
 			compare: (a, b) =>
 				a.name.localeCompare(b.name),
 			render: (item) => (
-				<Typography>
-					<Link to={"/drivers/info/" + item.id}>
-						{item.name}
-					</Link>
+				<Typography
+					component={Link}
+					to={"/drivers/info/" + item.id}
+				>
+					{item.name} {item.surname}
 				</Typography>
-			),
-		},
-		{
-			key: "surname",
-			label: "นามสกุล",
-			compare: (a, b) =>
-				a.surname.localeCompare(b.surname),
-			render: (item) => (
-				<Typography>{item.surname}</Typography>
 			),
 		},
 		{
@@ -78,7 +64,13 @@ const HEADER_DEFINITION: TableHeaderDefinition<PreparedDriverData>[] =
 			label: "เบอร์ติดต่อ",
 			compare: null,
 			render: (item) => (
-				<StyledTextWavy
+				<Typography
+					sx={{
+						textDecorationStyle: "wavy",
+						textDecorationLine: "underline",
+						textDecorationThickness: "from-font",
+						cursor: "pointer",
+					}}
 					onClick={() => {
 						navigator.clipboard.writeText(
 							item.contact,
@@ -87,47 +79,86 @@ const HEADER_DEFINITION: TableHeaderDefinition<PreparedDriverData>[] =
 					}}
 				>
 					{item.contact}
-				</StyledTextWavy>
+				</Typography>
 			),
 		},
 	];
 
-type TableToolbarProps = {
-	search: string;
-	onSearchChange: (search: string) => void;
+type CustomDataTableProps = {
+	rows: PreparedDriverData[];
 };
-const TableToolbar: FC<TableToolbarProps> = (
-	props,
-) => {
-	const { search, onSearchChange } = props;
-	const submit = useSubmit();
-	const handleSearchChange = (
-		e: SyntheticEvent<
-			HTMLInputElement | HTMLTextAreaElement
-		>,
-	) => {
-		onSearchChange(e.currentTarget.value);
-	};
+const CustomDataTable: FC<
+	CustomDataTableProps
+> = (props) => {
+	const { rows } = props;
+	const [search, setSearch] = useState("");
+
+	const filteredRows = useMemo(() => {
+		return filterItems(
+			rows,
+			search
+				.split(" ")
+				.map((s) => s.trim())
+				.filter((s) => s !== ""),
+			[
+				"name",
+				"surname",
+				"contact",
+				"license_plate",
+			],
+		);
+	}, [rows, search]);
 
 	return (
-		<Toolbar
-			disableGutters
-			variant="dense"
-			sx={{
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "flex-start",
-				gap: 1,
-			}}
-		>
-			<Stack
-				useFlexGap
-				direction="row"
-				spacing={1}
-				flexWrap="wrap"
+		<TableContainer>
+			<Toolbar
+				variant="dense"
+				disableGutters
 			>
-				<Button
-					disableElevation
+				<TextField
+					fullWidth
+					placeholder="ค้นหาคนขับรถ"
+					InputProps={{
+						startAdornment: (
+							<InputAdornment position="start">
+								<SearchRounded />
+							</InputAdornment>
+						),
+					}}
+					value={search}
+					onChange={(e) =>
+						setSearch(e.target.value)
+					}
+				/>
+			</Toolbar>
+			<SortableTable
+				headers={HEADER_DEFINITION}
+				defaultSortOrder="asc"
+				defaultOrderBy="name"
+				rows={filteredRows}
+			/>
+		</TableContainer>
+	);
+};
+
+export const DriverIndexPage: FC = () => {
+	const { driverData } =
+		useLoaderData() as DriverIndexPageLoaderData;
+	const submit = useSubmit();
+
+	return (
+		<Stack spacing={2}>
+			<Typography variant="h1">
+				รายชื่อคนขับรถ
+			</Typography>
+			<TypographyAlert severity="info">
+				TBA
+			</TypographyAlert>
+			<Toolbar
+				disableGutters
+				variant="dense"
+			>
+				<TypographyButton
 					variant="contained"
 					startIcon={<AddRounded />}
 					onClick={() =>
@@ -140,66 +171,9 @@ const TableToolbar: FC<TableToolbarProps> = (
 					}
 				>
 					ลงทะเบียนคนขับรถ
-				</Button>
-				<DriverReportMedicalButton
-					variant="outlined"
-					path="/drivers/report/medical/new"
-				/>
-				<DriverReportGeneralButton
-					variant="outlined"
-					path="/drivers/report/general/new"
-				/>
-			</Stack>
-			<TextField
-				fullWidth
-				placeholder="ค้นหาคนขับรถ"
-				InputProps={{
-					startAdornment: (
-						<InputAdornment position="start">
-							<SearchRounded />
-						</InputAdornment>
-					),
-				}}
-				value={search}
-				onChange={handleSearchChange}
-			/>
-		</Toolbar>
-	);
-};
-
-export const DriverIndexPage: FC = () => {
-	const { driverData } =
-		useLoaderData() as DriverIndexPageLoaderData;
-	const [search, setSearch] = useState("");
-
-	const searchedRoutes = filterItems(
-		driverData,
-		search.split(" "),
-		[
-			"name",
-			"surname",
-			"contact",
-			"license_plate",
-		],
-	);
-
-	return (
-		<Stack spacing={2}>
-			<Typography variant="h1">
-				รายชื่อคนขับรถ
-			</Typography>
-			<TableContainer>
-				<TableToolbar
-					search={search}
-					onSearchChange={setSearch}
-				/>
-				<SortableTable
-					headers={HEADER_DEFINITION}
-					defaultSortOrder="asc"
-					defaultOrderBy="name"
-					rows={searchedRoutes}
-				/>
-			</TableContainer>
+				</TypographyButton>
+			</Toolbar>
+			<CustomDataTable rows={driverData} />
 		</Stack>
 	);
 };

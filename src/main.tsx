@@ -5,7 +5,14 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import "main.css";
+import "@fontsource/sarabun/100.css";
+import "@fontsource/sarabun/200.css";
+import "@fontsource/sarabun/300.css";
+import "@fontsource/sarabun/400.css";
+import "@fontsource/sarabun/500.css";
+import "@fontsource/sarabun/600.css";
+import "@fontsource/sarabun/700.css";
+import "@fontsource/sarabun/800.css";
 import { injectStyle } from "react-toastify/dist/inject-style";
 
 // Inject style, otherwise toast styling will break

@@ -1,10 +1,6 @@
 import { postDriverReport } from "$backend/database/put";
 import { DriverReportForm } from "$components/DriverReportForm";
-import {
-	Alert,
-	Stack,
-	Typography,
-} from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
 	useLoaderData,
@@ -13,6 +9,7 @@ import {
 import { toast } from "react-toastify";
 import { DriverReportGeneralNewPageLoaderData } from "./loader";
 import { DriverReportFormData } from "$types/form-data";
+import { TypographyAlert } from "$components/TypographyAlert";
 
 export const DriverReportGeneralNewPage: FC =
 	() => {
@@ -47,12 +44,9 @@ export const DriverReportGeneralNewPage: FC =
 				<Typography variant="h1">
 					รายงานปัญหาคนขับรถ
 				</Typography>
-				<Alert
-					severity="info"
-					icon={false}
-				>
+				<TypographyAlert severity="info">
 					<Typography>TBA</Typography>
-				</Alert>
+				</TypographyAlert>
 				<DriverReportForm
 					driverOptions={driverOptions}
 					initFormData={initFormData}

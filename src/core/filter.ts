@@ -1,16 +1,19 @@
 import { matchSorter } from "match-sorter";
 
-export const filterItems = <T>(
+export const filterItems = <T extends Object>(
 	items: T[],
 	searchTokens: string[],
-	searchKeys: string[],
+	searchKeys: (keyof T)[],
 ): T[] => {
-	const results = searchTokens.reduceRight(
+	const keys = searchKeys.map((key) =>
+		key.toString(),
+	);
+
+	return searchTokens.reduceRight(
 		(leftover, token) =>
 			matchSorter(leftover, token, {
-				keys: searchKeys,
+				keys,
 			}),
 		items,
 	);
-	return results;
 };

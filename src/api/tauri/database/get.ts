@@ -22,8 +22,8 @@ const drivers: DriverModel[] =
 				license_images: "",
 				license_type:
 					fakerTH.helpers.arrayElement([
-						"1",
-						"2",
+						"ท.1",
+						"ท.2",
 					]),
 				name: fakerTH.person.firstName(),
 				surname: fakerTH.person.lastName(),
@@ -31,7 +31,7 @@ const drivers: DriverModel[] =
 				id: id,
 			};
 		},
-		{ count: 10 },
+		{ count: 20 },
 	);
 
 let vehicleId = 0;

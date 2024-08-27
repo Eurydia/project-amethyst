@@ -4,12 +4,13 @@ import {
 	FormLabel,
 	Radio,
 	RadioGroup,
+	Typography,
 } from "@mui/material";
 import { FC } from "react";
 
 type LicenseSelectProps = {
-	value: string | null;
-	onChange: (value: string | null) => void;
+	value: "ท.1" | "ท.2";
+	onChange: (value: "ท.1" | "ท.2") => void;
 };
 export const DriverLicenseSelect: FC<
 	LicenseSelectProps
@@ -18,27 +19,37 @@ export const DriverLicenseSelect: FC<
 
 	const handleChange = (
 		_: any,
-		value: string | null,
+		value: string,
 	) => {
-		onChange(value);
+		onChange(value as "ท.1" | "ท.2");
 	};
 
 	return (
 		<FormControl>
-			<FormLabel>ประเภทใบขับขี่</FormLabel>
+			<FormLabel>
+				<Typography>ประเภทใบขับขี่</Typography>
+			</FormLabel>
 			<RadioGroup
 				value={value}
 				onChange={handleChange}
 			>
 				<FormControlLabel
-					value="1"
+					value="ท.1"
 					control={<Radio />}
-					label={"ประเภท ท.1 (รถตู้)"}
+					label={
+						<Typography>
+							ประเภท ท.1 (รถตู้)
+						</Typography>
+					}
 				/>
 				<FormControlLabel
-					value="2"
+					value="ท.2"
 					control={<Radio />}
-					label={"ประเภท ท.2 (รถบัส)"}
+					label={
+						<Typography>
+							ประเภท ท.2 (รถบัส)
+						</Typography>
+					}
 				/>
 			</RadioGroup>
 		</FormControl>

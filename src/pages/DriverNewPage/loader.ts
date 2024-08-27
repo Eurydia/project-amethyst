@@ -1,12 +1,12 @@
-import { DriverRegisterFormData } from "$types/FormData";
+import { DriverFormData } from "$types/form-data";
 import { LoaderFunction } from "react-router-dom";
 
 export type DriverNewPageLoaderData = {
-	initFormData: DriverRegisterFormData;
+	initFormData: DriverFormData;
 };
 export const driverNewPageLoader: LoaderFunction =
 	async () => {
-		const initFormData: DriverRegisterFormData = {
+		const initFormData: DriverFormData = {
 			name: "",
 			surname: "",
 			contact: "",

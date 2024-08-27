@@ -1,30 +1,28 @@
 import { FlagRounded } from "@mui/icons-material";
-import { Box, Button } from "@mui/material";
 import { FC } from "react";
 import { useSubmit } from "react-router-dom";
+import { TypographyButton } from "./TypographyButton";
+import { ButtonProps } from "@mui/material";
 
-type DriverReportGeneralButtonProps = {
-	path: string;
-	variant: "contained" | "outlined";
-};
+type DriverReportGeneralButtonProps =
+	ButtonProps & {
+		path: string;
+	};
 export const DriverReportGeneralButton: FC<
 	DriverReportGeneralButtonProps
 > = (props) => {
-	const { path, variant } = props;
+	const { path, ...rest } = props;
 	const submit = useSubmit();
 	const handleClick = () => {
 		submit({}, { action: path });
 	};
 	return (
-		<Box>
-			<Button
-				startIcon={<FlagRounded />}
-				disableElevation
-				variant={variant}
-				onClick={handleClick}
-			>
-				รายงานปัญหาคนขับรถ
-			</Button>
-		</Box>
+		<TypographyButton
+			{...rest}
+			startIcon={<FlagRounded />}
+			onClick={handleClick}
+		>
+			รายงานปัญหาคนขับรถ
+		</TypographyButton>
 	);
 };

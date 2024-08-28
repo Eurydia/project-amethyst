@@ -195,7 +195,7 @@ export const RecordTable: FC<RecordTableProps> = (
 			<SortableTable
 				headers={HEADER_DEFINITION}
 				defaultSortOrder="desc"
-				defaultOrderBy="datetime_iso"
+				defaultSortBy="datetime_iso"
 				rows={searchedEntries}
 			/>
 		</TableContainer>

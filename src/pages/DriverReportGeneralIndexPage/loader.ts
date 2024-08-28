@@ -2,22 +2,22 @@ import {
 	getDriverAll,
 	getDriverGeneralReportAll,
 	getDriverWithId,
+	getTopicAll,
 } from "$backend/database/get";
 import { DriverReport } from "$types/form-data";
 import { LoaderFunction } from "react-router-dom";
 
 export type DriverReportGeneralIndexPageLoaderData =
 	{
+		driverOptions: string[];
+		topicOptions: string[];
 		entries: DriverReport[];
-		drivers: string[];
 	};
 
 export const driverReportGeneralIndexPageLoader: LoaderFunction =
 	async () => {
 		const rawEntries =
 			await getDriverGeneralReportAll();
-
-		console.log(rawEntries);
 
 		const seen: Record<
 			string,
@@ -49,16 +49,18 @@ export const driverReportGeneralIndexPageLoader: LoaderFunction =
 			entries.push(entry);
 		}
 
-		const drivers = (await getDriverAll()).map(
-			(driver) => {
-				return `${driver.name} ${driver.surname}`.normalize();
-			},
+		const drivers = await getDriverAll();
+		const driverOptions = drivers.map(
+			(driver) =>
+				`${driver.name} ${driver.surname}`,
 		);
+		const topicOptions = await getTopicAll();
 
 		const loaderData: DriverReportGeneralIndexPageLoaderData =
 			{
+				driverOptions,
+				topicOptions,
 				entries,
-				drivers,
 			};
 		return loaderData;
 	};

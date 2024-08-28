@@ -134,7 +134,7 @@ const CustomDataTable: FC<
 			<SortableTable
 				headers={HEADER_DEFINITION}
 				defaultSortOrder="asc"
-				defaultOrderBy="name"
+				defaultSortBy="name"
 				rows={filteredRows}
 			/>
 		</TableContainer>

@@ -16,7 +16,10 @@ export const App = () => {
 			dateAdapter={AdapterDayjs}
 			adapterLocale="th"
 		>
-			<ToastContainer />
+			<ToastContainer
+				icon={false}
+				autoClose={2750}
+			/>
 			<ThemeProvider theme={theme}>
 				<CssBaseline enableColorScheme />
 				<RouterProvider router={routes} />

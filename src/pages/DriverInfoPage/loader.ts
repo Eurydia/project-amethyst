@@ -2,7 +2,9 @@ import {
 	getDriverGeneralReportAllWithDriverId,
 	getDriverMedicalReportAllWithDriverId,
 	getDriverWithId,
+	getTopicAll,
 } from "$backend/database/get";
+import { DriverReport } from "$types/form-data";
 import {
 	DriverModel,
 	DriverReportModel,
@@ -13,9 +15,11 @@ import {
 } from "react-router-dom";
 
 export type DriverInfoPageLoaderData = {
-	driverData: DriverModel;
-	driverGeneralReportEntries: DriverReportModel[];
-	driverMedicalReportEntries: DriverReportModel[];
+	driver: DriverModel;
+	topicOptions: string[];
+	driverOptions: string[];
+	generalReportEntries: DriverReport[];
+	medicalReportEntries: DriverReport[];
 };
 
 export const driverInfoPageLoader: LoaderFunction =
@@ -28,30 +32,50 @@ export const driverInfoPageLoader: LoaderFunction =
 			);
 		}
 
-		const driverData = await getDriverWithId(
+		const driver = await getDriverWithId(
 			driverId,
 		);
 
-		if (driverData === null) {
+		if (driver === null) {
 			throw json(
 				{ message: "ไม่พบคนขับรถในระบบ" },
 				{ status: 404 },
 			);
 		}
 
-		const driverGeneralReportEntries =
+		const driverOptions = [
+			`${driver.name} ${driver.surname}`,
+		];
+		const topicOptions = await getTopicAll();
+		const rawGeneralReportEntries =
 			await getDriverGeneralReportAllWithDriverId(
 				driverId,
 			);
-		const driverMedicalReportEntries =
+		const rawMedicalReportEntries =
 			await getDriverMedicalReportAllWithDriverId(
 				driverId,
 			);
-
+		const entryMapper = (
+			rawEntry: DriverReportModel,
+		) => {
+			const entry: DriverReport = {
+				...rawEntry,
+				driver_name: driver.name,
+				driver_surname: driver.surname,
+				topics: rawEntry.topics.split(","),
+			};
+			return entry;
+		};
+		const generalReportEntries =
+			rawGeneralReportEntries.map(entryMapper);
+		const medicalReportEntries =
+			rawMedicalReportEntries.map(entryMapper);
 		const loaderData: DriverInfoPageLoaderData = {
-			driverData,
-			driverGeneralReportEntries,
-			driverMedicalReportEntries,
+			topicOptions,
+			driverOptions,
+			driver,
+			generalReportEntries,
+			medicalReportEntries,
 		};
 
 		return loaderData;

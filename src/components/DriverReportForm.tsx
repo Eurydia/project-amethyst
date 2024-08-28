@@ -2,7 +2,12 @@ import { SaveRounded } from "@mui/icons-material";
 import { Grid, TextField } from "@mui/material";
 import {
 	DateField,
+	DatePicker,
+	DesktopDatePicker,
+	MobileDatePicker,
+	MobileTimePicker,
 	TimeField,
+	TimePicker,
 } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { FC, useState } from "react";
@@ -133,6 +138,7 @@ export const DriverReportForm: FC<
 			>
 				<DateField
 					fullWidth
+					formatDensity="spacious"
 					value={fieldDate}
 					onChange={handleDateChange}
 					format="DD/MM/YYYY"
@@ -145,6 +151,7 @@ export const DriverReportForm: FC<
 			>
 				<TimeField
 					fullWidth
+					formatDensity="spacious"
 					value={fieldTime}
 					onChange={handleTimeChange}
 					format="HH:mm น."

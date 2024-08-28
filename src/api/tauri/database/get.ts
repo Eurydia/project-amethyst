@@ -14,10 +14,6 @@ const drivers: DriverModel[] =
 			const id = driverId.toString();
 			driverId++;
 			return {
-				current_pickup_route_id: "",
-				current_vehicle_id: id,
-				previous_vehicles: "",
-				previous_pickup_routes: "",
 				images: "",
 				license_images: "",
 				license_type:
@@ -136,8 +132,12 @@ export const getDriverGeneralReportAll =
 	};
 
 export const getDriverGeneralReportAllWithDriverId =
-	async (driverId: string) => {
-		return [];
+	async (
+		driverId: string,
+	): Promise<DriverReportModel[]> => {
+		return driverGeneralReports.filter(
+			(entry) => entry.driver_id === driverId,
+		);
 	};
 
 let driverMedicalReportId = 0;
@@ -172,8 +172,12 @@ export const getDriverMedicalReportAll =
 	};
 
 export const getDriverMedicalReportAllWithDriverId =
-	async (driverId: string) => {
-		return [];
+	async (
+		driverId: string,
+	): Promise<DriverReportModel[]> => {
+		return driverMedicalReports.filter(
+			(entry) => entry.driver_id === driverId,
+		);
 	};
 
 let pickupRouteId = 0;

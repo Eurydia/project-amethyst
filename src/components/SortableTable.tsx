@@ -96,7 +96,7 @@ const TableHeader = <T extends Object>(
 type SortableTableProps<T extends Object> = {
 	rows: T[];
 	headers: TableHeaderDefinition<T>[];
-	defaultOrderBy: keyof T;
+	defaultSortBy: keyof T;
 	defaultSortOrder: "asc" | "desc";
 };
 export const SortableTable = <T extends Object>(
@@ -105,7 +105,7 @@ export const SortableTable = <T extends Object>(
 	const {
 		rows,
 		defaultSortOrder,
-		defaultOrderBy,
+		defaultSortBy,
 		headers,
 	} = props;
 
@@ -113,7 +113,7 @@ export const SortableTable = <T extends Object>(
 		defaultSortOrder,
 	);
 	const [orderBy, setOrderBy] = useState<keyof T>(
-		defaultOrderBy,
+		defaultSortBy,
 	);
 
 	const handleRequestSort = (key: keyof T) => {

@@ -1,0 +1,7 @@
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	scrollbar-gutter: stable both-edges;
+}

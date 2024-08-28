@@ -13,6 +13,7 @@ import "@fontsource/sarabun/500.css";
 import "@fontsource/sarabun/600.css";
 import "@fontsource/sarabun/700.css";
 import "@fontsource/sarabun/800.css";
+import "main.css";
 import { injectStyle } from "react-toastify/dist/inject-style";
 
 // Inject style, otherwise toast styling will break

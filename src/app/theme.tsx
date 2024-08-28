@@ -22,19 +22,6 @@ let theme = createTheme(
 					},
 				},
 			},
-			MuiCssBaseline: {
-				styleOverrides: (themeParam) => {
-					return {
-						body: {
-							scrollbarGutter: "stable",
-						},
-						a: {
-							color:
-								themeParam.palette.primary.main,
-						},
-					};
-				},
-			},
 		},
 	},
 	thTH,

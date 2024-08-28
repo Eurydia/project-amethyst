@@ -6,6 +6,10 @@ import {
 import {
 	Alert,
 	Button,
+	List,
+	ListItem,
+	ListItemText,
+	ListSubheader,
 	Stack,
 	styled,
 	Toolbar,
@@ -13,11 +17,14 @@ import {
 } from "@mui/material";
 import { FC, ReactNode } from "react";
 import {
+	Link,
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverInfoPageLoaderData } from "./loader";
+import { TypographyAlert } from "$components/TypographyAlert";
+import { TypographyButton } from "$components/TypographyButton";
 
 const IMAGES = [
 	"https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&q=20",
@@ -95,15 +102,68 @@ export const DriverInfoPage: FC = () => {
 
 	return (
 		<Stack spacing={1}>
-			<Typography variant="h1">
+			<Typography>สารบัญ</Typography>
+			<List
+				dense
+				disablePadding
+			>
+				<ListItem
+					disablePadding
+					disableGutters
+				>
+					<ListItemText>
+						<Typography
+							href="#info"
+							component="a"
+						>
+							ข้อมูลคนขับรถ
+						</Typography>
+					</ListItemText>
+				</ListItem>
+				<List
+					dense
+					disablePadding
+				>
+					<ListItem
+						disableGutters
+						disablePadding
+					>
+						<ListItemText>
+							<Typography
+								component="a"
+								href="#general-report"
+							>
+								ตารางบันทึกประวัติการร้องเรียน
+							</Typography>
+						</ListItemText>
+					</ListItem>
+					<ListItem
+						disableGutters
+						disablePadding
+					>
+						<ListItemText>
+							<Typography
+								component="a"
+								href="#medical-report"
+							>
+								ตารางบันทึกผลการตรวจสารเสพติด
+							</Typography>
+						</ListItemText>
+					</ListItem>
+				</List>
+			</List>
+			<Typography
+				variant="h1"
+				id="info"
+			>
 				ข้อมูลคนขับรถ
 			</Typography>
-			<Alert
+			<TypographyAlert
 				severity="info"
 				icon={false}
 			>
-				<Typography>TBA</Typography>
-			</Alert>
+				TBA
+			</TypographyAlert>
 			<Toolbar
 				variant="dense"
 				disableGutters
@@ -113,23 +173,21 @@ export const DriverInfoPage: FC = () => {
 					flexDirection: "row",
 				}}
 			>
-				<Button
+				<TypographyButton
 					variant="outlined"
-					disableElevation
 					startIcon={<EditRounded />}
 					onClick={() =>
 						submit({}, { action: "./edit" })
 					}
 				>
 					แก้ไขข้อมูล
-				</Button>
-				<Button
+				</TypographyButton>
+				<TypographyButton
 					variant="outlined"
-					disableElevation
 					startIcon={<FolderRounded />}
 				>
 					เปิดแฟ้มภาพ
-				</Button>
+				</TypographyButton>
 			</Toolbar>
 			<Stack spacing={2}>
 				<InfoItem
@@ -172,7 +230,10 @@ export const DriverInfoPage: FC = () => {
 				/>
 			</Stack>
 			<Gallery images={IMAGES} />
-			<Typography variant="h2">
+			<Typography
+				variant="h2"
+				id="general-report"
+			>
 				ตารางบันทึกประวัติการร้องเรียน
 			</Typography>
 			<DriverReportTable
@@ -183,8 +244,11 @@ export const DriverInfoPage: FC = () => {
 				topicOptions={topicOptions}
 				searchPlaceholder="ค้นหาประวัติการร้องเรียน"
 			/>
-			<Typography variant="h2">
-				ตารางบันทึกประวัติการตรวจสารเสพติด
+			<Typography
+				variant="h2"
+				id="medical-report"
+			>
+				ตารางบันทึกผลการตรวจสารเสพติด
 			</Typography>
 			<DriverReportTable
 				entries={medicalReportEntries}

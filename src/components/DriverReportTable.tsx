@@ -250,11 +250,7 @@ export const DriverReportTable: FC<
 	]);
 
 	return (
-		<TableContainer
-			sx={{
-				minHeight: 550,
-			}}
-		>
+		<TableContainer>
 			<Toolbar
 				disableGutters
 				variant="dense"

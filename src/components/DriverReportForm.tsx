@@ -1,20 +1,22 @@
-import { SaveRounded } from "@mui/icons-material";
-import { Grid, TextField } from "@mui/material";
-import {
-	DateField,
-	DatePicker,
-	DesktopDatePicker,
-	MobileDatePicker,
-	MobileTimePicker,
-	TimeField,
-	TimePicker,
-} from "@mui/x-date-pickers";
-import dayjs, { Dayjs } from "dayjs";
-import { FC, useState } from "react";
-import { DriverSelect } from "./DriverSelect";
-import { TopicMultiSelect } from "./TopicMultiSelect";
 import { DriverReportFormData } from "$types/form-data";
 import { DriverModel } from "$types/models";
+import { SaveRounded } from "@mui/icons-material";
+import {
+	alpha,
+	Box,
+	Grid,
+	Paper,
+	TextField,
+	Typography,
+} from "@mui/material";
+import {
+	DateField,
+	TimeField,
+} from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+import { FC, ReactNode, useState } from "react";
+import { DriverSelect } from "./DriverSelect";
+import { TopicMultiSelect } from "./TopicMultiSelect";
 import { TypographyButton } from "./TypographyButton";
 
 type DriverReportFormProps = {
@@ -126,29 +128,13 @@ export const DriverReportForm: FC<
 	const isFormIncomplete =
 		isDriverEmpty || isTitleEmpty;
 
-	return (
-		<Grid
-			container
-			spacing={1}
-		>
-			<Grid
-				item
-				xs={12}
-				md={6}
-			>
-				<DateField
-					fullWidth
-					formatDensity="spacious"
-					value={fieldDate}
-					onChange={handleDateChange}
-					format="DD/MM/YYYY"
-				/>
-			</Grid>
-			<Grid
-				item
-				xs={12}
-				md={6}
-			>
+	const formItems: {
+		label: string;
+		value: ReactNode;
+	}[] = [
+		{
+			label: "เวลา",
+			value: (
 				<TimeField
 					fullWidth
 					formatDensity="spacious"
@@ -156,79 +142,149 @@ export const DriverReportForm: FC<
 					onChange={handleTimeChange}
 					format="HH:mm น."
 				/>
-			</Grid>
-			<Grid
-				item
-				xs={12}
-			>
+			),
+		},
+		{
+			label: "วัน/เดือน/ปี",
+			value: (
+				<DateField
+					fullWidth
+					formatDensity="spacious"
+					value={fieldDate}
+					onChange={handleDateChange}
+					format="DD/MM/YYYY"
+				/>
+			),
+		},
+		{
+			label: "ผู้ที่ถูกร้องเรียน",
+			value: (
 				<DriverSelect
-					showError={isDriverEmpty}
-					disabled={shouldLockDriver}
 					options={driverOptions}
 					value={fieldDriver}
 					onChange={setFieldDriver}
+					disabled={shouldLockDriver}
 				/>
-			</Grid>
-			<Grid
-				item
-				xs={12}
-			>
+			),
+		},
+		{
+			label: "เรื่อง",
+			value: (
 				<TextField
-					autoFocus
-					required
 					fullWidth
-					error={isTitleEmpty}
 					value={fieldTitle}
 					onChange={handleTitleChange}
 					placeholder="เรื่อง"
 				/>
-			</Grid>
-			<Grid
-				item
-				xs={12}
-			>
+			),
+		},
+		{
+			label: "รายละเอียด",
+			value: (
 				<TextField
-					multiline
 					fullWidth
+					multiline
+					minRows={6}
 					value={fieldContent}
 					onChange={handleContentChange}
-					minRows={5}
 					placeholder="รายละเอียด"
 				/>
-			</Grid>
-			<Grid
-				item
-				xs={12}
-			>
+			),
+		},
+		{
+			label: "หัวข้อที่เกี่ยวข้อง",
+			value: (
 				<TopicMultiSelect
 					options={topicOptions}
 					value={fieldTopics}
 					onChange={handleFieldTopicsChange}
 				/>
-			</Grid>
-			<Grid
-				item
-				xs={12}
-				display="flex"
-				flexDirection="row"
-				flexWrap="wrap"
-				gap={1}
+			),
+		},
+	];
+	const renderedFormItems = formItems.map(
+		(item, index) => (
+			<Paper
+				key={"form-item" + index}
+				elevation={0}
+				square
+				sx={{
+					widows: "100%",
+					backgroundColor: ({ palette }) =>
+						alpha(
+							index % 2 === 1
+								? palette.primary.light
+								: palette.common.white,
+							0.05,
+						),
+				}}
 			>
-				<TypographyButton
-					disabled={isFormIncomplete}
-					startIcon={<SaveRounded />}
-					variant="contained"
-					onClick={handleSubmit}
+				<Grid
+					container
+					spacing={1}
 				>
-					บันทึก
-				</TypographyButton>
-				<TypographyButton
-					variant="outlined"
-					onClick={handleCancel}
+					<Grid
+						item
+						xs={12}
+						md={2}
+						display="flex"
+						alignItems="center"
+					>
+						<Typography fontWeight="bold">
+							{item.label}
+						</Typography>
+					</Grid>
+					<Grid
+						item
+						xs={12}
+						md={9}
+					>
+						{item.value}
+					</Grid>
+				</Grid>
+			</Paper>
+		),
+	);
+
+	return (
+		<Box>
+			<Grid
+				container
+				spacing={1}
+			>
+				<Grid
+					item
+					xs={12}
+					display="flex"
+					gap={1}
+					flexDirection="column"
 				>
-					ยกเลิก
-				</TypographyButton>
+					{renderedFormItems}
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					display="flex"
+					flexDirection="row"
+					flexWrap="wrap"
+					gap={1}
+				>
+					<TypographyButton
+						disabled={isFormIncomplete}
+						startIcon={<SaveRounded />}
+						variant="contained"
+						onClick={handleSubmit}
+					>
+						บันทึก
+					</TypographyButton>
+					<TypographyButton
+						variant="outlined"
+						onClick={handleCancel}
+					>
+						ยกเลิก
+					</TypographyButton>
+				</Grid>
 			</Grid>
-		</Grid>
+		</Box>
 	);
 };

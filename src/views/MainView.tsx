@@ -71,7 +71,7 @@ export const MainView: FC = () => {
 		const height =
 			appBarRef.current.getBoundingClientRect()
 				.height;
-		const roundedHeight = Math.ceil(height);
+		const roundedHeight = Math.ceil(height) + 20;
 		const heightInPx = `${roundedHeight}px`;
 		setAppBarHeight(heightInPx);
 	}, [appBarRef]);

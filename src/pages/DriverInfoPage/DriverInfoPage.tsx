@@ -8,6 +8,8 @@ import {
 	FolderRounded,
 } from "@mui/icons-material";
 import {
+	Box,
+	Grid,
 	List,
 	ListItem,
 	ListItemText,
@@ -16,7 +18,7 @@ import {
 	Toolbar,
 	Typography,
 } from "@mui/material";
-import { FC, ReactNode } from "react";
+import { FC, Fragment, ReactNode } from "react";
 import {
 	useLoaderData,
 	useSubmit,
@@ -32,25 +34,6 @@ const IMAGES = [
 	"https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=20",
 	"https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&q=20",
 ];
-
-type InfoItemProps = {
-	label: string;
-	value: ReactNode;
-};
-const InfoItem: FC<InfoItemProps> = (props) => {
-	const { label, value } = props;
-	return (
-		<Stack
-			spacing={1}
-			direction="row"
-			flexWrap="wrap"
-			useFlexGap
-		>
-			<Typography>{label}</Typography>
-			{value}
-		</Stack>
-	);
-};
 
 const StyledTypography = styled(Typography)({
 	textDecorationThickness: "from-font",
@@ -105,6 +88,75 @@ export const DriverInfoPage: FC = () => {
 		useDriverMedicalReportHeaders();
 
 	const submit = useSubmit();
+
+	const infoItems: {
+		label: string;
+		value: ReactNode;
+	}[] = [
+		{
+			label: "ชื่อและนามสกุล",
+			value: (
+				<StyledTypography
+					onClick={() => {
+						window.navigator.clipboard.writeText(
+							`${driver.name} ${driver.surname}`,
+						);
+						toast.info(
+							"คัดลอกชื่อและนามสกุลแล้ว",
+						);
+					}}
+				>
+					{driver.name} {driver.surname}
+				</StyledTypography>
+			),
+		},
+		{
+			label: "เบอร์ติดต่อ",
+			value: (
+				<StyledTypography
+					onClick={() => {
+						window.navigator.clipboard.writeText(
+							driver.contact,
+						);
+						toast.info("คัดลอกเบอร์ติดต่อแล้ว");
+					}}
+				>
+					{driver.contact}
+				</StyledTypography>
+			),
+		},
+		{
+			label: "ประเภทใบขับขี่",
+			value: (
+				<Typography>
+					{driver.license_type}
+				</Typography>
+			),
+		},
+	];
+
+	const renderedInfoItems = infoItems.map(
+		(item, index) => (
+			<Fragment key={"info" + index}>
+				<Grid
+					item
+					xs={12}
+					md={2}
+				>
+					<Typography fontWeight="bold">
+						{item.label}
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					md={10}
+				>
+					{item.value}
+				</Grid>
+			</Fragment>
+		),
+	);
 
 	return (
 		<Stack spacing={1}>
@@ -195,46 +247,15 @@ export const DriverInfoPage: FC = () => {
 					เปิดแฟ้มภาพ
 				</TypographyButton>
 			</Toolbar>
-			<Stack spacing={2}>
-				<InfoItem
-					label="ชื่อและนามสกุล:"
-					value={
-						<StyledTypography
-							onClick={() => {
-								window.navigator.clipboard.writeText(
-									`${driver.name} ${driver.surname}`,
-								);
-								toast.info(
-									"คัดลอกชื่อและนามสกุลแล้ว",
-								);
-							}}
-						>
-							{driver.name} {driver.surname}
-						</StyledTypography>
-					}
-				/>
-				<InfoItem
-					label="เบอร์ติดต่อ:"
-					value={
-						<StyledTypography
-							onClick={() => {
-								window.navigator.clipboard.writeText(
-									`${driver.name} ${driver.surname}`,
-								);
-								toast.info(
-									"คัดลอกเบอร์ติดต่อแล้ว",
-								);
-							}}
-						>
-							{driver.contact}
-						</StyledTypography>
-					}
-				/>
-				<InfoItem
-					label="ประเภทของใบขับขี่:"
-					value={driver.license_type}
-				/>
-			</Stack>
+			<Box width="75%">
+				<Grid
+					container
+					spacing={2}
+				>
+					{renderedInfoItems}
+				</Grid>
+			</Box>
+
 			<Gallery images={IMAGES} />
 			<Typography
 				variant="h2"

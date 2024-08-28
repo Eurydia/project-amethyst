@@ -8,8 +8,11 @@ import {
 	Toolbar,
 	Typography,
 } from "@mui/material";
-import { FC, Fragment } from "react";
-import { useLoaderData } from "react-router-dom";
+import { FC, Fragment, ReactNode } from "react";
+import {
+	Link,
+	useLoaderData,
+} from "react-router-dom";
 import { DriverReportGeneralInfoPageLoaderData } from "./loader";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
@@ -21,10 +24,10 @@ export const DriverReportGeneralInfoPage: FC =
 
 		const infoItems: {
 			label: string;
-			value: string;
+			value: ReactNode;
 		}[] = [
 			{
-				label: "เวลาและวันที่ที่ร้องเรียน",
+				label: "ร้องเรียนเมื่อ",
 				value: dayjs(entry.datetime_iso)
 					.locale("th")
 					.format(
@@ -33,7 +36,11 @@ export const DriverReportGeneralInfoPage: FC =
 			},
 			{
 				label: "ผู้ที่ถูกร้องเรียน",
-				value: `${driver.name} ${driver.surname}`,
+				value: (
+					<Link to={"/drivers/info/" + driver.id}>
+						{driver.name} {driver.surname}
+					</Link>
+				),
 			},
 			{
 				label: "เรื่อง",
@@ -55,7 +62,7 @@ export const DriverReportGeneralInfoPage: FC =
 					<Grid
 						item
 						xs={12}
-						sm={2}
+						md={3}
 					>
 						<Typography fontWeight="bold">
 							{item.label}
@@ -64,7 +71,7 @@ export const DriverReportGeneralInfoPage: FC =
 					<Grid
 						item
 						xs={12}
-						md={10}
+						md={9}
 					>
 						<Typography>{item.value}</Typography>
 					</Grid>

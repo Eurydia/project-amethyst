@@ -102,6 +102,50 @@ const TABLE_HEADERS: TableHeaderDefinition<DriverReport>[] =
 		},
 	];
 
+type CustomListItemProps = {
+	option: string;
+	isChecked?: boolean;
+	onClick: () => void;
+	isBold?: boolean;
+};
+const CustomListItem: FC<CustomListItemProps> = (
+	props,
+) => {
+	const { isBold, isChecked, onClick, option } =
+		props;
+	return (
+		<ListItem
+			disableGutters
+			disablePadding
+			sx={{
+				display: "inline",
+				width: "auto",
+			}}
+		>
+			<ListItemButton
+				disableRipple
+				onClick={onClick}
+			>
+				<ListItemIcon>
+					<Checkbox
+						disableRipple
+						checked={isChecked}
+					/>
+				</ListItemIcon>
+				<ListItemText>
+					<Typography
+						fontWeight={
+							isBold ? "bold" : undefined
+						}
+					>
+						{option}
+					</Typography>
+				</ListItemText>
+			</ListItemButton>
+		</ListItem>
+	);
+};
+
 type CustomListProps = {
 	options: string[];
 	selectedOptions: string[];
@@ -125,7 +169,6 @@ const CustomList: FC<CustomListProps> = (
 				),
 			);
 		};
-
 	const renderedOptions = options.map(
 		(option, index) => {
 			const onToggle = toggleHandler(option);
@@ -133,33 +176,26 @@ const CustomList: FC<CustomListProps> = (
 				selectedOptions.includes(option);
 
 			return (
-				<ListItem
+				<CustomListItem
 					key={"option" + index}
-					disableGutters
-					disablePadding
-					sx={{
-						display: "inline",
-						width: "auto",
-					}}
-				>
-					<ListItemButton
-						disableRipple
-						onClick={onToggle}
-					>
-						<ListItemIcon>
-							<Checkbox
-								disableRipple
-								checked={isChecked}
-							/>
-						</ListItemIcon>
-						<ListItemText>
-							<Typography>{option}</Typography>
-						</ListItemText>
-					</ListItemButton>
-				</ListItem>
+					isChecked={isChecked}
+					onClick={onToggle}
+					option={option}
+				/>
 			);
 		},
 	);
+
+	const handleToggleAll = () => {
+		if (isPartiallSelect) {
+			onChange([]);
+			return;
+		}
+		onChange(options);
+	};
+
+	const isPartiallSelect =
+		selectedOptions.length > 0;
 
 	return (
 		<List
@@ -172,6 +208,12 @@ const CustomList: FC<CustomListProps> = (
 				flexWrap: "wrap",
 			}}
 		>
+			<CustomListItem
+				onClick={handleToggleAll}
+				option="ทั้งหมด"
+				isBold
+				isChecked={isPartiallSelect}
+			/>
 			{renderedOptions}
 		</List>
 	);
@@ -300,7 +342,10 @@ export const DriverReportTable: FC<
 					</TypographyButton>
 				</Stack>
 				<Collapse in={filterOpen}>
-					<Typography>คนขับรถ</Typography>
+					<Typography>
+						คนขับรถ (เลือกแล้ว{" "}
+						{selectedDrivers.length} รายชื่อ)
+					</Typography>
 					<CustomList
 						options={driverOptions}
 						selectedOptions={selectedDrivers}
@@ -333,7 +378,10 @@ export const DriverReportTable: FC<
 						</RadioGroup>
 					</FormControl>
 					<RadioGroup></RadioGroup>
-					<Typography>หัวข้อ</Typography>
+					<Typography>
+						หัวข้อ (เลือกแล้ว{" "}
+						{selectedTopics.length} หัวข้อ)
+					</Typography>
 					<CustomList
 						options={topicOptions}
 						selectedOptions={selectedTopics}

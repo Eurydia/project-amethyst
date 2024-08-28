@@ -1,10 +1,6 @@
-import {
-	CloseRounded,
-	SearchRounded,
-} from "@mui/icons-material";
+import { SearchRounded } from "@mui/icons-material";
 import {
 	Checkbox,
-	IconButton,
 	InputAdornment,
 	List,
 	ListItem,
@@ -19,13 +15,56 @@ import {
 import { matchSorter } from "match-sorter";
 import { FC, useMemo, useState } from "react";
 import { TypographyAlert } from "./TypographyAlert";
-import { TypographyTooltip } from "./TypographyTooltip";
+
+type CustomListItemProps = {
+	label: string;
+	isChecked?: boolean;
+	onClick: () => void;
+	isBold?: boolean;
+};
+const CustomListItem: FC<CustomListItemProps> = (
+	props,
+) => {
+	const { isBold, isChecked, onClick, label } =
+		props;
+	return (
+		<ListItem
+			disableGutters
+			disablePadding
+			sx={{
+				display: "inline",
+				width: "auto",
+			}}
+		>
+			<ListItemButton
+				disableRipple
+				onClick={onClick}
+			>
+				<ListItemIcon>
+					<Checkbox
+						disableRipple
+						checked={isChecked}
+					/>
+				</ListItemIcon>
+				<ListItemText>
+					<Typography
+						fontWeight={
+							isBold ? "bold" : undefined
+						}
+					>
+						{label}
+					</Typography>
+				</ListItemText>
+			</ListItemButton>
+		</ListItem>
+	);
+};
 
 type CustomListProps = {
 	options: string[];
 	registeredOptions: string[];
 	selectedOptions: string[];
-	toggleHandler: (option: string) => () => void;
+	onChange: (option: string[]) => void;
 };
 const CustomList: FC<CustomListProps> = (
 	props,
@@ -34,14 +73,28 @@ const CustomList: FC<CustomListProps> = (
 		options,
 		registeredOptions,
 		selectedOptions,
-		toggleHandler,
+		onChange,
 	} = props;
+
+	const toggleHandler =
+		(option: string) => () => {
+			if (!selectedOptions.includes(option)) {
+				onChange([...selectedOptions, option]);
+				return;
+			}
+			onChange(
+				selectedOptions.filter(
+					(selectOption) =>
+						selectOption !== option,
+				),
+			);
+		};
 
 	const renderedOptions = options.map(
 		(option, index) => {
 			const isNew =
 				!registeredOptions.includes(option);
-			const onToggle = toggleHandler(option);
+			const handleToggle = toggleHandler(option);
 			const isChecked =
 				selectedOptions.includes(option);
 			const label = isNew
@@ -49,33 +102,30 @@ const CustomList: FC<CustomListProps> = (
 				: option;
 
 			return (
-				<ListItem
+				<CustomListItem
 					key={"option" + index}
-					disableGutters
-					disablePadding
-					sx={{
-						display: "inline",
-						width: "auto",
-					}}
-				>
-					<ListItemButton
-						disableRipple
-						onClick={onToggle}
-					>
-						<ListItemIcon>
-							<Checkbox
-								disableRipple
-								checked={isChecked}
-							/>
-						</ListItemIcon>
-						<ListItemText>
-							<Typography>{label}</Typography>
-						</ListItemText>
-					</ListItemButton>
-				</ListItem>
+					onClick={handleToggle}
+					label={label}
+					isChecked={isChecked}
+				/>
 			);
 		},
 	);
+
+	const handleToggleAll = () => {
+		if (isPartiallySelect) {
+			onChange([]);
+			return;
+		}
+		const uniqueOptions = new Set([
+			...options,
+			...selectedOptions,
+		]);
+		onChange([...uniqueOptions]);
+	};
+
+	const isPartiallySelect =
+		selectedOptions.length > 0;
 
 	return (
 		<List
@@ -90,6 +140,12 @@ const CustomList: FC<CustomListProps> = (
 				gap: 1,
 			}}
 		>
+			<CustomListItem
+				label="ทั้งหมด"
+				onClick={handleToggleAll}
+				isChecked={isPartiallySelect}
+				isBold
+			/>
 			{renderedOptions}
 		</List>
 	);
@@ -106,15 +162,6 @@ export const TopicMultiSelect: FC<
 	const { options, value, onChange } = props;
 
 	const [search, setSearch] = useState("");
-
-	const toggleHandler =
-		(option: string) => () => {
-			if (!value.includes(option)) {
-				onChange([...value, option]);
-				return;
-			}
-			onChange(value.filter((v) => v !== option));
-		};
 
 	const filteredOptions = useMemo(() => {
 		const targetOptions = new Set([
@@ -167,29 +214,14 @@ export const TopicMultiSelect: FC<
 				Search for topics below, if the desired
 				topic does not exist, it will create one
 			</TypographyAlert>
-			<Stack
-				direction="row"
-				flexWrap="wrap"
-				alignItems="center"
-				spacing={1}
-			>
-				<Typography>
-					เลือกแล้ว {value.length} หัวข้อ
-				</Typography>
-				<TypographyTooltip title="ยกเลิกหัวข้อที่เลือกแล้ว">
-					<IconButton
-						size="small"
-						onClick={() => onChange([])}
-					>
-						<CloseRounded />
-					</IconButton>
-				</TypographyTooltip>
-			</Stack>
+			<Typography>
+				เลือกแล้ว {value.length} หัวข้อ
+			</Typography>
 			<CustomList
 				options={filteredOptions}
 				selectedOptions={value}
 				registeredOptions={options}
-				toggleHandler={toggleHandler}
+				onChange={onChange}
 			/>
 		</Stack>
 	);

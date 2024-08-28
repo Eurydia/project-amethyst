@@ -1,15 +1,16 @@
+import { DriverReportGeneralButton } from "$components/DriverReportGeneralButton";
+import { DriverReportMedicalButton } from "$components/DriverReportMedicalButton";
 import { DriverReportTable } from "$components/DriverReportTable";
+import { TypographyAlert } from "$components/TypographyAlert";
+import { TypographyButton } from "$components/TypographyButton";
 import {
 	EditRounded,
 	FolderRounded,
 } from "@mui/icons-material";
 import {
-	Alert,
-	Button,
 	List,
 	ListItem,
 	ListItemText,
-	ListSubheader,
 	Stack,
 	styled,
 	Toolbar,
@@ -17,16 +18,11 @@ import {
 } from "@mui/material";
 import { FC, ReactNode } from "react";
 import {
-	Link,
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverInfoPageLoaderData } from "./loader";
-import { TypographyAlert } from "$components/TypographyAlert";
-import { TypographyButton } from "$components/TypographyButton";
-import { DriverReportGeneralButton } from "$components/DriverReportGeneralButton";
-import { DriverReportMedicalButton } from "$components/DriverReportMedicalButton";
 
 const IMAGES = [
 	"https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&q=20",

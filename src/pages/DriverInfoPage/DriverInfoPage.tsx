@@ -25,6 +25,8 @@ import { toast } from "react-toastify";
 import { DriverInfoPageLoaderData } from "./loader";
 import { TypographyAlert } from "$components/TypographyAlert";
 import { TypographyButton } from "$components/TypographyButton";
+import { DriverReportGeneralButton } from "$components/DriverReportGeneralButton";
+import { DriverReportMedicalButton } from "$components/DriverReportMedicalButton";
 
 const IMAGES = [
 	"https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&q=20",
@@ -236,6 +238,15 @@ export const DriverInfoPage: FC = () => {
 			>
 				ตารางบันทึกประวัติการร้องเรียน
 			</Typography>
+			<Toolbar
+				variant="dense"
+				disableGutters
+			>
+				<DriverReportGeneralButton
+					variant="contained"
+					path="./report/general"
+				/>
+			</Toolbar>
 			<DriverReportTable
 				entries={generalReportEntries}
 				defaultSortBy="datetime_iso"
@@ -250,6 +261,15 @@ export const DriverInfoPage: FC = () => {
 			>
 				ตารางบันทึกผลการตรวจสารเสพติด
 			</Typography>
+			<Toolbar
+				variant="dense"
+				disableGutters
+			>
+				<DriverReportMedicalButton
+					variant="contained"
+					path="./report/medical"
+				/>
+			</Toolbar>
 			<DriverReportTable
 				entries={medicalReportEntries}
 				defaultSortBy="datetime_iso"

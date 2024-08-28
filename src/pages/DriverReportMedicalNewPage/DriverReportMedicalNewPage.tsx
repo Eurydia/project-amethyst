@@ -14,6 +14,7 @@ import {
 import { toast } from "react-toastify";
 import { DriverReportMedicalNewPageLoaderData } from "./loader";
 import { DriverReportFormData } from "$types/form-data";
+import { TypographyAlert } from "$components/TypographyAlert";
 
 export const DriverReportMedicalNewPage: FC =
 	() => {
@@ -44,25 +45,23 @@ export const DriverReportMedicalNewPage: FC =
 			submit({}, { action: "/" });
 
 		return (
-			<Container maxWidth="md">
-				<Stack spacing={2}>
-					<Typography variant="h1">
-						บันทึกผลการตรวจสารเสพติด
-					</Typography>
-					<Alert
-						severity="info"
-						icon={false}
-					>
-						<Typography>TBA</Typography>
-					</Alert>
-					<DriverReportForm
-						driverOptions={driverOptions}
-						initFormData={initFormData}
-						topicOptions={topicOptions}
-						onSubmit={handleSubmit}
-						onCancel={handleCancel}
-					/>
-				</Stack>
-			</Container>
+			<Stack spacing={1}>
+				<Typography variant="h1">
+					บันทึกผลการตรวจสารเสพติด
+				</Typography>
+				<TypographyAlert
+					severity="info"
+					icon={false}
+				>
+					TBA
+				</TypographyAlert>
+				<DriverReportForm
+					driverOptions={driverOptions}
+					initFormData={initFormData}
+					topicOptions={topicOptions}
+					onSubmit={handleSubmit}
+					onCancel={handleCancel}
+				/>
+			</Stack>
 		);
 	};

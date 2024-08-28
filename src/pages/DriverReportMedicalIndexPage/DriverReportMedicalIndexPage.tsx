@@ -10,6 +10,7 @@ import {
 import { FC } from "react";
 import { useLoaderData } from "react-router-dom";
 import { DriverReportMedicalIndexPageLoaderData } from "./loader";
+import { useDriverMedicalReportHeaders } from "$hooks/useDriverMedicalReportHeaders";
 
 export const DriverReportMedicalIndexPage: FC =
 	() => {
@@ -20,10 +21,13 @@ export const DriverReportMedicalIndexPage: FC =
 		} =
 			useLoaderData() as DriverReportMedicalIndexPageLoaderData;
 
+		const headers =
+			useDriverMedicalReportHeaders();
+
 		return (
 			<Stack spacing={1}>
 				<Typography variant="h1">
-					ตารางบันทึกผลการตรวจสารเสพติด
+					บันทึกการตรวจสารเสพติด
 				</Typography>
 				<TypographyAlert severity="info">
 					TBA
@@ -39,12 +43,13 @@ export const DriverReportMedicalIndexPage: FC =
 				</Toolbar>
 				<TableContainer>
 					<DriverReportTable
+						headers={headers}
 						defaultSortBy="datetime_iso"
 						defaultSortOrder="desc"
 						driverOptions={driverOptions}
 						entries={entries}
 						topicOptions={topicOptions}
-						searchPlaceholder="ค้นหาประวัติการตรวจสารเสพติด"
+						searchPlaceholder="ค้นหาบันทึกการตรวจสารเสพติด"
 					/>
 				</TableContainer>
 			</Stack>

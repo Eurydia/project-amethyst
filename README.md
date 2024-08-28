@@ -39,11 +39,11 @@ The vehicle assignment history contains the previous vehicles the driver has bee
 - [OO] driver/info/[driverId]/edit                : Edit info about a driver
 - [OO] driver/info/[driverId]/report/general      : Create a general report on a driver
 - [OO] driver/info/[driverId]/report/medical      : Create a medical report on a driver
-- [  ] driver/report/general                      : List all general report entires
+- [OO] driver/report/general                      : List all general report entires
 - [OO] driver/report/general/new                  : Create a general report
 - [  ] driver/report/general/info/[reportId]      : List info about a general report
 - [  ] driver/report/general/info/[reportId]/edit : Edit a general report
-- [  ] driver/report/medical                      : List all general report entires
+- [OO] driver/report/medical                      : List all general report entires
 - [OO] driver/report/medical/new                  : Create a medical report
 - [  ] driver/report/medical/info/[reportId]      : List info about a medical report
 - [  ] driver/report/medical/info/[reportId]/edit : Edit a medical report

@@ -23,6 +23,8 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverInfoPageLoaderData } from "./loader";
+import { useDriverGeneralReportHeaders } from "$hooks/useDriverGeneralReportHeaders";
+import { useDriverMedicalReportHeaders } from "$hooks/useDriverMedicalReportHeaders";
 
 const IMAGES = [
 	"https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&q=20",
@@ -96,6 +98,12 @@ export const DriverInfoPage: FC = () => {
 		generalReportEntries,
 		medicalReportEntries,
 	} = useLoaderData() as DriverInfoPageLoaderData;
+
+	const generalReportHeaders =
+		useDriverGeneralReportHeaders();
+	const medicalReportHeaders =
+		useDriverMedicalReportHeaders();
+
 	const submit = useSubmit();
 
 	return (
@@ -232,7 +240,7 @@ export const DriverInfoPage: FC = () => {
 				variant="h2"
 				id="general-report"
 			>
-				ตารางบันทึกประวัติการร้องเรียน
+				ประวัติการร้องเรียน
 			</Typography>
 			<Toolbar
 				variant="dense"
@@ -244,6 +252,7 @@ export const DriverInfoPage: FC = () => {
 				/>
 			</Toolbar>
 			<DriverReportTable
+				headers={generalReportHeaders}
 				entries={generalReportEntries}
 				defaultSortBy="datetime_iso"
 				defaultSortOrder="desc"
@@ -255,7 +264,7 @@ export const DriverInfoPage: FC = () => {
 				variant="h2"
 				id="medical-report"
 			>
-				ตารางบันทึกผลการตรวจสารเสพติด
+				ผลการตรวจสารเสพติด
 			</Typography>
 			<Toolbar
 				variant="dense"
@@ -267,12 +276,13 @@ export const DriverInfoPage: FC = () => {
 				/>
 			</Toolbar>
 			<DriverReportTable
+				headers={medicalReportHeaders}
 				entries={medicalReportEntries}
 				defaultSortBy="datetime_iso"
 				defaultSortOrder="desc"
 				driverOptions={driverOptions}
 				topicOptions={topicOptions}
-				searchPlaceholder="ค้นหาประวัติการตรวจสารเสพติด"
+				searchPlaceholder="ค้นหาผลการตรวจสารเสพติด"
 			/>
 		</Stack>
 	);

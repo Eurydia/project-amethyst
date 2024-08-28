@@ -22,7 +22,7 @@ export const DriverReportGeneralButton: FC<
 			startIcon={<FlagRounded />}
 			onClick={handleClick}
 		>
-			รายงานปัญหาคนขับรถ
+			ร้องเรียนคนขับรถ
 		</TypographyButton>
 	);
 };

@@ -29,6 +29,7 @@ const CustomListItem: FC<CustomListItemProps> = (
 		props;
 	return (
 		<ListItem
+			dense
 			disableGutters
 			disablePadding
 			sx={{
@@ -137,7 +138,6 @@ const CustomList: FC<CustomListProps> = (
 				display: "flex",
 				flexDirection: "row",
 				flexWrap: "wrap",
-				gap: 1,
 			}}
 		>
 			<CustomListItem

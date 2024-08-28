@@ -1,11 +1,8 @@
 import { postDriverReport } from "$backend/database/put";
 import { DriverReportForm } from "$components/DriverReportForm";
-import {
-	Alert,
-	Container,
-	Stack,
-	Typography,
-} from "@mui/material";
+import { TypographyAlert } from "$components/TypographyAlert";
+import { DriverReportFormData } from "$types/form-data";
+import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
 	useLoaderData,
@@ -13,8 +10,6 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverReportMedicalNewPageLoaderData } from "./loader";
-import { DriverReportFormData } from "$types/form-data";
-import { TypographyAlert } from "$components/TypographyAlert";
 
 export const DriverReportMedicalNewPage: FC =
 	() => {

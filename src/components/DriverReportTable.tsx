@@ -26,81 +26,9 @@ import {
 	Toolbar,
 	Typography,
 } from "@mui/material";
-import dayjs from "dayjs";
 import { FC, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 import { SortableTable } from "./SortableTable";
 import { TypographyButton } from "./TypographyButton";
-
-const TABLE_HEADERS: TableHeaderDefinition<DriverReport>[] =
-	[
-		{
-			key: "datetime_iso",
-			label: "เวลาและวันที่",
-			compare: (a, b) =>
-				dayjs(a.datetime_iso).unix() -
-				dayjs(b.datetime_iso).unix(),
-			render: (item) => (
-				<Typography>
-					{dayjs(item.datetime_iso)
-						.locale("th")
-						.format("HH:mm น. DD/MM/YYYY")}
-				</Typography>
-			),
-		},
-		{
-			key: "driver_name",
-			label: "ชื่อ-นามสกุล",
-			compare: (a, b) =>
-				a.driver_name.localeCompare(
-					b.driver_name,
-				),
-			render: (item) => (
-				<Typography
-					sx={{
-						textDecoration: "underline",
-						textDecorationStyle: "wavy",
-						textDecorationThickness: "from-font",
-						cursor: "pointer",
-					}}
-					onClick={() => {
-						window.navigator.clipboard.writeText(
-							`${item.driver_name} ${item.driver_surname}`,
-						);
-						toast.info(
-							"คัดลอกชื่อและนามสกุลแล้ว",
-						);
-					}}
-				>
-					{item.driver_name} {item.driver_surname}
-				</Typography>
-			),
-		},
-		{
-			key: "title",
-			label: "เรื่อง",
-			compare: null,
-			render: (item) => (
-				<Typography
-					component={Link}
-					to={"./info/" + item.id}
-				>
-					{item.title}
-				</Typography>
-			),
-		},
-		{
-			key: "topics",
-			label: "หัวข้อที่เกี่ยวข้อง",
-			compare: null,
-			render: (item) => (
-				<Typography>
-					{item.topics.join(", ")}
-				</Typography>
-			),
-		},
-	];
 
 type CustomListItemProps = {
 	option: string;
@@ -117,6 +45,7 @@ const CustomListItem: FC<CustomListItemProps> = (
 		<ListItem
 			disableGutters
 			disablePadding
+			dense
 			sx={{
 				display: "inline",
 				width: "auto",
@@ -220,6 +149,7 @@ const CustomList: FC<CustomListProps> = (
 };
 
 type DriverReportTableProps = {
+	headers: TableHeaderDefinition<DriverReport>[];
 	searchPlaceholder?: string;
 	driverOptions: string[];
 	topicOptions: string[];
@@ -231,6 +161,7 @@ export const DriverReportTable: FC<
 	DriverReportTableProps
 > = (props) => {
 	const {
+		headers,
 		entries,
 		defaultSortBy,
 		defaultSortOrder,
@@ -392,7 +323,7 @@ export const DriverReportTable: FC<
 			</Toolbar>
 			<SortableTable
 				rows={filteredEntries}
-				headers={TABLE_HEADERS}
+				headers={headers}
 				defaultSortBy={defaultSortBy}
 				defaultSortOrder={defaultSortOrder}
 			/>

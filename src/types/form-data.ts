@@ -20,6 +20,7 @@ export type DriverReport = {
 	content: string;
 	topics: string[];
 
+	driver_id: string;
 	driver_name: string;
 	driver_surname: string;
 };

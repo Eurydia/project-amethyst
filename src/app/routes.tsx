@@ -26,6 +26,10 @@ import {
 import { DriverReportGeneralIndexPage } from "$pages/DriverReportGeneralIndexPage";
 import { driverReportGeneralIndexPageLoader } from "$pages/DriverReportGeneralIndexPage/loader";
 import {
+	DriverReportGeneralInfoPage,
+	driverReportGeneralInfoPageLoader,
+} from "$pages/DriverReportGeneralInfoPage";
+import {
 	DriverReportGeneralNewPage,
 	driverReportGeneralNewPageLoader,
 } from "$pages/DriverReportGeneralNewPage";
@@ -225,8 +229,12 @@ export const routes = createBrowserRouter([
 											driverReportGeneralNewPageLoader,
 									},
 									{
-										path: "info/:reportId", // Show general report
-										element: null,
+										path: "info/:reportId", // Show medical report
+										element: (
+											<DriverReportGeneralInfoPage />
+										),
+										loader:
+											driverReportGeneralInfoPageLoader,
 									},
 									{
 										path: "info/:reportId/edit", // Edit report

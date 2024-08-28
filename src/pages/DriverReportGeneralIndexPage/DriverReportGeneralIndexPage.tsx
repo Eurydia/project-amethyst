@@ -10,6 +10,7 @@ import {
 import { FC } from "react";
 import { useLoaderData } from "react-router-dom";
 import { DriverReportGeneralIndexPageLoaderData } from "./loader";
+import { useDriverGeneralReportHeaders } from "$hooks/useDriverGeneralReportHeaders";
 
 export const DriverReportGeneralIndexPage: FC =
 	() => {
@@ -19,11 +20,13 @@ export const DriverReportGeneralIndexPage: FC =
 			topicOptions,
 		} =
 			useLoaderData() as DriverReportGeneralIndexPageLoaderData;
+		const headers =
+			useDriverGeneralReportHeaders();
 
 		return (
 			<Stack spacing={1}>
 				<Typography variant="h1">
-					ตารางบันทึกการร้องเรียนคนขับรถ
+					บันทึกการร้องเรียนคนขับรถ
 				</Typography>
 				<TypographyAlert severity="info">
 					TBA
@@ -39,12 +42,13 @@ export const DriverReportGeneralIndexPage: FC =
 				</Toolbar>
 				<TableContainer>
 					<DriverReportTable
+						headers={headers}
 						defaultSortBy="datetime_iso"
 						defaultSortOrder="desc"
 						driverOptions={driverOptions}
 						entries={entries}
 						topicOptions={topicOptions}
-						searchPlaceholder="ค้นหาประวัติการร้องเรียน"
+						searchPlaceholder="ค้นหาบันทึกการร้องเรียน"
 					/>
 				</TableContainer>
 			</Stack>

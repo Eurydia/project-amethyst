@@ -140,6 +140,18 @@ export const getDriverGeneralReportAllWithDriverId =
 		);
 	};
 
+export const getDriverGeneralReportWithId =
+	async (
+		reportId: string,
+	): Promise<DriverReportModel | null> => {
+		for (const report of driverGeneralReports) {
+			if (report.id === reportId) {
+				return report;
+			}
+		}
+		return null;
+	};
+
 let driverMedicalReportId = 0;
 const driverMedicalReports: DriverReportModel[] =
 	fakerTH.helpers.multiple(

@@ -29,7 +29,7 @@ export const DriverReportGeneralInfoPage: FC =
 		}[] = [
 			{
 				label: "ร้องเรียนเมื่อ",
-				value: dayjs(entry.datetime_iso)
+				value: dayjs(entry.datetime)
 					.locale("th")
 					.format(
 						"HH:mm น. วันdddที่ DD MMMM YYYY",
@@ -63,7 +63,7 @@ export const DriverReportGeneralInfoPage: FC =
 					key={"info" + index}
 					item
 					container
-					paddingY={1}
+					paddingY={2}
 					sx={{
 						backgroundColor: (theme) =>
 							alpha(

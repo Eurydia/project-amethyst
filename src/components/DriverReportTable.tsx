@@ -1,5 +1,5 @@
 import { filterItems } from "$core/filter";
-import { DriverReport } from "$types/form-data";
+import { DriverReport } from "$types/models";
 import { TableHeaderDefinition } from "$types/generics";
 import {
 	FilterAlt,
@@ -149,10 +149,10 @@ const CustomList: FC<CustomListProps> = (
 };
 
 type DriverReportTableProps = {
+	topicOptions: string[];
+	driverOptions: string[];
 	headers: TableHeaderDefinition<DriverReport>[];
 	searchPlaceholder?: string;
-	driverOptions: string[];
-	topicOptions: string[];
 	entries: DriverReport[];
 	defaultSortBy: keyof DriverReport;
 	defaultSortOrder: "asc" | "desc";
@@ -228,11 +228,8 @@ export const DriverReportTable: FC<
 				disableGutters
 				variant="dense"
 				sx={{
-					display: "flex",
-					flexDirection: "column",
 					alignItems: "flex-start",
 					flexWrap: "wrap",
-					gap: 1,
 				}}
 			>
 				<TextField
@@ -255,7 +252,7 @@ export const DriverReportTable: FC<
 					useFlexGap
 					direction="row"
 					justifyContent="space-between"
-					alignItems="center"
+					alignItems="baseline"
 					flexWrap="wrap"
 					width="100%"
 				>
@@ -272,55 +269,53 @@ export const DriverReportTable: FC<
 						ตัวกรองขั้นสูง
 					</TypographyButton>
 				</Stack>
-				<Collapse in={filterOpen}>
-					<Typography>
-						คนขับรถ (เลือกแล้ว{" "}
-						{selectedDrivers.length} รายชื่อ)
-					</Typography>
-					<CustomList
-						options={driverOptions}
-						selectedOptions={selectedDrivers}
-						onChange={setSelectedDrivers}
-					/>
-					<Divider flexItem />
-					<FormControl>
-						<FormLabel color="primary">
-							ประเภทการค้นหาหัวข้อ
-						</FormLabel>
-						<RadioGroup
-							row
-							value={topicMustHaveAll}
-							onChange={(e) =>
-								setTopicMustHaveAll(
-									e.target.value,
-								)
-							}
-						>
-							<FormControlLabel
-								value="yes"
-								control={<Radio />}
-								label="มีทุกหัวข้อที่เลือก"
-							/>
-							<FormControlLabel
-								value="no"
-								control={<Radio />}
-								label="มีอย่างน้อยหนึ่งหัวข้อที่เลือก"
-							/>
-						</RadioGroup>
-					</FormControl>
-					<RadioGroup></RadioGroup>
-					<Typography>
-						หัวข้อ (เลือกแล้ว{" "}
-						{selectedTopics.length} หัวข้อ)
-					</Typography>
-					<CustomList
-						options={topicOptions}
-						selectedOptions={selectedTopics}
-						onChange={setSelectedTopics}
-					/>
-					<Divider flexItem />
-				</Collapse>
 			</Toolbar>
+			<Collapse in={filterOpen}>
+				<Typography>
+					คนขับรถ (เลือกแล้ว{" "}
+					{selectedDrivers.length} รายชื่อ)
+				</Typography>
+				<CustomList
+					options={driverOptions}
+					selectedOptions={selectedDrivers}
+					onChange={setSelectedDrivers}
+				/>
+				<Divider flexItem />
+				<FormControl>
+					<FormLabel color="primary">
+						ประเภทการค้นหาหัวข้อ
+					</FormLabel>
+					<RadioGroup
+						row
+						value={topicMustHaveAll}
+						onChange={(e) =>
+							setTopicMustHaveAll(e.target.value)
+						}
+					>
+						<FormControlLabel
+							value="yes"
+							control={<Radio />}
+							label="มีทุกหัวข้อที่เลือก"
+						/>
+						<FormControlLabel
+							value="no"
+							control={<Radio />}
+							label="มีอย่างน้อยหนึ่งหัวข้อที่เลือก"
+						/>
+					</RadioGroup>
+				</FormControl>
+				<RadioGroup></RadioGroup>
+				<Typography>
+					หัวข้อ (เลือกแล้ว{" "}
+					{selectedTopics.length} หัวข้อ)
+				</Typography>
+				<CustomList
+					options={topicOptions}
+					selectedOptions={selectedTopics}
+					onChange={setSelectedTopics}
+				/>
+				<Divider flexItem />
+			</Collapse>
 			<SortableTable
 				rows={filteredEntries}
 				headers={headers}

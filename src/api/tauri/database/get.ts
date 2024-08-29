@@ -1,11 +1,54 @@
 import {
 	DriverModel,
 	DriverReportModel,
+	OperationalLogModel,
+	OperationalLog,
 	PickupRouteModel,
 	VehicleModel,
 } from "$types/models";
 import { fakerTH } from "@faker-js/faker";
 import dayjs from "dayjs";
+
+let operationLogId = 0;
+const operationLogs: OperationalLogModel[] =
+	fakerTH.helpers
+		.multiple(
+			() => {
+				const id = operationLogId.toString();
+				const uid = operationLogId % 10;
+				operationLogId++;
+
+				return {
+					driver_id: uid.toString(),
+					vehicle_id: uid.toString(),
+					route_id: uid.toString(),
+					end_date: dayjs(
+						fakerTH.date.past(),
+					).format(),
+					id,
+					start_date: dayjs(
+						fakerTH.date.past(),
+					).format(),
+				};
+			},
+			{
+				count: 100,
+			},
+		)
+		.flat();
+
+export const getOperationLogAll =
+	async (): Promise<OperationalLogModel[]> => {
+		return operationLogs;
+	};
+
+export const getOperationLogWithDriverId = async (
+	driverId: string,
+) => {
+	return operationLogs.filter(
+		(entry) => entry.driver_id === driverId,
+	);
+};
 
 let driverId = 0;
 const drivers: DriverModel[] =
@@ -105,7 +148,7 @@ const driverGeneralReports: DriverReportModel[] =
 				driverGeneralReportId++;
 				return fakerTH.helpers.multiple(
 					() => ({
-						datetime_iso: dayjs(
+						datetime: dayjs(
 							fakerTH.date.past(),
 						).format(),
 						title: fakerTH.lorem.sentence(),
@@ -159,7 +202,7 @@ const driverMedicalReports: DriverReportModel[] =
 			const id = driverMedicalReportId.toString();
 			driverMedicalReportId++;
 			return {
-				datetime_iso: dayjs(
+				datetime: dayjs(
 					fakerTH.date.past(),
 				).format(),
 				title: fakerTH.lorem.sentence(),

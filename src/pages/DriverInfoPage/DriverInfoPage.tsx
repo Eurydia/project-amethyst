@@ -1,14 +1,12 @@
 import { DriverReportGeneralButton } from "$components/DriverReportGeneralButton";
+import { DriverReportGeneralTable } from "$components/DriverReportGeneralTable";
 import { DriverReportMedicalButton } from "$components/DriverReportMedicalButton";
-import { DriverReportTable } from "$components/DriverReportTable";
+import { DriverReportMedicalTable } from "$components/DriverReportMedicalTable";
+import { Gallery } from "$components/Gallery";
+import { OperationalLogTable } from "$components/OperationalLogTable";
 import { TypographyAlert } from "$components/TypographyAlert";
 import { TypographyButton } from "$components/TypographyButton";
-import { useDriverGeneralReportHeaders } from "$hooks/useDriverGeneralReportHeaders";
-import { useDriverMedicalReportHeaders } from "$hooks/useDriverMedicalReportHeaders";
-import {
-	EditRounded,
-	FolderRounded,
-} from "@mui/icons-material";
+import { EditRounded } from "@mui/icons-material";
 import {
 	alpha,
 	Grid,
@@ -41,50 +39,6 @@ const StyledTypography = styled(Typography)({
 	textDecorationStyle: "wavy",
 	cursor: "pointer",
 });
-
-type GalleryProps = {
-	images: string[];
-};
-const Gallery: FC<GalleryProps> = (props) => {
-	const { images } = props;
-	return (
-		<Fragment>
-			<Toolbar
-				variant="dense"
-				disableGutters
-			>
-				<TypographyButton
-					variant="outlined"
-					startIcon={<FolderRounded />}
-				>
-					เปิดแฟ้มภาพ
-				</TypographyButton>
-			</Toolbar>
-			<Stack
-				direction="row"
-				overflow="auto"
-				width="100%"
-				spacing={1}
-				useFlexGap
-				flexWrap="nowrap"
-			>
-				{images.map((image, index) => (
-					<img
-						key={"gallery" + index}
-						src={image}
-						width="33%"
-						style={{
-							maxWidth: "200px",
-							objectPosition: "50% 50%",
-							aspectRatio: "1/1",
-							objectFit: "cover",
-						}}
-					/>
-				))}
-			</Stack>
-		</Fragment>
-	);
-};
 
 const TableOfContents: FC = () => {
 	return (
@@ -120,7 +74,7 @@ const TableOfContents: FC = () => {
 								component="a"
 								href="#general-report"
 							>
-								ตารางบันทึกประวัติการร้องเรียน
+								ประวัติการร้องเรียน
 							</Typography>
 						</ListItemText>
 					</ListItem>
@@ -133,7 +87,7 @@ const TableOfContents: FC = () => {
 								component="a"
 								href="#medical-report"
 							>
-								ตารางบันทึกผลการตรวจสารเสพติด
+								ผลการตรวจสารเสพติด
 							</Typography>
 						</ListItemText>
 					</ListItem>
@@ -146,16 +100,12 @@ const TableOfContents: FC = () => {
 export const DriverInfoPage: FC = () => {
 	const {
 		driver,
-		topicOptions,
 		driverOptions,
+		topicOptions,
+		operationalLogEntries,
 		generalReportEntries,
 		medicalReportEntries,
 	} = useLoaderData() as DriverInfoPageLoaderData;
-
-	const generalReportHeaders =
-		useDriverGeneralReportHeaders();
-	const medicalReportHeaders =
-		useDriverMedicalReportHeaders();
 
 	const submit = useSubmit();
 
@@ -272,7 +222,29 @@ export const DriverInfoPage: FC = () => {
 				</TypographyButton>
 			</Toolbar>
 			<Grid container>{renderedInfoItems}</Grid>
-			<Gallery images={IMAGES} />
+			<Gallery
+				images={IMAGES}
+				onOpenRoot={() => {}}
+			/>
+			<Typography
+				variant="h2"
+				id="operational-log"
+			>
+				ประวัติการเดินรถ
+			</Typography>
+			<Toolbar
+				variant="dense"
+				disableGutters
+			>
+				<TypographyButton variant="outlined">
+					TBA
+				</TypographyButton>
+			</Toolbar>
+			<OperationalLogTable
+				entries={operationalLogEntries}
+				drivers={[driver]}
+				disableDriverFilterSelection
+			/>
 			<Typography
 				variant="h2"
 				id="general-report"
@@ -288,14 +260,10 @@ export const DriverInfoPage: FC = () => {
 					path="./report/general"
 				/>
 			</Toolbar>
-			<DriverReportTable
-				headers={generalReportHeaders}
+			<DriverReportGeneralTable
 				entries={generalReportEntries}
-				defaultSortBy="datetime_iso"
-				defaultSortOrder="desc"
 				driverOptions={driverOptions}
 				topicOptions={topicOptions}
-				searchPlaceholder="ค้นหาประวัติการร้องเรียน"
 			/>
 			<Typography
 				variant="h2"
@@ -312,14 +280,10 @@ export const DriverInfoPage: FC = () => {
 					path="./report/medical"
 				/>
 			</Toolbar>
-			<DriverReportTable
-				headers={medicalReportHeaders}
-				entries={medicalReportEntries}
-				defaultSortBy="datetime_iso"
-				defaultSortOrder="desc"
+			<DriverReportMedicalTable
 				driverOptions={driverOptions}
 				topicOptions={topicOptions}
-				searchPlaceholder="ค้นหาผลการตรวจสารเสพติด"
+				entries={medicalReportEntries}
 			/>
 		</Stack>
 	);

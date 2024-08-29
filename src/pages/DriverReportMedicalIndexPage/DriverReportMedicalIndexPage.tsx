@@ -1,16 +1,14 @@
 import { DriverReportMedicalButton } from "$components/DriverReportMedicalButton";
-import { DriverReportTable } from "$components/DriverReportTable";
+import { DriverReportMedicalTable } from "$components/DriverReportMedicalTable";
 import { TypographyAlert } from "$components/TypographyAlert";
 import {
 	Stack,
-	TableContainer,
 	Toolbar,
 	Typography,
 } from "@mui/material";
 import { FC } from "react";
 import { useLoaderData } from "react-router-dom";
 import { DriverReportMedicalIndexPageLoaderData } from "./loader";
-import { useDriverMedicalReportHeaders } from "$hooks/useDriverMedicalReportHeaders";
 
 export const DriverReportMedicalIndexPage: FC =
 	() => {
@@ -20,9 +18,6 @@ export const DriverReportMedicalIndexPage: FC =
 			topicOptions,
 		} =
 			useLoaderData() as DriverReportMedicalIndexPageLoaderData;
-
-		const headers =
-			useDriverMedicalReportHeaders();
 
 		return (
 			<Stack spacing={1}>
@@ -41,17 +36,11 @@ export const DriverReportMedicalIndexPage: FC =
 						variant="contained"
 					/>
 				</Toolbar>
-				<TableContainer>
-					<DriverReportTable
-						headers={headers}
-						defaultSortBy="datetime_iso"
-						defaultSortOrder="desc"
-						driverOptions={driverOptions}
-						entries={entries}
-						topicOptions={topicOptions}
-						searchPlaceholder="ค้นหาบันทึกการตรวจสารเสพติด"
-					/>
-				</TableContainer>
+				<DriverReportMedicalTable
+					driverOptions={driverOptions}
+					entries={entries}
+					topicOptions={topicOptions}
+				/>
 			</Stack>
 		);
 	};

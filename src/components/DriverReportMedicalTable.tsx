@@ -1,21 +1,22 @@
-import { DriverReport } from "$types/form-data";
 import { TableHeaderDefinition } from "$types/generics";
+import { DriverReport } from "$types/models";
 import { Typography } from "@mui/material";
-import dayjs from "dayjs";
-import { useRef } from "react";
+import { FC } from "react";
+import { DriverReportTable } from "./DriverReportTable";
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
 
 const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReport>[] =
 	[
 		{
-			key: "datetime_iso",
+			key: "datetime",
 			label: "เวลาและวันที่",
 			compare: (a, b) =>
-				dayjs(a.datetime_iso).unix() -
-				dayjs(b.datetime_iso).unix(),
+				dayjs(a.datetime).unix() -
+				dayjs(b.datetime).unix(),
 			render: (item) => (
 				<Typography>
-					{dayjs(item.datetime_iso)
+					{dayjs(item.datetime)
 						.locale("th")
 						.format("HH:mm น. DD/MM/YYYY")}
 				</Typography>
@@ -23,7 +24,7 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReport>[] =
 		},
 		{
 			key: "driver_name",
-			label: "ชื่อ-นามสกุล",
+			label: "ชื่อและนามสกุล",
 			compare: (a, b) =>
 				a.driver_name.localeCompare(
 					b.driver_name,
@@ -65,11 +66,26 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReport>[] =
 		},
 	];
 
-export const useDriverMedicalReportHeaders =
-	() => {
-		const { current } = useRef<
-			TableHeaderDefinition<DriverReport>[]
-		>(HEADER_DEFINITIONS);
+type DriverReportMedicalTableProps = {
+	topicOptions: string[];
+	driverOptions: string[];
+	entries: DriverReport[];
+};
+export const DriverReportMedicalTable: FC<
+	DriverReportMedicalTableProps
+> = (props) => {
+	const { entries, driverOptions, topicOptions } =
+		props;
 
-		return current;
-	};
+	return (
+		<DriverReportTable
+			headers={HEADER_DEFINITIONS}
+			entries={entries}
+			defaultSortBy="datetime"
+			defaultSortOrder="desc"
+			searchPlaceholder="ค้นหาผลการตรวจสารเสพติด"
+			driverOptions={driverOptions}
+			topicOptions={topicOptions}
+		/>
+	);
+};

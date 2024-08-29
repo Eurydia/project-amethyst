@@ -2,12 +2,17 @@ import {
 	getDriverGeneralReportAllWithDriverId,
 	getDriverMedicalReportAllWithDriverId,
 	getDriverWithId,
+	getOperationLogWithDriverId,
 	getTopicAll,
 } from "$backend/database/get";
-import { DriverReport } from "$types/form-data";
+import {
+	DriverReport,
+	OperationalLog,
+} from "$types/models";
 import {
 	DriverModel,
 	DriverReportModel,
+	OperationalLogModel,
 } from "$types/models";
 import {
 	json,
@@ -15,11 +20,12 @@ import {
 } from "react-router-dom";
 
 export type DriverInfoPageLoaderData = {
-	driver: DriverModel;
 	topicOptions: string[];
 	driverOptions: string[];
+	driver: DriverModel;
 	generalReportEntries: DriverReport[];
 	medicalReportEntries: DriverReport[];
+	operationalLogEntries: OperationalLog[];
 };
 
 export const driverInfoPageLoader: LoaderFunction =
@@ -42,20 +48,7 @@ export const driverInfoPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-
-		const driverOptions = [
-			`${driver.name} ${driver.surname}`,
-		];
-		const topicOptions = await getTopicAll();
-		const rawGeneralReportEntries =
-			await getDriverGeneralReportAllWithDriverId(
-				driverId,
-			);
-		const rawMedicalReportEntries =
-			await getDriverMedicalReportAllWithDriverId(
-				driverId,
-			);
-		const entryMapper = (
+		const mapper = (
 			rawEntry: DriverReportModel,
 		) => {
 			const entry: DriverReport = {
@@ -66,14 +59,43 @@ export const driverInfoPageLoader: LoaderFunction =
 			};
 			return entry;
 		};
-		const generalReportEntries =
-			rawGeneralReportEntries.map(entryMapper);
-		const medicalReportEntries =
-			rawMedicalReportEntries.map(entryMapper);
+		const generalReportEntries = (
+			await getDriverGeneralReportAllWithDriverId(
+				driverId,
+			)
+		).map(mapper);
+		const medicalReportEntries = (
+			await getDriverMedicalReportAllWithDriverId(
+				driverId,
+			)
+		).map(mapper);
+
+		const operationalLogEntries: OperationalLog[] =
+			(
+				await getOperationLogWithDriverId(
+					driver.id,
+				)
+			).map((rawEntry) => {
+				const entry: OperationalLog = {
+					...rawEntry,
+					driver_name: driver.name,
+					driver_surname: driver.surname,
+					vehicle_license_plate: "123456",
+					route_name: "123432432",
+				};
+				return entry;
+			});
+
+		const topicOptions = await getTopicAll();
+		const driverOptions = [
+			`${driver.name} ${driver.surname}`,
+		];
+
 		const loaderData: DriverInfoPageLoaderData = {
-			topicOptions,
 			driverOptions,
+			topicOptions,
 			driver,
+			operationalLogEntries,
 			generalReportEntries,
 			medicalReportEntries,
 		};

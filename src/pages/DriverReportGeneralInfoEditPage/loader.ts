@@ -61,7 +61,7 @@ export const driverReportGeneralInfoEditPageLoader: LoaderFunction =
 		const driverOptions = [driver];
 		const initFormData: DriverReportFormData = {
 			content: rawEntry.content,
-			datetime: rawEntry.datetime_iso,
+			datetime: rawEntry.datetime,
 			topics: rawEntry.topics.split(","),
 			driver: driver,
 			title: rawEntry.title,

@@ -1,16 +1,14 @@
 import { DriverReportGeneralButton } from "$components/DriverReportGeneralButton";
-import { DriverReportTable } from "$components/DriverReportTable";
+import { DriverReportGeneralTable } from "$components/DriverReportGeneralTable";
 import { TypographyAlert } from "$components/TypographyAlert";
 import {
 	Stack,
-	TableContainer,
 	Toolbar,
 	Typography,
 } from "@mui/material";
 import { FC } from "react";
 import { useLoaderData } from "react-router-dom";
 import { DriverReportGeneralIndexPageLoaderData } from "./loader";
-import { useDriverGeneralReportHeaders } from "$hooks/useDriverGeneralReportHeaders";
 
 export const DriverReportGeneralIndexPage: FC =
 	() => {
@@ -20,8 +18,6 @@ export const DriverReportGeneralIndexPage: FC =
 			topicOptions,
 		} =
 			useLoaderData() as DriverReportGeneralIndexPageLoaderData;
-		const headers =
-			useDriverGeneralReportHeaders();
 
 		return (
 			<Stack spacing={1}>
@@ -40,17 +36,11 @@ export const DriverReportGeneralIndexPage: FC =
 						variant="contained"
 					/>
 				</Toolbar>
-				<TableContainer>
-					<DriverReportTable
-						headers={headers}
-						defaultSortBy="datetime_iso"
-						defaultSortOrder="desc"
-						driverOptions={driverOptions}
-						entries={entries}
-						topicOptions={topicOptions}
-						searchPlaceholder="ค้นหาบันทึกการร้องเรียน"
-					/>
-				</TableContainer>
+				<DriverReportGeneralTable
+					driverOptions={driverOptions}
+					entries={entries}
+					topicOptions={topicOptions}
+				/>
 			</Stack>
 		);
 	};

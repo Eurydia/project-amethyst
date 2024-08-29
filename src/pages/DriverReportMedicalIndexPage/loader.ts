@@ -4,7 +4,7 @@ import {
 	getDriverWithId,
 	getTopicAll,
 } from "$backend/database/get";
-import { DriverReport } from "$types/form-data";
+import { DriverReport } from "$types/models";
 import { LoaderFunction } from "react-router-dom";
 
 export type DriverReportMedicalIndexPageLoaderData =

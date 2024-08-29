@@ -2,26 +2,27 @@ import { TypographyAlert } from "$components/TypographyAlert";
 import { TypographyButton } from "$components/TypographyButton";
 import { EditRounded } from "@mui/icons-material";
 import {
-	Box,
+	alpha,
 	Grid,
 	Stack,
 	Toolbar,
 	Typography,
 } from "@mui/material";
-import { FC, Fragment, ReactNode } from "react";
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import { FC, ReactNode } from "react";
 import {
 	Link,
 	useLoaderData,
+	useSubmit,
 } from "react-router-dom";
 import { DriverReportGeneralInfoPageLoaderData } from "./loader";
-import dayjs from "dayjs";
-import "dayjs/locale/th";
 
 export const DriverReportGeneralInfoPage: FC =
 	() => {
 		const { driver, entry } =
 			useLoaderData() as DriverReportGeneralInfoPageLoaderData;
-
+		const submit = useSubmit();
 		const infoItems: {
 			label: string;
 			value: ReactNode;
@@ -58,11 +59,27 @@ export const DriverReportGeneralInfoPage: FC =
 
 		const renderedInfoItems = infoItems.map(
 			(item, index) => (
-				<Fragment key={"info" + index}>
+				<Grid
+					key={"info" + index}
+					item
+					container
+					paddingY={1}
+					sx={{
+						backgroundColor: (theme) =>
+							alpha(
+								index % 2 === 0
+									? theme.palette.primary.main
+									: theme.palette.common.white,
+								0.05,
+							),
+					}}
+				>
 					<Grid
 						item
 						xs={12}
 						md={3}
+						display="flex"
+						alignItems="center"
 					>
 						<Typography fontWeight="bold">
 							{item.label}
@@ -75,7 +92,7 @@ export const DriverReportGeneralInfoPage: FC =
 					>
 						<Typography>{item.value}</Typography>
 					</Grid>
-				</Fragment>
+				</Grid>
 			),
 		);
 
@@ -94,18 +111,14 @@ export const DriverReportGeneralInfoPage: FC =
 					<TypographyButton
 						startIcon={<EditRounded />}
 						variant="outlined"
+						onClick={() =>
+							submit({}, { action: "./edit" })
+						}
 					>
 						แก้ไขข้อมูล
 					</TypographyButton>
 				</Toolbar>
-				<Box width="75%">
-					<Grid
-						container
-						spacing={2}
-					>
-						{renderedInfoItems}
-					</Grid>
-				</Box>
+				<Grid container>{renderedInfoItems}</Grid>
 			</Stack>
 		);
 	};

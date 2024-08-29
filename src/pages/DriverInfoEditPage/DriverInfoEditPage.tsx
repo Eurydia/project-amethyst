@@ -1,5 +1,5 @@
 import { postDriver } from "$backend/database/put";
-import { DriverForm } from "$components/DriverRegisterForm";
+import { DriverForm } from "$components/DriverForm";
 import { DriverFormData } from "$types/form-data";
 import {
 	Container,

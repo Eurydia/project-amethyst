@@ -3,9 +3,8 @@ import { DriverModel } from "$types/models";
 import { SaveRounded } from "@mui/icons-material";
 import {
 	alpha,
-	Box,
 	Grid,
-	Paper,
+	Stack,
 	TextField,
 	Typography,
 } from "@mui/material";
@@ -13,7 +12,7 @@ import {
 	DateField,
 	TimeField,
 } from "@mui/x-date-pickers";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { DriverSelect } from "./DriverSelect";
 import { TopicMultiSelect } from "./TopicMultiSelect";
@@ -56,44 +55,6 @@ export const DriverReportForm: FC<
 	const [fieldDriver, setFieldDriver] = useState(
 		initFormData.driver,
 	);
-
-	const handleDateChange = (
-		value: Dayjs | null,
-		_: unknown,
-	) => {
-		if (value === null) {
-			return;
-		}
-		setFieldDate(value);
-	};
-
-	const handleTimeChange = (
-		value: Dayjs | null,
-		_: unknown,
-	) => {
-		if (value === null) {
-			return;
-		}
-		setFieldTime(value);
-	};
-
-	const handleTitleChange = (
-		e: React.ChangeEvent<HTMLInputElement>,
-	) => {
-		setFieldTitle(e.target.value);
-	};
-
-	const handleContentChange = (
-		e: React.ChangeEvent<HTMLInputElement>,
-	) => {
-		setFieldContent(e.target.value);
-	};
-
-	const handleFieldTopicsChange = (
-		values: string[],
-	) => {
-		setFieldTopics(values);
-	};
 
 	const handleSubmit = async () => {
 		if (isFormIncomplete) {
@@ -139,7 +100,12 @@ export const DriverReportForm: FC<
 					fullWidth
 					formatDensity="spacious"
 					value={fieldTime}
-					onChange={handleTimeChange}
+					onChange={(value) => {
+						if (value === null) {
+							return;
+						}
+						setFieldTime(value);
+					}}
 					format="HH:mm น."
 				/>
 			),
@@ -151,7 +117,12 @@ export const DriverReportForm: FC<
 					fullWidth
 					formatDensity="spacious"
 					value={fieldDate}
-					onChange={handleDateChange}
+					onChange={(value) => {
+						if (value === null) {
+							return;
+						}
+						setFieldDate(value);
+					}}
 					format="DD/MM/YYYY"
 				/>
 			),
@@ -173,8 +144,10 @@ export const DriverReportForm: FC<
 				<TextField
 					fullWidth
 					value={fieldTitle}
-					onChange={handleTitleChange}
-					placeholder="เรื่อง"
+					onChange={(e) =>
+						setFieldTitle(e.target.value)
+					}
+					placeholder={initFormData.title}
 				/>
 			),
 		},
@@ -186,8 +159,10 @@ export const DriverReportForm: FC<
 					multiline
 					minRows={6}
 					value={fieldContent}
-					onChange={handleContentChange}
-					placeholder="รายละเอียด"
+					onChange={(e) =>
+						setFieldContent(e.target.value)
+					}
+					placeholder={initFormData.content}
 				/>
 			),
 		},
@@ -197,19 +172,19 @@ export const DriverReportForm: FC<
 				<TopicMultiSelect
 					options={topicOptions}
 					value={fieldTopics}
-					onChange={handleFieldTopicsChange}
+					onChange={setFieldTopics}
 				/>
 			),
 		},
 	];
 	const renderedFormItems = formItems.map(
 		(item, index) => (
-			<Paper
+			<Grid
 				key={"form-item" + index}
-				elevation={0}
-				square
+				item
+				container
+				paddingY={1}
 				sx={{
-					widows: "100%",
 					backgroundColor: ({ palette }) =>
 						alpha(
 							index % 2 === 1
@@ -220,54 +195,41 @@ export const DriverReportForm: FC<
 				}}
 			>
 				<Grid
-					container
-					spacing={1}
+					item
+					xs={12}
+					md={3}
+					display="flex"
+					alignItems="center"
 				>
-					<Grid
-						item
-						xs={12}
-						md={2}
-						display="flex"
-						alignItems="center"
-					>
-						<Typography fontWeight="bold">
-							{item.label}
-						</Typography>
-					</Grid>
-					<Grid
-						item
-						xs={12}
-						md={9}
-					>
-						{item.value}
-					</Grid>
+					<Typography fontWeight="bold">
+						{item.label}
+					</Typography>
 				</Grid>
-			</Paper>
+				<Grid
+					item
+					xs={12}
+					md={8}
+				>
+					{item.value}
+				</Grid>
+			</Grid>
 		),
 	);
 
 	return (
-		<Box>
+		<Grid container>
+			{renderedFormItems}
 			<Grid
-				container
-				spacing={1}
+				item
+				xs={12}
+				paddingY={1}
 			>
-				<Grid
-					item
-					xs={12}
-					display="flex"
-					gap={1}
-					flexDirection="column"
-				>
-					{renderedFormItems}
-				</Grid>
-				<Grid
-					item
-					xs={12}
+				<Stack
 					display="flex"
 					flexDirection="row"
 					flexWrap="wrap"
-					gap={1}
+					spacing={1}
+					useFlexGap
 				>
 					<TypographyButton
 						disabled={isFormIncomplete}
@@ -283,8 +245,8 @@ export const DriverReportForm: FC<
 					>
 						ยกเลิก
 					</TypographyButton>
-				</Grid>
+				</Stack>
 			</Grid>
-		</Box>
+		</Grid>
 	);
 };

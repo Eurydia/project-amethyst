@@ -1,21 +1,18 @@
 import { postDriver } from "$backend/database/put";
-import { DriverForm } from "$components/DriverRegisterForm";
+import { DriverForm } from "$components/DriverForm";
+import { DriverFormData } from "$types/form-data";
 import {
 	Alert,
-	Box,
-	Container,
-	Paper,
 	Stack,
 	Typography,
 } from "@mui/material";
-import { FC, Fragment } from "react";
+import { FC } from "react";
 import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverNewPageLoaderData } from "./loader";
-import { DriverFormData } from "$types/form-data";
 
 export const DriverNewPage: FC = () => {
 	const { initFormData } =

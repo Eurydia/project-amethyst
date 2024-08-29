@@ -1,10 +1,13 @@
 import { DriverFormData } from "$types/form-data";
 import { AddRounded } from "@mui/icons-material";
 import {
+	alpha,
 	Grid,
-	TextField
+	Stack,
+	TextField,
+	Typography,
 } from "@mui/material";
-import { ChangeEvent, FC, useState } from "react";
+import { FC, ReactNode, useState } from "react";
 import { DriverLicenseSelect } from "./DriverLicenseSelect";
 import { TypographyButton } from "./TypographyButton";
 
@@ -30,14 +33,6 @@ export const DriverForm: FC<DriverFormProps> = (
 	const [fieldLicenseType, setFieldLicenseType] =
 		useState(initFormData.license_type);
 
-	const handleFieldContactChange = (
-		e: ChangeEvent<
-			HTMLInputElement | HTMLTextAreaElement
-		>,
-	) => {
-		setFieldContact(e.target.value);
-	};
-
 	const handleSubmit = () => {
 		if (isFormIncomplete) {
 			return;
@@ -61,18 +56,14 @@ export const DriverForm: FC<DriverFormProps> = (
 	const isFormIncomplete =
 		missingFieldName || missingFieldLastName;
 
-	return (
-		<Grid
-			container
-			spacing={1}
-		>
-			<Grid
-				item
-				xs={12}
-				md={6}
-			>
+	const formItems: {
+		label: string;
+		value: ReactNode;
+	}[] = [
+		{
+			label: "ชื่อ",
+			value: (
 				<TextField
-					required
 					fullWidth
 					autoFocus
 					error={missingFieldName}
@@ -80,67 +71,118 @@ export const DriverForm: FC<DriverFormProps> = (
 					onChange={(e) =>
 						setFieldName(e.target.value)
 					}
-					placeholder="ชื่อ"
+					placeholder={initFormData.name}
 				/>
-			</Grid>
-			<Grid
-				item
-				xs={12}
-				md={6}
-			>
+			),
+		},
+		{
+			label: "นามสกุล",
+			value: (
 				<TextField
-					required
 					fullWidth
 					error={missingFieldLastName}
 					value={fieldSurname}
 					onChange={(e) =>
 						setFielSurname(e.target.value)
 					}
-					placeholder="นามสกุล"
+					placeholder={initFormData.surname}
 				/>
-			</Grid>
-			<Grid
-				item
-				xs={12}
-			>
+			),
+		},
+		{
+			label: "เบอร์ติดต่อ",
+			value: (
 				<TextField
 					fullWidth
-					placeholder="เบอร์ติดต่อ"
+					placeholder={initFormData.contact}
 					value={fieldContact}
-					onChange={handleFieldContactChange}
+					onChange={(e) =>
+						setFieldContact(e.target.value)
+					}
 				/>
-			</Grid>
-			<Grid
-				item
-				xs={12}
-			>
+			),
+		},
+		{
+			label: "ประเภทใบขับขี่",
+			value: (
 				<DriverLicenseSelect
 					value={fieldLicenseType}
 					onChange={setFieldLicenseType}
 				/>
+			),
+		},
+	];
+	const renderedFormItems = formItems.map(
+		(item, index) => (
+			<Grid
+				key={"form-item" + index}
+				container
+				item
+				paddingY={1}
+				sx={{
+					backgroundColor: ({ palette }) =>
+						alpha(
+							index % 2 === 1
+								? palette.primary.light
+								: palette.common.white,
+							0.05,
+						),
+				}}
+			>
+				<Grid
+					item
+					xs={12}
+					sm={3}
+					display="flex"
+					alignItems="center"
+				>
+					<Typography
+						fontWeight="bold"
+						width={200}
+					>
+						{item.label}
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={8}
+				>
+					{item.value}
+				</Grid>
 			</Grid>
+		),
+	);
+
+	return (
+		<Grid container>
+			{renderedFormItems}
 			<Grid
 				item
 				xs={12}
-				display="flex"
-				flexDirection="row"
-				flexWrap="wrap"
-				gap={1}
+				paddingY={1}
 			>
-				<TypographyButton
-					disabled={isFormIncomplete}
-					startIcon={<AddRounded />}
-					variant="contained"
-					onClick={handleSubmit}
+				<Stack
+					spacing={1}
+					flexDirection="row"
+					flexWrap="wrap"
+					useFlexGap
 				>
-					ลงทะเบียน
-				</TypographyButton>
-				<TypographyButton
-					variant="outlined"
-					onClick={handleCancel}
-				>
-					ยกเลิก
-				</TypographyButton>
+					<TypographyButton
+						disabled={isFormIncomplete}
+						startIcon={<AddRounded />}
+						variant="contained"
+						onClick={handleSubmit}
+					>
+						ลงทะเบียน
+					</TypographyButton>
+					<TypographyButton
+						variant="outlined"
+						onClick={handleCancel}
+					>
+						ยกเลิก
+					</TypographyButton>
+				</Stack>
 			</Grid>
 		</Grid>
 	);

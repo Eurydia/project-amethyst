@@ -1,15 +1,12 @@
+import { LockRounded } from "@mui/icons-material";
 import {
 	Autocomplete,
 	InputAdornment,
 	TextField,
 } from "@mui/material";
-import { DriverModel } from "../types/models";
 import { FC, SyntheticEvent } from "react";
 import { filterItems } from "../core/filter";
-import {
-	LockRounded,
-	PersonRounded,
-} from "@mui/icons-material";
+import { DriverModel } from "../types/models";
 
 type DriverSelectProps = {
 	showError?: boolean;
@@ -44,11 +41,6 @@ export const DriverSelect: FC<
 					{...rest}
 					InputProps={{
 						...InputProps,
-						startAdornment: (
-							<InputAdornment position="start">
-								<PersonRounded />
-							</InputAdornment>
-						),
 						endAdornment: (
 							<InputAdornment position="end">
 								{disabled ? (

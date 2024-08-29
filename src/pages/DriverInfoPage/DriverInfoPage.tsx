@@ -3,12 +3,14 @@ import { DriverReportMedicalButton } from "$components/DriverReportMedicalButton
 import { DriverReportTable } from "$components/DriverReportTable";
 import { TypographyAlert } from "$components/TypographyAlert";
 import { TypographyButton } from "$components/TypographyButton";
+import { useDriverGeneralReportHeaders } from "$hooks/useDriverGeneralReportHeaders";
+import { useDriverMedicalReportHeaders } from "$hooks/useDriverMedicalReportHeaders";
 import {
 	EditRounded,
 	FolderRounded,
 } from "@mui/icons-material";
 import {
-	Box,
+	alpha,
 	Grid,
 	List,
 	ListItem,
@@ -25,8 +27,6 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverInfoPageLoaderData } from "./loader";
-import { useDriverGeneralReportHeaders } from "$hooks/useDriverGeneralReportHeaders";
-import { useDriverMedicalReportHeaders } from "$hooks/useDriverMedicalReportHeaders";
 
 const IMAGES = [
 	"https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&q=20",
@@ -48,28 +48,98 @@ type GalleryProps = {
 const Gallery: FC<GalleryProps> = (props) => {
 	const { images } = props;
 	return (
-		<Stack
-			direction="row"
-			overflow="auto"
-			width="100%"
-			spacing={1}
-			useFlexGap
-			flexWrap="nowrap"
-		>
-			{images.map((image, index) => (
-				<img
-					key={"gallery" + index}
-					src={image}
-					width="33%"
-					style={{
-						maxWidth: "200px",
-						objectPosition: "50% 50%",
-						aspectRatio: "1/1",
-						objectFit: "cover",
-					}}
-				/>
-			))}
-		</Stack>
+		<Fragment>
+			<Toolbar
+				variant="dense"
+				disableGutters
+			>
+				<TypographyButton
+					variant="outlined"
+					startIcon={<FolderRounded />}
+				>
+					เปิดแฟ้มภาพ
+				</TypographyButton>
+			</Toolbar>
+			<Stack
+				direction="row"
+				overflow="auto"
+				width="100%"
+				spacing={1}
+				useFlexGap
+				flexWrap="nowrap"
+			>
+				{images.map((image, index) => (
+					<img
+						key={"gallery" + index}
+						src={image}
+						width="33%"
+						style={{
+							maxWidth: "200px",
+							objectPosition: "50% 50%",
+							aspectRatio: "1/1",
+							objectFit: "cover",
+						}}
+					/>
+				))}
+			</Stack>
+		</Fragment>
+	);
+};
+
+const TableOfContents: FC = () => {
+	return (
+		<Fragment>
+			<Typography>สารบัญ</Typography>
+			<List
+				dense
+				disablePadding
+			>
+				<ListItem
+					disablePadding
+					disableGutters
+				>
+					<ListItemText>
+						<Typography
+							href="#info"
+							component="a"
+						>
+							ข้อมูลคนขับรถ
+						</Typography>
+					</ListItemText>
+				</ListItem>
+				<List
+					dense
+					disablePadding
+				>
+					<ListItem
+						disableGutters
+						disablePadding
+					>
+						<ListItemText>
+							<Typography
+								component="a"
+								href="#general-report"
+							>
+								ตารางบันทึกประวัติการร้องเรียน
+							</Typography>
+						</ListItemText>
+					</ListItem>
+					<ListItem
+						disableGutters
+						disablePadding
+					>
+						<ListItemText>
+							<Typography
+								component="a"
+								href="#medical-report"
+							>
+								ตารางบันทึกผลการตรวจสารเสพติด
+							</Typography>
+						</ListItemText>
+					</ListItem>
+				</List>
+			</List>
+		</Fragment>
 	);
 };
 
@@ -137,99 +207,59 @@ export const DriverInfoPage: FC = () => {
 
 	const renderedInfoItems = infoItems.map(
 		(item, index) => (
-			<Fragment key={"info" + index}>
+			<Grid
+				container
+				item
+				key={"info" + index}
+				sx={{
+					paddingY: 2,
+					backgroundColor: (theme) =>
+						alpha(
+							index % 2 === 0
+								? theme.palette.primary.main
+								: theme.palette.common.white,
+							0.05,
+						),
+				}}
+			>
 				<Grid
 					item
 					xs={12}
-					md={2}
+					sm={3}
 				>
-					<Typography fontWeight="bold">
+					<Typography
+						fontWeight="bold"
+						width={200}
+					>
 						{item.label}
 					</Typography>
 				</Grid>
 				<Grid
 					item
 					xs={12}
-					md={10}
+					sm={9}
 				>
 					{item.value}
 				</Grid>
-			</Fragment>
+			</Grid>
 		),
 	);
 
 	return (
 		<Stack spacing={1}>
-			<Typography>สารบัญ</Typography>
-			<List
-				dense
-				disablePadding
-			>
-				<ListItem
-					disablePadding
-					disableGutters
-				>
-					<ListItemText>
-						<Typography
-							href="#info"
-							component="a"
-						>
-							ข้อมูลคนขับรถ
-						</Typography>
-					</ListItemText>
-				</ListItem>
-				<List
-					dense
-					disablePadding
-				>
-					<ListItem
-						disableGutters
-						disablePadding
-					>
-						<ListItemText>
-							<Typography
-								component="a"
-								href="#general-report"
-							>
-								ตารางบันทึกประวัติการร้องเรียน
-							</Typography>
-						</ListItemText>
-					</ListItem>
-					<ListItem
-						disableGutters
-						disablePadding
-					>
-						<ListItemText>
-							<Typography
-								component="a"
-								href="#medical-report"
-							>
-								ตารางบันทึกผลการตรวจสารเสพติด
-							</Typography>
-						</ListItemText>
-					</ListItem>
-				</List>
-			</List>
+			<TableOfContents />
 			<Typography
 				variant="h1"
 				id="info"
 			>
 				ข้อมูลคนขับรถ
 			</Typography>
-			<TypographyAlert
-				severity="info"
-				icon={false}
-			>
+			<TypographyAlert severity="info">
 				TBA
 			</TypographyAlert>
 			<Toolbar
 				variant="dense"
 				disableGutters
-				sx={{
-					gap: 1,
-					flexWrap: "wrap",
-					flexDirection: "row",
-				}}
 			>
 				<TypographyButton
 					variant="outlined"
@@ -240,22 +270,8 @@ export const DriverInfoPage: FC = () => {
 				>
 					แก้ไขข้อมูล
 				</TypographyButton>
-				<TypographyButton
-					variant="outlined"
-					startIcon={<FolderRounded />}
-				>
-					เปิดแฟ้มภาพ
-				</TypographyButton>
 			</Toolbar>
-			<Box width="75%">
-				<Grid
-					container
-					spacing={2}
-				>
-					{renderedInfoItems}
-				</Grid>
-			</Box>
-
+			<Grid container>{renderedInfoItems}</Grid>
 			<Gallery images={IMAGES} />
 			<Typography
 				variant="h2"

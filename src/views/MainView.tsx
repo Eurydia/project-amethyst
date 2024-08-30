@@ -1,7 +1,5 @@
-import {
-	ContactEmergency,
-	KeyboardArrowUpRounded,
-} from "@mui/icons-material";
+import { TypographyTooltip } from "$components/TypographyTooltip";
+import { KeyboardArrowUpRounded } from "@mui/icons-material";
 import {
 	AppBar,
 	Box,
@@ -142,12 +140,10 @@ export const MainView: FC = () => {
 					)}
 				</Toolbar>
 			</AppBar>
-			<Tooltip
+			<TypographyTooltip
 				arrow
 				placement="left"
-				title={
-					<Typography>กลับขึ้นด้านบน</Typography>
-				}
+				title="กลับขึ้นด้านบน"
 			>
 				<Fab
 					sx={{
@@ -161,7 +157,7 @@ export const MainView: FC = () => {
 				>
 					<KeyboardArrowUpRounded />
 				</Fab>
-			</Tooltip>
+			</TypographyTooltip>
 			<Container maxWidth="lg">
 				<Box
 					marginTop={appBarHeight}

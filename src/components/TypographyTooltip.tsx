@@ -15,7 +15,7 @@ export const TypographyTooltip: FC<
 			arrow
 			title={<Typography>{title}</Typography>}
 		>
-			<span>{children}</span>
+			{children}
 		</Tooltip>
 	);
 };

@@ -9,6 +9,7 @@ import { TypographyButton } from "$components/TypographyButton";
 import { EditRounded } from "@mui/icons-material";
 import {
 	alpha,
+	Fab,
 	Grid,
 	List,
 	ListItem,
@@ -25,8 +26,14 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DriverInfoPageLoaderData } from "./loader";
+import { TypographyTooltip } from "$components/TypographyTooltip";
+import { FormalLayout } from "$layouts/FormalLayout";
 
 const IMAGES = [
+	"https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&q=20",
+	"https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&q=20",
+	"https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=20",
+	"https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&q=20",
 	"https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&q=20",
 	"https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&q=20",
 	"https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=20",
@@ -114,6 +121,15 @@ export const DriverInfoPage: FC = () => {
 		value: ReactNode;
 	}[] = [
 		{
+			label: "คลังภาพ",
+			value: (
+				<Gallery
+					onOpenRoot={() => {}}
+					images={IMAGES}
+				/>
+			),
+		},
+		{
 			label: "ชื่อและนามสกุล",
 			value: (
 				<StyledTypography
@@ -155,46 +171,6 @@ export const DriverInfoPage: FC = () => {
 		},
 	];
 
-	const renderedInfoItems = infoItems.map(
-		(item, index) => (
-			<Grid
-				container
-				item
-				key={"info" + index}
-				sx={{
-					paddingY: 2,
-					backgroundColor: (theme) =>
-						alpha(
-							index % 2 === 0
-								? theme.palette.primary.main
-								: theme.palette.common.white,
-							0.05,
-						),
-				}}
-			>
-				<Grid
-					item
-					xs={12}
-					sm={3}
-				>
-					<Typography
-						fontWeight="bold"
-						width={200}
-					>
-						{item.label}
-					</Typography>
-				</Grid>
-				<Grid
-					item
-					xs={12}
-					sm={9}
-				>
-					{item.value}
-				</Grid>
-			</Grid>
-		),
-	);
-
 	return (
 		<Stack spacing={1}>
 			<TableOfContents />
@@ -207,25 +183,33 @@ export const DriverInfoPage: FC = () => {
 			<TypographyAlert severity="info">
 				TBA
 			</TypographyAlert>
-			<Toolbar
-				variant="dense"
-				disableGutters
+			<TypographyTooltip
+				title="แก้ไขข้อมูลคนขับรถ"
+				placement="left"
+				arrow
 			>
-				<TypographyButton
-					variant="outlined"
-					startIcon={<EditRounded />}
+				<Fab
+					color="primary"
+					size="medium"
+					sx={{
+						position: "fixed",
+						bottom: 72,
+						right: 16,
+					}}
 					onClick={() =>
-						submit({}, { action: "./edit" })
+						submit(
+							{},
+							{
+								action: "./edit",
+							},
+						)
 					}
 				>
-					แก้ไขข้อมูล
-				</TypographyButton>
-			</Toolbar>
-			<Grid container>{renderedInfoItems}</Grid>
-			<Gallery
-				images={IMAGES}
-				onOpenRoot={() => {}}
-			/>
+					<EditRounded />
+				</Fab>
+			</TypographyTooltip>
+			<FormalLayout>{infoItems}</FormalLayout>
+
 			<Typography
 				variant="h2"
 				id="operational-log"

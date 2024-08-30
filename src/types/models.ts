@@ -4,8 +4,8 @@ export type OperationalLogModel = {
 	vehicle_id: string;
 	route_id: string;
 
-	start_date: string;
-	end_date: string;
+	start_date: string | null;
+	end_date: string | null;
 };
 
 export type OperationalLog = {

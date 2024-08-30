@@ -2,7 +2,6 @@ import {
 	DriverModel,
 	DriverReportModel,
 	OperationalLogModel,
-	OperationalLog,
 	PickupRouteModel,
 	VehicleModel,
 } from "$types/models";
@@ -13,26 +12,35 @@ let operationLogId = 0;
 const operationLogs: OperationalLogModel[] =
 	fakerTH.helpers
 		.multiple(
-			() => {
-				const id = operationLogId.toString();
-				const uid = operationLogId % 10;
-				operationLogId++;
-
-				return {
-					driver_id: uid.toString(),
-					vehicle_id: uid.toString(),
-					route_id: uid.toString(),
-					end_date: dayjs(
-						fakerTH.date.past(),
-					).format(),
-					id,
-					start_date: dayjs(
-						fakerTH.date.past(),
-					).format(),
-				};
-			},
+			() =>
+				fakerTH.helpers.multiple(
+					() => {
+						const id = Math.floor(
+							operationLogId / 3,
+						).toString();
+						const uid = Math.floor(
+							Math.random() * 10,
+						).toString();
+						operationLogId++;
+						return {
+							driver_id: id,
+							vehicle_id: uid,
+							route_id: uid,
+							end_date: dayjs(
+								fakerTH.date.future(),
+							).format(),
+							id,
+							start_date: dayjs(
+								fakerTH.date.past(),
+							).format(),
+						};
+					},
+					{
+						count: 3,
+					},
+				),
 			{
-				count: 100,
+				count: 10,
 			},
 		)
 		.flat();
@@ -70,7 +78,7 @@ const drivers: DriverModel[] =
 				id: id,
 			};
 		},
-		{ count: 20 },
+		{ count: 10 },
 	);
 
 let vehicleId = 0;
@@ -258,3 +266,51 @@ export const getPickupRouteAll =
 	async (): Promise<PickupRouteModel[]> => {
 		return pickupRoutes;
 	};
+
+export const getPickupRouteWithId = async (
+	pickupRouteId: string,
+) => {
+	const route = pickupRoutes.find(
+		(route) => route.id === pickupRouteId,
+	);
+
+	if (route === undefined) {
+		return null;
+	}
+
+	return route;
+};
+
+export const getDriverCurrentVehicles = async (
+	driverId: string,
+) => {
+	const now = dayjs();
+
+	const logs = (
+		await getOperationLogWithDriverId(driverId)
+	)
+		.filter(
+			(log) =>
+				log.start_date === null ||
+				now.isAfter(dayjs(log.start_date)),
+		)
+		.filter(
+			(log) =>
+				log.end_date === null ||
+				now.isBefore(dayjs(log.end_date)),
+		);
+
+	const vehicleIds = logs.map(
+		(log) => log.vehicle_id,
+	);
+	const vehicleRequests = vehicleIds.map(
+		getVehicleWithId,
+	);
+
+	const vehicles = await Promise.all(
+		vehicleRequests,
+	);
+	return vehicles.filter(
+		(vehicle) => vehicle !== null,
+	);
+};

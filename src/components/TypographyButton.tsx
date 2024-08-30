@@ -1,4 +1,5 @@
 import {
+	Box,
 	Button,
 	ButtonProps,
 	Typography,
@@ -10,12 +11,14 @@ export const TypographyButton: FC<ButtonProps> = (
 ) => {
 	const { children, ...rest } = props;
 	return (
-		<Button
-			{...rest}
-			disableElevation
-			disableRipple
-		>
-			<Typography>{children}</Typography>
-		</Button>
+		<Box>
+			<Button
+				{...rest}
+				disableElevation
+				disableRipple
+			>
+				<Typography>{children}</Typography>
+			</Button>
+		</Box>
 	);
 };

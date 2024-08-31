@@ -5,6 +5,5 @@ export type TableHeaderDefinition<
 > = {
 	render: (item: T) => ReactNode;
 	compare: ((a: T, b: T) => number) | null;
-	key: keyof T;
 	label: string;
 };

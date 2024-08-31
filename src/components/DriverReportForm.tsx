@@ -1,22 +1,16 @@
 import { DriverReportFormData } from "$types/form-data";
 import { DriverModel } from "$types/models";
 import { SaveRounded } from "@mui/icons-material";
-import {
-	alpha,
-	Grid,
-	Stack,
-	TextField,
-	Typography,
-} from "@mui/material";
+import { TextField } from "@mui/material";
 import {
 	DateField,
 	TimeField,
 } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
+import { BaseForm } from "./BaseForm";
 import { DriverSelect } from "./DriverSelect";
-import { TopicMultiSelect } from "./TopicMultiSelect";
-import { TypographyButton } from "./TypographyButton";
+import { TopicComboBox } from "./TopicComboBox";
 
 type DriverReportFormProps = {
 	driverOptions: DriverModel[];
@@ -128,9 +122,10 @@ export const DriverReportForm: FC<
 			),
 		},
 		{
-			label: "ผู้ที่ถูกร้องเรียน",
+			label: "คนขับ",
 			value: (
 				<DriverSelect
+					showError={isDriverEmpty}
 					options={driverOptions}
 					value={fieldDriver}
 					onChange={setFieldDriver}
@@ -143,6 +138,8 @@ export const DriverReportForm: FC<
 			value: (
 				<TextField
 					fullWidth
+					autoFocus
+					error={isTitleEmpty}
 					value={fieldTitle}
 					onChange={(e) =>
 						setFieldTitle(e.target.value)
@@ -169,7 +166,7 @@ export const DriverReportForm: FC<
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
-				<TopicMultiSelect
+				<TopicComboBox
 					options={topicOptions}
 					value={fieldTopics}
 					onChange={setFieldTopics}
@@ -177,76 +174,22 @@ export const DriverReportForm: FC<
 			),
 		},
 	];
-	const renderedFormItems = formItems.map(
-		(item, index) => (
-			<Grid
-				key={"form-item" + index}
-				item
-				container
-				paddingY={1}
-				sx={{
-					backgroundColor: ({ palette }) =>
-						alpha(
-							index % 2 === 1
-								? palette.primary.light
-								: palette.common.white,
-							0.05,
-						),
-				}}
-			>
-				<Grid
-					item
-					xs={12}
-					md={3}
-					display="flex"
-					alignItems="center"
-				>
-					<Typography fontWeight="bold">
-						{item.label}
-					</Typography>
-				</Grid>
-				<Grid
-					item
-					xs={12}
-					md={8}
-				>
-					{item.value}
-				</Grid>
-			</Grid>
-		),
-	);
 
 	return (
-		<Grid container>
-			{renderedFormItems}
-			<Grid
-				item
-				xs={12}
-				paddingY={1}
-			>
-				<Stack
-					display="flex"
-					flexDirection="row"
-					flexWrap="wrap"
-					spacing={1}
-					useFlexGap
-				>
-					<TypographyButton
-						disabled={isFormIncomplete}
-						startIcon={<SaveRounded />}
-						variant="contained"
-						onClick={handleSubmit}
-					>
-						บันทึก
-					</TypographyButton>
-					<TypographyButton
-						variant="outlined"
-						onClick={handleCancel}
-					>
-						ยกเลิก
-					</TypographyButton>
-				</Stack>
-			</Grid>
-		</Grid>
+		<BaseForm
+			slotProps={{
+				submitButton: {
+					disabled: isFormIncomplete,
+					startIcon: <SaveRounded />,
+					variant: "contained",
+					onClick: handleSubmit,
+				},
+				cancelButton: {
+					onClick: handleCancel,
+				},
+			}}
+		>
+			{formItems}
+		</BaseForm>
 	);
 };

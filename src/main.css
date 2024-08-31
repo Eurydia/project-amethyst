@@ -1,8 +1,12 @@
-html {
-	scroll-behavior: smooth;
+body {
 	font-feature-settings: liga;
+	scrollbar-gutter: stable both-edges;
 }
 
-body {
-	scrollbar-gutter: stable both-edges;
+a {
+	color: var(--mui-palette-primary-main);
+}
+
+a:hover {
+	color: var(--mui-palette-secondary-dark);
 }

@@ -1,26 +1,7 @@
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
 import { OperationalLog } from "$types/models";
-import {
-	FilterAltRounded,
-	SearchRounded,
-} from "@mui/icons-material";
-import {
-	alpha,
-	Checkbox,
-	Collapse,
-	Grid,
-	InputAdornment,
-	List,
-	ListItem,
-	ListItemButton,
-	ListItemIcon,
-	ListItemText,
-	TableContainer,
-	TextField,
-	Toolbar,
-	Typography,
-} from "@mui/material";
+import { Typography } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -30,352 +11,236 @@ import {
 	useState,
 } from "react";
 import { Link } from "react-router-dom";
-import { SortableTable } from "./SortableTable";
-import { TypographyButton } from "./TypographyButton";
+import { BaseSortableTable } from "./BaseSortableTable";
+import { MultiSelect } from "./MultiSelect";
 
-const objectToOptions = (
-	obj: Record<string, string>,
-): CustomListProps["options"] => {
-	return Object.entries(obj).map(
-		([value, label]) => ({
-			value,
-			label,
-		}),
-	);
+const entriesToOptions = (
+	entries: OperationalLog[],
+) => {
+	const uniqueDrivers: Record<string, string> =
+		{};
+	const uniqueVehicle: Record<string, string> =
+		{};
+	const uniqueRoute: Record<string, string> = {};
+
+	for (const entry of entries) {
+		uniqueDrivers[
+			entry.driverId
+		] = `${entry.driverName} ${entry.driverSurname}`;
+		uniqueVehicle[entry.vehicleId] =
+			entry.vehicleLicensePlate;
+		uniqueRoute[entry.routeId] = entry.routeName;
+	}
+
+	const driverOptions = Object.entries(
+		uniqueDrivers,
+	).map(([value, label]) => ({ value, label }));
+	const vehicleOptions = Object.entries(
+		uniqueVehicle,
+	).map(([value, label]) => ({ value, label }));
+	const routeOptions = Object.entries(
+		uniqueRoute,
+	).map(([value, label]) => ({ value, label }));
+	return {
+		driverOptions,
+		vehicleOptions,
+		routeOptions,
+	};
 };
 
-const compareDates = (a: string, b: string) => {
-	const dateA = dayjs(a);
-	const dataB = dayjs(b);
-	return dateA.unix() - dataB.unix();
+const filterEntries = (
+	entries: OperationalLog[],
+	afterDate: Dayjs | null,
+	beforeDate: Dayjs | null,
+	selectedRoutes: string[],
+	selectedVehicles: string[],
+	selectedDrivers: string[],
+) => {
+	let items = entries;
+	if (afterDate !== null) {
+		items = items.filter((entry) =>
+			dayjs(entry.startDate).isAfter(afterDate),
+		);
+	}
+	if (beforeDate !== null) {
+		items = items.filter((entry) =>
+			dayjs(entry.startDate).isBefore(beforeDate),
+		);
+	}
+	const routeSet = new Set(selectedRoutes);
+	const vehicleSet = new Set(selectedVehicles);
+	const driverSet = new Set(selectedDrivers);
+
+	items = items
+		.filter((entry) =>
+			routeSet.has(entry.routeId),
+		)
+		.filter((entry) =>
+			vehicleSet.has(entry.vehicleId),
+		)
+		.filter((entry) =>
+			driverSet.has(entry.driverId),
+		);
+	return items;
 };
 
-const formatDate = (date: string) => {
+const searchEntries = (
+	entries: OperationalLog[],
+	search: string,
+) => {
+	const tokens = search
+		.normalize()
+		.split(" ")
+		.map((token) => token.trim())
+		.filter((token) => token.length > 0);
+
+	return filterItems(entries, tokens, [
+		"driver_name",
+		"driver_surname",
+		"vehicle_license_plate",
+		"route_name",
+	]);
+};
+
+const compareDates = (
+	a: string | null,
+	b: string | null,
+) => {
+	if (a === null || b === null) {
+		return 0;
+	} else if (a === null && b !== null) {
+		return -1;
+	} else if (a !== null && b === null) {
+		return 1;
+	}
+	return dayjs(a).unix() - dayjs(b).unix();
+};
+const formatDate = (date: string | null) => {
 	return dayjs(date).format("DD/MM/YYYY");
 };
 
 const HEADER_DEFINITION: TableHeaderDefinition<OperationalLog>[] =
 	[
 		{
-			key: "start_date",
 			label: "เริ่ม",
 			compare: (a, b) =>
-				compareDates(a.start_date, b.start_date),
+				compareDates(a.startDate, b.startDate),
 			render: (item) => (
 				<Typography>
-					{formatDate(item.start_date)}
+					{formatDate(item.startDate)}
 				</Typography>
 			),
 		},
 		{
-			key: "end_date",
 			label: "สิ้นสุด",
 			compare: (a, b) =>
-				compareDates(a.end_date, b.end_date),
+				compareDates(a.endDate, b.endDate),
 			render: (item) => (
 				<Typography>
-					{formatDate(item.end_date)}
+					{formatDate(item.endDate)}
 				</Typography>
 			),
 		},
 		{
-			key: "driver_name",
 			label: "คนขับรถ",
 			compare: (a, b) =>
-				a.driver_name.localeCompare(
-					b.driver_name,
-				),
+				a.driverName.localeCompare(b.driverName),
 			render: (item) => (
 				<Typography
 					component={Link}
-					to={"/drivers/info/" + item.driver_id}
+					to={"/drivers/info/" + item.driverId}
 				>
-					{item.driver_name} {item.driver_surname}
+					{item.driverName} {item.driverSurname}
 				</Typography>
 			),
 		},
 		{
-			key: "vehicle_license_plate",
 			label: "ทะเบียนรถ",
 			compare: null,
 			render: (item) => (
 				<Typography
 					component={Link}
-					to={"/vehicles/info/" + item.vehicle_id}
+					to={"/vehicles/info/" + item.vehicleId}
 				>
-					{item.vehicle_license_plate}
+					{item.vehicleLicensePlate}
 				</Typography>
 			),
 		},
 		{
-			key: "route_name",
 			label: "สายรถ",
 			compare: (a, b) =>
-				a.route_name.localeCompare(b.route_name),
+				a.routeName.localeCompare(b.routeName),
 			render: (item) => (
 				<Typography
 					component={Link}
-					to={"/routes/info/" + item.route_id}
+					to={"/routes/info/" + item.routeId}
 				>
-					{item.route_name}
+					{item.routeName}
 				</Typography>
 			),
 		},
 	];
 
-type CustomListItemProps = {
-	label: string;
-	onClick: () => void;
-	isChecked?: boolean;
-	isBold?: boolean;
-	isDisabled?: boolean;
-};
-const CustomListItem: FC<CustomListItemProps> = (
-	props,
-) => {
-	const {
-		isDisabled,
-		isBold,
-		isChecked,
-		onClick,
-		label,
-	} = props;
-	return (
-		<ListItem
-			disableGutters
-			disablePadding
-			dense
-			sx={{
-				display: "inline",
-				width: "auto",
-			}}
-		>
-			<ListItemButton
-				disableRipple
-				disableGutters
-				disabled={isDisabled}
-				onClick={onClick}
-			>
-				<ListItemIcon>
-					<Checkbox
-						disableRipple
-						disabled={isDisabled}
-						checked={isChecked}
-					/>
-				</ListItemIcon>
-				<ListItemText>
-					<Typography
-						fontWeight={
-							isBold ? "bold" : undefined
-						}
-					>
-						{label}
-					</Typography>
-				</ListItemText>
-			</ListItemButton>
-		</ListItem>
-	);
-};
-
-type CustomListProps = {
-	options: { label: string; value: string }[];
-	selectedOptions: string[];
-	onChange: (options: string[]) => void;
-};
-const CustomList: FC<CustomListProps> = (
-	props,
-) => {
-	const { options, selectedOptions, onChange } =
-		props;
-
-	const toggleHandler = (value: string) => () => {
-		if (!selectedOptions.includes(value)) {
-			onChange([...selectedOptions, value]);
-			return;
-		}
-		onChange(
-			selectedOptions.filter(
-				(selected) => selected !== value,
-			),
-		);
-	};
-	const renderedOptions = options.map(
-		(option, index) => {
-			const onToggle = toggleHandler(
-				option.value,
-			);
-			const isChecked = selectedOptions.includes(
-				option.value,
-			);
-
-			return (
-				<CustomListItem
-					key={"option" + index}
-					isChecked={isChecked}
-					onClick={onToggle}
-					label={option.label}
-				/>
-			);
-		},
-	);
-
-	const handleToggleAll = () => {
-		if (isPartiallSelect) {
-			onChange([]);
-			return;
-		}
-		onChange(
-			options.map((option) => option.value),
-		);
-	};
-
-	const isPartiallSelect =
-		selectedOptions.length > 0;
-
-	return (
-		<List
-			dense
-			disablePadding
-			sx={{
-				overflow: "auto",
-				display: "flex",
-				flexDirection: "row",
-				flexWrap: "wrap",
-				maxHeight: 250,
-			}}
-		>
-			<CustomListItem
-				onClick={handleToggleAll}
-				label="ทั้งหมด"
-				isBold
-				isDisabled={options.length === 0}
-				isChecked={isPartiallSelect}
-			/>
-			{renderedOptions}
-		</List>
-	);
-};
-
 type OperationalLogTableProps = {
 	entries: OperationalLog[];
+	onAdd: () => void;
 };
 export const OperationalLogTable: FC<
 	OperationalLogTableProps
 > = (props) => {
-	const { entries } = props;
+	const { entries, onAdd } = props;
 
 	const {
 		driverOptions,
 		vehicleOptions,
 		routeOptions,
-	} = useMemo(() => {
-		const uniqueDrivers: Record<string, string> =
-			{};
-		const uniqueVehicle: Record<string, string> =
-			{};
-		const uniqueRoute: Record<string, string> =
-			{};
-		for (const entry of entries) {
-			uniqueDrivers[
-				entry.driver_id
-			] = `${entry.driver_name} ${entry.driver_surname}`;
-			uniqueVehicle[entry.vehicle_id] =
-				entry.vehicle_license_plate;
-			uniqueRoute[entry.route_id] =
-				entry.route_name;
-		}
-
-		const driverOptions = objectToOptions(
-			uniqueDrivers,
-		);
-		const vehicleOptions = objectToOptions(
-			uniqueVehicle,
-		);
-		const routeOptions =
-			objectToOptions(uniqueRoute);
-		return {
-			driverOptions,
-			vehicleOptions,
-			routeOptions,
-		};
-	}, [entries]);
-
-	const [filterOpen, setFilterOpen] =
-		useState(false);
+	} = useMemo(
+		() => entriesToOptions(entries),
+		[entries],
+	);
 
 	const [search, setSearch] = useState("");
 	const [afterDate, setAfterDate] =
 		useState<Dayjs | null>(null);
 	const [beforeDate, setBeforeDate] =
 		useState<Dayjs | null>(null);
-
 	const [selectedRoutes, setSelectedRoutes] =
 		useState(
-			routeOptions.map((option) => option.value),
+			routeOptions.map(({ value }) => value),
 		);
 	const [selectedVehicles, setSelectedVehicles] =
 		useState(
-			vehicleOptions.map(
-				(option) => option.value,
-			),
+			vehicleOptions.map(({ value }) => value),
 		);
 	const [selectedDrivers, setSelectedDrivers] =
 		useState(
-			driverOptions.map((option) => option.value),
+			driverOptions.map(({ value }) => value),
 		);
 
-	const filteredEntries = useMemo(() => {
-		let items = entries;
-		if (afterDate !== null) {
-			items = items.filter((entry) =>
-				dayjs(entry.start_date).isAfter(
-					afterDate,
-				),
-			);
-		}
-		if (beforeDate !== null) {
-			items = items.filter((entry) =>
-				dayjs(entry.start_date).isBefore(
-					beforeDate,
-				),
-			);
-		}
-		items = items
-			.filter((entry) =>
-				selectedRoutes.includes(entry.route_id),
-			)
-			.filter((entry) =>
-				selectedVehicles.includes(
-					entry.vehicle_id,
-				),
-			)
-			.filter((entry) =>
-				selectedDrivers.includes(entry.driver_id),
-			);
-		return items;
-	}, [
-		entries,
-		selectedDrivers,
-		selectedRoutes,
-		selectedRoutes,
-		afterDate,
-		beforeDate,
-	]);
+	const filteredEntries = useMemo(
+		() =>
+			filterEntries(
+				entries,
+				afterDate,
+				beforeDate,
+				selectedRoutes,
+				selectedVehicles,
+				selectedDrivers,
+			),
+		[
+			entries,
+			selectedDrivers,
+			selectedRoutes,
+			selectedRoutes,
+			afterDate,
+			beforeDate,
+		],
+	);
 
-	const searchedEntries = useMemo(() => {
-		const tokens = search
-			.normalize()
-			.split(" ")
-			.map((token) => token.trim())
-			.filter((token) => token.length > 0);
-
-		return filterItems(filteredEntries, tokens, [
-			"driver_name",
-			"driver_surname",
-			"vehicle_license_plate",
-			"route_name",
-		]);
-	}, [search, filteredEntries]);
+	const searchedEntries = useMemo(
+		() => searchEntries(filteredEntries, search),
+		[search, filteredEntries],
+	);
 
 	const fitlerFormItems: {
 		label: string;
@@ -408,7 +273,7 @@ export const OperationalLogTable: FC<
 		{
 			label: "สายรถ",
 			value: (
-				<CustomList
+				<MultiSelect
 					options={routeOptions}
 					selectedOptions={selectedRoutes}
 					onChange={setSelectedRoutes}
@@ -418,7 +283,7 @@ export const OperationalLogTable: FC<
 		{
 			label: "ทะเบียนรถ",
 			value: (
-				<CustomList
+				<MultiSelect
 					options={vehicleOptions}
 					selectedOptions={selectedVehicles}
 					onChange={setSelectedVehicles}
@@ -428,7 +293,7 @@ export const OperationalLogTable: FC<
 		{
 			label: "คนขับรถ",
 			value: (
-				<CustomList
+				<MultiSelect
 					options={driverOptions}
 					selectedOptions={selectedDrivers}
 					onChange={setSelectedDrivers}
@@ -437,95 +302,27 @@ export const OperationalLogTable: FC<
 		},
 	];
 
-	const renderedFilterFormItems =
-		fitlerFormItems.map((item, index) => (
-			<Grid
-				item
-				container
-				key={"form-item" + index}
-				paddingY={1}
-				sx={{
-					backgroundColor: (theme) =>
-						alpha(
-							index % 2 === 0
-								? theme.palette.primary.main
-								: theme.palette.common.white,
-							0.05,
-						),
-				}}
-			>
-				<Grid
-					item
-					xs={12}
-					md={3}
-					display="flex"
-					alignItems="center"
-				>
-					<Typography fontWeight="bold">
-						{item.label}
-					</Typography>
-				</Grid>
-				<Grid
-					item
-					xs={12}
-					md={7}
-				>
-					{item.value}
-				</Grid>
-			</Grid>
-		));
-
 	return (
-		<TableContainer>
-			<TextField
-				fullWidth
-				InputProps={{
-					startAdornment: (
-						<InputAdornment position="start">
-							<SearchRounded />
-						</InputAdornment>
-					),
-				}}
-				placeholder="ค้นหา"
-				value={search}
-				onChange={(e) =>
-					setSearch(e.target.value)
-				}
-			/>
-			<Toolbar
-				variant="dense"
-				disableGutters
-				sx={{
-					alignItems: "center",
-					flexWrap: "wrap",
-					justifyContent: "space-between",
-					gap: 1,
-				}}
-			>
-				<Typography>
-					พบ {searchedEntries.length} รายการ
-				</Typography>
-				<TypographyButton
-					variant="text"
-					startIcon={<FilterAltRounded />}
-					onClick={() =>
-						setFilterOpen(!filterOpen)
-					}
-				>
-					ตัวกรองขั้นสูง
-				</TypographyButton>
-			</Toolbar>
-			<Collapse in={filterOpen}>
-				<Grid container>
-					{renderedFilterFormItems}
-				</Grid>
-			</Collapse>
-			<SortableTable
-				rows={searchedEntries}
-				headers={HEADER_DEFINITION}
-				defaultSortBy="start_date"
-				defaultSortOrder="desc"
-			/>
-		</TableContainer>
+		<BaseSortableTable
+			entries={searchedEntries}
+			headers={HEADER_DEFINITION}
+			defaultSortByColumn={0}
+			defaultSortOrder="desc"
+			slotProps={{
+				searchField: {
+					placeholder: "ค้นหา",
+					value: search,
+					onChange: (e) =>
+						setSearch(e.target.value),
+				},
+				addButton: {
+					onClick: onAdd,
+					variant: "contained",
+					children: "ลงบันทึกประวัติการเดินรถ",
+				},
+			}}
+		>
+			{fitlerFormItems}
+		</BaseSortableTable>
 	);
 };

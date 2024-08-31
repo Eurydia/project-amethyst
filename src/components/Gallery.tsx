@@ -23,7 +23,7 @@ export const Gallery: FC<GalleryProps> = (
 				startIcon={<FolderRounded />}
 				onClick={onOpenRoot}
 			>
-				เปิดแฟ้มภาพ
+				เปิดคลังภาพ
 			</TypographyButton>
 			<ImageList
 				sx={{ height: 450 }}

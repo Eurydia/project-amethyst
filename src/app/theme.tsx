@@ -6,6 +6,7 @@ import { thTH } from "@mui/material/locale";
 
 let theme = createTheme(
 	{
+		cssVariables: true,
 		typography: {
 			fontSize: 18,
 			fontFamily: "'Sarabun',sans-serif",

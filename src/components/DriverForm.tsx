@@ -1,15 +1,9 @@
 import { DriverFormData } from "$types/form-data";
-import { AddRounded } from "@mui/icons-material";
-import {
-	alpha,
-	Grid,
-	Stack,
-	TextField,
-	Typography,
-} from "@mui/material";
+import { SaveRounded } from "@mui/icons-material";
+import { TextField } from "@mui/material";
 import { FC, ReactNode, useState } from "react";
+import { BaseForm } from "./BaseForm";
 import { DriverLicenseSelect } from "./DriverLicenseSelect";
-import { TypographyButton } from "./TypographyButton";
 
 type DriverFormProps = {
 	initFormData: DriverFormData;
@@ -112,78 +106,22 @@ export const DriverForm: FC<DriverFormProps> = (
 			),
 		},
 	];
-	const renderedFormItems = formItems.map(
-		(item, index) => (
-			<Grid
-				key={"form-item" + index}
-				container
-				item
-				paddingY={1}
-				sx={{
-					backgroundColor: ({ palette }) =>
-						alpha(
-							index % 2 === 1
-								? palette.primary.light
-								: palette.common.white,
-							0.05,
-						),
-				}}
-			>
-				<Grid
-					item
-					xs={12}
-					sm={3}
-					display="flex"
-					alignItems="center"
-				>
-					<Typography
-						fontWeight="bold"
-						width={200}
-					>
-						{item.label}
-					</Typography>
-				</Grid>
-				<Grid
-					item
-					xs={12}
-					sm={8}
-				>
-					{item.value}
-				</Grid>
-			</Grid>
-		),
-	);
 
 	return (
-		<Grid container>
-			{renderedFormItems}
-			<Grid
-				item
-				xs={12}
-				paddingY={1}
-			>
-				<Stack
-					spacing={1}
-					flexDirection="row"
-					flexWrap="wrap"
-					useFlexGap
-				>
-					<TypographyButton
-						disabled={isFormIncomplete}
-						startIcon={<AddRounded />}
-						variant="contained"
-						onClick={handleSubmit}
-					>
-						ลงทะเบียน
-					</TypographyButton>
-					<TypographyButton
-						variant="outlined"
-						onClick={handleCancel}
-					>
-						ยกเลิก
-					</TypographyButton>
-				</Stack>
-			</Grid>
-		</Grid>
+		<BaseForm
+			slotProps={{
+				submitButton: {
+					disabled: isFormIncomplete,
+					startIcon: <SaveRounded />,
+					variant: "contained",
+					onClick: handleSubmit,
+				},
+				cancelButton: {
+					onClick: handleCancel,
+				},
+			}}
+		>
+			{formItems}
+		</BaseForm>
 	);
 };

@@ -1,6 +1,6 @@
 import {
 	alpha,
-	Grid,
+	Grid2,
 	Typography,
 } from "@mui/material";
 import { FC, ReactNode } from "react";
@@ -14,12 +14,12 @@ export const FormalLayout: FC<
 	const { children } = props;
 	const renderedFormItems = children.map(
 		(item, index) => (
-			<Grid
+			<Grid2
 				key={"form-item" + index}
 				container
-				item
-				paddingY={1}
+				size={12}
 				sx={{
+					paddingY: 1,
 					backgroundColor: ({ palette }) =>
 						alpha(
 							index % 2 === 0
@@ -29,32 +29,37 @@ export const FormalLayout: FC<
 						),
 				}}
 			>
-				<Grid
-					item
-					xs={12}
-					sm={3}
-					display="flex"
-					alignItems="center"
+				<Grid2
+					size={{
+						xs: 12,
+						sm: 3,
+					}}
+					sx={{
+						display: "flex",
+						alignItems: "center",
+					}}
 				>
 					<Typography
-						fontWeight="bold"
-						width={200}
+						sx={{
+							fontWeight: "bold",
+						}}
 					>
 						{item.label}
 					</Typography>
-				</Grid>
-				<Grid
-					item
-					xs={12}
-					sm={8}
+				</Grid2>
+				<Grid2
+					size={{
+						xs: 12,
+						sm: 8,
+					}}
 				>
 					{item.value}
-				</Grid>
-			</Grid>
+				</Grid2>
+			</Grid2>
 		),
 	);
 
 	return (
-		<Grid container>{renderedFormItems}</Grid>
+		<Grid2 container>{renderedFormItems}</Grid2>
 	);
 };

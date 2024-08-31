@@ -22,7 +22,7 @@ import {
 } from "react-router-dom";
 import { filterItems } from "../core/filter";
 import { TableHeaderDefinition } from "../types/generics";
-import { SortableTable } from "./SortableTable";
+import { BaseSortableTable } from "./BaseSortableTable";
 
 const HEADER_DEFINITION: TableHeaderDefinition<RecordModel>[] =
 	[
@@ -150,17 +150,19 @@ const TableToolbar: FC<TableToolbarProps> = (
 				</Button>
 			</Stack>
 			<TextField
-				InputProps={{
-					startAdornment: (
-						<InputAdornment position="start">
-							<SearchRounded />
-						</InputAdornment>
-					),
-				}}
 				fullWidth
 				placeholder="ค้นหา"
 				value={search}
 				onChange={(e) => onSearch(e.target.value)}
+				slotProps={{
+					input: {
+						startAdornment: (
+							<InputAdornment position="start">
+								<SearchRounded />
+							</InputAdornment>
+						),
+					},
+				}}
 			/>
 		</Toolbar>
 	);
@@ -192,12 +194,12 @@ export const RecordTable: FC<RecordTableProps> = (
 				search={search}
 				onSearch={setSearch}
 			/>
-			<SortableTable
+			{/* <BaseSortableTable
 				headers={HEADER_DEFINITION}
 				defaultSortOrder="desc"
-				defaultSortBy="datetime_iso"
-				rows={searchedEntries}
-			/>
+				defaultSortByColumn="datetime_iso"
+				entries={searchedEntries}
+			/> */}
 		</TableContainer>
 	);
 };

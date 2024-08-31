@@ -1,5 +1,28 @@
 # Amethyst
 
+## System tracking
+
+There are few system for the Amethyst.
+
+Core system;
+
+- **vehicle check-in** tracks the check-in and check-out of vehicles in day-to-day operations
+- **operational log** tracks tracks which vehicle is assigned to which driver, which route, and the time period
+- [x] **driver registry**
+- **vehicle registry**
+- **route registry**
+
+Auxiliary system;
+
+- **diary record** tracks day-to-day notes and reports
+- **route reports**
+- **vehicle routine maintenance log** tracks the maintenance history of vehicles
+- **vehicle general report**
+- [x] **driver general report**
+- [x] **driver medical log** tracks medical reports and doping tests on drivers
+
+As of 30 AUG 2024, the **driver registry** is complete, along with its general and medical reports. The **operational log** is in progress.
+
 ## Requirement
 
 - A pickup route is a contract with fixed arrival and departure time
@@ -41,8 +64,8 @@ The vehicle assignment history contains the previous vehicles the driver has bee
 - [OO] driver/info/[driverId]/report/medical      : Create a medical report on a driver
 - [OO] driver/report/general                      : List all general report entires
 - [OO] driver/report/general/new                  : Create a general report
-- [  ] driver/report/general/info/[reportId]      : List info about a general report
-- [  ] driver/report/general/info/[reportId]/edit : Edit a general report
+- [OO] driver/report/general/info/[reportId]      : List info about a general report
+- [OO] driver/report/general/info/[reportId]/edit : Edit a general report
 - [OO] driver/report/medical                      : List all general report entires
 - [OO] driver/report/medical/new                  : Create a medical report
 - [  ] driver/report/medical/info/[reportId]      : List info about a medical report

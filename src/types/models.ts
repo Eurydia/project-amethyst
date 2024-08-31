@@ -10,16 +10,16 @@ export type OperationalLogModel = {
 
 export type OperationalLog = {
 	id: string;
-	driver_id: string;
-	driver_name: string;
-	driver_surname: string;
-	vehicle_id: string;
-	vehicle_license_plate: string;
-	route_id: string;
-	route_name: string;
+	driverId: string;
+	driverName: string;
+	driverSurname: string;
+	vehicleId: string;
+	vehicleLicensePlate: string;
+	routeId: string;
+	routeName: string;
 
-	start_date: string;
-	end_date: string;
+	startDate: string | null;
+	endDate: string | null;
 };
 
 export type PickupRouteModel = {

@@ -4,12 +4,7 @@ import {
 } from "@faker-js/faker";
 import { SaveRounded } from "@mui/icons-material";
 import {
-	Autocomplete,
 	Button,
-	ListItemText,
-	Menu,
-	MenuItem,
-	Select,
 	Stack,
 	TextField,
 	Typography,
@@ -19,20 +14,10 @@ import {
 	TimeField,
 } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import {
-	FC,
-	useEffect,
-	useReducer,
-	useRef,
-	useState,
-} from "react";
+import { FC, useState } from "react";
 import { useSubmit } from "react-router-dom";
-import { DriverSelect } from "../components/DriverSelect";
-import {
-	DriverModel,
-	VehicleModel,
-} from "../types/models";
 import { VehicleSelect } from "../components/VehicleSelect";
+import { VehicleModel } from "../types/models";
 
 let uuid = 0;
 const options: VehicleModel[] =

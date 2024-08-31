@@ -9,22 +9,20 @@ import dayjs from "dayjs";
 const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReport>[] =
 	[
 		{
-			key: "datetime",
 			label: "เวลาและวันที่",
 			compare: (a, b) =>
 				dayjs(a.datetime).unix() -
 				dayjs(b.datetime).unix(),
 			render: (item) => (
 				<Typography>
-					{dayjs(item.datetime)
-						.locale("th")
-						.format("HH:mm น. DD/MM/YYYY")}
+					{dayjs(item.datetime).format(
+						"HH:mm น. DD/MM/YYYY",
+					)}
 				</Typography>
 			),
 		},
 		{
-			key: "driver_name",
-			label: "ชื่อและนามสกุล",
+			label: "คนขับรถ",
 			compare: (a, b) =>
 				a.driver_name.localeCompare(
 					b.driver_name,
@@ -39,7 +37,6 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReport>[] =
 			),
 		},
 		{
-			key: "title",
 			label: "เรื่อง",
 			compare: null,
 			render: (item) => (
@@ -55,7 +52,6 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReport>[] =
 			),
 		},
 		{
-			key: "topics",
 			label: "หัวข้อที่เกี่ยวข้อง",
 			compare: null,
 			render: (item) => (
@@ -67,25 +63,20 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReport>[] =
 	];
 
 type DriverReportMedicalTableProps = {
-	topicOptions: string[];
-	driverOptions: string[];
 	entries: DriverReport[];
+	onAdd: () => void;
 };
 export const DriverReportMedicalTable: FC<
 	DriverReportMedicalTableProps
 > = (props) => {
-	const { entries, driverOptions, topicOptions } =
-		props;
+	const { entries, onAdd } = props;
 
 	return (
 		<DriverReportTable
+			onAdd={onAdd}
 			headers={HEADER_DEFINITIONS}
 			entries={entries}
-			defaultSortBy="datetime"
-			defaultSortOrder="desc"
 			searchPlaceholder="ค้นหาผลการตรวจสารเสพติด"
-			driverOptions={driverOptions}
-			topicOptions={topicOptions}
 		/>
 	);
 };

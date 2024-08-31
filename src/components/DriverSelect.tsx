@@ -36,25 +36,6 @@ export const DriverSelect: FC<
 	return (
 		<Autocomplete
 			disabled={disabled}
-			renderInput={({ InputProps, ...rest }) => (
-				<TextField
-					{...rest}
-					InputProps={{
-						...InputProps,
-						endAdornment: (
-							<InputAdornment position="end">
-								{disabled ? (
-									<LockRounded />
-								) : (
-									InputProps.endAdornment
-								)}
-							</InputAdornment>
-						),
-					}}
-					error={showError}
-					placeholder="คนขับ"
-				/>
-			)}
 			onChange={handleChange}
 			value={value}
 			options={options}
@@ -66,10 +47,33 @@ export const DriverSelect: FC<
 					options,
 					params.inputValue
 						.normalize()
-						.split(" "),
+						.split(" ")
+						.map((token) => token.trim())
+						.filter((token) => token.length > 0),
 					["name", "surname"],
 				)
 			}
+			renderInput={({ InputProps, ...rest }) => (
+				<TextField
+					{...rest}
+					error={showError}
+					placeholder="ค้นหาคนขับ"
+					slotProps={{
+						input: {
+							...InputProps,
+							endAdornment: (
+								<InputAdornment position="end">
+									{disabled ? (
+										<LockRounded />
+									) : (
+										InputProps.endAdornment
+									)}
+								</InputAdornment>
+							),
+						},
+					}}
+				/>
+			)}
 		/>
 	);
 };

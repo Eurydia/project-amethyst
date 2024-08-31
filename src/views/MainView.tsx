@@ -8,7 +8,6 @@ import {
 	Fab,
 	Stack,
 	Toolbar,
-	Tooltip,
 	Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
@@ -43,7 +42,7 @@ const PRIMARY_ROUTES = [
 const SECONDARY_ROUTES = [
 	{
 		path: "/drivers/report/general",
-		label: "ประวัติการร้องเรียนคนขับรถ",
+		label: "สมุดบันทึกเรื่องร้องเรียนคนขับรถ",
 	},
 	{
 		path: "/drivers/report/medical",

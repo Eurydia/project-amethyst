@@ -20,42 +20,16 @@ const HEADER_DEFINITION: TableHeaderDefinition<
 	IndexPageLoaderData["entries"][number]
 >[] = [
 	{
-		label: "คนขับรถ",
-		compare: (a, b) =>
-			a.name.localeCompare(b.name),
+		label: "สายรถ",
+		compare: null,
 		render: (item) => (
 			<Typography
 				component={Link}
-				to={"/drivers/info/" + item.id}
+				to={"/pickup-routes/info/" + item.id}
 			>
-				{item.name} {item.surname}
+				{item.name}
 			</Typography>
 		),
-	},
-	{
-		label: "สายรถ",
-		compare: null,
-		render: (item) =>
-			item.routes.length === 0 ? (
-				<Typography>ไม่มี</Typography>
-			) : (
-				<Stack
-					spacing={1}
-					useFlexGap
-				>
-					{item.routes.map((route, index) => (
-						<Typography
-							key={"vehicle" + index}
-							component={Link}
-							to={
-								"/pickup-routes/info/" + route.id
-							}
-						>
-							{route.name}
-						</Typography>
-					))}
-				</Stack>
-			),
 	},
 	{
 		label: "ทะเบียนรถ",
@@ -68,24 +42,45 @@ const HEADER_DEFINITION: TableHeaderDefinition<
 					spacing={1}
 					useFlexGap
 				>
-					{item.vehicles.map((vehicle, index) => (
-						<Typography
-							key={"vehicle" + index}
-							component={Link}
-							to={"/vehicles/info/" + vehicle.id}
-						>
-							{vehicle.licensePlate}
-						</Typography>
-					))}
+					{item.vehicles.map(
+						({ id, plate }, index) => (
+							<Typography
+								key={"vehicle" + index}
+								component={Link}
+								to={"/vehicles/info/" + id}
+							>
+								{plate}
+							</Typography>
+						),
+					)}
 				</Stack>
 			),
 	},
+
 	{
-		label: "เบอร์ติดต่อ",
+		label: "คนขับรถ",
 		compare: null,
-		render: (item) => (
-			<Typography>{item.contact}</Typography>
-		),
+		render: (item) =>
+			item.drivers.length === 0 ? (
+				<Typography>ไม่มี</Typography>
+			) : (
+				<Stack
+					spacing={1}
+					useFlexGap
+				>
+					{item.drivers.map(
+						({ id, name, surname }, index) => (
+							<Typography
+								key={"driver" + index}
+								component={Link}
+								to={"/drivers/info/" + id}
+							>
+								{name} {surname}
+							</Typography>
+						),
+					)}
+				</Stack>
+			),
 	},
 ];
 
@@ -98,39 +93,35 @@ const CustomTable: FC<CustomTableProps> = (
 	const { entries } = props;
 	const submit = useSubmit();
 
-	const driverOptions = useMemo(() => {
-		const uniqueDrivers: Record<string, string> =
+	const routeOptions = useMemo(() => {
+		const uniqueRoutes: Record<string, string> =
 			{};
 
 		for (const entry of entries) {
-			uniqueDrivers[
-				entry.id
-			] = `${entry.name} ${entry.surname}`;
+			uniqueRoutes[entry.id] = entry.name;
 		}
 
-		const driverOptions = Object.entries(
-			uniqueDrivers,
+		const routeOptions = Object.entries(
+			uniqueRoutes,
 		).map(([value, label]) => ({
-			value,
 			label,
+			value,
 		}));
 
-		return driverOptions;
+		return routeOptions;
 	}, [entries]);
 
 	const [search, setSearch] = useState("");
-	const [selectedDrivers, setSelectedDrivers] =
+	const [selectedRoutes, setSelectedRoutes] =
 		useState(
-			driverOptions.map(({ value }) => value),
+			routeOptions.map(({ value }) => value),
 		);
-
 	const filteredEntries = useMemo(() => {
-		const driverSet = new Set(selectedDrivers);
-
+		const routeSet = new Set(selectedRoutes);
 		return entries.filter((item) =>
-			driverSet.has(item.id),
+			routeSet.has(item.id),
 		);
-	}, [entries, selectedDrivers]);
+	}, [entries, selectedRoutes]);
 
 	const searchedEntries = useMemo(() => {
 		const tokens = search
@@ -140,10 +131,9 @@ const CustomTable: FC<CustomTableProps> = (
 			.filter((token) => token.length > 0);
 		return filterItems(filteredEntries, tokens, [
 			"name",
-			"surname",
-			"contact",
-			"vehicles.*.licensePlate",
-			"routes.*.name",
+			"vehicles.*.plate",
+			"drivers.*.name",
+			"drivers.*.surname",
 		]);
 	}, [filteredEntries, search]);
 
@@ -152,12 +142,12 @@ const CustomTable: FC<CustomTableProps> = (
 		value: ReactNode;
 	}[] = [
 		{
-			label: "คนขับรถ",
+			label: "สายรถ",
 			value: (
 				<MultiSelect
-					onChange={setSelectedDrivers}
-					options={driverOptions}
-					selectedOptions={selectedDrivers}
+					onChange={setSelectedRoutes}
+					options={routeOptions}
+					selectedOptions={selectedRoutes}
 				/>
 			),
 		},
@@ -172,18 +162,18 @@ const CustomTable: FC<CustomTableProps> = (
 			slotProps={{
 				searchField: {
 					placeholder:
-						"ค้นหาด้วยชื่อ, นามสกุล, ทะเบียนรถ, สายรถ หรือเบอร์ติดต่อ",
+						"ค้นหาด้วยสายรถ, ทะเบียนรถ, หรือชื่อนามสกุลคนขับรถ",
 					value: search,
 					onChange: (e) =>
 						setSearch(e.target.value),
 				},
 				addButton: {
-					children: "ลงทะเบียนคนขับรถ",
+					children: "ลงทะเบียนสายรถ",
 					onClick: () =>
 						submit(
 							{},
 							{
-								action: "/drivers/new",
+								action: "/pickup-routes/new",
 							},
 						),
 				},
@@ -200,7 +190,7 @@ export const IndexPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				รายชื่อคนขับรถ
+				รายชื่อสายรถ
 			</Typography>
 			<CustomTable entries={entries} />
 		</Stack>

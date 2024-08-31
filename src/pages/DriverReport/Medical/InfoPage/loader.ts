@@ -2,7 +2,7 @@ import {
 	getDriverGeneralReportWithId,
 	getDriverWithId,
 } from "$backend/database/get";
-import { DriverReport } from "$types/models";
+import { DriverReport } from "$types/DriverModel";
 import {
 	json,
 	LoaderFunction,

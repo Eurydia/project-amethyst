@@ -28,7 +28,7 @@ const entriesToOptions = (
 			entry.driverId
 		] = `${entry.driverName} ${entry.driverSurname}`;
 		uniqueVehicle[entry.vehicleId] =
-			entry.vehicleLicensePlate;
+			entry.vehiclePlate;
 		uniqueRoute[entry.routeId] = entry.routeName;
 	}
 
@@ -162,7 +162,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<OperationalLog>[] =
 					component={Link}
 					to={"/vehicles/info/" + item.vehicleId}
 				>
-					{item.vehicleLicensePlate}
+					{item.vehiclePlate}
 				</Typography>
 			),
 		},

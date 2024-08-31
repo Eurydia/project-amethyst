@@ -1,10 +1,15 @@
 import {
-	DriverModel,
-	DriverReportModel,
 	OperationalLogModel,
-	PickupRouteModel,
 	VehicleModel,
 } from "$types/models";
+import {
+	DriverModel,
+	DriverReportModel,
+} from "$types/models/Driver";
+import {
+	PickupRouteModel,
+	PickupRouteReportModel,
+} from "$types/models/PickupRoute";
 import { fakerTH } from "@faker-js/faker";
 import dayjs from "dayjs";
 
@@ -55,6 +60,14 @@ export const getOperationLogWithDriverId = async (
 ) => {
 	return operationLogs.filter(
 		(entry) => entry.driver_id === driverId,
+	);
+};
+
+export const getOperationLogWithRouteId = async (
+	routeId: string,
+) => {
+	return operationLogs.filter(
+		(entry) => entry.route_id === routeId,
 	);
 };
 
@@ -281,36 +294,58 @@ export const getPickupRouteWithId = async (
 	return route;
 };
 
-export const getDriverCurrentVehicles = async (
-	driverId: string,
-) => {
-	const now = dayjs();
-
-	const logs = (
-		await getOperationLogWithDriverId(driverId)
-	)
-		.filter(
-			(log) =>
-				log.start_date === null ||
-				now.isAfter(dayjs(log.start_date)),
+let routeGeneralReportId = 0;
+const routeGeneralReport: PickupRouteReportModel[] =
+	fakerTH.helpers
+		.multiple(
+			() => {
+				const id =
+					routeGeneralReportId.toString();
+				routeGeneralReportId++;
+				return fakerTH.helpers.multiple(
+					() =>
+						({
+							datetime: dayjs(
+								fakerTH.date.past(),
+							).format(),
+							title: fakerTH.lorem.sentence(),
+							content: fakerTH.lorem.paragraph(),
+							topics: fakerTH.helpers
+								.arrayElements(
+									topics.split(" "),
+									3,
+								)
+								.join(","),
+							id,
+							route_id: id,
+						} as PickupRouteReportModel),
+					{ count: 3 },
+				);
+			},
+			{
+				count: 10,
+			},
 		)
-		.filter(
-			(log) =>
-				log.end_date === null ||
-				now.isBefore(dayjs(log.end_date)),
+		.flat();
+
+export const getPickupRouteReportGeneralAll =
+	async () => {
+		return routeGeneralReport;
+	};
+
+export const getPickupRouteReportGeneralAllWithRouteId =
+	async (routeId: string) => {
+		return routeGeneralReport.filter(
+			(entry) => entry.route_id === routeId,
 		);
+	};
 
-	const vehicleIds = logs.map(
-		(log) => log.vehicle_id,
-	);
-	const vehicleRequests = vehicleIds.map(
-		getVehicleWithId,
-	);
-
-	const vehicles = await Promise.all(
-		vehicleRequests,
-	);
-	return vehicles.filter(
-		(vehicle) => vehicle !== null,
-	);
-};
+export const getPickupRouteReportGeneralWithId =
+	async (reportId: string) => {
+		for (const report of routeGeneralReport) {
+			if (report.id === reportId) {
+				return report;
+			}
+		}
+		return null;
+	};

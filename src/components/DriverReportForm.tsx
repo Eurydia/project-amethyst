@@ -1,5 +1,7 @@
-import { DriverReportFormData } from "$types/form-data";
-import { DriverModel } from "$types/models";
+import {
+	DriverModel,
+	DriverReportFormData,
+} from "$types/models/Driver";
 import { SaveRounded } from "@mui/icons-material";
 import { TextField } from "@mui/material";
 import {

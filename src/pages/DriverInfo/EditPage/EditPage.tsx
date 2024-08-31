@@ -1,6 +1,6 @@
 import { postDriver } from "$backend/database/put";
 import { DriverForm } from "$components/DriverForm";
-import { DriverFormData } from "$types/form-data";
+import { DriverFormData } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {

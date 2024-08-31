@@ -6,7 +6,7 @@ import {
 	DriverModel,
 	DriverReport,
 	DriverReportModel,
-} from "$types/models";
+} from "$types/DriverModel";
 import {
 	json,
 	LoaderFunction,

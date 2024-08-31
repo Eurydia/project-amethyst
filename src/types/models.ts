@@ -14,7 +14,7 @@ export type OperationalLog = {
 	driverName: string;
 	driverSurname: string;
 	vehicleId: string;
-	vehicleLicensePlate: string;
+	vehiclePlate: string;
 	routeId: string;
 	routeName: string;
 
@@ -22,12 +22,15 @@ export type OperationalLog = {
 	endDate: string | null;
 };
 
-export type PickupRouteModel = {
+export type PickupRouteReport = {
 	id: string;
+	routeId: string;
+	routeName: string;
 
-	name: string;
-	arrival_time: string;
-	departure_time: string;
+	title: string;
+	content: string;
+	topics: string[];
+	datetime: string;
 };
 
 export type VehicleModel = {
@@ -38,36 +41,4 @@ export type VehicleModel = {
 	vehicle_class: string;
 	registered_city: string;
 	images: string;
-};
-
-export type DriverModel = {
-	id: string;
-
-	name: string;
-	surname: string;
-	contact: string;
-	license_type: "ท.1" | "ท.2";
-	images: string; // Commas separated image paths
-};
-
-export type DriverReportModel = {
-	id: string;
-	driver_id: string;
-
-	datetime: string;
-	title: string;
-	content: string;
-	topics: string;
-};
-
-export type DriverReport = {
-	id: string;
-	driver_id: string;
-	driver_name: string;
-	driver_surname: string;
-
-	datetime: string;
-	title: string;
-	content: string;
-	topics: string[];
 };

@@ -60,6 +60,13 @@ export const FormalLayout: FC<
 	);
 
 	return (
-		<Grid2 container>{renderedFormItems}</Grid2>
+		<Grid2
+			container
+			sx={{
+				width: "100%",
+			}}
+		>
+			{renderedFormItems}
+		</Grid2>
 	);
 };

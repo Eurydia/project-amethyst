@@ -8,8 +8,8 @@ import {
 	newPageLoader,
 } from "./NewPage";
 
-export const DRIVER_ROUTES: RouteObject = {
-	path: "drivers",
+export const PICKUP_ROUTE_ROUTES: RouteObject = {
+	path: "pickup-routes",
 	children: [
 		{
 			index: true,

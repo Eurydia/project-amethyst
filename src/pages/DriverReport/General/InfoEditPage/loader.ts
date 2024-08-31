@@ -3,8 +3,8 @@ import {
 	getDriverWithId,
 	getTopicAll,
 } from "$backend/database/get";
-import { DriverReportFormData } from "$types/form-data";
-import { DriverModel } from "$types/models";
+import { DriverReportFormData } from "$types/models/Driver";
+import { DriverModel } from "$types/DriverModel";
 import {
 	json,
 	LoaderFunction,

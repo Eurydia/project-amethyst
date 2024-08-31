@@ -4,12 +4,12 @@ import {
 	getDriverWithId,
 	getOperationLogWithDriverId,
 } from "$backend/database/get";
+import { OperationalLog } from "$types/models";
 import {
 	DriverModel,
 	DriverReport,
 	DriverReportModel,
-	OperationalLog,
-} from "$types/models";
+} from "$types/DriverModel";
 import {
 	json,
 	LoaderFunction,
@@ -79,7 +79,7 @@ export const indexPageLoader: LoaderFunction =
 					driverId: driver.id,
 					driverName: driver.name,
 					driverSurname: driver.surname,
-					vehicleLicensePlate: "123456",
+					vehiclePlate: "123456",
 					routeName: "123432432",
 				};
 				return entry;

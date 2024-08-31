@@ -1,5 +1,5 @@
 import { TableHeaderDefinition } from "$types/generics";
-import { DriverReport } from "$types/models";
+import { DriverReport } from "$types/DriverModel";
 import { Typography } from "@mui/material";
 import { FC } from "react";
 import { DriverReportTable } from "./DriverReportTable";

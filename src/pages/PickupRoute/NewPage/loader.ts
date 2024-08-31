@@ -1,16 +1,15 @@
-import { DriverFormData } from "$types/form-data";
+import { PickupRouteFormData } from "$types/models/PickupRoute";
 import { LoaderFunction } from "react-router-dom";
 
 export type NewPageLoaderData = {
-	initFormData: DriverFormData;
+	initFormData: PickupRouteFormData;
 };
 export const newPageLoader: LoaderFunction =
 	async () => {
-		const initFormData: DriverFormData = {
+		const initFormData: PickupRouteFormData = {
 			name: "",
-			surname: "",
-			contact: "",
-			license_type: "ท.1",
+			arrival_time: "08:00",
+			departure_time: "17:00",
 		};
 		const loaderData: NewPageLoaderData = {
 			initFormData,

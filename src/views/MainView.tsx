@@ -41,6 +41,10 @@ const PRIMARY_ROUTES = [
 
 const SECONDARY_ROUTES = [
 	{
+		path: "/pickup-routes/report/general",
+		label: "สมุดบันทึกเรื่องร้องเรียนสายรถ",
+	},
+	{
 		path: "/drivers/report/general",
 		label: "สมุดบันทึกเรื่องร้องเรียนคนขับรถ",
 	},
@@ -98,10 +102,11 @@ export const MainView: FC = () => {
 					}}
 				>
 					<Stack
-						useFlexGap
-						spacing={2}
-						flexDirection="row"
-						flexWrap="wrap"
+						sx={{
+							gap: 1,
+							flexDirection: "row",
+							flexWrap: "wrap",
+						}}
 					>
 						{PRIMARY_ROUTES.map(
 							(route, index) => (
@@ -123,7 +128,7 @@ export const MainView: FC = () => {
 					sx={{
 						flexWrap: "wrap",
 						flexDirection: "row",
-						gap: 2,
+						gap: 1,
 					}}
 				>
 					{SECONDARY_ROUTES.map(
@@ -159,8 +164,10 @@ export const MainView: FC = () => {
 			</TypographyTooltip>
 			<Container maxWidth="lg">
 				<Box
-					marginTop={appBarHeight}
-					paddingY={2}
+					sx={{
+						marginTop: appBarHeight,
+						paddingY: 2,
+					}}
 				>
 					<Outlet />
 				</Box>

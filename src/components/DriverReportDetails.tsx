@@ -1,11 +1,11 @@
 import { FormalLayout } from "$layouts/FormalLayout";
-import { DriverReport } from "$types/models";
 import { EditRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { TypographyButton } from "./TypographyButton";
+import { DriverReport } from "$types/models/Driver";
 
 type DriverReportDetailsProps = {
 	entry: DriverReport;

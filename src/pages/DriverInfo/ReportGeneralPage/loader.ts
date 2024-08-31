@@ -6,10 +6,10 @@ import {
 	getDriverWithId,
 	getTopicAll,
 } from "$backend/database/get";
-import { DriverModel } from "$types/models";
+import { DriverModel } from "$types/DriverModel";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
-import { DriverReportFormData } from "$types/form-data";
+import { DriverReportFormData } from "$types/models/Driver";
 
 export type ReportGeneralPageLoaderData = {
 	driverOptions: DriverModel[];

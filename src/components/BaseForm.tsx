@@ -22,15 +22,20 @@ export const BaseForm: FC<BaseFormProps> = (
 ) => {
 	const { children, slotProps } = props;
 	return (
-		<Grid2 container>
+		<Grid2
+			container
+			sx={{
+				width: "100%",
+			}}
+		>
 			<FormalLayout>{children}</FormalLayout>
 			<Grid2
-				size={12}
+				size={{ xs: 12 }}
 				sx={{
 					paddingY: 1,
+					gap: 1,
 					display: "flex",
 					flexDirection: "row",
-					gap: 1,
 					flexWrap: "wrap",
 				}}
 			>

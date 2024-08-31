@@ -1,6 +1,6 @@
-import { postDriver } from "$backend/database/put";
-import { DriverForm } from "$components/DriverForm";
-import { DriverFormData } from "$types/form-data";
+import { postPickupRouteReportGeneral } from "$backend/database/put";
+import { PickupRouteReportForm } from "$components/PickupRouteReportForm";
+import { PickupRouteReportFormData } from "$types/models/PickupRoute";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -11,14 +11,18 @@ import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
 
 export const NewPage: FC = () => {
-	const { initFormData } =
-		useLoaderData() as NewPageLoaderData;
+	const {
+		routeOptions,
+		topicOptions,
+		initFormData,
+	} = useLoaderData() as NewPageLoaderData;
+
 	const submit = useSubmit();
 
 	const handleSubmit = async (
-		formData: DriverFormData,
+		formData: PickupRouteReportFormData,
 	) => {
-		postDriver(formData)
+		postPickupRouteReportGeneral(formData)
 			.then(() => {
 				toast.success("บันทึกสำเร็จ");
 				submit({}, { action: "/" });
@@ -29,17 +33,22 @@ export const NewPage: FC = () => {
 			});
 	};
 
-	const handleCancel = () => {
+	const handleCancel = () =>
 		submit({}, { action: "/" });
-	};
+
+	const heading = "ลงบันทึกเรื่องร้องเรียนสายรถ";
+
+	console.log("NewPage", initFormData.route);
 
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				ลงทะเบียนคนขับรถ
+				{heading}
 			</Typography>
-			<DriverForm
+			<PickupRouteReportForm
+				routeOptions={routeOptions}
 				initFormData={initFormData}
+				topicOptions={topicOptions}
 				onSubmit={handleSubmit}
 				onCancel={handleCancel}
 			/>

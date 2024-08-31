@@ -4,11 +4,9 @@ import { DRIVER_REPORT_GENERAL_ROUTES } from "$pages/DriverReport/General";
 import { DRIVER_REPORT_MEDICAL_ROUTES } from "$pages/DriverReport/Medical";
 import { HomePage } from "$pages/HomePage/HomePage";
 import { homePageLoader } from "$pages/HomePage/loader";
-import { PickupRouteEditPage } from "$pages/PickupRouteEditPage";
-import { PickupRouteIndexPage } from "$pages/PickupRouteIndexPage";
-import { PickupRouteNewPage } from "$pages/PickupRouteNewPage";
-import { pickupRoutePageLoader } from "$pages/PickupRoutePage/loader";
-import { PickupRoutePage } from "$pages/PickupRoutePage/PickupRoutePage";
+import { PICKUP_ROUTE_ROUTES } from "$pages/PickupRoute";
+import { PICKUP_ROUTE_INFO_ROUTES } from "$pages/PickupRouteInfo";
+import { PICKUP_ROUTE_REPORT_GENERAL_ROUTES } from "$pages/PickupRouteReport/General";
 import { vehiclePageLoader } from "$pages/VehiclePage/loader";
 import { VehiclePage } from "$pages/VehiclePage/VehiclePage";
 import { MainView } from "$views/MainView";
@@ -155,28 +153,9 @@ export const routes = createBrowserRouter([
 					},
 				],
 			},
-			{
-				path: "pickup-routes",
-				children: [
-					{
-						index: true,
-						element: <PickupRouteIndexPage />,
-					},
-					{
-						path: "new",
-						element: <PickupRouteNewPage />,
-					},
-					{
-						path: "info/:routeId",
-						element: <PickupRoutePage />,
-						loader: pickupRoutePageLoader,
-					},
-					{
-						path: "info/:routeId/edit",
-						element: <PickupRouteEditPage />,
-					},
-				],
-			},
+			PICKUP_ROUTE_ROUTES,
+			PICKUP_ROUTE_INFO_ROUTES,
+			PICKUP_ROUTE_REPORT_GENERAL_ROUTES,
 			VEHICLE_ROUTES,
 			DRIVER_ROUTES,
 			DRIVER_INFO_ROUTES,

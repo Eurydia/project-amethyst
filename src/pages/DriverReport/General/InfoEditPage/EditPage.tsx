@@ -1,5 +1,5 @@
 import { DriverReportForm } from "$components/DriverReportForm";
-import { DriverReportFormData } from "$types/form-data";
+import { DriverReportFormData } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
 import "dayjs/locale/th";
 import { FC } from "react";

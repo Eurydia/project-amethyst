@@ -1,4 +1,4 @@
-import { DriverFormData } from "$types/form-data";
+import { DriverFormData } from "$types/models/Driver";
 import { SaveRounded } from "@mui/icons-material";
 import { TextField } from "@mui/material";
 import { FC, ReactNode, useState } from "react";

@@ -1,5 +1,5 @@
 import { getDriverWithId } from "$backend/database/get";
-import { DriverFormData } from "$types/form-data";
+import { DriverFormData } from "$types/models/Driver";
 import {
 	json,
 	LoaderFunction,

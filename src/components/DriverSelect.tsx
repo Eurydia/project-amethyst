@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import { FC, SyntheticEvent } from "react";
 import { filterItems } from "../core/filter";
-import { DriverModel } from "../types/models";
+import { DriverModel } from "$types/models/Driver";
 
 type DriverSelectProps = {
 	showError?: boolean;
@@ -39,6 +39,7 @@ export const DriverSelect: FC<
 			onChange={handleChange}
 			value={value}
 			options={options}
+			getOptionKey={(option) => option.id}
 			getOptionLabel={(option) =>
 				`${option.name} ${option.surname}`
 			}

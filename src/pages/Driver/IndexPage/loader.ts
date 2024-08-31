@@ -4,7 +4,7 @@ import {
 	getPickupRouteWithId,
 	getVehicleWithId,
 } from "$backend/database/get";
-import { DriverModel } from "$types/models";
+import { DriverModel } from "$types/DriverModel";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {

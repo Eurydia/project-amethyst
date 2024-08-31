@@ -2,7 +2,7 @@ import {
 	getDriverGeneralReportAll,
 	getDriverWithId,
 } from "$backend/database/get";
-import { DriverReport } from "$types/models";
+import { DriverReport } from "$types/DriverModel";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {

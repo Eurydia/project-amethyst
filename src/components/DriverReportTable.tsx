@@ -1,6 +1,6 @@
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
-import { DriverReport } from "$types/models";
+import { DriverReport } from "$types/models/Driver";
 import {
 	FormControlLabel,
 	Radio,

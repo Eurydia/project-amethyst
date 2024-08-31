@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ReportMedicalPageLoaderData } from "./loader";
-import { DriverReportFormData } from "$types/form-data";
+import { DriverReportFormData } from "$types/models/Driver";
 
 export const ReportMedicalPage: FC = () => {
 	const {

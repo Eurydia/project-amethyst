@@ -44,43 +44,6 @@ const images = [
 	},
 ];
 
-const Gallery = () => {
-	const openInTauri = () => {};
-
-	return (
-		<Box>
-			<Typography variant="h2">
-				ภาพประกอบ
-			</Typography>
-			<Button variant="contained">
-				เพิ่มรูปภาพ
-			</Button>
-			<Stack
-				direction="row"
-				overflow="auto"
-			>
-				{images.map(
-					({ label, imgPath }, index) => (
-						<Box
-							onClick={openInTauri}
-							key={"item" + index}
-							component="img"
-							src={imgPath}
-							alt={label}
-							sx={{
-								width: 200,
-								objectPosition: "50% 50%",
-								aspectRatio: "1/1",
-								objectFit: "cover",
-							}}
-						/>
-					),
-				)}
-			</Stack>
-		</Box>
-	);
-};
-
 export const VehiclePage: FC = () => {
 	const { vehicleId } =
 		useLoaderData() as VehiclePageLoaderData;
@@ -91,58 +54,6 @@ export const VehiclePage: FC = () => {
 				เลขทะเบียน "{vehicleId}"
 			</Typography>
 
-			<List
-				disablePadding
-				subheader={
-					<ListSubheader
-						disableGutters
-						disableSticky
-					>
-						<Typography variant="h2">
-							สถานะประจำวัน
-						</Typography>
-						<Typography variant="subtitle1">
-							วันที่ 09 ก.ย. 2567
-						</Typography>
-					</ListSubheader>
-				}
-			>
-				<ListItem>
-					<ListItemText
-						primary="สถานะรับเข้า"
-						secondary="รับเข้าแล้ว (เวลา 10:00)"
-					/>
-				</ListItem>
-				<ListItem>
-					<ListItemText
-						primary="สถานะรับออก"
-						secondary="ยังไม่ได้รับออก"
-					/>
-				</ListItem>
-			</List>
-			<Typography variant="h2">
-				ตารางการเคลมประจำวัน
-			</Typography>
-			<TableContainer>
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableCell>เวลาและวันที่</TableCell>
-							<TableCell>หัวข้อการเคลม</TableCell>
-							<TableCell>ผู้รับผิดชอบ</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						<TableRow>
-							<TableCell>
-								09 ก.ย. 2567 10:00 น.
-							</TableCell>
-							<TableCell>เมาและขับ</TableCell>
-							<TableCell>สมเดช</TableCell>
-						</TableRow>
-					</TableBody>
-				</Table>
-			</TableContainer>
 			<List
 				disablePadding
 				subheader={
@@ -172,12 +83,6 @@ export const VehiclePage: FC = () => {
 					<ListItemText
 						primary="หจก"
 						secondary="สี่พี่น้อง"
-					/>
-				</ListItem>
-				<ListItem>
-					<ListItemText
-						primary="คนขับปัจจุบัน"
-						secondary="สมเดช (09 ธ.ค. 2567 ถึง 12 ธ.ค. 2567)"
 					/>
 				</ListItem>
 			</List>

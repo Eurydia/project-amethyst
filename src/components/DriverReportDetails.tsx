@@ -82,7 +82,7 @@ export const DriverReportDetails: FC<
 			>
 				แก้ไขข้อมูล
 			</TypographyButton>
-			<FormalLayout>{infoItems}</FormalLayout>;
+			<FormalLayout>{infoItems}</FormalLayout>
 		</Stack>
 	);
 };

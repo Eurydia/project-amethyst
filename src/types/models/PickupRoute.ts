@@ -16,6 +16,17 @@ export type PickupRouteReportModel = {
 	topics: string;
 };
 
+export type PickupRouteReport = {
+	id: string;
+	routeId: string;
+	routeName: string;
+
+	title: string;
+	content: string;
+	topics: string[];
+	datetime: string;
+};
+
 export type PickupRouteFormData = Omit<
 	PickupRouteModel,
 	"id"

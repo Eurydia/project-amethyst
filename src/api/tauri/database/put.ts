@@ -4,6 +4,7 @@ import {
 	DriverReportFormData,
 } from "$types/models/Driver";
 import { PickupRouteReportFormData } from "$types/models/PickupRoute";
+import { VehicleFormData } from "$types/models/Vehicle";
 
 export const postDriverReport = async (
 	formData: DriverReportFormData,
@@ -15,6 +16,10 @@ export const postPickupRouteReportGeneral =
 	async (formData: PickupRouteReportFormData) => {
 		return 0;
 	};
+
+export const postVehicle = async (
+	formData: VehicleFormData,
+) => {};
 
 export const postDriver = async (
 	formData: DriverFormData,

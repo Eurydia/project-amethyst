@@ -1,6 +1,6 @@
 import {
 	getPickupRouteReportGeneralWithId,
-	getPickupRouteWithId,
+	getPickupRoute,
 	getTopicAll,
 } from "$backend/database/get";
 import {
@@ -45,7 +45,7 @@ export const infoEditPageLoader: LoaderFunction =
 			);
 		}
 
-		const route = await getPickupRouteWithId(
+		const route = await getPickupRoute(
 			rawEntry.route_id,
 		);
 

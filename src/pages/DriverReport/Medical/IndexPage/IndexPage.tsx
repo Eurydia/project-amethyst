@@ -16,7 +16,7 @@ export const IndexPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				สมุดบันทึกผลการตรวจสารเสพติด
+				ตารางบันทึกผลการตรวจสารเสพติด
 			</Typography>
 			<DriverReportMedicalTable
 				entries={entries}

@@ -1,14 +1,12 @@
 import {
-	getDriverWithId,
-	getOperationLogWithRouteId,
+	getDriver,
+	getOperationLogAllWithRouteId,
 	getPickupRouteReportGeneralAllWithRouteId,
-	getPickupRouteWithId,
-	getVehicleWithId,
+	getPickupRoute,
+	getVehicle,
 } from "$backend/database/get";
-import {
-	OperationalLog,
-	PickupRouteReport,
-} from "$types/models";
+import { PickupRouteReport } from "$types/models";
+import { OperationalLog } from "$types/OperationalLogModel";
 import { PickupRouteModel } from "$types/models/PickupRoute";
 import {
 	json,
@@ -31,9 +29,7 @@ export const indexPageLoader: LoaderFunction =
 			);
 		}
 
-		const route = await getPickupRouteWithId(
-			routeId,
-		);
+		const route = await getPickupRoute(routeId);
 
 		if (route === null) {
 			throw json(
@@ -58,19 +54,20 @@ export const indexPageLoader: LoaderFunction =
 				} as PickupRouteReport),
 		);
 
-		const logs = await getOperationLogWithRouteId(
-			route.id,
-		);
+		const logs =
+			await getOperationLogAllWithRouteId(
+				route.id,
+			);
 		const logRequests = logs.map(
 			async (rawEntry) => {
-				const driver = await getDriverWithId(
+				const driver = await getDriver(
 					rawEntry.driver_id,
 				);
 				if (driver === null) {
 					return null;
 				}
 
-				const vehicle = await getVehicleWithId(
+				const vehicle = await getVehicle(
 					rawEntry.vehicle_id,
 				);
 

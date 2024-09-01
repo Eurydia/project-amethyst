@@ -11,27 +11,27 @@ import { toast } from "react-toastify";
 import { EditPageLoaderData } from "./loader";
 
 export const EditPage: FC = () => {
-	const { initFormData } =
+	const { initFormData, driverId } =
 		useLoaderData() as EditPageLoaderData;
 	const submit = useSubmit();
 
-	const handleSubmit = async (
+	const handleSubmit = (
 		formData: DriverFormData,
 	) => {
 		postDriver(formData)
-			.then(() => {
-				toast.success("แก้ไขสำเร็จ");
-				submit({}, { action: "/" });
-			})
-			.catch((error) => {
-				console.error(error);
-				toast.error("แก้ไขล้มเหลว");
-			});
+			.then(
+				() => toast.success("แก้ไขสำเร็จ"),
+				() => toast.error("แก้ไขล้มเหลว"),
+			)
+			.finally(() =>
+				submit(
+					{},
+					{ action: "/drivers/info" + driverId },
+				),
+			);
 	};
-	const handleCancel = () =>
-		submit({}, { action: "/" });
 
-	const heading = `ข้อมูลคนขับรถ "${initFormData.name} ${initFormData.surname}" (แก้ไข)`;
+	const heading = `แก้ไขข้อมูลคนขับรถ`;
 
 	return (
 		<Stack spacing={1}>
@@ -41,7 +41,9 @@ export const EditPage: FC = () => {
 			<DriverForm
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() =>
+					submit({}, { action: "/" })
+				}
 			/>
 		</Stack>
 	);

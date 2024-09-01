@@ -1,10 +1,12 @@
 import {
 	getDriverGeneralReportWithId,
-	getDriverWithId,
+	getDriver,
 	getTopicAll,
 } from "$backend/database/get";
-import { DriverReportFormData } from "$types/models/Driver";
-import { DriverModel } from "$types/DriverModel";
+import {
+	DriverModel,
+	DriverReportFormData,
+} from "$types/models/Driver";
 import {
 	json,
 	LoaderFunction,
@@ -23,35 +25,35 @@ export const infoEditPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (400-Missing report ID in params)",
+						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing report ID in params)",
 				},
 				{ status: 400 },
 			);
 		}
 
-		const rawEntry =
+		const model =
 			await getDriverGeneralReportWithId(
 				reportId,
 			);
-		if (rawEntry === null) {
+		if (model === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบรายการในฐานข้อมูล (404-Cannot find report with given ID)",
+						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบเรื่องร้องเรียนในฐานข้อมูล (Cannot find report with given ID)",
 				},
 				{ status: 404 },
 			);
 		}
 
-		const driver = await getDriverWithId(
-			rawEntry.driver_id,
+		const driver = await getDriver(
+			model.driver_id,
 		);
 
 		if (driver === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับในฐานข้อมูล (404-Cannot find driver with ID given in report entry)",
+						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับในฐานข้อมูล (Cannot find driver with ID given in report entry)",
 				},
 				{ status: 404 },
 			);
@@ -59,19 +61,17 @@ export const infoEditPageLoader: LoaderFunction =
 		const topicOptions = await getTopicAll();
 		const driverOptions = [driver];
 		const initFormData: DriverReportFormData = {
-			content: rawEntry.content,
-			datetime: rawEntry.datetime,
-			topics: rawEntry.topics.split(","),
-			title: rawEntry.title,
+			content: model.content,
+			datetime: model.datetime,
+			topics: model.topics.split(","),
+			title: model.title,
 			driver: driver,
 		};
-
 		const loaderData: InfoEditPageLoaderData = {
 			reportId,
 			driverOptions,
 			topicOptions,
 			initFormData,
 		};
-
 		return loaderData;
 	};

@@ -8,6 +8,8 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { InfoEditPageLoaderData } from "./loader";
+import { postDriverReport } from "$backend/database/put";
+import { toast } from "react-toastify";
 
 export const InfoEditPage: FC = () => {
 	const {
@@ -20,17 +22,22 @@ export const InfoEditPage: FC = () => {
 
 	const handleSubmit = (
 		formData: DriverReportFormData,
-	) => {};
-
-	const handleCancel = () => {
-		submit(
-			{},
-			{
-				action:
-					"/drivers/report/general/info/" +
-					reportId,
-			},
-		);
+	) => {
+		postDriverReport(formData)
+			.then(
+				() => toast.success("แก้ไขสำเร็จ"),
+				() => toast.error("แก้ไขล้มเหลว"),
+			)
+			.finally(() =>
+				submit(
+					{},
+					{
+						action:
+							"/drivers/report/general/info/" +
+							reportId,
+					},
+				),
+			);
 	};
 
 	const heading = `บันทึกเรื่องร้องเรียนคนขับรถ เลขที่ ${reportId} (แก้ไข)`;
@@ -44,8 +51,17 @@ export const InfoEditPage: FC = () => {
 				driverOptions={driverOptions}
 				topicOptions={topicOptions}
 				initFormData={initFormData}
-				onCancel={handleCancel}
 				onSubmit={handleSubmit}
+				onCancel={() => {
+					submit(
+						{},
+						{
+							action:
+								"/drivers/report/general/info/" +
+								reportId,
+						},
+					);
+				}}
 			/>
 		</Stack>
 	);

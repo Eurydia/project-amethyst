@@ -3,12 +3,14 @@ import {
 	LoaderFunction,
 } from "react-router-dom";
 import {
-	getDriverWithId,
+	getDriver,
 	getTopicAll,
 } from "$backend/database/get";
 import dayjs from "dayjs";
-import { DriverReportFormData } from "$types/models/Driver";
-import { DriverModel } from "$types/DriverModel";
+import {
+	DriverModel,
+	DriverReportFormData,
+} from "$types/models/Driver";
 
 export type ReportMedicalPageLoaderData = {
 	driverOptions: DriverModel[];
@@ -18,26 +20,27 @@ export type ReportMedicalPageLoaderData = {
 export const reportMedicalPageLoader: LoaderFunction =
 	async ({ params }) => {
 		const { driverId } = params;
-
 		if (driverId === undefined) {
 			throw json(
-				{ message: "ข้อมูลคนขับรถไม่ถูกต้อง" },
+				{
+					message:
+						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing driverId in params)",
+				},
 				{ status: 400 },
 			);
 		}
-
-		const driver = await getDriverWithId(
-			driverId,
-		);
+		const driver = await getDriver(driverId);
 		if (driver === null) {
 			throw json(
-				{ message: "ไม่พบข้อมูลคนขับรถ" },
+				{
+					message:
+						"ไม่พบข้อมูลคนขับที่ต้องการฐานข้อมูล (Cannot find driver with given ID)",
+				},
 				{ status: 404 },
 			);
 		}
 		const topicOptions = await getTopicAll();
 		const driverOptions: DriverModel[] = [driver];
-
 		const initFormData: DriverReportFormData = {
 			content: "",
 			datetime: dayjs().format(),
@@ -45,13 +48,11 @@ export const reportMedicalPageLoader: LoaderFunction =
 			title: "",
 			topics: [],
 		};
-
 		const loaderData: ReportMedicalPageLoaderData =
 			{
 				driverOptions,
 				initFormData,
 				topicOptions,
 			};
-
 		return loaderData;
 	};

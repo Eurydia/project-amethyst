@@ -14,6 +14,9 @@ let theme = createTheme(
 		components: {
 			MuiTypography: {
 				defaultProps: {
+					sx: {
+						width: "auto",
+					},
 					variantMapping: {
 						body1: "span",
 						body2: "span",

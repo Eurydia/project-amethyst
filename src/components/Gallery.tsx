@@ -3,9 +3,12 @@ import {
 	ImageList,
 	ImageListItem,
 	Stack,
+	Typography,
 } from "@mui/material";
 import { FC } from "react";
 import { TypographyButton } from "./TypographyButton";
+import { open } from "@tauri-apps/api/dialog";
+import { useSubmit } from "react-router-dom";
 
 type GalleryProps = {
 	images: string[];
@@ -15,18 +18,22 @@ export const Gallery: FC<GalleryProps> = (
 	props,
 ) => {
 	const { images, onOpenRoot } = props;
-
-	return (
-		<Stack spacing={1}>
-			<TypographyButton
-				variant="text"
-				startIcon={<FolderRounded />}
-				onClick={onOpenRoot}
-			>
-				เปิดคลังภาพ
-			</TypographyButton>
+	const submit = useSubmit();
+	let imageGallery = (
+		<Typography
+			sx={{
+				fontStyle: "italic",
+			}}
+		>
+			ไม่พบรูปภาพ
+		</Typography>
+	);
+	if (images.length > 0) {
+		imageGallery = (
 			<ImageList
-				sx={{ height: 450 }}
+				sx={{
+					height: 450,
+				}}
 				cols={3}
 			>
 				{images.map((image, index) => (
@@ -34,8 +41,18 @@ export const Gallery: FC<GalleryProps> = (
 						<img
 							alt={image}
 							src={image}
-							loading="lazy"
+							onClick={() =>
+								submit(
+									{},
+									{
+										action:
+											"/images/" +
+											encodeURIComponent(image),
+									},
+								)
+							}
 							style={{
+								cursor: "pointer",
 								objectPosition: "50% 50%",
 								aspectRatio: "1/1",
 								objectFit: "cover",
@@ -44,6 +61,23 @@ export const Gallery: FC<GalleryProps> = (
 					</ImageListItem>
 				))}
 			</ImageList>
+		);
+	}
+
+	return (
+		<Stack
+			sx={{
+				gap: 1,
+			}}
+		>
+			<TypographyButton
+				variant="outlined"
+				startIcon={<FolderRounded />}
+				onClick={onOpenRoot}
+			>
+				เปิดคลังภาพ
+			</TypographyButton>
+			{imageGallery}
 		</Stack>
 	);
 };

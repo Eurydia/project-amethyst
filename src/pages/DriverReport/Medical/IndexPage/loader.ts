@@ -1,46 +1,33 @@
 import {
 	getDriverGeneralReportAll,
-	getDriverWithId,
+	getDriver,
 } from "$backend/database/get";
-import { DriverReport } from "$types/DriverModel";
+import { transformDriverReportModelToEntry } from "$core/transform";
+import { DriverReportEntry } from "$types/models/Driver";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
-	entries: DriverReport[];
+	entries: DriverReportEntry[];
 };
-
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		const rawEntries =
+		const models =
 			await getDriverGeneralReportAll();
-
-		const entryRequests: Promise<DriverReport | null>[] =
-			rawEntries.map(async (rawEntry) => {
-				const driver = await getDriverWithId(
-					rawEntry.id,
-				);
+		const entryRequests = models.map(
+			async (model) => {
+				const driver = await getDriver(model.id);
 				if (driver === null) {
 					return null;
 				}
-
-				const entry: DriverReport = {
-					id: rawEntry.id,
-					topics: rawEntry.topics.split(","),
-					datetime: rawEntry.datetime,
-					title: rawEntry.title,
-					content: rawEntry.content,
-					driver_id: driver.id,
-					driver_name: driver.name,
-					driver_surname: driver.surname,
-				};
-
-				return entry;
-			});
-
+				return transformDriverReportModelToEntry(
+					model,
+					driver,
+				);
+			},
+		);
 		const entries = (
 			await Promise.all(entryRequests)
 		).filter((entry) => entry !== null);
-
 		const loaderData: IndexPageLoaderData = {
 			entries,
 		};

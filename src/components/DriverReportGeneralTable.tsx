@@ -1,12 +1,12 @@
 import { TableHeaderDefinition } from "$types/generics";
-import { DriverReport } from "$types/models/Driver";
+import { DriverReportEntry } from "$types/models/Driver";
 import { Typography } from "@mui/material";
 import { FC } from "react";
 import { DriverReportTable } from "./DriverReportTable";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 
-const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReport>[] =
+const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReportEntry>[] =
 	[
 		{
 			label: "เวลาและวันที่",
@@ -24,15 +24,13 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReport>[] =
 		{
 			label: "คนขับรถ",
 			compare: (a, b) =>
-				a.driver_name.localeCompare(
-					b.driver_name,
-				),
+				a.driverName.localeCompare(b.driverName),
 			render: (item) => (
 				<Typography
 					component={Link}
-					to={"/drivers/info/" + item.driver_id}
+					to={"/drivers/info/" + item.driverId}
 				>
-					{item.driver_name} {item.driver_surname}
+					{item.driverName} {item.driverSurname}
 				</Typography>
 			),
 		},
@@ -63,7 +61,7 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReport>[] =
 	];
 
 type DriverReportGeneralTableProps = {
-	entries: DriverReport[];
+	entries: DriverReportEntry[];
 	onAdd: () => void;
 };
 export const DriverReportGeneralTable: FC<
@@ -76,7 +74,7 @@ export const DriverReportGeneralTable: FC<
 			onAdd={onAdd}
 			headers={HEADER_DEFINITIONS}
 			entries={entries}
-			searchPlaceholder="ค้นหาประวัติการร้องเรียน"
+			searchPlaceholder="ค้นหาเรื่องร้องเรียน"
 		/>
 	);
 };

@@ -1,44 +1,72 @@
+import { VehicleModel } from "$types/models/Vehicle";
 import {
 	Autocomplete,
+	InputAdornment,
 	TextField,
 } from "@mui/material";
-import { VehicleModel } from "../types/models";
-import { FC, SyntheticEvent } from "react";
+import { FC, useEffect } from "react";
 import { filterItems } from "../core/filter";
+import { LockRounded } from "@mui/icons-material";
 
 type VehicleSelectProps = {
+	isError?: boolean;
+	isDisabled?: boolean;
 	options: VehicleModel[];
 	value: VehicleModel | null;
-	onChange: (value: VehicleModel | null) => void;
+	onChange: (value: VehicleModel) => void;
 };
 export const VehicleSelect: FC<
 	VehicleSelectProps
 > = (props) => {
-	const { options, value, onChange } = props;
+	const {
+		options,
+		isDisabled,
+		isError,
+		value,
+		onChange,
+	} = props;
 
-	const handleChange = (
-		_: SyntheticEvent,
-		value: VehicleModel | null,
-	) => {
-		onChange(value);
-	};
+	useEffect(() => {
+		if (value === null && options.length > 0) {
+			onChange(options[0]);
+		}
+		return () => {};
+	}, []);
 
 	return (
 		<Autocomplete
-			renderInput={(params) => (
+			disableClearable
+			disabled={isDisabled}
+			renderInput={({
+				InputProps,
+				...params
+			}) => (
 				<TextField
 					{...params}
 					placeholder="ทะเบียนรถ"
+					error={isError}
+					slotProps={{
+						input: {
+							...InputProps,
+							endAdornment: isDisabled ? (
+								<InputAdornment position="end">
+									<LockRounded />
+								</InputAdornment>
+							) : (
+								InputProps.endAdornment
+							),
+						},
+					}}
 				/>
 			)}
-			onChange={handleChange}
-			value={value}
+			onChange={(_, value) => onChange(value)}
+			value={value ?? undefined}
 			options={options}
 			isOptionEqualToValue={(option, value) =>
 				option.id === value.id
 			}
-			getOptionLabel={(option) =>
-				`${option.license_plate} (${option.vendor})`
+			getOptionLabel={({ license_plate }) =>
+				license_plate
 			}
 			filterOptions={(options, params) =>
 				filterItems(

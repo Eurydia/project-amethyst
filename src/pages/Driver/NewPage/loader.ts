@@ -10,7 +10,7 @@ export const newPageLoader: LoaderFunction =
 			name: "",
 			surname: "",
 			contact: "",
-			license_type: "ท.1",
+			licenseType: "",
 		};
 		const loaderData: NewPageLoaderData = {
 			initFormData,

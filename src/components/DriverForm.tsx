@@ -1,5 +1,4 @@
 import { DriverFormData } from "$types/models/Driver";
-import { SaveRounded } from "@mui/icons-material";
 import { TextField } from "@mui/material";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
@@ -25,8 +24,9 @@ export const DriverForm: FC<DriverFormProps> = (
 	const [fieldContact, setFieldContact] =
 		useState(initFormData.contact);
 	const [fieldLicenseType, setFieldLicenseType] =
-		useState(initFormData.license_type);
+		useState(initFormData.licenseType);
 
+	const handleCancel = () => onCancel();
 	const handleSubmit = () => {
 		if (isFormIncomplete) {
 			return;
@@ -35,20 +35,20 @@ export const DriverForm: FC<DriverFormProps> = (
 			name: fieldName.trim().normalize(),
 			surname: fieldSurname.trim().normalize(),
 			contact: fieldContact.trim().normalize(),
-			license_type: fieldLicenseType,
+			licenseType: fieldLicenseType
+				.trim()
+				.normalize(),
 		};
 		onSubmit(formData);
 	};
 
-	const handleCancel = () => onCancel();
-
 	const missingFieldName =
 		fieldName.trim().normalize() === "";
-	const missingFieldLastName =
+	const missingFieldSurname =
 		fieldSurname.trim().normalize() === "";
 
 	const isFormIncomplete =
-		missingFieldName || missingFieldLastName;
+		missingFieldName || missingFieldSurname;
 
 	const formItems: {
 		label: string;
@@ -74,7 +74,7 @@ export const DriverForm: FC<DriverFormProps> = (
 			value: (
 				<TextField
 					fullWidth
-					error={missingFieldLastName}
+					error={missingFieldSurname}
 					value={fieldSurname}
 					onChange={(e) =>
 						setFielSurname(e.target.value)
@@ -112,8 +112,6 @@ export const DriverForm: FC<DriverFormProps> = (
 			slotProps={{
 				submitButton: {
 					disabled: isFormIncomplete,
-					startIcon: <SaveRounded />,
-					variant: "contained",
 					onClick: handleSubmit,
 				},
 				cancelButton: {

@@ -26,30 +26,30 @@ export const VehicleForm: FC<VehicleFormProps> = (
 	const [
 		fieldLicensePlate,
 		setFieldLicensePlate,
-	] = useState(initFormData.license_plate);
+	] = useState(initFormData.licensePlate);
 	const [fieldVendor, setFieldVendor] = useState(
 		initFormData.vendor,
 	);
 	const [
 		fieldRegisteredCity,
 		setFieldRegisteredCity,
-	] = useState(initFormData.registered_city);
+	] = useState(initFormData.registeredCity);
 	const [
 		fieldVehicleClass,
 		setFieldVehicleClass,
-	] = useState(initFormData.vehicle_class);
+	] = useState(initFormData.vehicleClass);
 
 	const handleSubmit = () => {
 		if (isFormIncomplete) {
 			return;
 		}
 		const formData: VehicleFormData = {
-			license_plate: fieldLicensePlate
+			licensePlate: fieldLicensePlate
 				.normalize()
 				.trim(),
 			vendor: fieldVendor,
-			registered_city: fieldRegisteredCity,
-			vehicle_class: fieldVehicleClass,
+			registeredCity: fieldRegisteredCity,
+			vehicleClass: fieldVehicleClass,
 		};
 		onSubmit(formData);
 	};
@@ -80,7 +80,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
 					autoFocus
 					error={missingFieldLicensePlate}
 					value={fieldLicensePlate}
-					placeholder={initFormData.license_plate}
+					placeholder={initFormData.licensePlate}
 					onChange={(e) =>
 						setFieldLicensePlate(e.target.value)
 					}

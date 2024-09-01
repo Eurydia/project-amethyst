@@ -1,6 +1,6 @@
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
-import { OperationalLog } from "$types/models";
+import { OperationalLogEntry } from "$types/models/OperatonalLog";
 import { Typography } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
@@ -14,112 +14,17 @@ import { Link } from "react-router-dom";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { MultiSelect } from "./MultiSelect";
 
-const entriesToOptions = (
-	entries: OperationalLog[],
-) => {
-	const uniqueDrivers: Record<string, string> =
-		{};
-	const uniqueVehicle: Record<string, string> =
-		{};
-	const uniqueRoute: Record<string, string> = {};
-
-	for (const entry of entries) {
-		uniqueDrivers[
-			entry.driverId
-		] = `${entry.driverName} ${entry.driverSurname}`;
-		uniqueVehicle[entry.vehicleId] =
-			entry.vehiclePlate;
-		uniqueRoute[entry.routeId] = entry.routeName;
-	}
-
-	const driverOptions = Object.entries(
-		uniqueDrivers,
-	).map(([value, label]) => ({ value, label }));
-	const vehicleOptions = Object.entries(
-		uniqueVehicle,
-	).map(([value, label]) => ({ value, label }));
-	const routeOptions = Object.entries(
-		uniqueRoute,
-	).map(([value, label]) => ({ value, label }));
-	return {
-		driverOptions,
-		vehicleOptions,
-		routeOptions,
-	};
-};
-
-const filterEntries = (
-	entries: OperationalLog[],
-	afterDate: Dayjs | null,
-	beforeDate: Dayjs | null,
-	selectedRoutes: string[],
-	selectedVehicles: string[],
-	selectedDrivers: string[],
-) => {
-	let items = entries;
-	if (afterDate !== null) {
-		items = items.filter((entry) =>
-			dayjs(entry.startDate).isAfter(afterDate),
-		);
-	}
-	if (beforeDate !== null) {
-		items = items.filter((entry) =>
-			dayjs(entry.startDate).isBefore(beforeDate),
-		);
-	}
-	const routeSet = new Set(selectedRoutes);
-	const vehicleSet = new Set(selectedVehicles);
-	const driverSet = new Set(selectedDrivers);
-
-	items = items
-		.filter((entry) =>
-			routeSet.has(entry.routeId),
-		)
-		.filter((entry) =>
-			vehicleSet.has(entry.vehicleId),
-		)
-		.filter((entry) =>
-			driverSet.has(entry.driverId),
-		);
-	return items;
-};
-
-const searchEntries = (
-	entries: OperationalLog[],
-	search: string,
-) => {
-	const tokens = search
-		.normalize()
-		.split(" ")
-		.map((token) => token.trim())
-		.filter((token) => token.length > 0);
-
-	return filterItems(entries, tokens, [
-		"driver_name",
-		"driver_surname",
-		"vehicle_license_plate",
-		"route_name",
-	]);
-};
-
 const compareDates = (
 	a: string | null,
 	b: string | null,
 ) => {
 	if (a === null || b === null) {
 		return 0;
-	} else if (a === null && b !== null) {
-		return -1;
-	} else if (a !== null && b === null) {
-		return 1;
 	}
 	return dayjs(a).unix() - dayjs(b).unix();
 };
-const formatDate = (date: string | null) => {
-	return dayjs(date).format("DD/MM/YYYY");
-};
 
-const HEADER_DEFINITION: TableHeaderDefinition<OperationalLog>[] =
+const HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry>[] =
 	[
 		{
 			label: "เริ่ม",
@@ -127,7 +32,9 @@ const HEADER_DEFINITION: TableHeaderDefinition<OperationalLog>[] =
 				compareDates(a.startDate, b.startDate),
 			render: (item) => (
 				<Typography>
-					{formatDate(item.startDate)}
+					{dayjs(item.startDate).format(
+						"DD/MM/YYYY",
+					)}
 				</Typography>
 			),
 		},
@@ -137,7 +44,9 @@ const HEADER_DEFINITION: TableHeaderDefinition<OperationalLog>[] =
 				compareDates(a.endDate, b.endDate),
 			render: (item) => (
 				<Typography>
-					{formatDate(item.endDate)}
+					{dayjs(item.endDate).format(
+						"DD/MM/YYYY",
+					)}
 				</Typography>
 			),
 		},
@@ -162,7 +71,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<OperationalLog>[] =
 					component={Link}
 					to={"/vehicles/info/" + item.vehicleId}
 				>
-					{item.vehiclePlate}
+					{item.vehicleLicensePlate}
 				</Typography>
 			),
 		},
@@ -182,7 +91,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<OperationalLog>[] =
 	];
 
 type OperationalLogTableProps = {
-	entries: OperationalLog[];
+	entries: OperationalLogEntry[];
 	onAdd: () => void;
 };
 export const OperationalLogTable: FC<
@@ -194,10 +103,37 @@ export const OperationalLogTable: FC<
 		driverOptions,
 		vehicleOptions,
 		routeOptions,
-	} = useMemo(
-		() => entriesToOptions(entries),
-		[entries],
-	);
+	} = useMemo(() => {
+		const uniqDrivers: Record<string, string> =
+			{};
+		const uniqVehicle: Record<string, string> =
+			{};
+		const uniqRoute: Record<string, string> = {};
+
+		for (const entry of entries) {
+			uniqDrivers[
+				entry.driverId
+			] = `${entry.driverName} ${entry.driverSurname}`;
+			uniqVehicle[entry.vehicleId] =
+				entry.vehicleLicensePlate;
+			uniqRoute[entry.routeId] = entry.routeName;
+		}
+
+		const driverOptions = Object.entries(
+			uniqDrivers,
+		).map(([value, label]) => ({ value, label }));
+		const vehicleOptions = Object.entries(
+			uniqVehicle,
+		).map(([value, label]) => ({ value, label }));
+		const routeOptions = Object.entries(
+			uniqRoute,
+		).map(([value, label]) => ({ value, label }));
+		return {
+			driverOptions,
+			vehicleOptions,
+			routeOptions,
+		};
+	}, [entries]);
 
 	const [search, setSearch] = useState("");
 	const [afterDate, setAfterDate] =
@@ -217,30 +153,52 @@ export const OperationalLogTable: FC<
 			driverOptions.map(({ value }) => value),
 		);
 
-	const filteredEntries = useMemo(
-		() =>
-			filterEntries(
-				entries,
-				afterDate,
-				beforeDate,
-				selectedRoutes,
-				selectedVehicles,
-				selectedDrivers,
-			),
-		[
-			entries,
-			selectedDrivers,
-			selectedRoutes,
-			selectedRoutes,
-			afterDate,
-			beforeDate,
-		],
-	);
+	const filteredEntries = useMemo(() => {
+		let items = entries;
+		if (afterDate !== null) {
+			items = items.filter((entry) =>
+				dayjs(entry.startDate).isAfter(afterDate),
+			);
+		}
+		if (beforeDate !== null) {
+			items = items.filter((entry) =>
+				dayjs(entry.startDate).isBefore(
+					beforeDate,
+				),
+			);
+		}
+		const routeSet = new Set(selectedRoutes);
+		const vehicleSet = new Set(selectedVehicles);
+		const driverSet = new Set(selectedDrivers);
 
-	const searchedEntries = useMemo(
-		() => searchEntries(filteredEntries, search),
-		[search, filteredEntries],
-	);
+		items = items
+			.filter((entry) =>
+				routeSet.has(entry.routeId),
+			)
+			.filter((entry) =>
+				vehicleSet.has(entry.vehicleId),
+			)
+			.filter((entry) =>
+				driverSet.has(entry.driverId),
+			);
+		return items;
+	}, [
+		entries,
+		selectedDrivers,
+		selectedRoutes,
+		selectedRoutes,
+		afterDate,
+		beforeDate,
+	]);
+
+	const searchedEntries = useMemo(() => {
+		return filterItems(entries, search, [
+			"driverName",
+			"driverSurname",
+			"vehicleLicensePlate",
+			"routeName",
+		]);
+	}, [search, filteredEntries]);
 
 	const fitlerFormItems: {
 		label: string;

@@ -1,5 +1,5 @@
 import {
-	getPickupRouteWithId,
+	getPickupRoute,
 	getTopicAll,
 } from "$backend/database/get";
 import {
@@ -28,9 +28,7 @@ export const reportGeneralPageLoader: LoaderFunction =
 			);
 		}
 
-		const route = await getPickupRouteWithId(
-			routeId,
-		);
+		const route = await getPickupRoute(routeId);
 		if (route === null) {
 			throw json(
 				{ message: "ไม่พบข้อมูลคนขับรถ" },

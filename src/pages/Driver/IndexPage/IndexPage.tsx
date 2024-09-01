@@ -24,16 +24,15 @@ const HEADER_DEFINITION: TableHeaderDefinition<
 		compare: (a, b) =>
 			a.name.localeCompare(b.name),
 		render: (item) => (
-			<Typography
-				component={Link}
-				to={"/drivers/info/" + item.id}
-			>
-				{item.name} {item.surname}
+			<Typography key={"driver" + item.id}>
+				<Link to={"/drivers/info/" + item.id}>
+					{item.name} {item.surname}
+				</Link>
 			</Typography>
 		),
 	},
 	{
-		label: "สายรถ",
+		label: "สายรถประจำ",
 		compare: null,
 		render: (item) =>
 			item.routes.length === 0 ? (
@@ -44,21 +43,22 @@ const HEADER_DEFINITION: TableHeaderDefinition<
 					useFlexGap
 				>
 					{item.routes.map((route, index) => (
-						<Typography
-							key={"vehicle" + index}
-							component={Link}
-							to={
-								"/pickup-routes/info/" + route.id
-							}
-						>
-							{route.name}
+						<Typography key={"vehicle" + index}>
+							<Link
+								to={
+									"/pickup-routes/info/" +
+									route.id
+								}
+							>
+								{route.name}
+							</Link>
 						</Typography>
 					))}
 				</Stack>
 			),
 	},
 	{
-		label: "ทะเบียนรถ",
+		label: "ทะเบียนรถประจำ",
 		compare: null,
 		render: (item) =>
 			item.vehicles.length === 0 ? (
@@ -69,83 +69,89 @@ const HEADER_DEFINITION: TableHeaderDefinition<
 					useFlexGap
 				>
 					{item.vehicles.map((vehicle, index) => (
-						<Typography
-							key={"vehicle" + index}
-							component={Link}
-							to={"/vehicles/info/" + vehicle.id}
-						>
-							{vehicle.licensePlate}
+						<Typography key={"vehicle" + index}>
+							<Link
+								to={
+									"/vehicles/info/" + vehicle.id
+								}
+							>
+								{vehicle.licensePlate}
+							</Link>
 						</Typography>
 					))}
 				</Stack>
 			),
 	},
-	{
-		label: "เบอร์ติดต่อ",
-		compare: null,
-		render: (item) => (
-			<Typography>{item.contact}</Typography>
-		),
-	},
 ];
+
+const extractOptions = (
+	entries: IndexPageLoaderData["entries"],
+) => {
+	const uniqueOption: Record<string, string> = {};
+	for (const entry of entries) {
+		uniqueOption[
+			entry.id
+		] = `${entry.name} ${entry.surname}`;
+	}
+	return Object.entries(uniqueOption).map(
+		([value, label]) => ({
+			value,
+			label,
+		}),
+	);
+};
+
+const searchEntries = (
+	entries: IndexPageLoaderData["entries"],
+	search: string,
+) => {
+	return filterItems(entries, search, [
+		"name",
+		"surname",
+		"vehicles.*.licensePlate",
+		"routes.*.name",
+	]);
+};
+
+const filterEntries = (
+	drivers: string[],
+	entries: IndexPageLoaderData["entries"],
+) => {
+	const driverSet = new Set(drivers);
+	return entries.filter((entry) =>
+		driverSet.has(entry.id),
+	);
+};
 
 type CustomTableProps = {
 	entries: IndexPageLoaderData["entries"];
 };
-const CustomTable: FC<CustomTableProps> = (
+export const CustomTable: FC<CustomTableProps> = (
 	props,
 ) => {
 	const { entries } = props;
+
 	const submit = useSubmit();
 
-	const driverOptions = useMemo(() => {
-		const uniqueDrivers: Record<string, string> =
-			{};
-
-		for (const entry of entries) {
-			uniqueDrivers[
-				entry.id
-			] = `${entry.name} ${entry.surname}`;
-		}
-
-		const driverOptions = Object.entries(
-			uniqueDrivers,
-		).map(([value, label]) => ({
-			value,
-			label,
-		}));
-
-		return driverOptions;
-	}, [entries]);
+	const driverOptions = useMemo(
+		() => extractOptions(entries),
+		[entries],
+	);
 
 	const [search, setSearch] = useState("");
-	const [selectedDrivers, setSelectedDrivers] =
-		useState(
-			driverOptions.map(({ value }) => value),
-		);
+	const [drivers, setDrivers] = useState(
+		driverOptions.map(({ value }) => value),
+	);
 
-	const filteredEntries = useMemo(() => {
-		const driverSet = new Set(selectedDrivers);
+	const filteredEntries = useMemo(
+		() => filterEntries(drivers, entries),
+		[entries, drivers],
+	);
 
-		return entries.filter((item) =>
-			driverSet.has(item.id),
-		);
-	}, [entries, selectedDrivers]);
-
-	const searchedEntries = useMemo(() => {
-		const tokens = search
-			.normalize()
-			.split(" ")
-			.map((token) => token.trim())
-			.filter((token) => token.length > 0);
-		return filterItems(filteredEntries, tokens, [
-			"name",
-			"surname",
-			"contact",
-			"vehicles.*.licensePlate",
-			"routes.*.name",
-		]);
-	}, [filteredEntries, search]);
+	const searchedEntries = useMemo(
+		() => searchEntries(filteredEntries, search),
+		[filteredEntries, search],
+	);
 
 	const formItems: {
 		label: string;
@@ -155,9 +161,9 @@ const CustomTable: FC<CustomTableProps> = (
 			label: "คนขับรถ",
 			value: (
 				<MultiSelect
-					onChange={setSelectedDrivers}
+					onChange={setDrivers}
 					options={driverOptions}
-					selectedOptions={selectedDrivers}
+					selectedOptions={drivers}
 				/>
 			),
 		},
@@ -172,7 +178,7 @@ const CustomTable: FC<CustomTableProps> = (
 			slotProps={{
 				searchField: {
 					placeholder:
-						"ค้นหาด้วยชื่อ, นามสกุล, ทะเบียนรถ, สายรถ หรือเบอร์ติดต่อ",
+						"ค้นหาด้วยชื่อ, นามสกุล, เลขทะเบียนรถ หรือสายรถ",
 					value: search,
 					onChange: (e) =>
 						setSearch(e.target.value),
@@ -197,6 +203,7 @@ const CustomTable: FC<CustomTableProps> = (
 export const IndexPage: FC = () => {
 	const { entries } =
 		useLoaderData() as IndexPageLoaderData;
+
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">

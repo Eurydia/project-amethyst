@@ -1,101 +1,52 @@
+import { BaseDetails } from "$components/BaseDetails";
 import { DriverReportGeneralTable } from "$components/DriverReportGeneralTable";
 import { DriverReportMedicalTable } from "$components/DriverReportMedicalTable";
 import { Gallery } from "$components/Gallery";
 import { OperationalLogTable } from "$components/OperationalLogTable";
-import { TypographyButton } from "$components/TypographyButton";
-import { FormalLayout } from "$layouts/FormalLayout";
-import { EditRounded } from "@mui/icons-material";
-import {
-	List,
-	ListItem,
-	ListItemText,
-	Stack,
-	Typography,
-} from "@mui/material";
-import { FC, ReactNode } from "react";
+import { Stack, Typography } from "@mui/material";
+import { FC, Fragment, ReactNode } from "react";
 import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
-import { Fragment } from "react/jsx-runtime";
 import { IndexPageLoaderData } from "./loader";
+import { BaseTOC } from "$components/BaseTOC";
+import {
+	DriverModel,
+	DriverReportEntry,
+} from "$types/models/Driver";
+import { OperationalLogEntry } from "$types/models/OperatonalLog";
 
-const IMAGES = [
-	"https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&q=20",
-	"https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&q=20",
-	"https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=20",
-	"https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&q=20",
-	"https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&q=20",
-	"https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&q=20",
-	"https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=20",
-	"https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&q=20",
+const TOC_PATHS: {
+	label: string;
+	href: string;
+}[] = [
+	{
+		label: "ข้อมูลคนขับรถ",
+		href: "#info",
+	},
+	{
+		label: "ประวัติการเดินรถ",
+		href: "#operational-log",
+	},
+	{
+		label: "เรื่องร้องเรียน",
+		href: "#report-general",
+	},
+	{
+		label: "ผลการตรวจสารเสพติด",
+		href: "#report-medical",
+	},
 ];
 
-const TableOfContents: FC = () => {
-	return (
-		<Fragment>
-			<Typography>สารบัญ</Typography>
-			<List
-				dense
-				disablePadding
-			>
-				<ListItem
-					disablePadding
-					disableGutters
-				>
-					<ListItemText>
-						<Typography
-							href="#info"
-							component="a"
-						>
-							ข้อมูลคนขับรถ
-						</Typography>
-					</ListItemText>
-				</ListItem>
-				<List
-					dense
-					disablePadding
-				>
-					<ListItem
-						disableGutters
-						disablePadding
-					>
-						<ListItemText>
-							<Typography
-								component="a"
-								href="#general-report"
-							>
-								ประวัติการร้องเรียน
-							</Typography>
-						</ListItemText>
-					</ListItem>
-					<ListItem
-						disableGutters
-						disablePadding
-					>
-						<ListItemText>
-							<Typography
-								component="a"
-								href="#medical-report"
-							>
-								ผลการตรวจสารเสพติด
-							</Typography>
-						</ListItemText>
-					</ListItem>
-				</List>
-			</List>
-		</Fragment>
-	);
+type CustomDetailsProps = {
+	images: string[];
+	driver: DriverModel;
 };
-
-export const IndexPage: FC = () => {
-	const {
-		driver,
-		operationalLogEntries,
-		generalReportEntries,
-		medicalReportEntries,
-	} = useLoaderData() as IndexPageLoaderData;
-
+const CustomDetails: FC<CustomDetailsProps> = (
+	props,
+) => {
+	const { images, driver } = props;
 	const submit = useSubmit();
 
 	const infoItems: {
@@ -128,57 +79,70 @@ export const IndexPage: FC = () => {
 			label: "คลังภาพ",
 			value: (
 				<Gallery
-					images={IMAGES}
+					images={images}
 					onOpenRoot={() => {}}
 				/>
 			),
 		},
 	];
 
-	const heading = `ข้อมูลคนขับรถ "${driver.name} ${driver.surname}"`;
-
 	return (
-		<Stack spacing={1}>
-			<TableOfContents />
-			<Typography
-				variant="h1"
-				id="info"
-			>
-				{heading}
-			</Typography>
-			<TypographyButton
-				startIcon={<EditRounded />}
-				variant="contained"
-				onClick={() =>
-					submit(
-						{},
-						{
-							action: "./edit",
-						},
-					)
-				}
-			>
-				แก้ไข้ข้อมูล
-			</TypographyButton>
-			<FormalLayout>{infoItems}</FormalLayout>
+		<BaseDetails
+			onEdit={() =>
+				submit(
+					{},
+					{
+						action: "./edit",
+					},
+				)
+			}
+		>
+			{infoItems}
+		</BaseDetails>
+	);
+};
+
+type CustomLogTableProps = {
+	entries: OperationalLogEntry[];
+};
+const CustomLogTable: FC<CustomLogTableProps> = (
+	props,
+) => {
+	const { entries } = props;
+	return (
+		<Fragment>
 			<Typography
 				variant="h2"
 				id="operational-log"
 			>
-				ประวัติการเดินรถ
+				ตารางบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogTable
-				entries={operationalLogEntries}
+				entries={entries}
 				onAdd={() => {}}
 			/>
+		</Fragment>
+	);
+};
+
+type CustomGeneralReportTableProps = {
+	entries: DriverReportEntry[];
+};
+const CustomGeneralReportTable: FC<
+	CustomGeneralReportTableProps
+> = (props) => {
+	const { entries } = props;
+	const submit = useSubmit();
+	return (
+		<Fragment>
 			<Typography
 				variant="h2"
-				id="general-report"
+				id="report-general"
 			>
-				ตารางบันทึกเรื่องร้องเรียนคนขับรถ
+				ตารางบันทึกเรื่องร้องเรียน
 			</Typography>
 			<DriverReportGeneralTable
-				entries={generalReportEntries}
+				entries={entries}
 				onAdd={() =>
 					submit(
 						{},
@@ -186,20 +150,70 @@ export const IndexPage: FC = () => {
 					)
 				}
 			/>
+		</Fragment>
+	);
+};
+
+type CustomMedicalReportTableProps = {
+	entries: DriverReportEntry[];
+};
+const CustomMedicalReportTable: FC<
+	CustomMedicalReportTableProps
+> = (props) => {
+	const { entries } = props;
+	const submit = useSubmit();
+
+	return (
+		<Fragment>
 			<Typography
 				variant="h2"
-				id="medical-report"
+				id="report-medical"
 			>
 				ตารางบันทึกผลการตรวจสารเสพติด
 			</Typography>
 			<DriverReportMedicalTable
-				entries={medicalReportEntries}
+				entries={entries}
 				onAdd={() =>
 					submit(
 						{},
 						{ action: "./report/medical" },
 					)
 				}
+			/>
+		</Fragment>
+	);
+};
+
+export const IndexPage: FC = () => {
+	const {
+		images,
+		driver,
+		logEntries,
+		generalEntries,
+		medicalEntries,
+	} = useLoaderData() as IndexPageLoaderData;
+
+	const heading = `ข้อมูลคนขับรถ`;
+
+	return (
+		<Stack spacing={1}>
+			<BaseTOC>{TOC_PATHS}</BaseTOC>
+			<Typography
+				variant="h1"
+				id="info"
+			>
+				{heading}
+			</Typography>
+			<CustomDetails
+				images={images}
+				driver={driver}
+			/>
+			<CustomLogTable entries={logEntries} />
+			<CustomGeneralReportTable
+				entries={generalEntries}
+			/>
+			<CustomMedicalReportTable
+				entries={medicalEntries}
 			/>
 		</Stack>
 	);

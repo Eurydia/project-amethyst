@@ -1,6 +1,6 @@
 import {
 	getPickupRouteReportGeneralWithId,
-	getPickupRouteWithId,
+	getPickupRoute,
 } from "$backend/database/get";
 import { PickupRouteReport } from "$types/models";
 import {
@@ -38,7 +38,7 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 
-		const route = await getPickupRouteWithId(
+		const route = await getPickupRoute(
 			rawEntry.route_id,
 		);
 

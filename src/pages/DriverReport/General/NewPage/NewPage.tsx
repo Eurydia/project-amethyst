@@ -23,18 +23,21 @@ export const NewPage: FC = () => {
 		formData: DriverReportFormData,
 	) => {
 		postDriverReport(formData)
-			.then(() => {
+			.then((reportId) => {
 				toast.success("บันทึกสำเร็จ");
-				submit({}, { action: "/" });
+				submit(
+					{},
+					{
+						action:
+							"/drivers/report/general/info" +
+							reportId,
+					},
+				);
 			})
-			.catch((error) => {
-				console.error(error);
+			.catch(() => {
 				toast.error("บันทึกล้มเหลว");
 			});
 	};
-
-	const handleCancel = () =>
-		submit({}, { action: "/" });
 
 	const heading = "ลงบันทึกเรื่องร้องเรียนคนขับ";
 
@@ -48,7 +51,9 @@ export const NewPage: FC = () => {
 				initFormData={initFormData}
 				topicOptions={topicOptions}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() =>
+					submit({}, { action: "/" })
+				}
 			/>
 		</Stack>
 	);

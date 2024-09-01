@@ -8,14 +8,13 @@ import { HomePageLoaderData } from "./loader";
 export const HomePage: FC = () => {
 	const {} =
 		useLoaderData() as HomePageLoaderData;
-
 	return (
 		<Stack spacing={4}>
 			<Typography variant="h1">
 				หน้าแรก
 			</Typography>
-			<RecordTable rows={[]} />
-			<AttendanceTable />
+			{/* <RecordTable rows={[]} /> */}
+			{/* <AttendanceTable /> */}
 		</Stack>
 	);
 };

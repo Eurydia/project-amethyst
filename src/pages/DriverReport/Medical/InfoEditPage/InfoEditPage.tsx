@@ -8,6 +8,8 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { InfoPageLoaderData } from "./loader";
+import { toast } from "react-toastify";
+import { postDriverReport } from "$backend/database/put";
 
 export const InfoEditPage: FC = () => {
 	const {
@@ -19,30 +21,26 @@ export const InfoEditPage: FC = () => {
 	const submit = useSubmit();
 
 	const handleSubmit = (
-		_: DriverReportFormData,
+		formData: DriverReportFormData,
 	) => {
-		submit(
-			{},
-			{
-				action:
-					"/drivers/report/medical/info/" +
-					reportId,
-			},
-		);
+		postDriverReport(formData)
+			.then(
+				() => toast.success("แก้ไขสำเร็จ"),
+				() => toast.error("แก้ไขล้มเหลว"),
+			)
+			.finally(() =>
+				submit(
+					{},
+					{
+						action:
+							"/drivers/report/medical/info/" +
+							reportId,
+					},
+				),
+			);
 	};
 
-	const handleCancel = () => {
-		submit(
-			{},
-			{
-				action:
-					"/drivers/report/medical/info/" +
-					reportId,
-			},
-		);
-	};
-
-	const heading = `ผลการตรวจสารเสพติด เลขที่ ${reportId} (แก้ไข)`;
+	const heading = `ผลการตรวจสารเสพติด (แก้ไข)`;
 
 	return (
 		<Stack sx={{ gap: 1 }}>
@@ -53,7 +51,16 @@ export const InfoEditPage: FC = () => {
 				driverOptions={driverOptions}
 				topicOptions={topicOptions}
 				initFormData={initFormData}
-				onCancel={handleCancel}
+				onCancel={() =>
+					submit(
+						{},
+						{
+							action:
+								"/drivers/report/medical/info/" +
+								reportId,
+						},
+					)
+				}
 				onSubmit={handleSubmit}
 			/>
 		</Stack>

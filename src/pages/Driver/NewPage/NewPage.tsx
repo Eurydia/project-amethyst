@@ -15,22 +15,23 @@ export const NewPage: FC = () => {
 		useLoaderData() as NewPageLoaderData;
 	const submit = useSubmit();
 
-	const handleSubmit = async (
+	const handleSubmit = (
 		formData: DriverFormData,
 	) => {
-		postDriver(formData)
-			.then(() => {
-				toast.success("บันทึกสำเร็จ");
-				submit({}, { action: "/" });
-			})
-			.catch((error) => {
-				console.error(error);
+		postDriver(formData).then(
+			(driverId) => {
+				submit(
+					{},
+					{
+						action: "/drivers/info" + driverId,
+					},
+				);
+			},
+			() => {
+				submit({}, { action: "/drivers" });
 				toast.error("บันทึกล้มเหลว");
-			});
-	};
-
-	const handleCancel = () => {
-		submit({}, { action: "/" });
+			},
+		);
 	};
 
 	return (
@@ -41,7 +42,9 @@ export const NewPage: FC = () => {
 			<DriverForm
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() =>
+					submit({}, { action: "/drivers" })
+				}
 			/>
 		</Stack>
 	);

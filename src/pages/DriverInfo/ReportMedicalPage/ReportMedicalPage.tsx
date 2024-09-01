@@ -23,31 +23,38 @@ export const ReportMedicalPage: FC = () => {
 	const handleSubmit = async (
 		formData: DriverReportFormData,
 	) => {
-		postDriverReport(formData)
-			.then(() => {
-				toast.success("บันทึกสำเร็จ");
-				submit({}, { action: "/" });
-			})
-			.catch((error) => {
-				console.error(error);
+		postDriverReport(formData).then(
+			(reportId) => {
+				submit(
+					{},
+					{
+						action:
+							"/drivers/report/general/info" +
+							reportId,
+					},
+				);
+			},
+			() => {
 				toast.error("บันทึกล้มเหลว");
-			});
+			},
+		);
 	};
 
-	const handleCancel = () =>
-		submit({}, { action: "/" });
+	const heading = `ลงบันทึกผลการตรวจสารเสพติด`;
 
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				บันทึกผลการตรวจสารเสพติด
+				{heading}
 			</Typography>
 			<DriverReportForm
 				driverOptions={driverOptions}
 				topicOptions={topicOptions}
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() =>
+					submit({}, { action: "/" })
+				}
 			/>
 		</Stack>
 	);

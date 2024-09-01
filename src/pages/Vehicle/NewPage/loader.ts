@@ -15,10 +15,10 @@ export const newPageLoader: LoaderFunction =
 		const vendorOptions = [...uniqueVendors];
 
 		const initFormData: VehicleFormData = {
-			license_plate: "",
+			licensePlate: "",
 			vendor: "",
-			vehicle_class: "รถตู้",
-			registered_city: "",
+			vehicleClass: "รถตู้",
+			registeredCity: "",
 		};
 		const loaderData: NewPageLoaderData = {
 			initFormData,

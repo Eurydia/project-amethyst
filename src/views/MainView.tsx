@@ -45,6 +45,14 @@ const SECONDARY_ROUTES = [
 		label: "สมุดบันทึกเรื่องร้องเรียนสายรถ",
 	},
 	{
+		path: "/vehicles/report/general",
+		label: "สมุดบันทึกเรื่องร้องเรียนรถ",
+	},
+	{
+		path: "/vehicles/report/inspection",
+		label: "สมุดบันทึกผลการตรวจสภาพรถ",
+	},
+	{
 		path: "/drivers/report/general",
 		label: "สมุดบันทึกเรื่องร้องเรียนคนขับรถ",
 	},
@@ -144,7 +152,7 @@ export const MainView: FC = () => {
 					)}
 				</Toolbar>
 			</AppBar>
-			<TypographyTooltip
+			{/* <TypographyTooltip
 				arrow
 				placement="left"
 				title="กลับขึ้นด้านบน"
@@ -161,7 +169,7 @@ export const MainView: FC = () => {
 				>
 					<KeyboardArrowUpRounded />
 				</Fab>
-			</TypographyTooltip>
+			</TypographyTooltip> */}
 			<Container maxWidth="lg">
 				<Box
 					sx={{

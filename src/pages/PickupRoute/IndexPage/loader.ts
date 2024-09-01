@@ -1,8 +1,8 @@
 import {
-	getDriverWithId,
+	getDriver,
 	getOperationLogAll,
 	getPickupRouteAll,
-	getVehicleWithId,
+	getVehicle,
 } from "$backend/database/get";
 import { LoaderFunction } from "react-router-dom";
 
@@ -44,11 +44,11 @@ export const indexPageLoader: LoaderFunction =
 			);
 
 			const vehicleRequests = [...vehicleSet].map(
-				async (id) => getVehicleWithId(id),
+				async (id) => getVehicle(id),
 			);
 
 			const routeRequets = [...driverSet].map(
-				async (id) => getDriverWithId(id),
+				async (id) => getDriver(id),
 			);
 
 			const vehicles: IndexPageLoaderData["entries"][number]["vehicles"] =

@@ -17,7 +17,7 @@
 		"@mui/icons-material": "^6.0.0",
 		"@mui/material": "^6.0.0",
 		"@mui/x-date-pickers": "^7.12.1",
-		"@tauri-apps/api": "^1",
+		"@tauri-apps/api": "^1.6.0",
 		"dayjs": "^1.11.12",
 		"match-sorter": "^6.3.4",
 		"react": "^18.2.0",
@@ -26,7 +26,7 @@
 	},
 	"devDependencies": {
 		"@faker-js/faker": "^8.4.1",
-		"@tauri-apps/cli": "^1",
+		"@tauri-apps/cli": "^1.6.1",
 		"@types/react": "^18.2.15",
 		"@types/react-dom": "^18.2.7",
 		"@vitejs/plugin-react": "^4.2.1",

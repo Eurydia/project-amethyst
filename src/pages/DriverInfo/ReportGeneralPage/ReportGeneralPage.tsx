@@ -17,27 +17,30 @@ export const ReportGeneralPage: FC = () => {
 		driverOptions,
 	} =
 		useLoaderData() as ReportGeneralPageLoaderData;
-
 	const submit = useSubmit();
 
-	const handleSubmit = async (
+	const handleSubmit = (
 		formData: DriverReportFormData,
 	) => {
-		postDriverReport(formData)
-			.then(() => {
-				toast.success("บันทึกสำเร็จ");
-				submit({}, { action: "/" });
-			})
-			.catch((error) => {
-				console.error(error);
+		postDriverReport(formData).then(
+			(reportId) => {
+				submit(
+					{},
+					{
+						action:
+							"/drivers/report/general/info" +
+							reportId,
+					},
+				);
+			},
+			() => {
 				toast.error("บันทึกล้มเหลว");
-			});
+			},
+		);
 	};
 
-	const handleCancel = () =>
-		submit({}, { action: "/" });
-
 	const heading = `ลงบันทึกเรื่องร้องเรียนคนขับรถ`;
+
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
@@ -48,7 +51,9 @@ export const ReportGeneralPage: FC = () => {
 				topicOptions={topicOptions}
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() =>
+					submit({}, { action: "/" })
+				}
 			/>
 		</Stack>
 	);

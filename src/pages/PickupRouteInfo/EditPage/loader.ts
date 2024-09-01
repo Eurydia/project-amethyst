@@ -1,4 +1,4 @@
-import { getPickupRouteWithId } from "$backend/database/get";
+import { getPickupRoute } from "$backend/database/get";
 import { PickupRouteFormData } from "$types/models/PickupRoute";
 import {
 	json,
@@ -19,8 +19,9 @@ export const editPageLoader: LoaderFunction =
 			);
 		}
 
-		const initFormData =
-			await getPickupRouteWithId(routeId);
+		const initFormData = await getPickupRoute(
+			routeId,
+		);
 
 		if (initFormData === null) {
 			throw json(

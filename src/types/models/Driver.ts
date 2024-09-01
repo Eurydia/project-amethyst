@@ -1,13 +1,21 @@
+//#region Driver
 export type DriverModel = {
 	id: string;
 
 	name: string;
 	surname: string;
 	contact: string;
-	license_type: "ท.1" | "ท.2";
-	images: string; // Commas separated image paths
+	license_type: string;
 };
+export type DriverFormData = {
+	name: string;
+	surname: string;
+	contact: string;
+	licenseType: string;
+};
+//#endregion
 
+//#region Generic Report
 export type DriverReportModel = {
 	id: string;
 	driver_id: string;
@@ -17,24 +25,27 @@ export type DriverReportModel = {
 	content: string;
 	topics: string;
 };
-
 export type DriverReport = {
 	id: string;
-	driver_id: string;
-	driver_name: string;
-	driver_surname: string;
+	driverId: string;
+	driverName: string;
+	driverSurname: string;
 
 	datetime: string;
 	title: string;
 	content: string;
 	topics: string[];
 };
+export type DriverReportEntry = {
+	id: string;
+	datetime: string;
+	title: string;
+	topics: string[];
 
-export type DriverFormData = Omit<
-	DriverModel,
-	"id" | "images"
->;
-
+	driverId: string;
+	driverName: string;
+	driverSurname: string;
+};
 export type DriverReportFormData = {
 	datetime: string;
 	title: string;
@@ -42,3 +53,4 @@ export type DriverReportFormData = {
 	topics: string[];
 	driver: DriverModel | null;
 };
+//#endregion

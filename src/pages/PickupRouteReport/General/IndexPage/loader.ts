@@ -1,6 +1,6 @@
 import {
 	getPickupRouteReportGeneralAll,
-	getPickupRouteWithId,
+	getPickupRoute,
 } from "$backend/database/get";
 import { PickupRouteReport } from "$types/models";
 import { LoaderFunction } from "react-router-dom";
@@ -16,7 +16,7 @@ export const indexPageLoader: LoaderFunction =
 
 		const entryRequests: Promise<PickupRouteReport | null>[] =
 			rawEntries.map(async (rawEntry) => {
-				const route = await getPickupRouteWithId(
+				const route = await getPickupRoute(
 					rawEntry.id,
 				);
 				if (route === null) {

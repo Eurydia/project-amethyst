@@ -6,23 +6,22 @@ import {
 	RadioGroup,
 	Typography,
 } from "@mui/material";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 
 type LicenseSelectProps = {
-	value: "ท.1" | "ท.2";
-	onChange: (value: "ท.1" | "ท.2") => void;
+	value: string;
+	onChange: (value: string) => void;
 };
 export const DriverLicenseSelect: FC<
 	LicenseSelectProps
 > = (props) => {
 	const { value, onChange } = props;
 
-	const handleChange = (
-		_: any,
-		value: string,
-	) => {
-		onChange(value as "ท.1" | "ท.2");
-	};
+	useEffect(() => {
+		if (value.trim().length === 0) {
+			onChange("ท.1");
+		}
+	}, []);
 
 	return (
 		<FormControl>
@@ -31,7 +30,7 @@ export const DriverLicenseSelect: FC<
 			</FormLabel>
 			<RadioGroup
 				value={value}
-				onChange={handleChange}
+				onChange={(_, value) => onChange(value)}
 			>
 				<FormControlLabel
 					value="ท.1"

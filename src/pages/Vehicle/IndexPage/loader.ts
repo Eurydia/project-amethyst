@@ -1,7 +1,7 @@
 import {
-	getDriverWithId,
+	getDriver,
 	getOperationLogAll,
-	getPickupRouteWithId,
+	getPickupRoute,
 	getVehicleAll,
 } from "$backend/database/get";
 import dayjs from "dayjs";
@@ -51,11 +51,11 @@ export const indexPageLoader: LoaderFunction =
 				);
 
 				const driverReqs = [...driverSet].map(
-					async (id) => getDriverWithId(id),
+					async (id) => getDriver(id),
 				);
 
 				const routeReqs = [...routeSet].map(
-					async (id) => getPickupRouteWithId(id),
+					async (id) => getPickupRoute(id),
 				);
 
 				const drivers: IndexPageLoaderData["entries"][number]["drivers"] =

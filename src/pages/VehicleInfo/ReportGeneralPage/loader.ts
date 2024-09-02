@@ -27,7 +27,6 @@ export const reportGeneralPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-
 		const vehicle = await getVehicle(vehicleId);
 		if (vehicle === null) {
 			throw json(

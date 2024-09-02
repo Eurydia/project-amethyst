@@ -24,7 +24,8 @@ export const IndexPage: FC = () => {
 					submit(
 						{},
 						{
-							action: "./new",
+							action:
+								"/drivers/report/general/new",
 						},
 					)
 				}

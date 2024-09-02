@@ -16,7 +16,7 @@ export const VehicleClassRadioGroup: FC<
 	const { value, onChange } = props;
 
 	useEffect(() => {
-		if (value === "") {
+		if (value.length === 0) {
 			onChange("รถตู้");
 		}
 		return () => {};

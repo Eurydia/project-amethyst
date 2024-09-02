@@ -1,0 +1,64 @@
+import { DriverReport } from "$types/models/Driver";
+import { FC } from "react";
+import {
+	Link,
+	useSubmit,
+} from "react-router-dom";
+import { BaseDetails } from "./BaseDetails";
+import { Typography } from "@mui/material";
+
+type DriverReportDetailsProps = {
+	report: DriverReport;
+};
+export const DriverReportDetails: FC<
+	DriverReportDetailsProps
+> = (props) => {
+	const { report } = props;
+	const submit = useSubmit();
+
+	const infoItems = [
+		{
+			label: "คนขับ",
+			value: (
+				<Link
+					to={"/drivers/info/" + report.driverId}
+				>
+					{report.driverName}{" "}
+					{report.driverSurname}
+				</Link>
+			),
+		},
+		{
+			label: "บันทึกเมื่อวันที่",
+			value: report.datetime,
+		},
+		{
+			label: "เรื่อง",
+			value: report.title,
+		},
+		{
+			label: "รายละเอียด",
+			value: report.content,
+		},
+		{
+			label: "หัวข้อที่เกี่ยวข้อง",
+			value: report.topics.join(", "),
+		},
+	].map((item) => ({
+		label: item.label,
+		value: <Typography>{item.value}</Typography>,
+	}));
+
+	return (
+		<BaseDetails
+			slotProps={{
+				editButton: {
+					onClick: () =>
+						submit({}, { action: "./edit" }),
+				},
+			}}
+		>
+			{infoItems}
+		</BaseDetails>
+	);
+};

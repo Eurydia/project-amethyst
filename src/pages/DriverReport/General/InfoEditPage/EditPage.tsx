@@ -8,8 +8,8 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { InfoEditPageLoaderData } from "./loader";
-import { postDriverReport } from "$backend/database/put";
 import { toast } from "react-toastify";
+import { putDriverReportGeneral } from "$backend/database/put";
 
 export const InfoEditPage: FC = () => {
 	const {
@@ -23,7 +23,17 @@ export const InfoEditPage: FC = () => {
 	const handleSubmit = (
 		formData: DriverReportFormData,
 	) => {
-		postDriverReport(formData)
+		if (formData.driver === null) {
+			return;
+		}
+		putDriverReportGeneral({
+			id: reportId,
+			content: formData.content,
+			datetime: formData.datetime,
+			driver_id: formData.driver.id,
+			topics: formData.topics.join(","),
+			title: formData.title,
+		})
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
 				() => toast.error("แก้ไขล้มเหลว"),

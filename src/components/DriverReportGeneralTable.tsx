@@ -5,6 +5,7 @@ import { FC } from "react";
 import { DriverReportTable } from "./DriverReportTable";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import { TRANSLATION } from "$locale/th";
 
 const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReportEntry>[] =
 	[
@@ -75,11 +76,13 @@ export const DriverReportGeneralTable: FC<
 			entries={entries}
 			slotProps={{
 				addButton: {
-					children: "ลงบันทึกเรื่องร้องเรียน",
+					children:
+						TRANSLATION.postDriverGeneralReport,
 					onClick: onAdd,
 				},
 				searchField: {
-					placeholder: "ค้นหาเรื่องร้องเรียน",
+					placeholder:
+						TRANSLATION.searchDriverGeneralReport,
 				},
 			}}
 		/>

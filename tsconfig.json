@@ -7,6 +7,7 @@
 		"module": "ESNext",
 		"skipLibCheck": true,
 		"paths": {
+			"$locale/*": ["./locale/*"],
 			"$layouts/*": ["./layouts/*"],
 			"$core/*": ["./core/*"],
 			"$components/*": ["./components/*"],

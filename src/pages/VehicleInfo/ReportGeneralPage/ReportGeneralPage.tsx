@@ -7,6 +7,8 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { ReportGeneralPageLoaderData } from "./loader";
+import { postVehicleReportGeneral } from "$backend/database/post";
+import { toast } from "react-toastify";
 
 export const ReportGeneralPage: FC = () => {
 	const {
@@ -21,19 +23,29 @@ export const ReportGeneralPage: FC = () => {
 	const handleSubmit = async (
 		formData: VehicleReportGeneralFormData,
 	) => {
-		// postVhie(formData)
-		// 	.then(() => {
-		// 		toast.success("บันทึกสำเร็จ");
-		// 		submit({}, { action: "/" });
-		// 	})
-		// 	.catch((error) => {
-		// 		console.error(error);
-		// 		toast.error("บันทึกล้มเหลว");
-		// 	});
+		postVehicleReportGeneral(formData).then(
+			(reportId) => {
+				toast.success("บันทึกสำเร็จ");
+				submit(
+					{},
+					{
+						action:
+							"/vehicle/report/general/info" +
+							reportId,
+					},
+				);
+			},
+			() => {
+				toast.error("บันทึกล้มเหลว");
+				submit(
+					{},
+					{
+						action: "/vehicle/report/general",
+					},
+				);
+			},
+		);
 	};
-
-	const handleCancel = () =>
-		submit({}, { action: "/" });
 
 	const heading = `ลงบันทึกเรื่องร้องเรียนคนขับรถ`;
 	return (
@@ -46,7 +58,14 @@ export const ReportGeneralPage: FC = () => {
 				topicOptions={topicOptions}
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() =>
+					submit(
+						{},
+						{
+							action: "/vehicle/report/general",
+						},
+					)
+				}
 			/>
 		</Stack>
 	);

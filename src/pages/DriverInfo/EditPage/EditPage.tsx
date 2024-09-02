@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { EditPageLoaderData } from "./loader";
+import { TRANSLATION } from "$locale/th";
 
 export const EditPage: FC = () => {
 	const { initFormData, driverId } =
@@ -18,17 +19,17 @@ export const EditPage: FC = () => {
 	const handleSubmit = (
 		formData: DriverFormData,
 	) => {
-		const model = {
-			id: driverId,
+		putDriver({
 			contact: formData.contact,
-			license_type: formData.licenseType,
+			id: driverId,
+			license_type: formData.contact,
 			name: formData.name,
 			surname: formData.surname,
-		};
-		putDriver(model)
+		})
 			.then(
-				() => toast.success("แก้ไขสำเร็จ"),
-				() => toast.error("แก้ไขล้มเหลว"),
+				() =>
+					toast.success(TRANSLATION.putSuccess),
+				() => toast.error(TRANSLATION.putFail),
 			)
 			.finally(() =>
 				submit(
@@ -38,7 +39,9 @@ export const EditPage: FC = () => {
 			);
 	};
 
-	const heading = `แก้ไขข้อมูลของ "${initFormData.name} ${initFormData.surname}"`;
+	const heading = TRANSLATION.editInfoOf(
+		`${initFormData.name}	${initFormData.surname}`,
+	);
 
 	return (
 		<Stack spacing={1}>
@@ -49,7 +52,12 @@ export const EditPage: FC = () => {
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={() =>
-					submit({}, { action: "/" })
+					submit(
+						{},
+						{
+							action: "/drivers/info" + driverId,
+						},
+					)
 				}
 			/>
 		</Stack>

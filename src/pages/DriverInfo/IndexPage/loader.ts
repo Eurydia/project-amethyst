@@ -1,56 +1,107 @@
 import {
-	BaseDirectory,
-	readDir,
-} from "@tauri-apps/api/fs";
-import {
 	getDriver,
-	getDriverGeneralReportAllWithDriverId,
-	getDriverMedicalReportAllWithDriverId,
-	getOperationLogAllWithDriverId,
+	getDriverReportMedicalAll,
+	getOperationLogAll,
+	getPickupRoute,
+	getVehicle,
 } from "$backend/database/get";
-import { operationalLogModelToEntry } from "$core/modelToEntry";
+import { TRANSLATION } from "$locale/th";
 import {
 	DriverModel,
 	DriverReportEntry,
+	DriverReportModel,
 } from "$types/models/Driver";
-import { OperationalLogEntry } from "$types/models/OperatonalLog";
+import {
+	OperationalLogEntry,
+	OperationalLogModel,
+} from "$types/models/OperatonalLog";
+import { PickupRouteModel } from "$types/models/PickupRoute";
+import { VehicleModel } from "$types/models/Vehicle";
+import {
+	BaseDirectory,
+	readDir,
+} from "@tauri-apps/api/fs";
+import { join } from "@tauri-apps/api/path";
+import { convertFileSrc } from "@tauri-apps/api/tauri";
 import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
-import { convertFileSrc } from "@tauri-apps/api/tauri";
-import { join } from "@tauri-apps/api/path";
-import { transformDriverReportModelToEntry } from "$core/transform";
 
-export type IndexPageLoaderData = {
-	driver: DriverModel;
-	images: string[];
-	generalEntries: DriverReportEntry[];
-	medicalEntries: DriverReportEntry[];
-	logEntries: OperationalLogEntry[];
+const reportToEntry = (
+	report: DriverReportModel,
+	driver: DriverModel,
+) => {
+	const entry: DriverReportEntry = {
+		datetime: report.datetime,
+		id: report.id,
+		title: report.title,
+		topics: report.topics.split(","),
+
+		driverId: driver.id,
+		driverName: driver.name,
+		driverSurname: driver.surname,
+	};
+	return entry;
 };
 
-export const getDriverImages = async (
-	driverId: string,
+const logToEntry = async (
+	report: OperationalLogModel,
+	vehicle: VehicleModel,
+	driver: DriverModel,
+	route: PickupRouteModel,
 ) => {
-	const driverDir = await join(
+	const entry: OperationalLogEntry = {
+		id: report.id,
+		startDate: report.start_date,
+		endDate: report.end_date,
+
+		vehicleId: vehicle.id,
+		vehicleLicensePlate: vehicle.license_plate,
+
+		driverId: report.driver_id,
+		driverName: driver.name,
+		driverSurname: driver.surname,
+
+		routeId: report.route_id,
+		routeName: route.name,
+	};
+	return entry;
+};
+
+const getImages = async (driverId: string) => {
+	const dirPath = await join(
 		"drivers",
 		driverId,
 		"images",
 	);
-	const images = await readDir(driverDir, {
+	const files = await readDir(dirPath, {
 		dir: BaseDirectory.AppData,
-	}).then(
-		(result) => result,
-		() => [],
-	);
-	const imageRequests = images.map(
-		async (image) => convertFileSrc(image.path),
-	);
+	});
 
-	return await Promise.all(imageRequests);
+	const images: {
+		src: string;
+		fileName: string;
+	}[] = [];
+	for (const file of files) {
+		if (file.name === undefined) {
+			continue;
+		}
+		images.push({
+			fileName: file.name,
+			src: convertFileSrc(file.path),
+		});
+	}
+	return images;
 };
 
+export type IndexPageLoaderData = {
+	driver: DriverModel;
+	images: Awaited<ReturnType<typeof getImages>>;
+	generalEntries: DriverReportEntry[];
+	medicalEntries: DriverReportEntry[];
+	logEntries: OperationalLogEntry[];
+};
 export const indexPageLoader: LoaderFunction =
 	async ({ params }) => {
 		const { driverId } = params;
@@ -58,7 +109,7 @@ export const indexPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing driverId in params)",
+						TRANSLATION.paramsIsMissingDriverId,
 				},
 				{ status: 400 },
 			);
@@ -68,43 +119,64 @@ export const indexPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่พบข้อมูลคนขับที่ต้องการฐานข้อมูล (Cannot find driver with given ID)",
+						TRANSLATION.driverIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
 		}
 
-		const generalEntries = (
-			await getDriverGeneralReportAllWithDriverId(
-				driverId,
-			)
-		).map((model) =>
-			transformDriverReportModelToEntry(
-				model,
+		const medicalReports =
+			await getDriverReportMedicalAll();
+		const medicalEntries: DriverReportEntry[] =
+			[];
+		for (const report of medicalReports) {
+			if (report.driver_id !== driverId) {
+				continue;
+			}
+			const entry = reportToEntry(report, driver);
+			medicalEntries.push(entry);
+		}
+		const generalReports =
+			await getDriverReportMedicalAll();
+		const generalEntries: DriverReportEntry[] =
+			[];
+		for (const report of generalReports) {
+			if (report.driver_id !== driverId) {
+				continue;
+			}
+			const entry = reportToEntry(report, driver);
+			generalEntries.push(entry);
+		}
+
+		const logs = await getOperationLogAll();
+		const logEntries: OperationalLogEntry[] = [];
+		for (const log of logs) {
+			if (log.driver_id !== driverId) {
+				continue;
+			}
+			const vehicle = await getVehicle(
+				log.vehicle_id,
+			);
+			if (vehicle === null) {
+				continue;
+			}
+			const route = await getPickupRoute(
+				log.route_id,
+			);
+			if (route === null) {
+				continue;
+			}
+			const entry = await logToEntry(
+				log,
+				vehicle,
 				driver,
-			),
-		);
-		const medicalEntries = (
-			await getDriverMedicalReportAllWithDriverId(
-				driverId,
-			)
-		).map((model) =>
-			transformDriverReportModelToEntry(
-				model,
-				driver,
-			),
-		);
-		const logModels = (
-			await getOperationLogAllWithDriverId(
-				driver.id,
-			)
-		).map(operationalLogModelToEntry);
-		const logEntries = (
-			await Promise.all(logModels)
-		).filter((entry) => entry !== null);
-		const images = await getDriverImages(
-			driverId,
-		);
+				route,
+			);
+			logEntries.push(entry);
+		}
+
+		const images = await getImages(driverId);
+
 		const loaderData: IndexPageLoaderData = {
 			driver,
 			images,

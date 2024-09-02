@@ -1,5 +1,3 @@
-import { DriverReportForm } from "$components/DriverReportForm";
-import { DriverReportFormData } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
 import "dayjs/locale/th";
 import { FC } from "react";
@@ -8,38 +6,59 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { InfoPageLoaderData } from "./loader";
+import { VehicleReportInspectionForm } from "$components/VehicleReportInspectionForm";
+import { VehicleReportInspectionFormData } from "$types/models/Vehicle";
+import { putVehicleReportInspection } from "$backend/database/put";
+import { toast } from "react-toastify";
 
 export const InfoEditPage: FC = () => {
 	const {
 		reportId,
 		initFormData,
-		driverOptions,
 		topicOptions,
+		vehicleOptions,
 	} = useLoaderData() as InfoPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = (
-		_: DriverReportFormData,
+		formData: VehicleReportInspectionFormData,
 	) => {
-		submit(
-			{},
-			{
-				action:
-					"/drivers/report/medical/info/" +
-					reportId,
-			},
-		);
-	};
-
-	const handleCancel = () => {
-		submit(
-			{},
-			{
-				action:
-					"/drivers/report/medical/info/" +
-					reportId,
-			},
-		);
+		if (formData.vehicle === null) {
+			return;
+		}
+		putVehicleReportInspection({
+			content: formData.content,
+			datetime: formData.datetime,
+			frame: formData.frame,
+			seatbelts: formData.seatbelts,
+			seats: formData.seats,
+			tires: formData.tires,
+			windows: formData.windows,
+			overhead_fan: formData.overheadFan,
+			turn_signals: formData.turnSignals,
+			brake_light: formData.brakeLights,
+			headlights: formData.headlights,
+			rearview_mirror: formData.rearviewMirror,
+			sideview_mirror: formData.sideviewMirror,
+			vehicle_id: formData.vehicle.id,
+			front_camera: formData.frontCamera,
+			topics: formData.topics.join(","),
+			id: reportId,
+		})
+			.then(
+				() => toast.success("แก้ไขข้อมูลสำเร็จ"),
+				() => toast.error("cannot save data"),
+			)
+			.finally(() =>
+				submit(
+					{},
+					{
+						action:
+							"/vehicles/report/inspection/info/" +
+							reportId,
+					},
+				),
+			);
 	};
 
 	const heading = `ผลการตรวจสารเสพติด เลขที่ ${reportId} (แก้ไข)`;
@@ -49,12 +68,21 @@ export const InfoEditPage: FC = () => {
 			<Typography variant="h1">
 				{heading}
 			</Typography>
-			<DriverReportForm
-				driverOptions={driverOptions}
+			<VehicleReportInspectionForm
+				vehicleOptions={vehicleOptions}
 				topicOptions={topicOptions}
 				initFormData={initFormData}
-				onCancel={handleCancel}
 				onSubmit={handleSubmit}
+				onCancel={() =>
+					submit(
+						{},
+						{
+							action:
+								"/vehicles/report/inspection/info/" +
+								reportId,
+						},
+					)
+				}
 			/>
 		</Stack>
 	);

@@ -7,6 +7,8 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { ReportInspectionPageLoaderData } from "./loader";
+import { postVehicleReportInspection } from "$backend/database/post";
+import { toast } from "react-toastify";
 
 export const ReportInspectionPage: FC = () => {
 	const {
@@ -21,21 +23,31 @@ export const ReportInspectionPage: FC = () => {
 	const handleSubmit = async (
 		formData: VehicleReportInspectionFormData,
 	) => {
-		// postDriverReport(formData)
-		// 	.then(() => {
-		// 		toast.success("บันทึกสำเร็จ");
-		// 		submit({}, { action: "/" });
-		// 	})
-		// 	.catch((error) => {
-		// 		console.error(error);
-		// 		toast.error("บันทึกล้มเหลว");
-		// 	});
+		postVehicleReportInspection(formData).then(
+			(reportId) => {
+				toast.success("บันทึกสำเร็จ");
+				submit(
+					{},
+					{
+						action:
+							"/vehicles/report/inspection/info" +
+							reportId,
+					},
+				);
+			},
+			() => {
+				toast.error("บันทึกล้มเหลว");
+				submit(
+					{},
+					{
+						action: "/vehicles/report/inspection",
+					},
+				);
+			},
+		);
 	};
 
-	const handleCancel = () =>
-		submit({}, { action: "/" });
-
-	const heading = `บันทึกผลการตรวจสภาพรถ (${initFormData.vehicle.license_plate})`;
+	const heading = `บันทึกผลการตรวจสภาพรถ`;
 
 	return (
 		<Stack spacing={1}>
@@ -47,7 +59,15 @@ export const ReportInspectionPage: FC = () => {
 				topicOptions={topicOptions}
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() =>
+					submit(
+						{},
+						{
+							action:
+								"/vehicle/report/inspection",
+						},
+					)
+				}
 			/>
 		</Stack>
 	);

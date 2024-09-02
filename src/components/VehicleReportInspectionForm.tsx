@@ -61,31 +61,31 @@ export const VehicleReportInspectionForm: FC<
 	const [fieldContent, setFieldContent] =
 		useState(initFormData.content);
 	const [fieldBodyFrame, setFieldBodyFrame] =
-		useState(initFormData.bodyFrame);
+		useState(initFormData.frame);
 	const [fieldWindows, setFieldWindows] =
-		useState(initFormData.bodyWindow);
+		useState(initFormData.windows);
 	const [fieldFrontCam, setFieldFrontCam] =
-		useState(initFormData.cameraFrontCam);
+		useState(initFormData.frontCamera);
 	const [fieldFanOverhead, setFieldFanOverhead] =
-		useState(initFormData.fanOverhead);
+		useState(initFormData.overheadFan);
 	const [fieldBrakeLight, setFieldBrakeLight] =
-		useState(initFormData.lightBrakeLight);
+		useState(initFormData.brakeLights);
 	const [fieldHeadlights, setFieldHeadlights] =
-		useState(initFormData.lightHeadlights);
+		useState(initFormData.headlights);
 	const [fieldTurnSignals, setFieldTurnSignals] =
-		useState(initFormData.lightTurnSignals);
+		useState(initFormData.turnSignals);
 	const [
 		fieldMirrorRearview,
 		setFieldMirrorRearview,
-	] = useState(initFormData.mirrorRearview);
+	] = useState(initFormData.rearviewMirror);
 	const [
 		fieldMirrorSideview,
 		setFieldMirrorSideview,
-	] = useState(initFormData.mirrorSideview);
+	] = useState(initFormData.sideviewMirror);
 	const [fieldSeatbelts, setFieldSeatbelts] =
-		useState(initFormData.seatSeatbelts);
+		useState(initFormData.seatbelts);
 	const [fieldSeats, setFieldSeats] = useState(
-		initFormData.seatSeats,
+		initFormData.seats,
 	);
 	const [fieldTires, setFieldTires] = useState(
 		initFormData.tires,
@@ -114,22 +114,19 @@ export const VehicleReportInspectionForm: FC<
 				topics: fieldTopics,
 				vehicle: fieldVehicle,
 				content: fieldContent,
-				bodyFrame: fieldBodyFrame || "ปกติ",
-				bodyWindow: fieldWindows || "ปกติ",
-				cameraFrontCam: fieldFrontCam || "ปกติ",
-				fanOverhead: fieldFanOverhead || "ปกติ",
-				lightBrakeLight:
-					fieldBrakeLight || "ปกติ",
-				lightHeadlights:
-					fieldHeadlights || "ปกติ",
-				lightTurnSignals:
-					fieldTurnSignals || "ปกติ",
-				mirrorRearview:
+				frame: fieldBodyFrame || "ปกติ",
+				windows: fieldWindows || "ปกติ",
+				frontCamera: fieldFrontCam || "ปกติ",
+				overheadFan: fieldFanOverhead || "ปกติ",
+				brakeLights: fieldBrakeLight || "ปกติ",
+				headlights: fieldHeadlights || "ปกติ",
+				turnSignals: fieldTurnSignals || "ปกติ",
+				rearviewMirror:
 					fieldMirrorRearview || "ปกติ",
-				mirrorSideview:
+				sideviewMirror:
 					fieldMirrorSideview || "ปกติ",
-				seatSeatbelts: fieldSeatbelts || "ปกติ",
-				seatSeats: fieldSeats || "ปกติ",
+				seatbelts: fieldSeatbelts || "ปกติ",
+				seats: fieldSeats || "ปกติ",
 				tires: fieldTires || "ปกติ",
 			};
 

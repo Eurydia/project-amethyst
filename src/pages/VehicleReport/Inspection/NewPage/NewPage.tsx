@@ -1,6 +1,3 @@
-import { postDriverReport } from "$backend/database/put";
-import { DriverReportForm } from "$components/DriverReportForm";
-import { DriverReportFormData } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -9,10 +6,13 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
+import { postVehicleReportInspection } from "$backend/database/post";
+import { VehicleReportInspectionFormData } from "$types/models/Vehicle";
+import { VehicleReportInspectionForm } from "$components/VehicleReportInspectionForm";
 
 export const NewPage: FC = () => {
 	const {
-		driverOptions,
+		vehicleOptions,
 		topicOptions,
 		initFormData,
 	} = useLoaderData() as NewPageLoaderData;
@@ -20,49 +20,52 @@ export const NewPage: FC = () => {
 	const submit = useSubmit();
 
 	const handleSubmit = async (
-		formData: DriverReportFormData,
+		formData: VehicleReportInspectionFormData,
 	) => {
-		const id = postDriverReport(formData)
-			.then((id) => {
+		postVehicleReportInspection(formData)
+			.then((reportId) => {
 				toast.success("บันทึกสำเร็จ");
-				submit({}, { action: "/" });
-				return id;
+				submit(
+					{},
+					{
+						action:
+							"/vehicles/report/inspection/info" +
+							reportId,
+					},
+				);
 			})
-			.catch((error: string) => {
-				toast.error(`บันทึกล้มเหลว: ${error}`);
-				return null;
+			.catch(() => {
+				toast.error("บันทึกล้มเหลว");
+				submit(
+					{},
+					{
+						action: "/vehicles/report/inspection",
+					},
+				);
 			});
-		if (id === null) {
-			return;
-		}
-		submit(
-			{},
-			{
-				action:
-					"/drivers/report/medical/info/" + id,
-			},
-		);
 	};
 
-	const handleCancel = () =>
-		submit(
-			{},
-			{ action: "/drivers/report/medical" },
-		);
-
-	const heading = `ลงบันทึกผลการตรวจสารเสพติด`;
+	const heading = `ลงบันทึกผลการตรวจรถ`;
 
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
 				{heading}
 			</Typography>
-			<DriverReportForm
-				driverOptions={driverOptions}
+			<VehicleReportInspectionForm
+				vehicleOptions={vehicleOptions}
 				initFormData={initFormData}
 				topicOptions={topicOptions}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() => {
+					submit(
+						{},
+						{
+							action:
+								"/vehicles/report/inspection",
+						},
+					);
+				}}
 			/>
 		</Stack>
 	);

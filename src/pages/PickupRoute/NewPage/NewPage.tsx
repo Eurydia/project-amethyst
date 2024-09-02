@@ -1,4 +1,3 @@
-import { putPickupRoute } from "$backend/database/put";
 import { PickupRouteForm } from "$components/PickupRouteForm";
 import { PickupRouteFormData } from "$types/models/PickupRoute";
 import { Stack, Typography } from "@mui/material";
@@ -9,6 +8,7 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
+import { postPickupRoute } from "$backend/database/post";
 
 export const NewPage: FC = () => {
 	const { initFormData } =
@@ -18,7 +18,7 @@ export const NewPage: FC = () => {
 	const handleSubmit = (
 		formData: PickupRouteFormData,
 	) => {
-		putPickupRoute(formData)
+		postPickupRoute(formData)
 			.then((routeId) => {
 				toast.success("บันทึกสำเร็จ");
 				submit(
@@ -31,6 +31,12 @@ export const NewPage: FC = () => {
 			})
 			.catch(() => {
 				toast.error("บันทึกล้มเหลว");
+				submit(
+					{},
+					{
+						action: "/pickup-routes",
+					},
+				);
 			});
 	};
 
@@ -43,7 +49,12 @@ export const NewPage: FC = () => {
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={() => {
-					submit({}, { action: "/" });
+					submit(
+						{},
+						{
+							action: "/pickup-routes",
+						},
+					);
 				}}
 			/>
 		</Stack>

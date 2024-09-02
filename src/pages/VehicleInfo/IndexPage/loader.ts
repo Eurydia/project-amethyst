@@ -1,30 +1,132 @@
 import {
 	getDriver,
-	getOperationLogAllWithDriverId,
+	getOperationLogAll,
 	getPickupRoute,
-	getVehicleReportGeneralAllWithVehicleId,
-	getVehicleReportInspectionAllWithVehicleId,
 	getVehicle,
+	getVehicleReportGeneralAll,
+	getVehicleReportInspectionAll,
 } from "$backend/database/get";
-import { OperationalLogEntry } from "$types/models/OperatonalLog";
+import { DriverModel } from "$types/models/Driver";
 import {
-	Vehicle,
+	OperationalLogEntry,
+	OperationalLogModel,
+} from "$types/models/OperatonalLog";
+import { PickupRouteModel } from "$types/models/PickupRoute";
+import {
+	VehicleModel,
 	VehicleReportGeneralEntry,
+	VehicleReportGeneralModel,
 	VehicleReportInspectionEntry,
+	VehicleReportInspectionModel,
 } from "$types/models/Vehicle";
-import dayjs from "dayjs";
+import {
+	BaseDirectory,
+	readDir,
+} from "@tauri-apps/api/fs";
+import { join } from "@tauri-apps/api/path";
+import { convertFileSrc } from "@tauri-apps/api/tauri";
 import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
 
-export type IndexPageLoaderData = {
-	vehicle: Vehicle;
-	reportGeneralEntries: VehicleReportGeneralEntry[];
-	reportInspectionEntries: VehicleReportInspectionEntry[];
-	operationalLogEntries: OperationalLogEntry[];
+const inspectionToEntry = (
+	reports: VehicleReportInspectionModel[],
+	currReport: VehicleReportInspectionModel,
+	vehicle: VehicleModel,
+) => {
+	let count = 0;
+	for (const report of reports) {
+		if (report.vehicle_id === vehicle.id) {
+			count++;
+		}
+		if (report.id === currReport.id) {
+			break;
+		}
+	}
+	const entry: VehicleReportInspectionEntry = {
+		inspectionRoundNumber: count.toString(),
+		datetime: currReport.datetime,
+		id: currReport.id,
+		topics: currReport.topics.split(","),
+		vehicleId: vehicle.id,
+		vehicleLicensePlate: vehicle.license_plate,
+	};
+	return entry;
 };
 
+const generalToEntry = (
+	report: VehicleReportGeneralModel,
+	vehicle: VehicleModel,
+) => {
+	const entry: VehicleReportGeneralEntry = {
+		datetime: report.datetime,
+		id: report.id,
+		title: report.title,
+		topics: report.topics.split(","),
+		vehicleId: vehicle.id,
+		vehicleLicensePlate: vehicle.license_plate,
+	};
+	return entry;
+};
+
+const logToEntry = async (
+	report: OperationalLogModel,
+	vehicle: VehicleModel,
+	driver: DriverModel,
+	route: PickupRouteModel,
+) => {
+	const entry: OperationalLogEntry = {
+		id: report.id,
+		startDate: report.start_date,
+		endDate: report.end_date,
+
+		vehicleId: vehicle.id,
+		vehicleLicensePlate: vehicle.license_plate,
+
+		driverId: report.driver_id,
+		driverName: driver.name,
+		driverSurname: driver.surname,
+
+		routeId: report.route_id,
+		routeName: route.name,
+	};
+	return entry;
+};
+
+const getImages = async (vehicleId: string) => {
+	const dirPath = await join(
+		"vehicles",
+		vehicleId,
+		"images",
+	);
+	const files = await readDir(dirPath, {
+		dir: BaseDirectory.AppData,
+	});
+
+	const images: {
+		src: string;
+		fileName: string;
+	}[] = [];
+	for (const file of files) {
+		if (file.name === undefined) {
+			continue;
+		}
+		images.push({
+			fileName: file.name,
+			src: convertFileSrc(file.path),
+		});
+	}
+	return images;
+};
+
+export type IndexPageLoaderData = {
+	images: { fileName: string; src: string }[];
+	vehicle: VehicleModel;
+	generalEntries: VehicleReportGeneralEntry[];
+	inspectionEntries: VehicleReportInspectionEntry[];
+	logEntries: OperationalLogEntry[];
+};
 export const indexPageLoader: LoaderFunction =
 	async ({ params }) => {
 		const { vehicleId } = params;
@@ -34,115 +136,76 @@ export const indexPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-
-		const vehicleModel = await getVehicle(
-			vehicleId,
-		);
-
-		if (vehicleModel === null) {
+		const vehicle = await getVehicle(vehicleId);
+		if (vehicle === null) {
 			throw json(
 				{ message: "ไม่พบคนขับรถในระบบ" },
 				{ status: 404 },
 			);
 		}
-		const reportGeneralEntries = (
-			await getVehicleReportGeneralAllWithVehicleId(
-				vehicleModel.id,
-			)
-		).map(
-			(rawEntry) =>
-				({
-					datetime: rawEntry.datetime,
-					id: rawEntry.id,
-					title: rawEntry.title,
-					topics: rawEntry.topics.split(","),
-					vehicleId: vehicleModel.id,
-					vehicleLicensePlate:
-						vehicleModel.license_plate,
-				} as VehicleReportGeneralEntry),
-		);
-		const reportInspectionEntries = (
-			await getVehicleReportInspectionAllWithVehicleId(
-				vehicleModel.id,
-			)
-		)
-			.toSorted(
-				(a, b) =>
-					dayjs(a.datetime).unix() -
-					dayjs(b.datetime).unix(),
-			)
-			.map(
-				(rawEntry, index) =>
-					({
-						datetime: rawEntry.datetime,
-						id: rawEntry.id,
-						inspectionRoundNumber: (
-							index + 1
-						).toString(),
-						topics: rawEntry.topics.split(","),
-						vehicleId: vehicleModel.id,
-						vehicleLicensePlate:
-							vehicleModel.license_plate,
-					} as VehicleReportInspectionEntry),
+
+		const generalReports =
+			await getVehicleReportGeneralAll();
+		const generalEntries: VehicleReportGeneralEntry[] =
+			[];
+		for (const report of generalReports) {
+			if (report.vehicle_id !== vehicle.id) {
+				continue;
+			}
+			const entry = generalToEntry(
+				report,
+				vehicle,
 			);
+			generalEntries.push(entry);
+		}
 
-		const rawLogEntries =
-			await getOperationLogAllWithDriverId(
-				vehicleModel.id,
+		const inspectionReports =
+			await getVehicleReportInspectionAll();
+		const inspectionEntries: VehicleReportInspectionEntry[] =
+			[];
+		for (const report of inspectionReports) {
+			if (report.vehicle_id !== vehicle.id) {
+				continue;
+			}
+			const entry = inspectionToEntry(
+				inspectionReports,
+				report,
+				vehicle,
 			);
+			inspectionEntries.push(entry);
+		}
 
-		const logEntryRequests = rawLogEntries.map(
-			async (rawEntry) => {
-				const driver = await getDriver(
-					rawEntry.driver_id,
-				);
-				if (driver === null) {
-					return null;
-				}
-				const route = await getPickupRoute(
-					rawEntry.route_id,
-				);
-				if (route === null) {
-					return null;
-				}
-				return {
-					id: rawEntry.id,
-					startDate: rawEntry.start_date,
-					endDate: rawEntry.end_date,
+		const logReports = await getOperationLogAll();
+		const logEntries: OperationalLogEntry[] = [];
 
-					vehicleId: vehicleModel.id,
-					vehicleLicensePlate:
-						vehicleModel.license_plate,
-
-					driverId: driver.id,
-					driverName: driver.name,
-					driverSurname: driver.surname,
-
-					routeId: route.id,
-					routeName: route.name,
-				} as OperationalLogEntry;
-			},
-		);
-
-		const operationalLogEntries = (
-			await Promise.all(logEntryRequests)
-		).filter((entry) => entry !== null);
-
-		const vehicle: Vehicle = {
-			id: vehicleModel.id,
-			licensePlate: vehicleModel.license_plate,
-			registeredCity:
-				vehicleModel.registered_city,
-			vehicleClass: vehicleModel.vehicle_class,
-			vendor: vehicleModel.vendor,
-			images: [],
-		};
-
+		for (const report of logReports) {
+			if (report.vehicle_id !== vehicle.id) {
+				continue;
+			}
+			const driver = await getDriver(
+				report.driver_id,
+			);
+			const route = await getPickupRoute(
+				report.route_id,
+			);
+			if (driver === null || route === null) {
+				continue;
+			}
+			const entry = await logToEntry(
+				report,
+				vehicle,
+				driver,
+				route,
+			);
+			logEntries.push(entry);
+		}
+		const images = await getImages(vehicle.id);
 		const loaderData: IndexPageLoaderData = {
 			vehicle,
-			operationalLogEntries,
-			reportGeneralEntries,
-			reportInspectionEntries,
+			images,
+			logEntries,
+			generalEntries,
+			inspectionEntries,
 		};
 
 		return loaderData;

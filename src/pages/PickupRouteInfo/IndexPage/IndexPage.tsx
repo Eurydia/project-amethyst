@@ -19,10 +19,6 @@ import {
 import { Fragment } from "react/jsx-runtime";
 import { IndexPageLoaderData } from "./loader";
 
-const formatTime = (time: string) => {
-	return dayjs(time, "HH:mm").format("HH:mm น.");
-};
-
 const TableOfContents: FC = () => {
 	return (
 		<Fragment>
@@ -85,7 +81,10 @@ export const IndexPage: FC = () => {
 			label: "เวลานำเข้า",
 			value: (
 				<Typography>
-					{formatTime(route.arrival_time)}
+					{dayjs(
+						route.arrival_time,
+						"HH:mm",
+					).format("HH:mm น.")}
 				</Typography>
 			),
 		},
@@ -93,7 +92,10 @@ export const IndexPage: FC = () => {
 			label: "เวลานำออก",
 			value: (
 				<Typography>
-					{formatTime(route.departure_time)}
+					{dayjs(
+						route.departure_time,
+						"HH:mm",
+					).format("HH:mm น.")}
 				</Typography>
 			),
 		},

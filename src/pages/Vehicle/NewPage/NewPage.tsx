@@ -1,4 +1,3 @@
-import { putVehicle } from "$backend/database/put";
 import { VehicleForm } from "$components/VehicleForm";
 import { VehicleFormData } from "$types/models/Vehicle";
 import { Stack, Typography } from "@mui/material";
@@ -9,6 +8,7 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
+import { postVehicle } from "$backend/database/post";
 
 export const NewPage: FC = () => {
 	const { initFormData, vendorOptions } =
@@ -18,19 +18,26 @@ export const NewPage: FC = () => {
 	const handleSubmit = async (
 		formData: VehicleFormData,
 	) => {
-		putVehicle(formData)
-			.then(() => {
+		postVehicle(formData).then(
+			(vehicleId) => {
 				toast.success("บันทึกสำเร็จ");
-				submit({}, { action: "/" });
-			})
-			.catch((error) => {
-				console.error(error);
+				submit(
+					{},
+					{
+						action: "/vehicles/info/" + vehicleId,
+					},
+				);
+			},
+			() => {
 				toast.error("บันทึกล้มเหลว");
-			});
-	};
-
-	const handleCancel = () => {
-		submit({}, { action: "/" });
+				submit(
+					{},
+					{
+						action: "/vehicles",
+					},
+				);
+			},
+		);
 	};
 
 	return (
@@ -42,7 +49,15 @@ export const NewPage: FC = () => {
 				vendorOptions={vendorOptions}
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() => {
+					toast.error("บันทึกล้มเหลว");
+					submit(
+						{},
+						{
+							action: "/vehicles",
+						},
+					);
+				}}
 			/>
 		</Stack>
 	);

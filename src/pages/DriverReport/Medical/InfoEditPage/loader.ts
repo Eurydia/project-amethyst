@@ -1,6 +1,6 @@
 import {
 	getDriver,
-	getDriverGeneralReportWithId,
+	getDriverReportMedical,
 	getTopicAll,
 } from "$backend/database/get";
 import {
@@ -30,10 +30,9 @@ export const infoEditPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const model =
-			await getDriverGeneralReportWithId(
-				reportId,
-			);
+		const model = await getDriverReportMedical(
+			reportId,
+		);
 		if (model === null) {
 			throw json(
 				{

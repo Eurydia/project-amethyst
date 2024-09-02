@@ -70,8 +70,7 @@ export const DriverReportForm: FC<
 			driver: fieldDriver,
 			title: fieldTitle.normalize().trim(),
 			topics: fieldTopics
-				.map((topic) => topic.normalize())
-				.map((topic) => topic.trim())
+				.map((topic) => topic.trim().normalize())
 				.filter((topic) => topic.length > 0),
 		};
 

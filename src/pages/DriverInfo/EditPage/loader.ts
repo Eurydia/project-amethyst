@@ -1,4 +1,5 @@
 import { getDriver } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import { DriverFormData } from "$types/models/Driver";
 import {
 	json,
@@ -16,7 +17,7 @@ export const editPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing driverId in params)",
+						TRANSLATION.paramsIsMissingDriverId,
 				},
 				{ status: 400 },
 			);
@@ -26,7 +27,7 @@ export const editPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่พบข้อมูลคนขับที่ต้องการฐานข้อมูล (Cannot find driver with given ID)",
+						TRANSLATION.driverIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);

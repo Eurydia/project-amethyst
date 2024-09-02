@@ -1,4 +1,3 @@
-import { postDriverReport } from "$backend/database/put";
 import { DriverReportForm } from "$components/DriverReportForm";
 import { DriverReportFormData } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
@@ -9,6 +8,7 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
+import { postDriverReportGeneral } from "$backend/database/post";
 
 export const NewPage: FC = () => {
 	const {
@@ -22,33 +22,27 @@ export const NewPage: FC = () => {
 	const handleSubmit = async (
 		formData: DriverReportFormData,
 	) => {
-		const id = postDriverReport(formData)
-			.then((id) => {
+		postDriverReportGeneral(formData).then(
+			(reportId) => {
 				toast.success("บันทึกสำเร็จ");
-				submit({}, { action: "/" });
-				return id;
-			})
-			.catch((error: string) => {
-				toast.error(`บันทึกล้มเหลว: ${error}`);
-				return null;
-			});
-		if (id === null) {
-			return;
-		}
-		submit(
-			{},
-			{
-				action:
-					"/drivers/report/medical/info/" + id,
+				submit(
+					{},
+					{
+						action:
+							"/drivers/report/medical/info/" +
+							reportId,
+					},
+				);
+			},
+			() => {
+				toast.error(`บันทึกล้มเหลว`);
+				submit(
+					{},
+					{ action: "/drivers/report/medical" },
+				);
 			},
 		);
 	};
-
-	const handleCancel = () =>
-		submit(
-			{},
-			{ action: "/drivers/report/medical" },
-		);
 
 	const heading = `ลงบันทึกผลการตรวจสารเสพติด`;
 
@@ -62,7 +56,12 @@ export const NewPage: FC = () => {
 				initFormData={initFormData}
 				topicOptions={topicOptions}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() =>
+					submit(
+						{},
+						{ action: "/drivers/report/medical" },
+					)
+				}
 			/>
 		</Stack>
 	);

@@ -1,6 +1,6 @@
 import {
-	getVehicleReportInspectionWithId,
 	getVehicle,
+	getVehicleReportInspection,
 } from "$backend/database/get";
 import { VehicleReportInspection } from "$types/models/Vehicle";
 import {
@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 
 export type InfoPageLoaderData = {
-	entry: VehicleReportInspection;
+	report: VehicleReportInspection;
 };
 export const infoPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -18,30 +18,25 @@ export const infoPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (400-Missing report ID in params)",
+						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing report ID in params)",
 				},
 				{ status: 400 },
 			);
 		}
-
-		const rawEntry =
-			await getVehicleReportInspectionWithId(
-				reportId,
-			);
-		if (rawEntry === null) {
+		const reportModel =
+			await getVehicleReportInspection(reportId);
+		if (reportModel === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบรายการในฐานข้อมูล (404-Cannot find report with given ID)",
+						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบรายการในฐานข้อมูล (Cannot find report with given ID)",
 				},
 				{ status: 404 },
 			);
 		}
-
 		const vehicle = await getVehicle(
-			rawEntry.vehicle_id,
+			reportModel.vehicle_id,
 		);
-
 		if (vehicle === null) {
 			throw json(
 				{
@@ -52,29 +47,29 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 
-		const entry: VehicleReportInspection = {
-			bodyFrame: rawEntry.frame,
-			bodyWindow: rawEntry.windows,
-			cameraFrontCam: rawEntry.front_camera,
-			content: rawEntry.content,
-			datetime: rawEntry.datetime,
-			fanOverhead: rawEntry.fan_overhead,
-			id: rawEntry.id,
-			lightBrakeLight: rawEntry.brake_light,
-			lightHeadlights: rawEntry.headlights,
-			lightTurnSignals: rawEntry.turn_signals,
-			mirrorRearview: rawEntry.rearview_mirror,
-			mirrorSideview: rawEntry.sideview_mirror,
-			seatSeatbelts: rawEntry.seatbelts,
-			seatSeats: rawEntry.seats,
-			tires: rawEntry.tires,
-			vehicleId: rawEntry.vehicle_id,
+		const report: VehicleReportInspection = {
+			frame: reportModel.frame,
+			windows: reportModel.windows,
+			frontCamera: reportModel.front_camera,
+			content: reportModel.content,
+			datetime: reportModel.datetime,
+			overheadFan: reportModel.overhead_fan,
+			id: reportModel.id,
+			brakeLights: reportModel.brake_light,
+			headlights: reportModel.headlights,
+			turnSignals: reportModel.turn_signals,
+			rearviewMirror: reportModel.rearview_mirror,
+			sideviewMirror: reportModel.sideview_mirror,
+			seatbelts: reportModel.seatbelts,
+			seats: reportModel.seats,
+			tires: reportModel.tires,
+			vehicleId: reportModel.vehicle_id,
 			vehicleLicensePlate: vehicle.license_plate,
-			topics: rawEntry.topics.split(","),
+			topics: reportModel.topics.split(","),
 		};
 
 		const loaderData: InfoPageLoaderData = {
-			entry,
+			report,
 		};
 
 		return loaderData;

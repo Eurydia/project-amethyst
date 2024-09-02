@@ -1,6 +1,9 @@
 import { FormalLayout } from "$layouts/FormalLayout";
 import { EditRounded } from "@mui/icons-material";
-import { Stack } from "@mui/material";
+import {
+	ButtonProps,
+	Stack,
+} from "@mui/material";
 import { FC, ReactNode } from "react";
 import { TypographyButton } from "./TypographyButton";
 
@@ -9,12 +12,14 @@ type BaseDetailsProps = {
 		label: string;
 		value: ReactNode;
 	}[];
-	onEdit: () => void;
+	slotProps: {
+		editButton: ButtonProps;
+	};
 };
 export const BaseDetails: FC<BaseDetailsProps> = (
 	props,
 ) => {
-	const { onEdit, children } = props;
+	const { slotProps, children } = props;
 	return (
 		<Stack
 			sx={{
@@ -22,12 +27,11 @@ export const BaseDetails: FC<BaseDetailsProps> = (
 			}}
 		>
 			<TypographyButton
+				{...slotProps.editButton}
 				startIcon={<EditRounded />}
 				variant="contained"
-				onClick={onEdit}
-			>
-				แก้ไขข้อมูล
-			</TypographyButton>
+				children="แก้ไขข้อมูล"
+			/>
 			<FormalLayout>{children}</FormalLayout>
 		</Stack>
 	);

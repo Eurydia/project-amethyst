@@ -1,12 +1,13 @@
+import { putVehicleReportGeneral } from "$backend/database/put";
 import { VehicleReportGeneralForm } from "$components/VehicleReportGeneralForm";
 import { VehicleReportGeneralFormData } from "$types/models/Vehicle";
 import { Stack, Typography } from "@mui/material";
-import "dayjs/locale/th";
 import { FC } from "react";
 import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
+import { toast } from "react-toastify";
 import { InfoEditPageLoaderData } from "./loader";
 
 export const InfoEditPage: FC = () => {
@@ -20,9 +21,41 @@ export const InfoEditPage: FC = () => {
 
 	const handleSubmit = (
 		formData: VehicleReportGeneralFormData,
-	) => {};
+	) => {
+		if (formData.vehicle === null) {
+			return;
+		}
 
-	const handleCancel = () => {};
+		putVehicleReportGeneral({
+			id: reportId,
+			content: formData.content,
+			vehicle_id: formData.vehicle.id,
+			datetime: formData.datetime,
+			title: formData.title,
+			topics: formData.topics.join(","),
+		}).then(
+			() => {
+				toast.success("บันทึกสำเร็จ");
+				submit(
+					{},
+					{
+						action:
+							"/vehicle/reports/general/info/" +
+							reportId,
+					},
+				);
+			},
+			() => {
+				toast.error("บันทึกล้มเหลว");
+				submit(
+					{},
+					{
+						action: "/vehicle/reports/general",
+					},
+				);
+			},
+		);
+	};
 
 	const heading = `บันทึกเรื่องร้องเรียนคนขับรถ เลขที่ ${reportId} (แก้ไข)`;
 
@@ -35,8 +68,15 @@ export const InfoEditPage: FC = () => {
 				vehicleOptions={vehicleOptions}
 				topicOptions={topicOptions}
 				initFormData={initFormData}
-				onCancel={handleCancel}
 				onSubmit={handleSubmit}
+				onCancel={() =>
+					submit(
+						{},
+						{
+							action: "/vehicle/reports/general",
+						},
+					)
+				}
 			/>
 		</Stack>
 	);

@@ -1,9 +1,5 @@
-import { putDriver } from "$backend/database/put";
 import { DriverForm } from "$components/DriverForm";
-import {
-	DriverFormData,
-	DriverModel,
-} from "$types/models/Driver";
+import { DriverFormData } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -12,35 +8,35 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
+import { TRANSLATION } from "$locale/th";
+import { postDriver } from "$backend/database/post";
 
 export const NewPage: FC = () => {
-	const { initFormData, driverId } =
+	const { initFormData } =
 		useLoaderData() as NewPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = (
 		formData: DriverFormData,
 	) => {
-		const model: DriverModel = {
-			id: driverId,
-			contact: formData.contact,
-			license_type: formData.licenseType,
-			name: formData.name,
-			surname: formData.surname,
-		};
-		putDriver(model).then(
-			() => {
-				toast.error("บันทึกสำเร็จ");
+		postDriver(formData).then(
+			(driverId) => {
+				toast.success(TRANSLATION.postDriver);
 				submit(
 					{},
 					{
-						action: "/drivers/info" + driverId,
+						action: "/drivers/info/" + driverId,
 					},
 				);
 			},
 			() => {
-				toast.error("บันทึกล้มเหลว");
-				submit({}, { action: "/drivers" });
+				toast.error(TRANSLATION.postFail);
+				submit(
+					{},
+					{
+						action: "/drivers",
+					},
+				);
 			},
 		);
 	};
@@ -48,7 +44,7 @@ export const NewPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				ลงทะเบียนคนขับรถ
+				{TRANSLATION.postDriver}
 			</Typography>
 			<DriverForm
 				initFormData={initFormData}

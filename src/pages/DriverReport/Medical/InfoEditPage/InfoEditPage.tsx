@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 import { InfoPageLoaderData } from "./loader";
 import { toast } from "react-toastify";
-import { postDriverReport } from "$backend/database/put";
+import { putDriverReportMedical } from "$backend/database/put";
 
 export const InfoEditPage: FC = () => {
 	const {
@@ -23,7 +23,17 @@ export const InfoEditPage: FC = () => {
 	const handleSubmit = (
 		formData: DriverReportFormData,
 	) => {
-		postDriverReport(formData)
+		if (formData.driver === null) {
+			return;
+		}
+		putDriverReportMedical({
+			id: reportId,
+			content: formData.content,
+			datetime: formData.datetime,
+			driver_id: formData.driver.id,
+			title: formData.title,
+			topics: formData.topics.join(","),
+		})
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
 				() => toast.error("แก้ไขล้มเหลว"),
@@ -43,7 +53,7 @@ export const InfoEditPage: FC = () => {
 	const heading = `ผลการตรวจสารเสพติด (แก้ไข)`;
 
 	return (
-		<Stack sx={{ gap: 1 }}>
+		<Stack spacing={1}>
 			<Typography variant="h1">
 				{heading}
 			</Typography>

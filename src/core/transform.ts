@@ -1,12 +1,21 @@
 import {
+	getDriver,
+	getVehicle,
+	getPickupRoute,
+} from "$backend/database/get";
+import {
 	DriverReportModel,
 	DriverModel,
 	DriverReportEntry,
 } from "$types/models/Driver";
+import {
+	OperationalLogModel,
+	OperationalLogEntry,
+} from "$types/models/OperatonalLog";
 import { PickupRouteModel } from "$types/models/PickupRoute";
 import { VehicleModel } from "$types/models/Vehicle";
 
-export const transformDriverReportModelToEntry = (
+export const fromDriverReportModelToEntry = (
 	model: DriverReportModel,
 	driver: DriverModel,
 ) => {
@@ -56,4 +65,44 @@ export const transformPickupRouteModelToLogItem =
 			id: model.id,
 			name: model.name,
 		};
+	};
+
+export const fromOperationalLogModelToEntry =
+	async (
+		model: OperationalLogModel,
+	): Promise<OperationalLogEntry | null> => {
+		const driver = await getDriver(
+			model.driver_id,
+		);
+		if (driver === null) {
+			return null;
+		}
+		const vehicle = await getVehicle(
+			model.vehicle_id,
+		);
+		if (vehicle === null) {
+			return null;
+		}
+		const route = await getPickupRoute(
+			model.route_id,
+		);
+		if (route === null) {
+			return null;
+		}
+		const entry: OperationalLogEntry = {
+			id: model.id,
+			startDate: model.start_date,
+			endDate: model.end_date,
+
+			routeId: model.route_id,
+			routeName: route.name,
+
+			vehicleId: model.vehicle_id,
+			vehicleLicensePlate: vehicle.license_plate,
+
+			driverId: model.driver_id,
+			driverName: driver.name,
+			driverSurname: driver.surname,
+		};
+		return entry;
 	};

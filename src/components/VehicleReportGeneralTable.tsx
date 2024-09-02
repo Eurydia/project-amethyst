@@ -147,13 +147,7 @@ const searchEntries = (
 	entries: VehicleReportGeneralEntry[],
 	search: string,
 ) => {
-	const tokens = search
-		.normalize()
-		.split(" ")
-		.map((token) => token.trim())
-		.filter((token) => token.length > 0);
-
-	return filterItems(entries, tokens, [
+	return filterItems(entries, search, [
 		"title",
 		"topics",
 		"vehicleLicensePlate",

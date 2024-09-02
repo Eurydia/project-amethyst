@@ -25,33 +25,31 @@ export const infoEditPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (400-Missing report ID in params)",
+						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing report ID in params)",
 				},
 				{ status: 400 },
 			);
 		}
-
-		const rawEntry =
-			await getVehicleReportGeneral(reportId);
-		if (rawEntry === null) {
+		const report = await getVehicleReportGeneral(
+			reportId,
+		);
+		if (report === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบรายการในฐานข้อมูล (404-Cannot find report with given ID)",
+						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบรายการในฐานข้อมูล (Cannot find report with given ID)",
 				},
 				{ status: 404 },
 			);
 		}
-
 		const vehicle = await getVehicle(
-			rawEntry.vehicle_id,
+			report.vehicle_id,
 		);
-
 		if (vehicle === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับในฐานข้อมูล (404-Cannot find driver with ID given in report entry)",
+						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับในฐานข้อมูล (Cannot find driver with ID given in report entry)",
 				},
 				{ status: 404 },
 			);
@@ -60,11 +58,11 @@ export const infoEditPageLoader: LoaderFunction =
 		const vehicleOptions = [vehicle];
 		const initFormData: VehicleReportGeneralFormData =
 			{
-				content: rawEntry.content,
-				datetime: rawEntry.datetime,
-				topics: rawEntry.topics.split(","),
-				title: rawEntry.title,
 				vehicle,
+				content: report.content,
+				datetime: report.datetime,
+				title: report.title,
+				topics: report.topics.split(","),
 			};
 
 		const loaderData: InfoEditPageLoaderData = {

@@ -75,7 +75,7 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<VehicleReportInspectionEntry>[] 
 		},
 	];
 
-const entriesToOptions = (
+const getOptions = (
 	entries: VehicleReportInspectionEntry[],
 ) => {
 	const uniqVehicles: Record<string, string> = {};
@@ -94,7 +94,6 @@ const entriesToOptions = (
 		value,
 		label,
 	}));
-
 	const topicOptions = [...uniqTopics].map(
 		(topic) => ({
 			value: topic,
@@ -127,7 +126,6 @@ const filterEntries = (
 		);
 	}
 	const vehicleSet = new Set(selectedVehicles);
-
 	return items
 		.filter((entry) =>
 			vehicleSet.has(entry.vehicleId),
@@ -148,13 +146,7 @@ const searchEntries = (
 	entries: VehicleReportInspectionEntry[],
 	search: string,
 ) => {
-	const tokens = search
-		.normalize()
-		.split(" ")
-		.map((token) => token.trim())
-		.filter((token) => token.length > 0);
-
-	return filterItems(entries, tokens, [
+	return filterItems(entries, search, [
 		"title",
 		"topics",
 		"vehicleLicensePlate",
@@ -172,10 +164,7 @@ export const VehicleReportInspectionTable: FC<
 	const { onAdd, entries } = props;
 
 	const { vehicleOptions, topicOptions } =
-		useMemo(
-			() => entriesToOptions(entries),
-			[entries],
-		);
+		useMemo(() => getOptions(entries), [entries]);
 
 	const [search, setSearch] = useState("");
 	const [afterDate, setAfterDate] =
@@ -299,11 +288,11 @@ export const VehicleReportInspectionTable: FC<
 			slotProps={{
 				addButton: {
 					onClick: onAdd,
-					children: "ลงบันทึก",
+					children: "ลงบันทึกผลการตรวจสภาพรถ",
 				},
 				searchField: {
 					placeholder:
-						"ค้นหาผลการตรวจสภาพรถ (ด้วยเลขทะเบียน, รอบการตรวจ หรือหัวข้อ)",
+						"ค้นหาผลการตรวจสภาพรถ (ด้วยเลขทะเบียน, รอบการตรวจ หรือหัวข้อที่เกี่ยวข้อง)",
 					value: search,
 					onChange: (e) =>
 						setSearch(e.target.value),

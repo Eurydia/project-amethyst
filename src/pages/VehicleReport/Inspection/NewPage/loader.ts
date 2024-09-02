@@ -1,34 +1,47 @@
 import {
-	getDriverAll,
 	getTopicAll,
+	getVehicleAll,
 } from "$backend/database/get";
-import { DriverReportFormData } from "$types/models/Driver";
-import { DriverModel } from "$types/DriverModel";
+import {
+	VehicleModel,
+	VehicleReportInspectionFormData,
+} from "$types/models/Vehicle";
 import dayjs from "dayjs";
 import { LoaderFunction } from "react-router-dom";
 
 export type NewPageLoaderData = {
-	driverOptions: DriverModel[];
+	vehicleOptions: VehicleModel[];
 	topicOptions: string[];
-	initFormData: DriverReportFormData;
+	initFormData: VehicleReportInspectionFormData;
 };
 export const newPageLoader: LoaderFunction =
 	async () => {
 		const topicOptions = await getTopicAll();
-		const driverOptions = await getDriverAll();
+		const vehicleOptions = await getVehicleAll();
 
-		const initFormData: DriverReportFormData = {
-			datetime: dayjs().format(),
-			content: "",
-			title: "",
-			driver: null,
-			topics: [],
-		};
-
+		const initFormData: VehicleReportInspectionFormData =
+			{
+				datetime: dayjs().format(),
+				vehicle: null,
+				frame: "",
+				windows: "",
+				frontCamera: "",
+				content: "",
+				overheadFan: "",
+				brakeLights: "",
+				headlights: "",
+				turnSignals: "",
+				rearviewMirror: "",
+				sideviewMirror: "",
+				seatbelts: "",
+				seats: "",
+				tires: "",
+				topics: [],
+			};
 		const loaderData: NewPageLoaderData = {
 			initFormData,
 			topicOptions,
-			driverOptions,
+			vehicleOptions,
 		};
 
 		return loaderData;

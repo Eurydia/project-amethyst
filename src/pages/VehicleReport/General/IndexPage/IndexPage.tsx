@@ -12,9 +12,8 @@ export const IndexPage: FC = () => {
 		useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
 	const heading = `สมุดบันทึกเรื่องร้องเรียนทะเบียนรถ`;
-
 	return (
-		<Stack sx={{ gap: 1 }}>
+		<Stack spacing={1}>
 			<Typography variant="h1">
 				{heading}
 			</Typography>

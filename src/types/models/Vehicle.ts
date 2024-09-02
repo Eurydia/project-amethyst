@@ -14,7 +14,22 @@ export type Vehicle = {
 	registeredCity: string;
 	vehicleClass: string;
 	vendor: string;
-	images: string[];
+};
+
+export type VehicleEntry = {
+	id: string;
+	licensePlate: string;
+
+	drivers: {
+		id: string;
+		name: string;
+		surname: string;
+	}[];
+
+	routes: {
+		id: string;
+		name: string;
+	}[];
 };
 
 export type VehicleFormData = {
@@ -68,11 +83,14 @@ export type VehicleReportGeneralEntry = {
 
 //#region Inspection Reports
 export type VehicleReportInspectionModel = {
-	inspection_round_number: string;
 	id: string;
 	datetime: string;
+	vehicle_id: string;
+	content: string;
+	topics: string;
+
 	front_camera: string;
-	fan_overhead: string;
+	overhead_fan: string;
 	windows: string;
 	seatbelts: string;
 	seats: string;
@@ -83,11 +101,6 @@ export type VehicleReportInspectionModel = {
 	rearview_mirror: string;
 	sideview_mirror: string;
 	tires: string;
-
-	content: string;
-	topics: string;
-
-	vehicle_id: string;
 };
 
 export type VehicleReportInspection = {
@@ -97,18 +110,19 @@ export type VehicleReportInspection = {
 	topics: string[];
 	vehicleId: string;
 	vehicleLicensePlate: string;
+	inspectionRoundNumber: string;
 
-	cameraFrontCam: string;
-	fanOverhead: string;
-	bodyWindow: string;
-	bodyFrame: string;
-	seatSeatbelts: string;
-	seatSeats: string;
-	lightHeadlights: string;
-	lightTurnSignals: string;
-	lightBrakeLight: string;
-	mirrorRearview: string;
-	mirrorSideview: string;
+	frontCamera: string;
+	overheadFan: string;
+	windows: string;
+	frame: string;
+	seatbelts: string;
+	seats: string;
+	headlights: string;
+	turnSignals: string;
+	brakeLights: string;
+	rearviewMirror: string;
+	sideviewMirror: string;
 	tires: string;
 };
 
@@ -116,19 +130,19 @@ export type VehicleReportInspectionFormData = {
 	datetime: string;
 	content: string;
 	topics: string[];
-	vehicle: VehicleModel;
+	vehicle: VehicleModel | null;
 
-	cameraFrontCam: string;
-	fanOverhead: string;
-	bodyWindow: string;
-	bodyFrame: string;
-	seatSeatbelts: string;
-	seatSeats: string;
-	lightHeadlights: string;
-	lightTurnSignals: string;
-	lightBrakeLight: string;
-	mirrorRearview: string;
-	mirrorSideview: string;
+	frontCamera: string;
+	overheadFan: string;
+	windows: string;
+	frame: string;
+	seatbelts: string;
+	seats: string;
+	headlights: string;
+	turnSignals: string;
+	brakeLights: string;
+	rearviewMirror: string;
+	sideviewMirror: string;
 	tires: string;
 };
 

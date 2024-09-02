@@ -7,6 +7,21 @@ export type DriverModel = {
 	contact: string;
 	license_type: string;
 };
+export type DriverEntry = {
+	id: string;
+	name: string;
+	surname: string;
+
+	vehicles: {
+		id: string;
+		licensePlate: string;
+	}[];
+
+	routes: {
+		id: string;
+		name: string;
+	}[];
+};
 export type DriverFormData = {
 	name: string;
 	surname: string;

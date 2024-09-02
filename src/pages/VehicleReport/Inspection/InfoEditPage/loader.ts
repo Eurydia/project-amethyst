@@ -1,20 +1,42 @@
 import {
-	getDriverGeneralReportWithId,
-	getDriver,
 	getTopicAll,
+	getVehicle,
+	getVehicleReportInspection,
+	getVehicleReportInspectionAll,
 } from "$backend/database/get";
-import { DriverReportFormData } from "$types/models/Driver";
-import { DriverModel } from "$types/DriverModel";
 import {
-	json,
+	VehicleModel,
+	VehicleReportInspectionFormData,
+} from "$types/models/Vehicle";
+import {
 	LoaderFunction,
+	json,
 } from "react-router-dom";
 
+const getInspectionRoundNumber = async (
+	reportId: string,
+	vehicleId: string,
+) => {
+	const reports =
+		await getVehicleReportInspectionAll();
+	let roundNumber = 0;
+	for (const report of reports) {
+		if (report.vehicle_id === vehicleId) {
+			roundNumber++;
+		}
+		if (report.id === reportId) {
+			break;
+		}
+	}
+	return roundNumber.toString();
+};
+
 export type InfoPageLoaderData = {
-	topicOptions: string[];
-	driverOptions: DriverModel[];
+	inspectionRoundNumber: string;
 	reportId: string;
-	initFormData: DriverReportFormData;
+	topicOptions: string[];
+	vehicleOptions: VehicleModel[];
+	initFormData: VehicleReportInspectionFormData;
 };
 export const infoEditPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -23,51 +45,66 @@ export const infoEditPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (400-Missing report ID in params)",
+						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing report ID in params)",
 				},
 				{ status: 400 },
 			);
 		}
-
-		const rawEntry =
-			await getDriverGeneralReportWithId(
-				reportId,
-			);
-		if (rawEntry === null) {
+		const rawReport =
+			await getVehicleReportInspection(reportId);
+		if (rawReport === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบรายการในฐานข้อมูล (404-Cannot find report with given ID)",
+						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบรายการในฐานข้อมูล (Cannot find report with given ID)",
 				},
 				{ status: 404 },
 			);
 		}
-
-		const driver = await getDriver(
-			rawEntry.driver_id,
+		const vehicle = await getVehicle(
+			rawReport.vehicle_id,
 		);
-
-		if (driver === null) {
+		if (vehicle === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับในฐานข้อมูล (404-Cannot find driver with ID given in report entry)",
+						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับในฐานข้อมูล (Cannot find driver with ID given in report entry)",
 				},
 				{ status: 404 },
 			);
 		}
+
+		const inspectionRoundNumber =
+			await getInspectionRoundNumber(
+				reportId,
+				rawReport.vehicle_id,
+			);
 		const topicOptions = await getTopicAll();
-		const driverOptions = [driver];
-		const initFormData: DriverReportFormData = {
-			content: rawEntry.content,
-			datetime: rawEntry.datetime,
-			topics: rawEntry.topics.split(","),
-			title: rawEntry.title,
-			driver: driver,
-		};
+		const vehicleOptions = [vehicle];
+		const initFormData: VehicleReportInspectionFormData =
+			{
+				vehicle,
+				datetime: rawReport.datetime,
+				topics: rawReport.topics.split(","),
+				content: rawReport.content,
+
+				frame: rawReport.frame,
+				windows: rawReport.windows,
+				frontCamera: rawReport.front_camera,
+				overheadFan: rawReport.overhead_fan,
+				brakeLights: rawReport.brake_light,
+				headlights: rawReport.headlights,
+				turnSignals: rawReport.turn_signals,
+				rearviewMirror: rawReport.rearview_mirror,
+				sideviewMirror: rawReport.sideview_mirror,
+				seatbelts: rawReport.seatbelts,
+				seats: rawReport.seats,
+				tires: rawReport.tires,
+			};
 
 		const loaderData: InfoPageLoaderData = {
-			driverOptions,
+			inspectionRoundNumber,
+			vehicleOptions,
 			topicOptions,
 			initFormData,
 			reportId,

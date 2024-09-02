@@ -7,17 +7,15 @@ import {
 } from "@mui/material";
 import { FC } from "react";
 import { TypographyButton } from "./TypographyButton";
-import { useSubmit } from "react-router-dom";
 
 type GalleryProps = {
-	images: string[];
+	images: { fileName: string; src: string }[];
 	onOpenRoot: () => void;
 };
 export const Gallery: FC<GalleryProps> = (
 	props,
 ) => {
 	const { images, onOpenRoot } = props;
-	const submit = useSubmit();
 	let imageGallery = (
 		<Typography
 			sx={{
@@ -38,18 +36,8 @@ export const Gallery: FC<GalleryProps> = (
 				{images.map((image, index) => (
 					<ImageListItem key={"image" + index}>
 						<img
-							alt={image}
-							src={image}
-							onClick={() =>
-								submit(
-									{},
-									{
-										action:
-											"/images/" +
-											encodeURIComponent(image),
-									},
-								)
-							}
+							alt={image.fileName}
+							src={image.src}
 							style={{
 								cursor: "pointer",
 								objectPosition: "50% 50%",

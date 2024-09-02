@@ -1,4 +1,3 @@
-import { postDriverReport } from "$backend/database/put";
 import { DriverReportForm } from "$components/DriverReportForm";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
@@ -9,9 +8,11 @@ import {
 import { toast } from "react-toastify";
 import { ReportMedicalPageLoaderData } from "./loader";
 import { DriverReportFormData } from "$types/models/Driver";
+import { postDriverReportMedical } from "$backend/database/post";
 
 export const ReportMedicalPage: FC = () => {
 	const {
+		driverId,
 		topicOptions,
 		driverOptions,
 		initFormData,
@@ -23,19 +24,25 @@ export const ReportMedicalPage: FC = () => {
 	const handleSubmit = async (
 		formData: DriverReportFormData,
 	) => {
-		postDriverReport(formData).then(
+		postDriverReportMedical(formData).then(
 			(reportId) => {
 				submit(
 					{},
 					{
 						action:
-							"/drivers/report/general/info" +
+							"/drivers/report/medical/info/" +
 							reportId,
 					},
 				);
 			},
 			() => {
 				toast.error("บันทึกล้มเหลว");
+				submit(
+					{},
+					{
+						action: "/drivers/info/" + driverId,
+					},
+				);
 			},
 		);
 	};
@@ -55,7 +62,12 @@ export const ReportMedicalPage: FC = () => {
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={() =>
-					submit({}, { action: "/" })
+					submit(
+						{},
+						{
+							action: "/drivers/info/" + driverId,
+						},
+					)
 				}
 			/>
 		</Stack>

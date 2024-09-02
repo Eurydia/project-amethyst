@@ -20,14 +20,12 @@ export type ReportInspectionPageLoaderData = {
 export const reportInspectionPageLoader: LoaderFunction =
 	async ({ params }) => {
 		const { vehicleId } = params;
-
 		if (vehicleId === undefined) {
 			throw json(
 				{ message: "ข้อมูลไม่ถูกต้อง" },
 				{ status: 400 },
 			);
 		}
-
 		const vehicle = await getVehicle(vehicleId);
 		if (vehicle === null) {
 			throw json(
@@ -37,7 +35,6 @@ export const reportInspectionPageLoader: LoaderFunction =
 		}
 		const topicOptions = await getTopicAll();
 		const vehicleOptions = [vehicle];
-
 		const initFormData: VehicleReportInspectionFormData =
 			{
 				vehicle,
@@ -45,17 +42,17 @@ export const reportInspectionPageLoader: LoaderFunction =
 				datetime: dayjs().format(),
 
 				content: "",
-				bodyFrame: "",
-				bodyWindow: "",
-				cameraFrontCam: "",
-				fanOverhead: "",
-				lightBrakeLight: "",
-				lightHeadlights: "",
-				lightTurnSignals: "",
-				mirrorRearview: "",
-				mirrorSideview: "",
-				seatSeatbelts: "",
-				seatSeats: "",
+				frame: "",
+				windows: "",
+				frontCamera: "",
+				overheadFan: "",
+				brakeLights: "",
+				headlights: "",
+				turnSignals: "",
+				rearviewMirror: "",
+				sideviewMirror: "",
+				seatbelts: "",
+				seats: "",
 				tires: "",
 			};
 

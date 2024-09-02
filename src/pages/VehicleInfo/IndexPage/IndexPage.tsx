@@ -1,181 +1,79 @@
-import { Gallery } from "$components/Gallery";
-import { TypographyButton } from "$components/TypographyButton";
+import { BaseTOC } from "$components/BaseTOC";
+import { OperationalLogTable } from "$components/OperationalLogTable";
+import { VehicleDetails } from "$components/VehicleDetails";
 import { VehicleReportGeneralTable } from "$components/VehicleReportGeneralTable";
 import { VehicleReportInspectionTable } from "$components/VehicleReportInspectionTable";
-import { FormalLayout } from "$layouts/FormalLayout";
-import { EditRounded } from "@mui/icons-material";
-import {
-	List,
-	ListItem,
-	ListItemText,
-	Stack,
-	Typography,
-} from "@mui/material";
-import { FC, ReactNode } from "react";
+import { Stack, Typography } from "@mui/material";
+import { FC } from "react";
 import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
-import { Fragment } from "react/jsx-runtime";
 import { IndexPageLoaderData } from "./loader";
-import { OperationalLogTable } from "$components/OperationalLogTable";
 
-const TableOfContents: FC = () => {
-	return (
-		<Fragment>
-			<Typography>สารบัญ</Typography>
-			<List
-				dense
-				disablePadding
-			>
-				<ListItem
-					disablePadding
-					disableGutters
-				>
-					<ListItemText>
-						<Typography
-							href="#info"
-							component="a"
-						>
-							ข้อมูลรถ
-						</Typography>
-					</ListItemText>
-				</ListItem>
-				<List
-					dense
-					disablePadding
-				>
-					<ListItem
-						disableGutters
-						disablePadding
-					>
-						<ListItemText>
-							<Typography
-								component="a"
-								href="#report-general"
-							>
-								เรื่องร้องเรียน
-							</Typography>
-						</ListItemText>
-					</ListItem>
-					<ListItem
-						disableGutters
-						disablePadding
-					>
-						<ListItemText>
-							<Typography
-								component="a"
-								href="#report-routine-maintenance"
-							>
-								ผลการตรวจสภาพ
-							</Typography>
-						</ListItemText>
-					</ListItem>
-				</List>
-			</List>
-		</Fragment>
-	);
-};
+const TOC_ITEMS: {
+	label: string;
+	href: string;
+}[] = [
+	{ label: "ข้อมูลรถ", href: "#info" },
+	{
+		label: "oplog",
+		href: "#operational-log",
+	},
+	{
+		label: "เรื่องร้องเรียน",
+		href: "#general-report",
+	},
+	{
+		label: "ผลการตรวจสภาพ",
+		href: "#inspection-report",
+	},
+];
 
 export const IndexPage: FC = () => {
 	const {
-		operationalLogEntries,
-		reportGeneralEntries,
-		reportInspectionEntries,
+		logEntries,
+		generalEntries,
+		inspectionEntries,
 		vehicle,
+		images,
 	} = useLoaderData() as IndexPageLoaderData;
 
 	const submit = useSubmit();
 
-	const infoItems: {
-		label: string;
-		value: ReactNode;
-	}[] = [
-		{
-			label: "เลขทะเบียน",
-			value: (
-				<Typography>
-					{vehicle.licensePlate}
-				</Typography>
-			),
-		},
-		{
-			label: "จังหวัดที่จดทะเบียน",
-			value: (
-				<Typography>
-					{vehicle.registeredCity}
-				</Typography>
-			),
-		},
-		{
-			label: "ประเภทรถ",
-			value: (
-				<Typography>
-					{vehicle.vehicleClass}
-				</Typography>
-			),
-		},
-		{
-			label: "หจก.",
-			value: (
-				<Typography>{vehicle.vendor}</Typography>
-			),
-		},
-		{
-			label: "คลังภาพ",
-			value: (
-				<Gallery
-					images={vehicle.images}
-					onOpenRoot={() => {}}
-				/>
-			),
-		},
-	];
-
-	const heading = `ข้อมูลทะเบียนรถ "${vehicle.licensePlate}"`;
+	const heading = `ข้อมูลทะเบียนรถ +++++++++++++++++++++++++`;
 
 	return (
 		<Stack spacing={1}>
-			<TableOfContents />
+			<BaseTOC>{TOC_ITEMS}</BaseTOC>
 			<Typography
 				variant="h1"
 				id="info"
 			>
 				{heading}
 			</Typography>
-			<TypographyButton
-				startIcon={<EditRounded />}
-				variant="contained"
-				onClick={() =>
-					submit(
-						{},
-						{
-							action: "./edit",
-						},
-					)
-				}
-			>
-				แก้ไข้ข้อมูล
-			</TypographyButton>
-			<FormalLayout>{infoItems}</FormalLayout>
+			<VehicleDetails
+				images={images}
+				vehicle={vehicle}
+			/>
 			<Typography
 				variant="h2"
 				id="operational-log"
 			>
-				ประวัติการเดินรถ
+				ประวัติการเดินรถ++++++++++++++++
 			</Typography>
 			<OperationalLogTable
-				entries={operationalLogEntries}
+				entries={logEntries}
 				onAdd={() => {}}
 			/>
 			<Typography
 				variant="h2"
-				id="report-general"
+				id="general-report"
 			>
-				เรื่องร้องเรียน
+				เรื่องร้องเรียน++++++++++++++++++++
 			</Typography>
 			<VehicleReportGeneralTable
-				entries={reportGeneralEntries}
+				entries={generalEntries}
 				onAdd={() =>
 					submit(
 						{},
@@ -185,12 +83,12 @@ export const IndexPage: FC = () => {
 			/>
 			<Typography
 				variant="h2"
-				id="medical-report"
+				id="inspection-report"
 			>
-				ผลการตรวจสภาพรถ
+				ผลการตรวจสภาพรถ++++++++++++++++++++++
 			</Typography>
 			<VehicleReportInspectionTable
-				entries={reportInspectionEntries}
+				entries={inspectionEntries}
 				onAdd={() =>
 					submit(
 						{},

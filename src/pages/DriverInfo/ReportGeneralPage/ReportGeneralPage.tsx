@@ -1,8 +1,5 @@
 import { DriverReportForm } from "$components/DriverReportForm";
-import {
-	DriverReportFormData,
-	DriverReportModel,
-} from "$types/models/Driver";
+import { DriverReportFormData } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -11,14 +8,15 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ReportGeneralPageLoaderData } from "./loader";
-import { putDriverReportGeneral } from "$backend/database/put";
+import { TRANSLATION } from "$locale/th";
+import { postDriverReportGeneral } from "$backend/database/post";
 
 export const ReportGeneralPage: FC = () => {
 	const {
+		driverId,
 		topicOptions,
 		initFormData,
 		driverOptions,
-		reportId,
 	} =
 		useLoaderData() as ReportGeneralPageLoaderData;
 	const submit = useSubmit();
@@ -26,31 +24,28 @@ export const ReportGeneralPage: FC = () => {
 	const handleSubmit = (
 		formData: DriverReportFormData,
 	) => {
-		if (!formData.driver) {
-			return;
-		}
-		const model: DriverReportModel = {
-			id: reportId,
-			content: formData.content,
-			driver_id: formData.driver.id,
-			topics: formData.topics.join(","),
-			datetime: formData.datetime,
-			title: formData.title,
-		};
-		putDriverReportGeneral(model).then(
-			() => {
-				toast.error("บันทึกสำเร็จ");
+		postDriverReportGeneral(formData).then(
+			(reportId) => {
+				toast.success(
+					TRANSLATION.postReportSuccess,
+				);
 				submit(
 					{},
 					{
 						action:
-							"/drivers/report/general/info" +
+							"/drivers/report/general/info/" +
 							reportId,
 					},
 				);
 			},
 			() => {
-				toast.error("บันทึกล้มเหลว");
+				toast.error(TRANSLATION.postReportFail);
+				submit(
+					{},
+					{
+						action: "/drivers/info/" + driverId,
+					},
+				);
 			},
 		);
 	};
@@ -70,7 +65,12 @@ export const ReportGeneralPage: FC = () => {
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={() =>
-					submit({}, { action: "/" })
+					submit(
+						{},
+						{
+							action: "/drivers/info" + driverId,
+						},
+					)
 				}
 			/>
 		</Stack>

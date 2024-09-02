@@ -1,6 +1,4 @@
-import { putDriver } from "$backend/database/put";
-import { DriverForm } from "$components/DriverForm";
-import { DriverFormData } from "$types/models/Driver";
+import { putVehicle } from "$backend/database/put";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -9,39 +7,60 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { EditPageLoaderData } from "./loader";
+import { VehicleForm } from "$components/VehicleForm";
+import { VehicleFormData } from "$types/models/Vehicle";
 
 export const EditPage: FC = () => {
-	const { initFormData } =
-		useLoaderData() as EditPageLoaderData;
+	const {
+		initFormData,
+		vehicleId,
+		vendorOptions,
+	} = useLoaderData() as EditPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = async (
-		formData: DriverFormData,
+		formData: VehicleFormData,
 	) => {
-		putDriver(formData)
-			.then(() => {
-				toast.success("แก้ไขสำเร็จ");
-				submit({}, { action: "/" });
-			})
-			.catch((error) => {
-				console.error(error);
-				toast.error("แก้ไขล้มเหลว");
-			});
+		putVehicle({
+			id: vehicleId,
+			license_plate: formData.licensePlate,
+			registered_city: formData.registeredCity,
+			vendor: formData.vendor,
+			vehicle_class: formData.vehicleClass,
+		})
+			.then(
+				() => toast.success("แก้ไขสำเร็จ"),
+				() => toast.error("แก้ไขล้มเหลว"),
+			)
+			.finally(() =>
+				submit(
+					{},
+					{
+						action: "/vehicles/info/" + vehicleId,
+					},
+				),
+			);
 	};
-	const handleCancel = () =>
-		submit({}, { action: "/" });
-
-	const heading = `ข้อมูลคนขับรถ "${initFormData.name} ${initFormData.surname}" (แก้ไข)`;
+	const heading = `ข้อมูลคนขับรถ  (แก้ไข)`;
 
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
 				{heading}
 			</Typography>
-			<DriverForm
+			<VehicleForm
+				vendorOptions={vendorOptions}
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() =>
+					submit(
+						{},
+						{
+							action:
+								"/vehicles/info/" + vehicleId,
+						},
+					)
+				}
 			/>
 		</Stack>
 	);

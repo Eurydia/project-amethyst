@@ -1,6 +1,6 @@
 import {
-	getDriverGeneralReportWithId,
 	getDriver,
+	getDriverReportMedical,
 } from "$backend/database/get";
 import { DriverReport } from "$types/models/Driver";
 import {
@@ -23,15 +23,14 @@ export const infoPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const model =
-			await getDriverGeneralReportWithId(
-				reportId,
-			);
+		const model = await getDriverReportMedical(
+			reportId,
+		);
 		if (model === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบเรื่องร้องเรียนในฐานข้อมูล (Cannot find report with given ID)",
+						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบผลการตรวจสารเสพติดในฐานข้อมูล (Cannot find report with given ID)",
 				},
 				{ status: 404 },
 			);
@@ -48,6 +47,7 @@ export const infoPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
+
 		const report: DriverReport = {
 			content: model.content,
 			datetime: model.datetime,
@@ -56,10 +56,15 @@ export const infoPageLoader: LoaderFunction =
 			driverSurname: driver.surname,
 			id: model.id,
 			title: model.title,
-			topics: model.topics.split(","),
+			topics: model.topics
+				.split(",")
+				.map((topic) => topic.trim())
+				.filter((topic) => topic.length > 0),
 		};
+
 		const loaderData: InfoPageLoaderData = {
 			report,
 		};
+
 		return loaderData;
 	};

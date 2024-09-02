@@ -4,7 +4,6 @@ import {
 } from "react-router-dom";
 import {
 	getDriver,
-	getDriverGeneralReportAllWithDriverId,
 	getTopicAll,
 } from "$backend/database/get";
 import dayjs from "dayjs";
@@ -13,9 +12,10 @@ import {
 	DriverModel,
 	DriverReportFormData,
 } from "$types/models/Driver";
+import { TRANSLATION } from "$locale/th";
 
 export type ReportGeneralPageLoaderData = {
-	reportId: string;
+	driverId: string;
 	driverOptions: DriverModel[];
 	topicOptions: string[];
 	initFormData: DriverReportFormData;
@@ -27,7 +27,7 @@ export const reportGeneralPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing driverId in params)",
+						TRANSLATION.paramsIsMissingDriverId,
 				},
 				{ status: 400 },
 			);
@@ -37,16 +37,12 @@ export const reportGeneralPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่พบข้อมูลคนขับที่ต้องการฐานข้อมูล (Cannot find driver with given ID)",
+						TRANSLATION.driverIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
 		}
-		const reports =
-			await getDriverGeneralReportAllWithDriverId(
-				driverId,
-			);
-		const reportId = reports.length.toString();
+
 		const topicOptions = await getTopicAll();
 		const driverOptions = [driver];
 		const initFormData: DriverReportFormData = {
@@ -58,11 +54,10 @@ export const reportGeneralPageLoader: LoaderFunction =
 		};
 		const loaderData: ReportGeneralPageLoaderData =
 			{
+				driverId,
 				driverOptions,
 				initFormData,
 				topicOptions,
-				reportId,
 			};
-
 		return loaderData;
 	};

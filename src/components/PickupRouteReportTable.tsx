@@ -15,7 +15,7 @@ import {
 	useState,
 } from "react";
 import { BaseSortableTable } from "./BaseSortableTable";
-import { MultiSelect } from "./MultiSelect";
+import { BaseMultiSelect } from "./BaseMultiSelect";
 
 const entriesToOptions = (
 	entries: PickupRouteReport[],
@@ -205,7 +205,7 @@ export const PickupRouteReportTable: FC<
 		{
 			label: "สายรถ",
 			value: (
-				<MultiSelect
+				<BaseMultiSelect
 					options={routeOptions}
 					selectedOptions={selectedRoutes}
 					onChange={setSelectedRoutes}
@@ -238,7 +238,7 @@ export const PickupRouteReportTable: FC<
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
-				<MultiSelect
+				<BaseMultiSelect
 					options={topicOptions}
 					selectedOptions={selectedTopics}
 					onChange={setSelectedTopics}

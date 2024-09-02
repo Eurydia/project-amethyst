@@ -12,7 +12,7 @@ import {
 	VehicleReportGeneralModel,
 	VehicleReportInspectionModel,
 } from "$types/models/Vehicle";
-import { faker, fakerTH } from "@faker-js/faker";
+import { fakerTH } from "@faker-js/faker";
 import dayjs from "dayjs";
 
 //#region Operational Log
@@ -59,31 +59,11 @@ const operationLogs = fakerTH.helpers
 	)
 	.flat();
 
-export const getOperationLogAll =
-	async (): Promise<OperationalLogModel[]> => {
-		return operationLogs;
-	};
-
-export const getOperationLogAllWithDriverId =
-	async (driverId: string) => {
-		return (await getOperationLogAll()).filter(
-			(entry) => entry.driver_id === driverId,
-		);
-	};
-
-export const getOperationLogAllWithRouteId =
-	async (routeId: string) => {
-		return (await getOperationLogAll()).filter(
-			(entry) => entry.route_id === routeId,
-		);
-	};
-
-export const getOperationLogAllWithVehicleId =
-	async (vehicleId: string) => {
-		return (await getOperationLogAll()).filter(
-			(entry) => entry.vehicle_id === vehicleId,
-		);
-	};
+export const getOperationLogAll = async () => {
+	const entries: OperationalLogModel[] =
+		operationLogs;
+	return entries;
+};
 //#endregion
 
 //#region Driver
@@ -103,177 +83,37 @@ const drivers = fakerTH.helpers.multiple(
 		} as DriverModel),
 	{ count: 10 },
 );
-
 export const getDriverAll = async () => {
-	return drivers;
+	const entries: DriverModel[] = drivers;
+	return entries;
 };
 
 export const getDriver = async (
 	driverId: string,
 ): Promise<DriverModel | null> => {
-	const drivers = await getDriverAll();
-	for (const driver of drivers) {
-		if (driver.id === driverId) {
-			return driver;
+	const entries = await getDriverAll();
+	for (const entry of entries) {
+		if (entry.id === driverId) {
+			return entry;
 		}
 	}
 	return null;
 };
-
 export const getDriverMany = async (
 	driverIds: Set<string>,
 ) => {
-	const drivers = await getDriverAll();
+	const entries = await getDriverAll();
 	const collected: DriverModel[] = [];
-	for (const driver of drivers) {
-		if (driverIds.has(driver.id)) {
-			collected.push(driver);
+	for (const entry of entries) {
+		if (driverIds.has(entry.id)) {
+			collected.push(entry);
 		}
 	}
 	return collected;
 };
 //#endregion
 
-//#region Vehicle
-let vehicleId = 0;
-const vehicles = fakerTH.helpers.multiple(
-	() =>
-		({
-			vendor: fakerTH.company.name(),
-			vehicle_class: fakerTH.vehicle.type(),
-			license_plate: fakerTH.vehicle.vrm(),
-			registered_city: fakerTH.location.city(),
-			images: "",
-			id: (vehicleId++).toString(),
-		} as VehicleModel),
-	{ count: 10 },
-);
-
-export const getVehicleAll = async (): Promise<
-	VehicleModel[]
-> => {
-	return vehicles;
-};
-
-export const getVehicle = async (
-	vehicleId: string,
-) => {
-	const vehicles = await getVehicleAll();
-	for (const vehicle of vehicles) {
-		if (vehicle.id === vehicleId) {
-			return vehicle;
-		}
-	}
-	return null;
-};
-
-export const getVehicleMany = async (
-	vehicleIds: Set<string>,
-) => {
-	const vehicles = await getVehicleAll();
-	const collected: VehicleModel[] = [];
-	for (const vehicle of vehicles) {
-		if (vehicleIds.has(vehicle.id)) {
-			collected.push(vehicle);
-		}
-	}
-	return collected;
-};
-//#endregion
-
-export const getVehicleReportGeneralAll =
-	async () => {
-		return [
-			{
-				content: fakerTH.lorem.paragraph(),
-				datetime: dayjs(
-					fakerTH.date.past(),
-				).format(),
-				id: "0",
-				title: fakerTH.lorem.sentence(),
-				topics: "",
-				vehicle_id: "0",
-			},
-		] as VehicleReportGeneralModel[];
-	};
-
-export const getVehicleReportGeneralWithId =
-	async (reportId: string) => {
-		return {
-			id: reportId,
-			datetime: dayjs(
-				fakerTH.date.past(),
-			).format(),
-			title: fakerTH.lorem.sentence(),
-			content: fakerTH.lorem.paragraph(),
-			topics: "",
-			vehicle_id: fakerTH.number
-				.int({
-					min: 0,
-					max: 10,
-				})
-				.toString(),
-		} as VehicleReportGeneralModel;
-	};
-
-export const getVehicleReportGeneralAllWithVehicleId =
-	async (vehicleId: string) => {
-		return [
-			{
-				content: fakerTH.lorem.paragraph(),
-				datetime: dayjs(
-					fakerTH.date.past(),
-				).format(),
-				id: "0",
-				title: fakerTH.lorem.sentence(),
-				topics: "",
-				vehicle_id: vehicleId,
-			},
-		] as VehicleReportGeneralModel[];
-	};
-
-export const getVehicleReportInspectionAllWithVehicleId =
-	async (vehicleId: string) => {
-		return [] as VehicleReportInspectionModel[];
-	};
-
-export const getVehicleReportInspectionWithId =
-	async (reportId: string) => {
-		return {
-			frame: fakerTH.lorem.paragraph(),
-			front_camera: fakerTH.lorem.sentence(),
-			content: fakerTH.lorem.paragraph(),
-			datetime: dayjs(
-				fakerTH.date.past(),
-			).format(),
-			fan_overhead: fakerTH.lorem.sentence(),
-			id: reportId,
-			inspection_round_number: "1",
-			brake_light: fakerTH.lorem.sentence(),
-			headlights: fakerTH.lorem.sentence(),
-			turn_signals: fakerTH.lorem.sentence(),
-			rearview_mirror: fakerTH.lorem.sentence(),
-			sideview_mirror: fakerTH.lorem.sentence(),
-			seatbelts: fakerTH.lorem.sentence(),
-			seats: fakerTH.lorem.sentence(),
-			topics: "",
-			vehicle_id: "0",
-			windows: fakerTH.lorem.sentence(),
-		} as VehicleReportInspectionModel;
-	};
-
-export const getVehicleReportInspectionAll =
-	async () => {
-		return [] as VehicleReportInspectionModel[];
-	};
-
-const topics = fakerTH.word.words(10);
-export const getTopicAll = async (): Promise<
-	string[]
-> => {
-	return [...new Set(topics.split(" "))];
-};
-
+//#region Driver Report General
 let driverGeneralReportId = 0;
 const driverGeneralReports: DriverReportModel[] =
 	fakerTH.helpers
@@ -305,32 +145,28 @@ const driverGeneralReports: DriverReportModel[] =
 		)
 		.flat();
 
-export const getDriverGeneralReportAll =
-	async (): Promise<DriverReportModel[]> => {
-		return driverGeneralReports;
+export const getDriverReportGeneralAll =
+	async () => {
+		const entry: DriverReportModel[] =
+			driverGeneralReports;
+		return entry;
 	};
 
-export const getDriverGeneralReportAllWithDriverId =
-	async (
-		driverId: string,
-	): Promise<DriverReportModel[]> => {
-		return driverGeneralReports.filter(
-			(entry) => entry.driver_id === driverId,
-		);
-	};
-
-export const getDriverGeneralReportWithId =
-	async (
-		reportId: string,
-	): Promise<DriverReportModel | null> => {
-		for (const report of driverGeneralReports) {
-			if (report.id === reportId) {
-				return report;
-			}
+export const getDriverReportGeneral = async (
+	reportId: string,
+) => {
+	const entries: DriverReportModel[] =
+		driverGeneralReports;
+	for (const entry of entries) {
+		if (entry.id === reportId) {
+			return entry;
 		}
-		return null;
-	};
+	}
+	return null;
+};
+//#endregion
 
+//#region Driver Report Medical
 let driverMedicalReportId = 0;
 const driverMedicalReports: DriverReportModel[] =
 	fakerTH.helpers.multiple(
@@ -356,20 +192,169 @@ const driverMedicalReports: DriverReportModel[] =
 			count: 10,
 		},
 	);
+export const getDriverReportMedicalAll =
+	async () => {
+		const entries: DriverReportModel[] =
+			driverMedicalReports;
+		return entries;
+	};
+export const getDriverReportMedical = async (
+	reportId: string,
+) => {
+	const entries: DriverReportModel[] =
+		driverMedicalReports;
+	for (const entry of entries) {
+		if (entry.id === reportId) {
+			return entry;
+		}
+	}
+	return null;
+};
+//#endregion
 
-export const getDriverMedicalReportAll =
-	async (): Promise<DriverReportModel[]> => {
-		return driverMedicalReports;
+//#region Vehicle
+let vehicleId = 0;
+const vehicles = fakerTH.helpers.multiple(
+	() =>
+		({
+			vendor: fakerTH.company.name(),
+			vehicle_class: fakerTH.vehicle.type(),
+			license_plate: fakerTH.vehicle.vrm(),
+			registered_city: fakerTH.location.city(),
+			images: "",
+			id: (vehicleId++).toString(),
+		} as VehicleModel),
+	{ count: 10 },
+);
+
+export const getVehicleAll = async () => {
+	const entries: VehicleModel[] = vehicles;
+	return entries;
+};
+export const getVehicle = async (
+	vehicleId: string,
+) => {
+	const vehicles = await getVehicleAll();
+	for (const vehicle of vehicles) {
+		if (vehicle.id === vehicleId) {
+			return vehicle;
+		}
+	}
+	return null;
+};
+export const getVehicleMany = async (
+	vehicleIds: Set<string>,
+) => {
+	const entries = await getVehicleAll();
+	const collected: VehicleModel[] = [];
+	for (const entry of entries) {
+		if (vehicleIds.has(entry.id)) {
+			collected.push(entry);
+		}
+	}
+	return collected;
+};
+//#endregion
+
+//#region Vehicle Report General
+const vehicleReportGeneral: VehicleReportGeneralModel[] =
+	[
+		{
+			content: fakerTH.lorem.paragraph(),
+			datetime: dayjs(
+				fakerTH.date.past(),
+			).format(),
+			id: "0",
+			title: fakerTH.lorem.sentence(),
+			topics: "",
+			vehicle_id: "0",
+		},
+	];
+export const getVehicleReportGeneralAll =
+	async () => {
+		const entries: VehicleReportGeneralModel[] =
+			vehicleReportGeneral;
+		return entries;
 	};
 
-export const getDriverMedicalReportAllWithDriverId =
-	async (
-		driverId: string,
-	): Promise<DriverReportModel[]> => {
-		return driverMedicalReports.filter(
-			(entry) => entry.driver_id === driverId,
-		);
+export const getVehicleReportGeneral = async (
+	reportId: string,
+) => {
+	const entries =
+		await getVehicleReportGeneralAll();
+	for (const entry of entries) {
+		if (entry.id === reportId) {
+			return entry;
+		}
+	}
+	return null;
+	// return {
+	// 	id: reportId,
+	// 	datetime: dayjs(fakerTH.date.past()).format(),
+	// 	title: fakerTH.lorem.sentence(),
+	// 	content: fakerTH.lorem.paragraph(),
+	// 	topics: "",
+	// 	vehicle_id: fakerTH.number
+	// 		.int({
+	// 			min: 0,
+	// 			max: 10,
+	// 		})
+	// 		.toString(),
+	// } as VehicleReportGeneralModel;
+};
+//#endregion
+
+//#region Vehicle Report Inspection
+export const getVehicleReportInspectionAll =
+	async () => {
+		const entries: VehicleReportInspectionModel[] =
+			[];
+		return entries;
 	};
+export const getVehicleReportInspection = async (
+	reportId: string,
+) => {
+	const entries =
+		await getVehicleReportInspectionAll();
+	for (const entry of entries) {
+		if (entry.id === reportId) {
+			return entry;
+		}
+	}
+	return null;
+
+	// return {
+	// 	frame: fakerTH.lorem.paragraph(),
+	// 	front_camera: fakerTH.lorem.sentence(),
+	// 	content: fakerTH.lorem.paragraph(),
+	// 	datetime: dayjs(fakerTH.date.past()).format(),
+	// 	fan_overhead: fakerTH.lorem.sentence(),
+	// 	id: reportId,
+	// 	inspection_round_number: "1",
+	// 	brake_light: fakerTH.lorem.sentence(),
+	// 	headlights: fakerTH.lorem.sentence(),
+	// 	turn_signals: fakerTH.lorem.sentence(),
+	// 	rearview_mirror: fakerTH.lorem.sentence(),
+	// 	sideview_mirror: fakerTH.lorem.sentence(),
+	// 	seatbelts: fakerTH.lorem.sentence(),
+	// 	seats: fakerTH.lorem.sentence(),
+	// 	topics: "",
+	// 	vehicle_id: "0",
+	// 	windows: fakerTH.lorem.sentence(),
+	// } as VehicleReportInspectionModel;
+};
+//#endregion
+
+//#region Topics
+const topics = fakerTH.word.words(10);
+export const getTopicAll = async (): Promise<
+	string[]
+> => {
+	const entries: string[] = topics.split(" ");
+	const entrySet = new Set(entries);
+	return [...entrySet];
+};
+//#endregion
 
 //#region Pickup Route
 let pickupRouteId = 0;
@@ -390,38 +375,37 @@ const pickupRoutes: PickupRouteModel[] =
 			count: 10,
 		},
 	);
-
-export const getPickupRouteAll =
-	async (): Promise<PickupRouteModel[]> => {
-		return pickupRoutes;
-	};
-
+export const getPickupRouteAll = async () => {
+	const entries: PickupRouteModel[] =
+		pickupRoutes;
+	return entries;
+};
 export const getPickupRoute = async (
 	routeId: string,
 ) => {
-	const routes = await getPickupRouteAll();
-	for (const route of routes) {
-		if (route.id === routeId) {
-			return route;
+	const entries = await getPickupRouteAll();
+	for (const entry of entries) {
+		if (entry.id === routeId) {
+			return entry;
 		}
 	}
 	return null;
 };
-
 export const getPickupRouteMany = async (
 	routeIds: Set<string>,
 ) => {
-	const routes = await getPickupRouteAll();
+	const entries = await getPickupRouteAll();
 	const collected: PickupRouteModel[] = [];
-	for (const route of routes) {
-		if (routeIds.has(route.id)) {
-			collected.push(route);
+	for (const entry of entries) {
+		if (routeIds.has(entry.id)) {
+			collected.push(entry);
 		}
 	}
 	return collected;
 };
 //#endregion
 
+//#region Pickup Route Report General
 let routeGeneralReportId = 0;
 const routeGeneralReport: PickupRouteReportModel[] =
 	fakerTH.helpers
@@ -458,22 +442,21 @@ const routeGeneralReport: PickupRouteReportModel[] =
 
 export const getPickupRouteReportGeneralAll =
 	async () => {
-		return routeGeneralReport;
+		const entries: PickupRouteReportModel[] =
+			routeGeneralReport;
+		return entries;
 	};
 
-export const getPickupRouteReportGeneralAllWithRouteId =
-	async (routeId: string) => {
-		return routeGeneralReport.filter(
-			(entry) => entry.route_id === routeId,
-		);
-	};
-
-export const getPickupRouteReportGeneralWithId =
-	async (reportId: string) => {
-		for (const report of routeGeneralReport) {
-			if (report.id === reportId) {
-				return report;
-			}
+export const getPickupRouteReportGeneral = async (
+	reportId: string,
+) => {
+	const entries =
+		await getPickupRouteReportGeneralAll();
+	for (const entry of entries) {
+		if (entry.id === reportId) {
+			return entry;
 		}
-		return null;
-	};
+	}
+	return null;
+};
+//#endregion

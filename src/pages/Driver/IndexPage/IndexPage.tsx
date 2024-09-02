@@ -1,5 +1,4 @@
 import { BaseSortableTable } from "$components/BaseSortableTable";
-import { MultiSelect } from "$components/MultiSelect";
 import { TableHeaderDefinition } from "$types/generics";
 import { Stack, Typography } from "@mui/material";
 import { filterItems } from "core/filter";
@@ -15,6 +14,7 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { IndexPageLoaderData } from "./loader";
+import { BaseMultiSelect } from "$components/BaseMultiSelect";
 
 const HEADER_DEFINITION: TableHeaderDefinition<
 	IndexPageLoaderData["entries"][number]
@@ -22,12 +22,13 @@ const HEADER_DEFINITION: TableHeaderDefinition<
 	{
 		label: "คนขับรถ",
 		compare: (a, b) =>
-			a.name.localeCompare(b.name),
+			a.driver.name.localeCompare(b.driver.name),
 		render: (item) => (
-			<Typography key={"driver" + item.id}>
-				<Link to={"/drivers/info/" + item.id}>
-					{item.name} {item.surname}
-				</Link>
+			<Typography
+				component={Link}
+				to={"/drivers/info/" + item.driver.id}
+			>
+				{item.driver.name} {item.driver.surname}
 			</Typography>
 		),
 	},
@@ -43,15 +44,14 @@ const HEADER_DEFINITION: TableHeaderDefinition<
 					useFlexGap
 				>
 					{item.routes.map((route, index) => (
-						<Typography key={"vehicle" + index}>
-							<Link
-								to={
-									"/pickup-routes/info/" +
-									route.id
-								}
-							>
-								{route.name}
-							</Link>
+						<Typography
+							key={"vehicle" + index}
+							component={Link}
+							to={
+								"/pickup-routes/info/" + route.id
+							}
+						>
+							{route.name}
 						</Typography>
 					))}
 				</Stack>
@@ -69,14 +69,12 @@ const HEADER_DEFINITION: TableHeaderDefinition<
 					useFlexGap
 				>
 					{item.vehicles.map((vehicle, index) => (
-						<Typography key={"vehicle" + index}>
-							<Link
-								to={
-									"/vehicles/info/" + vehicle.id
-								}
-							>
-								{vehicle.licensePlate}
-							</Link>
+						<Typography
+							key={"vehicle" + index}
+							component={Link}
+							to={"/vehicles/info/" + vehicle.id}
+						>
+							{vehicle.licensePlate}
 						</Typography>
 					))}
 				</Stack>
@@ -84,43 +82,41 @@ const HEADER_DEFINITION: TableHeaderDefinition<
 	},
 ];
 
-const extractOptions = (
+const getDriverOptions = (
 	entries: IndexPageLoaderData["entries"],
 ) => {
-	const uniqueOption: Record<string, string> = {};
+	const options: Record<string, string> = {};
 	for (const entry of entries) {
-		uniqueOption[
-			entry.id
-		] = `${entry.name} ${entry.surname}`;
+		options[
+			entry.driver.id
+		] = `${entry.driver.name} ${entry.driver.surname}`;
 	}
-	return Object.entries(uniqueOption).map(
+	return Object.entries(options).map(
 		([value, label]) => ({
 			value,
 			label,
 		}),
 	);
 };
-
-const searchEntries = (
-	entries: IndexPageLoaderData["entries"],
-	search: string,
-) => {
-	return filterItems(entries, search, [
-		"name",
-		"surname",
-		"vehicles.*.licensePlate",
-		"routes.*.name",
-	]);
-};
-
 const filterEntries = (
 	drivers: string[],
 	entries: IndexPageLoaderData["entries"],
 ) => {
 	const driverSet = new Set(drivers);
 	return entries.filter((entry) =>
-		driverSet.has(entry.id),
+		driverSet.has(entry.driver.id),
 	);
+};
+const searchEntries = (
+	entries: IndexPageLoaderData["entries"],
+	search: string,
+) => {
+	return filterItems(entries, search, [
+		"driver.name",
+		"driver.surname",
+		"vehicles.*.licensePlate",
+		"routes.*.name",
+	]);
 };
 
 type CustomTableProps = {
@@ -130,29 +126,23 @@ export const CustomTable: FC<CustomTableProps> = (
 	props,
 ) => {
 	const { entries } = props;
-
 	const submit = useSubmit();
-
 	const driverOptions = useMemo(
-		() => extractOptions(entries),
+		() => getDriverOptions(entries),
 		[entries],
 	);
-
 	const [search, setSearch] = useState("");
 	const [drivers, setDrivers] = useState(
 		driverOptions.map(({ value }) => value),
 	);
-
 	const filteredEntries = useMemo(
 		() => filterEntries(drivers, entries),
 		[entries, drivers],
 	);
-
 	const searchedEntries = useMemo(
 		() => searchEntries(filteredEntries, search),
 		[filteredEntries, search],
 	);
-
 	const formItems: {
 		label: string;
 		value: ReactNode;
@@ -160,7 +150,7 @@ export const CustomTable: FC<CustomTableProps> = (
 		{
 			label: "คนขับรถ",
 			value: (
-				<MultiSelect
+				<BaseMultiSelect
 					onChange={setDrivers}
 					options={driverOptions}
 					selectedOptions={drivers}
@@ -168,7 +158,6 @@ export const CustomTable: FC<CustomTableProps> = (
 			),
 		},
 	];
-
 	return (
 		<BaseSortableTable
 			headers={HEADER_DEFINITION}
@@ -203,7 +192,6 @@ export const CustomTable: FC<CustomTableProps> = (
 export const IndexPage: FC = () => {
 	const { entries } =
 		useLoaderData() as IndexPageLoaderData;
-
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">

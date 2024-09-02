@@ -2,9 +2,11 @@ import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
 import { DriverReportEntry } from "$types/models/Driver";
 import {
+	ButtonProps,
 	FormControlLabel,
 	Radio,
 	RadioGroup,
+	TextFieldProps,
 } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
@@ -15,58 +17,107 @@ import {
 	useState,
 } from "react";
 import { BaseSortableTable } from "./BaseSortableTable";
-import { MultiSelect } from "./MultiSelect";
+import { BaseMultiSelect } from "./BaseMultiSelect";
+
+const getOptions = (
+	entries: DriverReportEntry[],
+) => {
+	const drivers: Record<string, string> = {};
+	const topics = new Set<string>();
+	for (const entry of entries) {
+		drivers[
+			entry.driverId
+		] = `${entry.driverName} ${entry.driverSurname}`;
+
+		for (const topic of entry.topics) {
+			topics.add(topic);
+		}
+	}
+	const driverOptions = Object.entries(
+		drivers,
+	).map(([value, label]) => ({
+		value,
+		label,
+	}));
+
+	const topicOptions = [...topics].map(
+		(topic) => ({
+			value: topic,
+			label: topic,
+		}),
+	);
+	return {
+		driverOptions,
+		topicOptions,
+	};
+};
+
+const filterEntries = (
+	entries: DriverReportEntry[],
+	selectedDrivers: string[],
+	afterDate: Dayjs | null,
+	beforeDate: Dayjs | null,
+	selectedTopics: string[],
+	topicMustHaveAll: boolean,
+) => {
+	const driverSet = new Set(selectedDrivers);
+	return entries
+		.filter(
+			(entry) =>
+				afterDate === null ||
+				dayjs(entry.datetime).isAfter(afterDate),
+		)
+		.filter(
+			(entry) =>
+				beforeDate === null ||
+				dayjs(entry.datetime).isBefore(
+					beforeDate,
+				),
+		)
+		.filter((entry) =>
+			driverSet.has(entry.driverId),
+		)
+		.filter((entry) => {
+			const topicSet = new Set(entry.topics);
+			return topicMustHaveAll
+				? selectedTopics.every((topic) =>
+						topicSet.has(topic),
+				  )
+				: selectedTopics.some((topic) =>
+						topicSet.has(topic),
+				  );
+		});
+};
+
+const searchEntries = (
+	entries: DriverReportEntry[],
+	search: string,
+) => {
+	return filterItems(entries, search, [
+		"title",
+		"topics",
+		"driver_name",
+		"driver_surname",
+	]);
+};
 
 type DriverReportTableProps = {
 	headers: TableHeaderDefinition<DriverReportEntry>[];
-	searchPlaceholder?: string;
 	entries: DriverReportEntry[];
-	onAdd: () => void;
+	slotProps: {
+		addButton: ButtonProps;
+		searchField: TextFieldProps;
+	};
 };
 export const DriverReportTable: FC<
 	DriverReportTableProps
 > = (props) => {
-	const {
-		headers,
-		entries,
-		searchPlaceholder,
-		onAdd,
-	} = props;
+	const { headers, entries, slotProps } = props;
 
-	const { driverOptions, topicOptions } =
-		useMemo(() => {
-			const uniqueDrivers: Record<
-				string,
-				string
-			> = {};
-			const uniqueTopics = new Set<string>();
-			for (const entry of entries) {
-				uniqueDrivers[
-					entry.driverId
-				] = `${entry.driverName} ${entry.driverSurname}`;
-
-				for (const topic of entry.topics) {
-					uniqueTopics.add(topic);
-				}
-			}
-			const driverOptions = Object.entries(
-				uniqueDrivers,
-			).map(([value, label]) => ({
-				value,
-				label,
-			}));
-
-			const topicOptions = [...uniqueTopics].map(
-				(topic) => ({
-					value: topic,
-					label: topic,
-				}),
-			);
-			return {
-				driverOptions,
-				topicOptions,
-			};
-		}, [entries]);
+	const { driverOptions, topicOptions } = useMemo(
+		() => getOptions(entries),
+		[entries],
+	);
 
 	const [search, setSearch] = useState("");
 	const [afterDate, setAfterDate] =
@@ -84,52 +135,29 @@ export const DriverReportTable: FC<
 			driverOptions.map(({ value }) => value),
 		);
 
-	const filteredEntries = useMemo(() => {
-		const driverSet = new Set(selectedDrivers);
-		return entries
-			.filter(
-				(entry) =>
-					afterDate === null ||
-					dayjs(entry.datetime).isAfter(
-						afterDate,
-					),
-			)
-			.filter(
-				(entry) =>
-					beforeDate === null ||
-					dayjs(entry.datetime).isBefore(
-						beforeDate,
-					),
-			)
-			.filter((entry) =>
-				driverSet.has(entry.driverId),
-			)
-			.filter((entry) => {
-				const topicSet = new Set(entry.topics);
-				return topicMustHaveAll
-					? selectedTopics.every((topic) =>
-							topicSet.has(topic),
-					  )
-					: selectedTopics.some((topic) =>
-							topicSet.has(topic),
-					  );
-			});
-	}, [
-		afterDate,
-		beforeDate,
-		selectedDrivers,
-		selectedTopics,
-		entries,
-		topicMustHaveAll,
-	]);
-	const searchedEntries = useMemo(() => {
-		return filterItems(entries, search, [
-			"title",
-			"topics",
-			"driver_name",
-			"driver_surname",
-		]);
-	}, [search, filteredEntries]);
+	const filteredEntries = useMemo(
+		() =>
+			filterEntries(
+				entries,
+				selectedDrivers,
+				afterDate,
+				beforeDate,
+				selectedTopics,
+				topicMustHaveAll === "yes",
+			),
+		[
+			afterDate,
+			beforeDate,
+			selectedDrivers,
+			selectedTopics,
+			entries,
+			topicMustHaveAll,
+		],
+	);
+	const searchedEntries = useMemo(
+		() => searchEntries(filteredEntries, search),
+		[search, filteredEntries],
+	);
 
 	const formItems: {
 		label: string;
@@ -162,7 +190,7 @@ export const DriverReportTable: FC<
 		{
 			label: "คนขับรถ",
 			value: (
-				<MultiSelect
+				<BaseMultiSelect
 					options={driverOptions}
 					selectedOptions={selectedDrivers}
 					onChange={setSelectedDrivers}
@@ -195,7 +223,7 @@ export const DriverReportTable: FC<
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
-				<MultiSelect
+				<BaseMultiSelect
 					options={topicOptions}
 					selectedOptions={selectedTopics}
 					onChange={setSelectedTopics}
@@ -211,12 +239,9 @@ export const DriverReportTable: FC<
 			entries={searchedEntries}
 			headers={headers}
 			slotProps={{
-				addButton: {
-					onClick: onAdd,
-					children: "ลงบันทึก",
-				},
+				addButton: slotProps.addButton,
 				searchField: {
-					placeholder: searchPlaceholder,
+					...slotProps.searchField,
 					value: search,
 					onChange: (e) =>
 						setSearch(e.target.value),

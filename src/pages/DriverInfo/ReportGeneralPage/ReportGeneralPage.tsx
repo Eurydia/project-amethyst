@@ -1,6 +1,8 @@
-import { postDriverReport } from "$backend/database/put";
 import { DriverReportForm } from "$components/DriverReportForm";
-import { DriverReportFormData } from "$types/models/Driver";
+import {
+	DriverReportFormData,
+	DriverReportModel,
+} from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -9,12 +11,14 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ReportGeneralPageLoaderData } from "./loader";
+import { putDriverReportGeneral } from "$backend/database/put";
 
 export const ReportGeneralPage: FC = () => {
 	const {
 		topicOptions,
 		initFormData,
 		driverOptions,
+		reportId,
 	} =
 		useLoaderData() as ReportGeneralPageLoaderData;
 	const submit = useSubmit();
@@ -22,8 +26,20 @@ export const ReportGeneralPage: FC = () => {
 	const handleSubmit = (
 		formData: DriverReportFormData,
 	) => {
-		postDriverReport(formData).then(
-			(reportId) => {
+		if (!formData.driver) {
+			return;
+		}
+		const model: DriverReportModel = {
+			id: reportId,
+			content: formData.content,
+			driver_id: formData.driver.id,
+			topics: formData.topics.join(","),
+			datetime: formData.datetime,
+			title: formData.title,
+		};
+		putDriverReportGeneral(model).then(
+			() => {
+				toast.error("บันทึกสำเร็จ");
 				submit(
 					{},
 					{
@@ -39,7 +55,9 @@ export const ReportGeneralPage: FC = () => {
 		);
 	};
 
-	const heading = `ลงบันทึกเรื่องร้องเรียนคนขับรถ`;
+	const heading = `ลงบันทึกเรื่องร้องเรียน "${
+		initFormData.driver!.name
+	} ${initFormData.driver!.surname}"`;
 
 	return (
 		<Stack spacing={1}>

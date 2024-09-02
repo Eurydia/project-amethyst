@@ -17,7 +17,7 @@ import {
 } from "react";
 import { Link } from "react-router-dom";
 import { BaseSortableTable } from "./BaseSortableTable";
-import { MultiSelect } from "./MultiSelect";
+import { BaseMultiSelect } from "./BaseMultiSelect";
 
 const HEADER_DEFINITIONS: TableHeaderDefinition<VehicleReportGeneralEntry>[] =
 	[
@@ -246,7 +246,7 @@ export const VehicleReportGeneralTable: FC<
 		{
 			label: "เลขทะเบียนรถ",
 			value: (
-				<MultiSelect
+				<BaseMultiSelect
 					options={vehicleOptions}
 					selectedOptions={selectedVehicles}
 					onChange={setSelectedVehicles}
@@ -279,7 +279,7 @@ export const VehicleReportGeneralTable: FC<
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
-				<MultiSelect
+				<BaseMultiSelect
 					options={topicOptions}
 					selectedOptions={selectedTopics}
 					onChange={setSelectedTopics}

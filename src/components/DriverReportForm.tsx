@@ -65,23 +65,23 @@ export const DriverReportForm: FC<
 			.format();
 
 		const formData: DriverReportFormData = {
-			content: fieldContent,
+			content: fieldContent.normalize().trim(),
 			datetime: datetime,
 			driver: fieldDriver,
-			title: fieldTitle,
-			topics: fieldTopics,
+			title: fieldTitle.normalize().trim(),
+			topics: fieldTopics
+				.map((topic) => topic.normalize())
+				.map((topic) => topic.trim())
+				.filter((topic) => topic.length > 0),
 		};
 
 		onSubmit(formData);
 	};
 
-	const handleCancel = () => onCancel();
-
 	const shouldLockDriver =
 		initFormData.driver !== null;
 	const isDriverEmpty = fieldDriver === null;
 	const isTitleEmpty = fieldTitle.trim() === "";
-
 	const isFormIncomplete =
 		isDriverEmpty || isTitleEmpty;
 
@@ -187,7 +187,7 @@ export const DriverReportForm: FC<
 					onClick: handleSubmit,
 				},
 				cancelButton: {
-					onClick: handleCancel,
+					onClick: onCancel,
 				},
 			}}
 		>

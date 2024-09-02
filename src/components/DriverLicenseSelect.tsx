@@ -1,7 +1,5 @@
 import {
-	FormControl,
 	FormControlLabel,
-	FormLabel,
 	Radio,
 	RadioGroup,
 	Typography,
@@ -24,33 +22,24 @@ export const DriverLicenseSelect: FC<
 	}, []);
 
 	return (
-		<FormControl>
-			<FormLabel>
-				<Typography>ประเภทใบขับขี่</Typography>
-			</FormLabel>
-			<RadioGroup
-				value={value}
-				onChange={(_, value) => onChange(value)}
-			>
-				<FormControlLabel
-					value="ท.1"
-					control={<Radio />}
-					label={
-						<Typography>
-							ประเภท ท.1 (รถตู้)
-						</Typography>
-					}
-				/>
-				<FormControlLabel
-					value="ท.2"
-					control={<Radio />}
-					label={
-						<Typography>
-							ประเภท ท.2 (รถบัส)
-						</Typography>
-					}
-				/>
-			</RadioGroup>
-		</FormControl>
+		<RadioGroup
+			value={value}
+			onChange={(_, value) => onChange(value)}
+		>
+			<FormControlLabel
+				value="ท.1"
+				control={<Radio />}
+				label={
+					<Typography>ท.1 (รถตู้)</Typography>
+				}
+			/>
+			<FormControlLabel
+				value="ท.2"
+				control={<Radio />}
+				label={
+					<Typography>ท.2 (รถบัส)</Typography>
+				}
+			/>
+		</RadioGroup>
 	);
 };

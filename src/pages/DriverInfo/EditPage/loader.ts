@@ -12,7 +12,6 @@ export type EditPageLoaderData = {
 export const editPageLoader: LoaderFunction =
 	async ({ params }) => {
 		const { driverId } = params;
-
 		if (driverId === undefined) {
 			throw json(
 				{
@@ -38,7 +37,6 @@ export const editPageLoader: LoaderFunction =
 			name: driver.name,
 			surname: driver.surname,
 		};
-
 		const loaderData: EditPageLoaderData = {
 			driverId,
 			initFormData,

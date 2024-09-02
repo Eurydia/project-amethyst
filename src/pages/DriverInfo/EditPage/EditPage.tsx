@@ -1,4 +1,4 @@
-import { postDriver } from "$backend/database/put";
+import { putDriver } from "$backend/database/put";
 import { DriverForm } from "$components/DriverForm";
 import { DriverFormData } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
@@ -18,7 +18,14 @@ export const EditPage: FC = () => {
 	const handleSubmit = (
 		formData: DriverFormData,
 	) => {
-		postDriver(formData)
+		const model = {
+			id: driverId,
+			contact: formData.contact,
+			license_type: formData.licenseType,
+			name: formData.name,
+			surname: formData.surname,
+		};
+		putDriver(model)
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
 				() => toast.error("แก้ไขล้มเหลว"),
@@ -26,12 +33,12 @@ export const EditPage: FC = () => {
 			.finally(() =>
 				submit(
 					{},
-					{ action: "/drivers/info" + driverId },
+					{ action: "/drivers/info/" + driverId },
 				),
 			);
 	};
 
-	const heading = `แก้ไขข้อมูลคนขับรถ`;
+	const heading = `แก้ไขข้อมูลของ "${initFormData.name} ${initFormData.surname}"`;
 
 	return (
 		<Stack spacing={1}>

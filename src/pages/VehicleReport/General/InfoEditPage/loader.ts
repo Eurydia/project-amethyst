@@ -1,6 +1,6 @@
 import {
 	getTopicAll,
-	getVehicleReportGeneralWithId,
+	getVehicleReportGeneral,
 	getVehicle,
 } from "$backend/database/get";
 import {
@@ -32,9 +32,7 @@ export const infoEditPageLoader: LoaderFunction =
 		}
 
 		const rawEntry =
-			await getVehicleReportGeneralWithId(
-				reportId,
-			);
+			await getVehicleReportGeneral(reportId);
 		if (rawEntry === null) {
 			throw json(
 				{

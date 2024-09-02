@@ -15,7 +15,6 @@ export const BaseDetails: FC<BaseDetailsProps> = (
 	props,
 ) => {
 	const { onEdit, children } = props;
-
 	return (
 		<Stack
 			sx={{

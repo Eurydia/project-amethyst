@@ -1,25 +1,23 @@
 import {
 	Checkbox,
-	FormControlLabel,
 	List,
 	ListItem,
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
-	Stack,
 	Typography,
 } from "@mui/material";
 import { FC } from "react";
 
-type MultiSelectItemProps = {
+type CustomListItemProps = {
 	isChecked?: boolean;
 	isBold?: boolean;
 	label: string;
 	onClick: () => void;
 };
-const MultiSelectItem: FC<
-	MultiSelectItemProps
-> = (props) => {
+const CustomListItem: FC<CustomListItemProps> = (
+	props,
+) => {
 	const { isBold, isChecked, onClick, label } =
 		props;
 
@@ -59,14 +57,14 @@ const MultiSelectItem: FC<
 	);
 };
 
-type CustomListProps = {
+type BaseMultiSelectProps = {
 	options: { label: string; value: string }[];
 	selectedOptions: string[];
 	onChange: (option: string[]) => void;
 };
-export const MultiSelect: FC<CustomListProps> = (
-	props,
-) => {
+export const BaseMultiSelect: FC<
+	BaseMultiSelectProps
+> = (props) => {
 	const { options, selectedOptions, onChange } =
 		props;
 
@@ -92,7 +90,7 @@ export const MultiSelect: FC<CustomListProps> = (
 				selectedOptions.includes(value);
 
 			return (
-				<MultiSelectItem
+				<CustomListItem
 					key={"option" + index}
 					onClick={handleClick}
 					label={label}
@@ -124,7 +122,7 @@ export const MultiSelect: FC<CustomListProps> = (
 				flexWrap: "wrap",
 			}}
 		>
-			<MultiSelectItem
+			<CustomListItem
 				label="ทั้งหมด"
 				onClick={handleToggleAll}
 				isChecked={isPartiallySelect}

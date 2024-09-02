@@ -1,4 +1,4 @@
-import { postPickupRouteReportGeneral } from "$backend/database/put";
+import { putPickupRouteReportGeneral } from "$backend/database/put";
 import { PickupRouteReportForm } from "$components/PickupRouteReportForm";
 import { PickupRouteReportFormData } from "$types/models/PickupRoute";
 import { Stack, Typography } from "@mui/material";
@@ -22,7 +22,7 @@ export const NewPage: FC = () => {
 	const handleSubmit = async (
 		formData: PickupRouteReportFormData,
 	) => {
-		postPickupRouteReportGeneral(formData)
+		putPickupRouteReportGeneral(formData)
 			.then(() => {
 				toast.success("บันทึกสำเร็จ");
 				submit({}, { action: "/" });

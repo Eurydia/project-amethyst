@@ -4,6 +4,7 @@ import { DRIVER_REPORT_GENERAL_ROUTES } from "$pages/DriverReport/General";
 import { DRIVER_REPORT_MEDICAL_ROUTES } from "$pages/DriverReport/Medical";
 import { HomePage } from "$pages/HomePage/HomePage";
 import { homePageLoader } from "$pages/HomePage/loader";
+import { PICKUP_ROUTE_ROUTES } from "$pages/PickupRoute";
 import { MainView } from "$views/MainView";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -25,7 +26,7 @@ export const routes = createBrowserRouter([
 				loader: homePageLoader,
 			},
 
-			// PICKUP_ROUTE_ROUTES,
+			PICKUP_ROUTE_ROUTES,
 			// PICKUP_ROUTE_INFO_ROUTES,
 			// PICKUP_ROUTE_REPORT_GENERAL_ROUTES,
 			// VEHICLE_ROUTES,

@@ -1,4 +1,4 @@
-import { postPickupRoute } from "$backend/database/put";
+import { putPickupRoute } from "$backend/database/put";
 import { PickupRouteForm } from "$components/PickupRouteForm";
 import { PickupRouteFormData } from "$types/models/PickupRoute";
 import { Stack, Typography } from "@mui/material";
@@ -18,7 +18,7 @@ export const EditPage: FC = () => {
 	const handleSubmit = async (
 		formData: PickupRouteFormData,
 	) => {
-		postPickupRoute(formData)
+		putPickupRoute(formData)
 			.then(() => {
 				toast.success("แก้ไขสำเร็จ");
 				submit({}, { action: "/" });

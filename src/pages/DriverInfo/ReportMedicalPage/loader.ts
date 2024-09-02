@@ -4,6 +4,7 @@ import {
 } from "react-router-dom";
 import {
 	getDriver,
+	getDriverMedicalReportAllWithDriverId,
 	getTopicAll,
 } from "$backend/database/get";
 import dayjs from "dayjs";
@@ -13,6 +14,7 @@ import {
 } from "$types/models/Driver";
 
 export type ReportMedicalPageLoaderData = {
+	reportId: string;
 	driverOptions: DriverModel[];
 	topicOptions: string[];
 	initFormData: DriverReportFormData;
@@ -39,6 +41,11 @@ export const reportMedicalPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
+		const reports =
+			await getDriverMedicalReportAllWithDriverId(
+				driverId,
+			);
+		const reportId = reports.length.toString();
 		const topicOptions = await getTopicAll();
 		const driverOptions: DriverModel[] = [driver];
 		const initFormData: DriverReportFormData = {
@@ -50,6 +57,7 @@ export const reportMedicalPageLoader: LoaderFunction =
 		};
 		const loaderData: ReportMedicalPageLoaderData =
 			{
+				reportId,
 				driverOptions,
 				initFormData,
 				topicOptions,

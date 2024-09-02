@@ -1,33 +1,60 @@
-import { PickupRouteFormData } from "$types/form-data";
 import {
-	DriverFormData,
-	DriverReportFormData,
+	DriverModel,
+	DriverReportModel,
 } from "$types/models/Driver";
-import { PickupRouteReportFormData } from "$types/models/PickupRoute";
-import { VehicleFormData } from "$types/models/Vehicle";
+import {
+	PickupRouteModel,
+	PickupRouteReportModel,
+} from "$types/models/PickupRoute";
+import {
+	VehicleModel,
+	VehicleReportGeneralModel,
+	VehicleReportInspectionModel,
+} from "$types/models/Vehicle";
 
-export const postDriverReport = async (
-	formData: DriverReportFormData,
+//#region Driver
+export const putDriver = async (
+	model: DriverModel,
 ): Promise<number> => {
 	return 0;
 };
+export const putDriverReportGeneral = async (
+	report: DriverReportModel,
+) => {
+	return 0;
+};
+export const putDriverReportMedical = async (
+	report: DriverReportModel,
+) => {
+	return 0;
+};
+//#endregion
 
-export const postPickupRouteReportGeneral =
-	async (formData: PickupRouteReportFormData) => {
-		return 0;
-	};
+//#region Pickup Route
+export const putPickupRoute = async (
+	model: PickupRouteModel,
+): Promise<number> => {
+	return 0;
+};
+export const putPickupRouteReportGeneral = async (
+	report: PickupRouteReportModel,
+) => {
+	return 0;
+};
+//#endregion
 
-export const postVehicle = async (
-	formData: VehicleFormData,
+//#region Vehicle
+export const putVehicle = async (
+	model: VehicleModel,
 ) => {};
-
-export const postDriver = async (
-	formData: DriverFormData,
-): Promise<number> => {
+export const putVehicleReportGeneral = async (
+	report: VehicleReportGeneralModel,
+) => {
 	return 0;
 };
-export const postPickupRoute = async (
-	formData: PickupRouteFormData,
-): Promise<number> => {
+export const putVehicleReportInspection = async (
+	report: VehicleReportInspectionModel,
+) => {
 	return 0;
 };
+//#endregion

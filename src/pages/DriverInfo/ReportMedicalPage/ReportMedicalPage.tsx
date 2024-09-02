@@ -40,7 +40,9 @@ export const ReportMedicalPage: FC = () => {
 		);
 	};
 
-	const heading = `ลงบันทึกผลการตรวจสารเสพติด`;
+	const heading = `ลงบันทึกผลการตรวจสารเสพติด "${
+		initFormData.driver!.name
+	} ${initFormData.driver!.surname}"`;
 
 	return (
 		<Stack spacing={1}>

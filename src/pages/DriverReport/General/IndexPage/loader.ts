@@ -1,5 +1,5 @@
 import {
-	getDriverGeneralReportAll,
+	getDriverReportGeneralAll,
 	getDriver,
 } from "$backend/database/get";
 import { transformDriverReportModelToEntry } from "$core/transform";
@@ -13,7 +13,7 @@ export type IndexPageLoaderData = {
 export const indexPageLoader: LoaderFunction =
 	async () => {
 		const models =
-			await getDriverGeneralReportAll();
+			await getDriverReportGeneralAll();
 		const entryRequests = models.map(
 			async (model) => {
 				const driver = await getDriver(model.id);

@@ -71,10 +71,17 @@ export const DriverReportGeneralTable: FC<
 
 	return (
 		<DriverReportTable
-			onAdd={onAdd}
 			headers={HEADER_DEFINITIONS}
 			entries={entries}
-			searchPlaceholder="ค้นหาเรื่องร้องเรียน"
+			slotProps={{
+				addButton: {
+					children: "ลงบันทึกเรื่องร้องเรียน",
+					onClick: onAdd,
+				},
+				searchField: {
+					placeholder: "ค้นหาเรื่องร้องเรียน",
+				},
+			}}
 		/>
 	);
 };

@@ -26,7 +26,6 @@ export const DriverForm: FC<DriverFormProps> = (
 	const [fieldLicenseType, setFieldLicenseType] =
 		useState(initFormData.licenseType);
 
-	const handleCancel = () => onCancel();
 	const handleSubmit = () => {
 		if (isFormIncomplete) {
 			return;
@@ -46,7 +45,6 @@ export const DriverForm: FC<DriverFormProps> = (
 		fieldName.trim().normalize() === "";
 	const missingFieldSurname =
 		fieldSurname.trim().normalize() === "";
-
 	const isFormIncomplete =
 		missingFieldName || missingFieldSurname;
 
@@ -115,7 +113,7 @@ export const DriverForm: FC<DriverFormProps> = (
 					onClick: handleSubmit,
 				},
 				cancelButton: {
-					onClick: handleCancel,
+					onClick: onCancel,
 				},
 			}}
 		>

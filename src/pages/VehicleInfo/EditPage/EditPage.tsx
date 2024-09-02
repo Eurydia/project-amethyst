@@ -1,4 +1,4 @@
-import { postDriver } from "$backend/database/put";
+import { putDriver } from "$backend/database/put";
 import { DriverForm } from "$components/DriverForm";
 import { DriverFormData } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
@@ -18,7 +18,7 @@ export const EditPage: FC = () => {
 	const handleSubmit = async (
 		formData: DriverFormData,
 	) => {
-		postDriver(formData)
+		putDriver(formData)
 			.then(() => {
 				toast.success("แก้ไขสำเร็จ");
 				submit({}, { action: "/" });

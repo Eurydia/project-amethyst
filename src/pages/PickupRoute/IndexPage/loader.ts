@@ -1,83 +1,75 @@
 import {
-	getDriver,
+	getDriverMany,
 	getOperationLogAll,
 	getPickupRouteAll,
-	getVehicle,
+	getVehicleMany,
 } from "$backend/database/get";
+import {
+	transformDriverModelToLogItem,
+	transformPickupRouteModelToLogItem,
+	transformVehicleModelToLogItem,
+} from "$core/transform";
+import { OperationalLogModel } from "$types/models/OperatonalLog";
+import { PickupRouteModel } from "$types/models/PickupRoute";
+import dayjs from "dayjs";
 import { LoaderFunction } from "react-router-dom";
 
-export type IndexPageLoaderData = {
-	entries: {
-		id: string;
-		name: string;
-		vehicles: {
-			id: string;
-			plate: string;
-		}[];
-		drivers: {
-			id: string;
-			name: string;
-			surname: string;
-		}[];
-	}[];
+const getLogEntries = async (
+	logModels: OperationalLogModel[],
+	routeModel: PickupRouteModel,
+) => {
+	const driverIds = new Set<string>();
+	const vehicleIds = new Set<string>();
+	for (const log of logModels) {
+		if (log.route_id === routeModel.id) {
+			driverIds.add(log.driver_id);
+			vehicleIds.add(log.route_id);
+		}
+	}
+	const route =
+		transformPickupRouteModelToLogItem(
+			routeModel,
+		);
+	const vehicles = (
+		await getVehicleMany(vehicleIds)
+	).map(transformVehicleModelToLogItem);
+	const drivers = (
+		await getDriverMany(driverIds)
+	).map(transformDriverModelToLogItem);
+	return {
+		vehicles,
+		drivers,
+		route,
+	};
 };
 
+export type IndexPageLoaderData = {
+	entries: Awaited<
+		ReturnType<typeof getLogEntries>
+	>[];
+};
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		const routes = await getPickupRouteAll();
-		const operationalLogs =
-			await getOperationLogAll();
-
-		// Slight optimization: Fetch all vehicle data in parallel
-		const requests: Promise<
-			IndexPageLoaderData["entries"][number]
-		>[] = routes.map(async (route) => {
-			const logs = operationalLogs.filter(
-				(log) => log.route_id === route.id,
+		const today = dayjs();
+		const logModels = (await getOperationLogAll())
+			.filter(
+				(log) =>
+					log.start_date === null ||
+					dayjs(log.start_date).isBefore(today),
+			)
+			.filter(
+				(log) =>
+					log.end_date === null ||
+					dayjs(log.end_date).isAfter(today),
 			);
-
-			const vehicleSet = new Set(
-				logs.map(({ vehicle_id }) => vehicle_id),
-			);
-			const driverSet = new Set(
-				logs.map(({ driver_id }) => driver_id),
-			);
-
-			const vehicleRequests = [...vehicleSet].map(
-				async (id) => getVehicle(id),
-			);
-
-			const routeRequets = [...driverSet].map(
-				async (id) => getDriver(id),
-			);
-
-			const vehicles: IndexPageLoaderData["entries"][number]["vehicles"] =
-				(await Promise.all(vehicleRequests))
-					.filter((vehicle) => vehicle !== null)
-					.map(({ id, license_plate }) => ({
-						id: id,
-						plate: license_plate,
-					}));
-
-			const drivers: IndexPageLoaderData["entries"][number]["drivers"] =
-				(await Promise.all(routeRequets))
-					.filter((driver) => driver !== null)
-					.map(({ id, name, surname }) => ({
-						id,
-						name,
-						surname,
-					}));
-
-			return {
-				id: route.id,
-				name: route.name,
-				vehicles,
-				drivers,
-			};
-		});
-
-		const entries = await Promise.all(requests);
-
+		const entryRequests = (
+			await getPickupRouteAll()
+		).map((routeModel) =>
+			getLogEntries(logModels, routeModel),
+		);
+		const entries = await Promise.all(
+			entryRequests,
+		);
 		const loaderData: IndexPageLoaderData = {
 			entries,
 		};

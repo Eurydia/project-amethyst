@@ -48,7 +48,6 @@ const CustomDetails: FC<CustomDetailsProps> = (
 ) => {
 	const { images, driver } = props;
 	const submit = useSubmit();
-
 	const infoItems: {
 		label: string;
 		value: ReactNode;
@@ -85,7 +84,6 @@ const CustomDetails: FC<CustomDetailsProps> = (
 			),
 		},
 	];
-
 	return (
 		<BaseDetails
 			onEdit={() =>
@@ -193,7 +191,7 @@ export const IndexPage: FC = () => {
 		medicalEntries,
 	} = useLoaderData() as IndexPageLoaderData;
 
-	const heading = `ข้อมูลคนขับรถ`;
+	const heading = `ข้อมูลของ "${driver.name} ${driver.surname}"`;
 
 	return (
 		<Stack spacing={1}>

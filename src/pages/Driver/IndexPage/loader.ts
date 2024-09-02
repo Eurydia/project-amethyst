@@ -4,77 +4,52 @@ import {
 	getPickupRouteMany,
 	getVehicleMany,
 } from "$backend/database/get";
+import {
+	transformDriverModelToLogItem,
+	transformPickupRouteModelToLogItem,
+	transformVehicleModelToLogItem,
+} from "$core/transform";
 import { DriverModel } from "$types/models/Driver";
 import { OperationalLogModel } from "$types/models/OperatonalLog";
 import dayjs from "dayjs";
 import { LoaderFunction } from "react-router-dom";
 
-export type IndexPageLoaderData = {
-	entries: {
-		id: string;
-		name: string;
-		surname: string;
-
-		vehicles: {
-			id: string;
-			licensePlate: string;
-		}[];
-
-		routes: {
-			id: string;
-			name: string;
-		}[];
-	}[];
-};
-
-const getOpLogEntries = async (
-	opLogs: OperationalLogModel[],
-	driver: DriverModel,
+const getLogEntries = async (
+	logModels: OperationalLogModel[],
+	driverModel: DriverModel,
 ) => {
 	const vehicleIds = new Set<string>();
 	const routeIds = new Set<string>();
-
-	for (const log of opLogs) {
-		if (log.driver_id === driver.id) {
+	for (const log of logModels) {
+		if (log.driver_id === driverModel.id) {
 			vehicleIds.add(log.vehicle_id);
 			routeIds.add(log.route_id);
 		}
 	}
-
+	const driver =
+		transformDriverModelToLogItem(driverModel);
 	const vehicles = (
 		await getVehicleMany(vehicleIds)
-	).map(
-		(vehicle) =>
-			({
-				id: vehicle.id,
-				licensePlate: vehicle.license_plate,
-			} as IndexPageLoaderData["entries"][number]["vehicles"][number]),
-	);
-
+	).map(transformVehicleModelToLogItem);
 	const routes = (
 		await getPickupRouteMany(routeIds)
-	).map(
-		(route) =>
-			({
-				id: route.id,
-				name: route.name,
-			} as IndexPageLoaderData["entries"][number]["routes"][number]),
-	);
-
+	).map(transformPickupRouteModelToLogItem);
 	return {
-		id: driver.id,
-		name: driver.name,
-		surname: driver.surname,
-		contact: driver.contact,
+		driver,
 		vehicles,
 		routes,
 	};
 };
 
+export type IndexPageLoaderData = {
+	entries: Awaited<
+		ReturnType<typeof getLogEntries>
+	>[];
+};
 export const indexPageLoader: LoaderFunction =
 	async () => {
 		const today = dayjs();
-		const opLogs = (await getOperationLogAll())
+		const logModels = (await getOperationLogAll())
 			.filter(
 				(log) =>
 					log.start_date === null ||
@@ -85,13 +60,11 @@ export const indexPageLoader: LoaderFunction =
 					log.end_date === null ||
 					dayjs(log.end_date).isAfter(today),
 			);
-
 		const entryRequests = (
 			await getDriverAll()
 		).map((driverModel) =>
-			getOpLogEntries(opLogs, driverModel),
+			getLogEntries(logModels, driverModel),
 		);
-
 		const entries = await Promise.all(
 			entryRequests,
 		);

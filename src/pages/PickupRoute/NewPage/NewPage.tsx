@@ -1,4 +1,4 @@
-import { postPickupRoute } from "$backend/database/put";
+import { putPickupRoute } from "$backend/database/put";
 import { PickupRouteForm } from "$components/PickupRouteForm";
 import { PickupRouteFormData } from "$types/models/PickupRoute";
 import { Stack, Typography } from "@mui/material";
@@ -15,38 +15,36 @@ export const NewPage: FC = () => {
 		useLoaderData() as NewPageLoaderData;
 	const submit = useSubmit();
 
-	const handleSubmit = async (
+	const handleSubmit = (
 		formData: PickupRouteFormData,
 	) => {
-		postPickupRoute(formData)
-			.then(() => {
+		putPickupRoute(formData)
+			.then((routeId) => {
 				toast.success("บันทึกสำเร็จ");
-				submit({}, { action: "/" });
+				submit(
+					{},
+					{
+						action:
+							"/pickup-routes/info/" + routeId,
+					},
+				);
 			})
-			.catch((error) => {
-				console.error(error);
+			.catch(() => {
 				toast.error("บันทึกล้มเหลว");
 			});
 	};
 
-	const handleCancel = () => {
-		submit({}, { action: "/" });
-	};
-
 	return (
-		<Stack
-			sx={{
-				gap: 1,
-				flexDirection: "column",
-			}}
-		>
+		<Stack spacing={1}>
 			<Typography variant="h1">
 				ลงทะเบียนสายรถ
 			</Typography>
 			<PickupRouteForm
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() => {
+					submit({}, { action: "/" });
+				}}
 			/>
 		</Stack>
 	);

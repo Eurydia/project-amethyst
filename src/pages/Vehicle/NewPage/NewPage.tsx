@@ -1,4 +1,4 @@
-import { postVehicle } from "$backend/database/put";
+import { putVehicle } from "$backend/database/put";
 import { VehicleForm } from "$components/VehicleForm";
 import { VehicleFormData } from "$types/models/Vehicle";
 import { Stack, Typography } from "@mui/material";
@@ -18,7 +18,7 @@ export const NewPage: FC = () => {
 	const handleSubmit = async (
 		formData: VehicleFormData,
 	) => {
-		postVehicle(formData)
+		putVehicle(formData)
 			.then(() => {
 				toast.success("บันทึกสำเร็จ");
 				submit({}, { action: "/" });

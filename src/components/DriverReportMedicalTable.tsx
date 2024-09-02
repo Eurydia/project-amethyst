@@ -71,10 +71,17 @@ export const DriverReportMedicalTable: FC<
 
 	return (
 		<DriverReportTable
-			onAdd={onAdd}
 			headers={HEADER_DEFINITIONS}
 			entries={entries}
-			searchPlaceholder="ค้นหาผลการตรวจสารเสพติด"
+			slotProps={{
+				addButton: {
+					children: "ลงบันทึกผลการตรวจสารเสพติด",
+					onClick: onAdd,
+				},
+				searchField: {
+					placeholder: "ค้นหาผลการตรวจสารเสพติด",
+				},
+			}}
 		/>
 	);
 };

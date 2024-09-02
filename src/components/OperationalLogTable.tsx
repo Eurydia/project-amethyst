@@ -12,7 +12,7 @@ import {
 } from "react";
 import { Link } from "react-router-dom";
 import { BaseSortableTable } from "./BaseSortableTable";
-import { MultiSelect } from "./MultiSelect";
+import { BaseMultiSelect } from "./BaseMultiSelect";
 
 const compareDates = (
 	a: string | null,
@@ -231,7 +231,7 @@ export const OperationalLogTable: FC<
 		{
 			label: "สายรถ",
 			value: (
-				<MultiSelect
+				<BaseMultiSelect
 					options={routeOptions}
 					selectedOptions={selectedRoutes}
 					onChange={setSelectedRoutes}
@@ -241,7 +241,7 @@ export const OperationalLogTable: FC<
 		{
 			label: "ทะเบียนรถ",
 			value: (
-				<MultiSelect
+				<BaseMultiSelect
 					options={vehicleOptions}
 					selectedOptions={selectedVehicles}
 					onChange={setSelectedVehicles}
@@ -251,7 +251,7 @@ export const OperationalLogTable: FC<
 		{
 			label: "คนขับรถ",
 			value: (
-				<MultiSelect
+				<BaseMultiSelect
 					options={driverOptions}
 					selectedOptions={selectedDrivers}
 					onChange={setSelectedDrivers}

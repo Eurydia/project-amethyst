@@ -1,5 +1,4 @@
 import { BaseSortableTable } from "$components/BaseSortableTable";
-import { MultiSelect } from "$components/MultiSelect";
 import { TableHeaderDefinition } from "$types/generics";
 import { Stack, Typography } from "@mui/material";
 import { filterItems } from "core/filter";
@@ -15,24 +14,28 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { IndexPageLoaderData } from "./loader";
+import { BaseMultiSelect } from "$components/BaseMultiSelect";
 
 const HEADER_DEFINITION: TableHeaderDefinition<
 	IndexPageLoaderData["entries"][number]
 >[] = [
 	{
 		label: "สายรถ",
-		compare: null,
+		compare: (a, b) =>
+			a.route.name.localeCompare(b.route.name),
 		render: (item) => (
 			<Typography
 				component={Link}
-				to={"/pickup-routes/info/" + item.id}
+				to={
+					"/pickup-routes/info/" + item.route.id
+				}
 			>
-				{item.name}
+				{item.route.name}
 			</Typography>
 		),
 	},
 	{
-		label: "ทะเบียนรถ",
+		label: "เลขทะเบียนรถ",
 		compare: null,
 		render: (item) =>
 			item.vehicles.length === 0 ? (
@@ -42,17 +45,15 @@ const HEADER_DEFINITION: TableHeaderDefinition<
 					spacing={1}
 					useFlexGap
 				>
-					{item.vehicles.map(
-						({ id, plate }, index) => (
-							<Typography
-								key={"vehicle" + index}
-								component={Link}
-								to={"/vehicles/info/" + id}
-							>
-								{plate}
-							</Typography>
-						),
-					)}
+					{item.vehicles.map((vehicle, index) => (
+						<Typography
+							key={"vehicle" + index}
+							component={Link}
+							to={"/vehicles/info/" + vehicle.id}
+						>
+							{vehicle.licensePlate}
+						</Typography>
+					))}
 				</Stack>
 			),
 	},
@@ -68,21 +69,58 @@ const HEADER_DEFINITION: TableHeaderDefinition<
 					spacing={1}
 					useFlexGap
 				>
-					{item.drivers.map(
-						({ id, name, surname }, index) => (
-							<Typography
-								key={"driver" + index}
-								component={Link}
-								to={"/drivers/info/" + id}
-							>
-								{name} {surname}
-							</Typography>
-						),
-					)}
+					{item.drivers.map((driver, index) => (
+						<Typography
+							key={"driver" + index}
+							component={Link}
+							to={"/drivers/info/" + driver.id}
+						>
+							{driver.name} {driver.surname}
+						</Typography>
+					))}
 				</Stack>
 			),
 	},
 ];
+
+const getRouteOptions = (
+	entries: IndexPageLoaderData["entries"],
+) => {
+	const uniqueRoutes: Record<string, string> = {};
+	for (const entry of entries) {
+		uniqueRoutes[entry.route.id] =
+			entry.route.name;
+	}
+	const routeOptions = Object.entries(
+		uniqueRoutes,
+	).map(([value, label]) => ({
+		label,
+		value,
+	}));
+	return routeOptions;
+};
+
+const filterEntries = (
+	entries: IndexPageLoaderData["entries"],
+	selectedRoutes: string[],
+) => {
+	const routeSet = new Set(selectedRoutes);
+	return entries.filter((entry) =>
+		routeSet.has(entry.route.id),
+	);
+};
+
+const searchEntries = (
+	entries: IndexPageLoaderData["entries"],
+	search: string,
+) => {
+	return filterItems(entries, search, [
+		"route.name",
+		"vehicles.*.licensePlate",
+		"drivers.*.name",
+		"drivers.*.surname",
+	]);
+};
 
 type CustomTableProps = {
 	entries: IndexPageLoaderData["entries"];
@@ -92,51 +130,23 @@ const CustomTable: FC<CustomTableProps> = (
 ) => {
 	const { entries } = props;
 	const submit = useSubmit();
-
-	const routeOptions = useMemo(() => {
-		const uniqueRoutes: Record<string, string> =
-			{};
-
-		for (const entry of entries) {
-			uniqueRoutes[entry.id] = entry.name;
-		}
-
-		const routeOptions = Object.entries(
-			uniqueRoutes,
-		).map(([value, label]) => ({
-			label,
-			value,
-		}));
-
-		return routeOptions;
-	}, [entries]);
-
+	const routeOptions = useMemo(
+		() => getRouteOptions(entries),
+		[entries],
+	);
 	const [search, setSearch] = useState("");
 	const [selectedRoutes, setSelectedRoutes] =
 		useState(
 			routeOptions.map(({ value }) => value),
 		);
-	const filteredEntries = useMemo(() => {
-		const routeSet = new Set(selectedRoutes);
-		return entries.filter((item) =>
-			routeSet.has(item.id),
-		);
-	}, [entries, selectedRoutes]);
-
-	const searchedEntries = useMemo(() => {
-		const tokens = search
-			.normalize()
-			.split(" ")
-			.map((token) => token.trim())
-			.filter((token) => token.length > 0);
-		return filterItems(filteredEntries, tokens, [
-			"name",
-			"vehicles.*.plate",
-			"drivers.*.name",
-			"drivers.*.surname",
-		]);
-	}, [filteredEntries, search]);
-
+	const filteredEntries = useMemo(
+		() => filterEntries(entries, selectedRoutes),
+		[entries, selectedRoutes],
+	);
+	const searchedEntries = useMemo(
+		() => searchEntries(filteredEntries, search),
+		[filteredEntries, search],
+	);
 	const formItems: {
 		label: string;
 		value: ReactNode;
@@ -144,7 +154,7 @@ const CustomTable: FC<CustomTableProps> = (
 		{
 			label: "สายรถ",
 			value: (
-				<MultiSelect
+				<BaseMultiSelect
 					onChange={setSelectedRoutes}
 					options={routeOptions}
 					selectedOptions={selectedRoutes}
@@ -152,7 +162,6 @@ const CustomTable: FC<CustomTableProps> = (
 			),
 		},
 	];
-
 	return (
 		<BaseSortableTable
 			headers={HEADER_DEFINITION}

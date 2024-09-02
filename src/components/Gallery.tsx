@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 import { FC } from "react";
 import { TypographyButton } from "./TypographyButton";
-import { open } from "@tauri-apps/api/dialog";
 import { useSubmit } from "react-router-dom";
 
 type GalleryProps = {

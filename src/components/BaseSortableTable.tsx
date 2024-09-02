@@ -15,6 +15,7 @@ import {
 	Typography,
 } from "@mui/material";
 import {
+	FC,
 	ReactNode,
 	useMemo,
 	useState,
@@ -29,14 +30,14 @@ import {
 } from "@mui/icons-material";
 import { FormalLayout } from "$layouts/FormalLayout";
 
-type TableHeaderProps<T extends Object> = {
+type CustomTableHeadProps<T> = {
 	headerDefinitions: TableHeaderDefinition<T>[];
 	order: "asc" | "desc";
 	orderByColumn: number;
 	onRequestSort: (colNumber: number) => void;
 };
-const TableHeader = <T extends Object>(
-	props: TableHeaderProps<T>,
+const CustomTableHeader = <T,>(
+	props: CustomTableHeadProps<T>,
 ) => {
 	const {
 		headerDefinitions,
@@ -113,7 +114,103 @@ const TableHeader = <T extends Object>(
 	);
 };
 
-type BaseSortableTableProps<T extends Object> = {
+type CustomTableBodyProps<T> = {
+	entries: T[];
+	headers: TableHeaderDefinition<T>[];
+};
+const CustomTableBody = <T,>(
+	props: CustomTableBodyProps<T>,
+) => {
+	const { entries, headers } = props;
+
+	if (entries.length === 0) {
+		return (
+			<TableBody>
+				<TableRow hover>
+					<TableCell colSpan={headers.length}>
+						<Typography>
+							ไม่มีรายการในตาราง
+						</Typography>
+					</TableCell>
+				</TableRow>
+			</TableBody>
+		);
+	}
+	const renderedRows = entries.map(
+		(item, rowIndex) => (
+			<TableRow
+				key={"row" + rowIndex}
+				hover
+			>
+				{headers.map((header, cellIndex) => (
+					<TableCell
+						key={`cell${cellIndex}${rowIndex}`}
+					>
+						{header.render(item)}
+					</TableCell>
+				))}
+			</TableRow>
+		),
+	);
+
+	return <TableBody>{renderedRows}</TableBody>;
+};
+
+type CustomToolbarProps = {
+	count: number;
+	onFilterToggle: () => void;
+};
+const CustomToolbar: FC<CustomToolbarProps> = (
+	props,
+) => {
+	const { count, onFilterToggle } = props;
+	return (
+		<Toolbar
+			disableGutters
+			variant="dense"
+			sx={{
+				gap: 1,
+				display: "flex",
+				flexDirection: "wrap",
+				justifyContent: "space-between",
+				alignItems: "center",
+				flexWrap: "wrap",
+			}}
+		>
+			<Typography>พบ {count} รายการ</Typography>
+			<TypographyButton
+				variant="text"
+				startIcon={<FilterAlt />}
+				onClick={onFilterToggle}
+			>
+				ตัวกรองขั้นสูง
+			</TypographyButton>
+		</Toolbar>
+	);
+};
+
+const sortEntries = <T,>(
+	entries: T[],
+	headers: TableHeaderDefinition<T>[],
+	sortByColumn: number,
+	sortOrder: string,
+) => {
+	const items = [...entries];
+	if (
+		sortByColumn < headers.length &&
+		sortByColumn >= 0
+	) {
+		if (headers[sortByColumn].compare !== null) {
+			items.sort(headers[sortByColumn].compare);
+		}
+		if (sortOrder === "desc") {
+			items.reverse();
+		}
+	}
+	return items;
+};
+
+type BaseSortableTableProps<T> = {
 	entries: T[];
 	headers: TableHeaderDefinition<T>[];
 	defaultSortByColumn: number;
@@ -127,9 +224,7 @@ type BaseSortableTableProps<T extends Object> = {
 		value: ReactNode;
 	}[];
 };
-export const BaseSortableTable = <
-	T extends Object,
->(
+export const BaseSortableTable = <T,>(
 	props: BaseSortableTableProps<T>,
 ) => {
 	const {
@@ -156,57 +251,21 @@ export const BaseSortableTable = <
 		const isAsc =
 			sortByColumn === colNumber &&
 			sortOrder === "asc";
-
 		setOrderDirection(isAsc ? "desc" : "asc");
 		setOrderColumn(colNumber);
 		console.log("Sort by column", colNumber);
 	};
 
-	const sortedEntries = useMemo(() => {
-		const items = [...entries];
-		if (
-			sortByColumn < headers.length &&
-			sortByColumn >= 0
-		) {
-			if (
-				headers[sortByColumn].compare !== null
-			) {
-				items.sort(headers[sortByColumn].compare);
-			}
-			if (sortOrder === "desc") {
-				items.reverse();
-			}
-		}
-		return items;
-	}, [entries, sortByColumn, sortOrder]);
-
-	let tableBody: ReactNode = (
-		<TableRow hover>
-			<TableCell colSpan={headers.length}>
-				<Typography>
-					ไม่มีรายการในตาราง
-				</Typography>
-			</TableCell>
-		</TableRow>
-	);
-	if (sortedEntries.length > 0) {
-		tableBody = sortedEntries.map(
-			(item, rowIndex) => (
-				<TableRow
-					key={"row" + rowIndex}
-					hover
-				>
-					{headers.map((header, cellIndex) => (
-						<TableCell
-							key={`cell${cellIndex}${rowIndex}`}
-						>
-							{header.render(item)}
-						</TableCell>
-					))}
-				</TableRow>
+	const sortedEntries = useMemo(
+		() =>
+			sortEntries(
+				entries,
+				headers,
+				sortByColumn,
+				sortOrder,
 			),
-		);
-	}
+		[entries, sortByColumn, sortOrder, headers],
+	);
 
 	return (
 		<TableContainer
@@ -234,42 +293,26 @@ export const BaseSortableTable = <
 					},
 				}}
 			/>
-			<Toolbar
-				disableGutters
-				variant="dense"
-				sx={{
-					gap: 1,
-					display: "flex",
-					flexDirection: "wrap",
-					justifyContent: "space-between",
-					alignItems: "center",
-					flexWrap: "wrap",
-				}}
-			>
-				<Typography>
-					พบ {entries.length} รายการ
-				</Typography>
-				<TypographyButton
-					variant="text"
-					startIcon={<FilterAlt />}
-					onClick={() =>
-						setFilterOpen(!filterOpen)
-					}
-				>
-					ตัวกรองขั้นสูง
-				</TypographyButton>
-			</Toolbar>
+			<CustomToolbar
+				count={sortedEntries.length}
+				onFilterToggle={() =>
+					setFilterOpen(!filterOpen)
+				}
+			/>
 			<Collapse in={filterOpen}>
 				<FormalLayout>{children}</FormalLayout>
 			</Collapse>
 			<Table>
-				<TableHeader
+				<CustomTableHeader
 					headerDefinitions={headers}
 					order={sortOrder}
 					orderByColumn={sortByColumn}
 					onRequestSort={handleRequestSort}
 				/>
-				<TableBody>{tableBody}</TableBody>
+				<CustomTableBody
+					entries={sortedEntries}
+					headers={headers}
+				/>
 			</Table>
 		</TableContainer>
 	);

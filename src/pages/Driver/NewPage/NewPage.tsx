@@ -1,6 +1,9 @@
-import { postDriver } from "$backend/database/put";
+import { putDriver } from "$backend/database/put";
 import { DriverForm } from "$components/DriverForm";
-import { DriverFormData } from "$types/models/Driver";
+import {
+	DriverFormData,
+	DriverModel,
+} from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -11,15 +14,23 @@ import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
 
 export const NewPage: FC = () => {
-	const { initFormData } =
+	const { initFormData, driverId } =
 		useLoaderData() as NewPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = (
 		formData: DriverFormData,
 	) => {
-		postDriver(formData).then(
-			(driverId) => {
+		const model: DriverModel = {
+			id: driverId,
+			contact: formData.contact,
+			license_type: formData.licenseType,
+			name: formData.name,
+			surname: formData.surname,
+		};
+		putDriver(model).then(
+			() => {
+				toast.error("บันทึกสำเร็จ");
 				submit(
 					{},
 					{
@@ -28,8 +39,8 @@ export const NewPage: FC = () => {
 				);
 			},
 			() => {
-				submit({}, { action: "/drivers" });
 				toast.error("บันทึกล้มเหลว");
+				submit({}, { action: "/drivers" });
 			},
 		);
 	};

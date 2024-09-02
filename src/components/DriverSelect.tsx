@@ -44,21 +44,16 @@ export const DriverSelect: FC<
 				`${option.name} ${option.surname}`
 			}
 			filterOptions={(options, params) =>
-				filterItems(
-					options,
-					params.inputValue
-						.normalize()
-						.split(" ")
-						.map((token) => token.trim())
-						.filter((token) => token.length > 0),
-					["name", "surname"],
-				)
+				filterItems(options, params.inputValue, [
+					"name",
+					"surname",
+				])
 			}
 			renderInput={({ InputProps, ...rest }) => (
 				<TextField
 					{...rest}
 					error={showError}
-					placeholder="ค้นหาคนขับ"
+					placeholder="ค้นหาคนขับรถ (ด้วยชื่อ หรือนามสกุล)"
 					slotProps={{
 						input: {
 							...InputProps,

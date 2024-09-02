@@ -73,6 +73,7 @@ export const indexPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
+
 		const generalEntries = (
 			await getDriverGeneralReportAllWithDriverId(
 				driverId,
@@ -98,15 +99,12 @@ export const indexPageLoader: LoaderFunction =
 				driver.id,
 			)
 		).map(operationalLogModelToEntry);
-
 		const logEntries = (
 			await Promise.all(logModels)
 		).filter((entry) => entry !== null);
-
 		const images = await getDriverImages(
 			driverId,
 		);
-
 		const loaderData: IndexPageLoaderData = {
 			driver,
 			images,
@@ -114,6 +112,5 @@ export const indexPageLoader: LoaderFunction =
 			generalEntries,
 			medicalEntries,
 		};
-
 		return loaderData;
 	};

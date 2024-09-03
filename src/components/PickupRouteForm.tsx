@@ -1,6 +1,5 @@
 import { TRANSLATION } from "$locale/th";
 import { PickupRouteFormData } from "$types/models/PickupRoute";
-import { SaveRounded } from "@mui/icons-material";
 import { TextField } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
@@ -13,6 +12,12 @@ type PickupRouteFormProps = {
 		formData: PickupRouteFormData,
 	) => void;
 	onCancel: () => void;
+	slotProps: {
+		submitButton: {
+			label: string;
+			startIcon: ReactNode;
+		};
+	};
 };
 export const PickupRouteForm: FC<
 	PickupRouteFormProps
@@ -23,6 +28,7 @@ export const PickupRouteForm: FC<
 			departureTime,
 			name,
 		},
+		slotProps,
 		onCancel,
 		onSubmit,
 	} = props;
@@ -106,9 +112,10 @@ export const PickupRouteForm: FC<
 		<BaseForm
 			slotProps={{
 				submitButton: {
+					label: slotProps.submitButton.label,
+					startIcon:
+						slotProps.submitButton.startIcon,
 					disabled: isFormIncomplete,
-					startIcon: <SaveRounded />,
-					variant: "contained",
 					onClick: handleSubmit,
 				},
 				cancelButton: {

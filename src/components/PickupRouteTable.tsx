@@ -1,6 +1,5 @@
 import { BaseSortableTable } from "$components/BaseSortableTable";
 import { filterItems } from "$core/filter";
-import { TRANSLATION } from "$locale/th";
 import { TableHeaderDefinition } from "$types/generics";
 import { PickupRouteEntry } from "$types/models/PickupRoute";
 import { Stack, Typography } from "@mui/material";
@@ -19,7 +18,7 @@ import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 	[
 		{
-			label: "ชื่อสาย",
+			label: "สายรถ",
 			compare: (a, b) =>
 				a.name.localeCompare(b.name),
 			render: (item) => (
@@ -32,13 +31,11 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 			),
 		},
 		{
-			label: "เลขทะเบียน",
+			label: "ทะเบียนรถ",
 			compare: null,
 			render: (item) =>
 				item.vehicles.length === 0 ? (
-					<Typography>
-						{TRANSLATION.globalNone}
-					</Typography>
+					<Typography>ไม่มี</Typography>
 				) : (
 					<Stack
 						spacing={1}
@@ -65,9 +62,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 			compare: null,
 			render: (item) =>
 				item.drivers.length === 0 ? (
-					<Typography>
-						{TRANSLATION.globalNone}
-					</Typography>
+					<Typography>ไม่มี</Typography>
 				) : (
 					<Stack
 						spacing={1}
@@ -152,7 +147,7 @@ export const PickupRouteTable: FC<
 		value: ReactNode;
 	}[] = [
 		{
-			label: TRANSLATION.pickupRouteName,
+			label: "สายรถ",
 			value: (
 				<BaseInputMultiSelect
 					onChange={setSelectedRoutes}
@@ -169,18 +164,14 @@ export const PickupRouteTable: FC<
 			defaultSortByColumn={0}
 			entries={searchedEntries}
 			slotProps={{
-				tableBody: {
-					emptyText: "ไม่พบข้อมูลสายรถ",
-				},
 				searchField: {
 					placeholder:
-						TRANSLATION.pickupRouteTableSearch,
+						"ค้นหาด้วยสายรถ, ทะเบียนรถ, หรือชื่อนามสกุลคนขับรถ",
 					value: search,
-					onChange: (e) =>
-						setSearch(e.target.value),
+					onChange: setSearch,
 				},
 				addButton: {
-					children: TRANSLATION.pickupRoutePost,
+					label: "ลงทะเบียน",
 					onClick: () =>
 						submit(
 							{},

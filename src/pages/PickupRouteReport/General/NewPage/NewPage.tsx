@@ -1,5 +1,7 @@
+import { postPickupRouteReportGeneral } from "$backend/database/post";
 import { PickupRouteReportForm } from "$components/PickupRouteReportForm";
 import { PickupRouteReportFormData } from "$types/models/PickupRoute";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -8,7 +10,6 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
-import { postPickupRouteReportGeneral } from "$backend/database/post";
 
 export const NewPage: FC = () => {
 	const {
@@ -24,18 +25,18 @@ export const NewPage: FC = () => {
 	) => {
 		postPickupRouteReportGeneral(formData).then(
 			(reportId) => {
-				toast.success("บันทึกสำเร็จ");
+				toast.success("ลงบันทึกสำเร็จ");
 				submit(
 					{},
 					{
 						action:
-							"/pickup-routes/report/info/" +
+							"/pickup-routes/report/general/info/" +
 							reportId,
 					},
 				);
 			},
 			() => {
-				toast.error("บันทึกล้มเหลว");
+				toast.error("ลงบันทึกล้มเหลว");
 				submit(
 					{},
 					{
@@ -46,24 +47,30 @@ export const NewPage: FC = () => {
 		);
 	};
 
-	const handleCancel = () =>
-		submit({}, { action: "/" });
-
-	const heading = "ลงบันทึกเรื่องร้องเรียนสายรถ";
-
-	console.log("NewPage", initFormData.route);
-
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				ลงบันทึกเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportForm
 				routeOptions={routeOptions}
 				initFormData={initFormData}
 				topicOptions={topicOptions}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() =>
+					submit(
+						{},
+						{
+							action: "/pickup-routes/report",
+						},
+					)
+				}
+				slotProps={{
+					submitButton: {
+						startIcon: <AddRounded />,
+						label: "ลงบันทึก",
+					},
+				}}
 			/>
 		</Stack>
 	);

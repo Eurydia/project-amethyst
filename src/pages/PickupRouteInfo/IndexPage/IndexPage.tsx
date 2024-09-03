@@ -2,7 +2,6 @@ import { BaseTOC } from "$components/BaseTOC";
 import { OperationalLogTable } from "$components/OperationalLogTable";
 import { PickupRouteDetails } from "$components/PickupRouteDetails";
 import { PickupRouteReportGeneralTable } from "$components/PickupRouteReportGeneralTable";
-import { TRANSLATION } from "$locale/th";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -16,16 +15,15 @@ const TOC_ITEMS: {
 	href: string;
 }[] = [
 	{
-		label: TRANSLATION.pickupRouteDetails,
+		label: "ข้อมูลสายรถ",
 		href: "#info",
 	},
 	{
-		label: TRANSLATION.operationalLogTable,
+		label: "ตารางบันทึกประวัติการเดินรถ",
 		href: "#operational-log",
 	},
 	{
-		label:
-			TRANSLATION.pickupRouteGeneralReportTable,
+		label: "ตารางบันทึกเรื่องร้องเรียนสายรถ",
 		href: "#report-general",
 	},
 ];
@@ -36,10 +34,7 @@ export const IndexPage: FC = () => {
 
 	const submit = useSubmit();
 
-	const heading =
-		TRANSLATION.pickupRouteDetailsWithLabel(
-			route.name,
-		);
+	const heading = `ข้อมูลสายรถ`;
 
 	return (
 		<Stack spacing={1}>
@@ -55,28 +50,33 @@ export const IndexPage: FC = () => {
 				variant="h2"
 				id="operational-log"
 			>
-				{TRANSLATION.operationalLogTable}
+				ตารางบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogTable
 				entries={logEntries}
-				onAdd={() => {}}
+				slotProps={{
+					addButton: {
+						onClick: () => {},
+					},
+				}}
 			/>
 			<Typography
 				variant="h2"
 				id="report-general"
 			>
-				{
-					TRANSLATION.pickupRouteGeneralReportTable
-				}
+				ตารางบันทึกเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportGeneralTable
 				entries={generalEntries}
-				onAdd={() =>
-					submit(
-						{},
-						{ action: "./report/general" },
-					)
-				}
+				slotProps={{
+					addButton: {
+						onClick: () =>
+							submit(
+								{},
+								{ action: "./report/general" },
+							),
+					},
+				}}
 			/>
 		</Stack>
 	);

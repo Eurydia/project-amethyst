@@ -170,7 +170,7 @@ export const DriverTable: FC<DriverTableProps> = (
 			slotProps={{
 				searchField: {
 					placeholder:
-						"ค้นหาด้วยชื่อ, นามสกุล, สายรถ, หรือทะเบียนรถ",
+						"ค้นหาด้วยชื่อนามสกุลคนขับรถ, สายรถ, หรือทะเบียนรถ",
 					value: search,
 					onChange: setSearch,
 				},

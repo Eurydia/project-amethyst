@@ -1,7 +1,7 @@
 import { postPickupRoute } from "$backend/database/post";
 import { PickupRouteForm } from "$components/PickupRouteForm";
-import { TRANSLATION } from "$locale/th";
 import { PickupRouteFormData } from "$types/models/PickupRoute";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -21,7 +21,7 @@ export const NewPage: FC = () => {
 	) => {
 		postPickupRoute(formData)
 			.then((routeId) => {
-				toast.success(TRANSLATION.postSuccess);
+				toast.success("ลงทะเบียนสำเร็จ");
 				submit(
 					{},
 					{
@@ -31,7 +31,7 @@ export const NewPage: FC = () => {
 				);
 			})
 			.catch(() => {
-				toast.error(TRANSLATION.postFail);
+				toast.error("ลงทะเบียนล้มเหลว");
 				submit(
 					{},
 					{
@@ -44,7 +44,7 @@ export const NewPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{TRANSLATION.pickupRoutePostFormTitle}
+				ลงทะเบียนสายรถ
 			</Typography>
 			<PickupRouteForm
 				initFormData={initFormData}
@@ -56,6 +56,12 @@ export const NewPage: FC = () => {
 							action: "/pickup-routes",
 						},
 					);
+				}}
+				slotProps={{
+					submitButton: {
+						label: "ลงทะเบียน",
+						startIcon: <AddRounded />,
+					},
 				}}
 			/>
 		</Stack>

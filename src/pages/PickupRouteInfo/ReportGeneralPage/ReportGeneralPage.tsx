@@ -14,9 +14,10 @@ export const ReportGeneralPage: FC = () => {
 	const {
 		topicOptions,
 		initFormData,
-		routeOptions: driverOptions,
+		routeOptions,
 		routeId,
-	} = useLoaderData() as ReportGeneralPageLoaderData;
+	} =
+		useLoaderData() as ReportGeneralPageLoaderData;
 
 	const submit = useSubmit();
 
@@ -25,7 +26,7 @@ export const ReportGeneralPage: FC = () => {
 	) => {
 		postPickupRouteReportGeneral(formData).then(
 			(reportId) => {
-				toast.success("บันทึกสำเร็จ");
+				toast.success("ลงบันทึกสำเร็จ");
 				submit(
 					{},
 					{
@@ -36,20 +37,17 @@ export const ReportGeneralPage: FC = () => {
 				);
 			},
 			() => {
-				toast.error("บันทึกล้มเหลว");
+				toast.error("ลงบันทึกล้มเหลว");
 				submit(
 					{},
 					{
 						action:
-							"/pickup-route/info" + routeId,
+							"/pickup-route/info/" + routeId,
 					},
 				);
 			},
 		);
 	};
-
-	const handleCancel = () =>
-		submit({}, { action: "/" });
 
 	const heading = `ลงบันทึกเรื่องร้องเรียนสายรถ`;
 	return (
@@ -58,11 +56,19 @@ export const ReportGeneralPage: FC = () => {
 				{heading}
 			</Typography>
 			<PickupRouteReportForm
-				routeOptions={driverOptions}
+				routeOptions={routeOptions}
 				topicOptions={topicOptions}
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() =>
+					submit(
+						{},
+						{
+							action:
+								"/pickup-routes/info/" + routeId,
+						},
+					)
+				}
 			/>
 		</Stack>
 	);

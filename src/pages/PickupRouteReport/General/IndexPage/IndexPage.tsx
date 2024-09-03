@@ -11,23 +11,25 @@ export const IndexPage: FC = () => {
 	const { entries } =
 		useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
-	const heading = `สมุดบันทึกเรื่องร้องเรียนสายรถ`;
 
 	return (
 		<Stack sx={{ gap: 1 }}>
 			<Typography variant="h1">
-				{heading}
+				ตารางบันทึกเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportGeneralTable
 				entries={entries}
-				onAdd={() =>
-					submit(
-						{},
-						{
-							action: "./new",
-						},
-					)
-				}
+				slotProps={{
+					addButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action: "./new",
+								},
+							),
+					},
+				}}
 			/>
 		</Stack>
 	);

@@ -1,12 +1,6 @@
 import { filterItems } from "$core/filter";
-import { TRANSLATION } from "$locale/th";
 import { TableHeaderDefinition } from "$types/generics";
 import { PickupRouteReportEntry } from "$types/models/PickupRoute";
-import {
-	FormControlLabel,
-	Radio,
-	RadioGroup,
-} from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -16,6 +10,7 @@ import {
 	useState,
 } from "react";
 import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
+import { BaseInputTopicMatchMode } from "./BaseInputTopicMatchMode";
 import { BaseSortableTable } from "./BaseSortableTable";
 
 const toOptions = (
@@ -97,19 +92,17 @@ const searchEntries = (
 
 type PickupRouteReportTableProps = {
 	headers: TableHeaderDefinition<PickupRouteReportEntry>[];
-	searchPlaceholder?: string;
 	entries: PickupRouteReportEntry[];
-	onAdd: () => void;
+	slotProps: {
+		addButton: {
+			onClick: () => void;
+		};
+	};
 };
 export const PickupRouteReportTable: FC<
 	PickupRouteReportTableProps
 > = (props) => {
-	const {
-		headers,
-		entries,
-		searchPlaceholder,
-		onAdd,
-	} = props;
+	const { headers, entries, slotProps } = props;
 
 	const { routeOptions, topicOptions } = useMemo(
 		() => toOptions(entries),
@@ -122,7 +115,7 @@ export const PickupRouteReportTable: FC<
 	const [beforeDate, setBeforeDate] =
 		useState<Dayjs | null>(null);
 	const [topicMustHaveAll, setTopicMustHaveAll] =
-		useState("no");
+		useState(false);
 	const [selectedTopics, setSelectedTopics] =
 		useState(
 			topicOptions.map(({ value }) => value),
@@ -140,7 +133,7 @@ export const PickupRouteReportTable: FC<
 				beforeDate,
 				selectedRoutes,
 				selectedTopics,
-				topicMustHaveAll === "yes",
+				topicMustHaveAll,
 			),
 		[
 			afterDate,
@@ -152,7 +145,7 @@ export const PickupRouteReportTable: FC<
 		],
 	);
 	const searchedEntries = useMemo(
-		() => searchEntries(search, filteredEntries),
+		() => searchEntries(filteredEntries, search),
 		[search, filteredEntries],
 	);
 
@@ -185,7 +178,7 @@ export const PickupRouteReportTable: FC<
 			),
 		},
 		{
-			label: TRANSLATION.pickupRoute,
+			label: "สายรถ",
 			value: (
 				<BaseInputMultiSelect
 					options={routeOptions}
@@ -197,24 +190,10 @@ export const PickupRouteReportTable: FC<
 		{
 			label: "ประเภทการกรองหัวข้อ",
 			value: (
-				<RadioGroup
-					row
+				<BaseInputTopicMatchMode
+					onChange={setTopicMustHaveAll}
 					value={topicMustHaveAll}
-					onChange={(e) =>
-						setTopicMustHaveAll(e.target.value)
-					}
-				>
-					<FormControlLabel
-						value="yes"
-						control={<Radio />}
-						label="มีทุกหัวข้อที่เลือก"
-					/>
-					<FormControlLabel
-						value="no"
-						control={<Radio />}
-						label="มีอย่างน้อยหนึ่งหัวข้อที่เลือก"
-					/>
-				</RadioGroup>
+				/>
 			),
 		},
 		{
@@ -237,14 +216,14 @@ export const PickupRouteReportTable: FC<
 			headers={headers}
 			slotProps={{
 				addButton: {
-					onClick: onAdd,
-					children: "ลงบันทึก",
+					onClick: slotProps.addButton.onClick,
+					label: "ลงบันทึก",
 				},
 				searchField: {
-					placeholder: searchPlaceholder,
+					placeholder:
+						"ค้นหาด้วยสายรถ, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง",
 					value: search,
-					onChange: (e) =>
-						setSearch(e.target.value),
+					onChange: setSearch,
 				},
 			}}
 		>

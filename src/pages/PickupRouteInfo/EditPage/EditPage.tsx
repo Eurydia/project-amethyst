@@ -2,6 +2,7 @@ import { putPickupRoute } from "$backend/database/put";
 import { PickupRouteForm } from "$components/PickupRouteForm";
 import { TRANSLATION } from "$locale/th";
 import { PickupRouteFormData } from "$types/models/PickupRoute";
+import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -26,9 +27,8 @@ export const EditPage: FC = () => {
 			id: routeId,
 		})
 			.then(
-				() =>
-					toast.success(TRANSLATION.putSuccess),
-				() => toast.error(TRANSLATION.putFail),
+				() => toast.success("แก้ไขสำเร็จ"),
+				() => toast.error("แก้ไขล้มเหลว"),
 			)
 			.finally(() =>
 				submit(
@@ -41,10 +41,10 @@ export const EditPage: FC = () => {
 			);
 	};
 
-	const heading =
-		TRANSLATION.pickupRouteEditDetailsWithLabel(
-			initFormData.name,
-		);
+	const heading = "แก้ไขข้อมูลสายรถ";
+	TRANSLATION.pickupRouteEditDetailsWithLabel(
+		initFormData.name,
+	);
 
 	return (
 		<Stack spacing={1}>
@@ -63,6 +63,12 @@ export const EditPage: FC = () => {
 						},
 					)
 				}
+				slotProps={{
+					submitButton: {
+						label: "บันทึก",
+						startIcon: <SaveRounded />,
+					},
+				}}
 			/>
 		</Stack>
 	);

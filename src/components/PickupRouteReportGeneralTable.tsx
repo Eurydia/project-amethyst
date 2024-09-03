@@ -1,12 +1,12 @@
 import { TableHeaderDefinition } from "$types/generics";
-import { PickupRouteReport } from "$types/models";
+import { PickupRouteReportEntry } from "$types/models/PickupRoute";
 import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC } from "react";
 import { Link } from "react-router-dom";
 import { PickupRouteReportTable } from "./PickupRouteReportTable";
 
-const HEADER_DEFINITIONS: TableHeaderDefinition<PickupRouteReport>[] =
+const HEADER_DEFINITIONS: TableHeaderDefinition<PickupRouteReportEntry>[] =
 	[
 		{
 			label: "เวลาและวันที่",
@@ -63,20 +63,27 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<PickupRouteReport>[] =
 	];
 
 type PickupRouteReportGeneralTableProps = {
-	entries: PickupRouteReport[];
-	onAdd: () => void;
+	entries: PickupRouteReportEntry[];
+	slotProps: {
+		addButton: {
+			onClick: () => void;
+		};
+	};
 };
 export const PickupRouteReportGeneralTable: FC<
 	PickupRouteReportGeneralTableProps
 > = (props) => {
-	const { onAdd, entries } = props;
+	const { entries, slotProps } = props;
 
 	return (
 		<PickupRouteReportTable
-			onAdd={onAdd}
 			headers={HEADER_DEFINITIONS}
 			entries={entries}
-			searchPlaceholder="ค้นหาประวัติการร้องเรียน"
+			slotProps={{
+				addButton: {
+					onClick: slotProps.addButton.onClick,
+				},
+			}}
 		/>
 	);
 };

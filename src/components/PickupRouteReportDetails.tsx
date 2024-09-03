@@ -1,49 +1,44 @@
-import { FormalLayout } from "$layouts/FormalLayout";
-import { EditRounded } from "@mui/icons-material";
-import { Stack, Typography } from "@mui/material";
+import { PickupRouteReport } from "$types/models/PickupRoute";
+import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, ReactNode } from "react";
-import { Link } from "react-router-dom";
-import { TypographyButton } from "./TypographyButton";
-import { PickupRouteReport } from "$types/models/PickupRoute";
+import {
+	Link,
+	useSubmit,
+} from "react-router-dom";
+import { BaseInfoGroup } from "./BaseInfoGroup";
 
 type PickupRouteReportDetailsProps = {
 	report: PickupRouteReport;
-	onEdit: () => void;
 };
 export const PickupRouteReportDetails: FC<
 	PickupRouteReportDetailsProps
 > = (props) => {
-	const { onEdit, report } = props;
-
+	const { report } = props;
+	const submit = useSubmit();
 	const infoItems: {
 		label: string;
 		value: ReactNode;
 	}[] = [
 		{
 			label: "บันทึกเมื่อ",
-			value: (
-				<Typography>
-					{dayjs(report.datetime)
-						.locale("th")
-						.format(
-							"HH:mm น. วันdddที่ DD MMMM YYYY",
-						)}
-				</Typography>
-			),
+			value: dayjs(report.datetime)
+				.locale("th")
+				.format(
+					"HH:mm น. วันdddที่ DD MMMM YYYY",
+				),
 		},
 		{
 			label: "สายรถ",
 			value: (
-				<Typography
-					component={Link}
+				<Link
 					to={
 						"/pickup-routes/info/" +
 						report.routeId
 					}
 				>
 					{report.routeName}
-				</Typography>
+				</Link>
 			),
 		},
 		{
@@ -54,34 +49,32 @@ export const PickupRouteReportDetails: FC<
 		},
 		{
 			label: "รายละเอียด",
-			value: (
-				<Typography>{report.content}</Typography>
-			),
+			value: report.content,
 		},
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
-			value: (
-				<Typography>
-					{report.topics.join(", ")}
-				</Typography>
-			),
+			value: report.topics.join(", "),
 		},
-	];
+	].map(({ label, value }) => ({
+		label,
+		value: <Typography> {value}</Typography>,
+	}));
 
 	return (
-		<Stack
-			sx={{
-				gap: 1,
+		<BaseInfoGroup
+			slotProps={{
+				editButton: {
+					onClick: () =>
+						submit(
+							{},
+							{
+								action: "./edit",
+							},
+						),
+				},
 			}}
 		>
-			<TypographyButton
-				startIcon={<EditRounded />}
-				variant="contained"
-				onClick={onEdit}
-			>
-				แก้ไขข้อมูล
-			</TypographyButton>
-			<FormalLayout>{infoItems}</FormalLayout>
-		</Stack>
+			{infoItems}
+		</BaseInfoGroup>
 	);
 };

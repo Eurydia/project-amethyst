@@ -2,8 +2,6 @@ import {
 	PickupRouteModel,
 	PickupRouteReportFormData,
 } from "$types/models/PickupRoute";
-import { SaveRounded } from "@mui/icons-material";
-import { TextField } from "@mui/material";
 import {
 	DateField,
 	TimeField,
@@ -11,6 +9,7 @@ import {
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
+import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { PickupRouteSelect } from "./PickupRouteInputSelect";
 
@@ -22,6 +21,12 @@ type PickupRouteReportFormProps = {
 		formData: PickupRouteReportFormData,
 	) => void;
 	onCancel: () => void;
+	slotProps: {
+		submitButton: {
+			startIcon: ReactNode;
+			label: string;
+		};
+	};
 };
 export const PickupRouteReportForm: FC<
 	PickupRouteReportFormProps
@@ -30,6 +35,7 @@ export const PickupRouteReportForm: FC<
 		routeOptions,
 		topicOptions,
 		initFormData,
+		slotProps,
 		onSubmit,
 		onCancel,
 	} = props;
@@ -79,11 +85,21 @@ export const PickupRouteReportForm: FC<
 
 	const shouldLockRoute =
 		initFormData.route !== null;
+	const isTimeInvalid =
+		Number.isNaN(fieldTime.hour()) ||
+		Number.isNaN(fieldTime.minute());
+	const isDateInvalid =
+		Number.isNaN(fieldDate.date()) ||
+		Number.isNaN(fieldDate.month()) ||
+		Number.isNaN(fieldDate.year());
 	const isRouteEmpty = fieldRoute === null;
 	const isTitleEmpty = fieldTitle.trim() === "";
 
 	const isFormIncomplete =
-		isRouteEmpty || isTitleEmpty;
+		isRouteEmpty ||
+		isTitleEmpty ||
+		isTimeInvalid ||
+		isDateInvalid;
 
 	const formItems: {
 		label: string;
@@ -138,14 +154,11 @@ export const PickupRouteReportForm: FC<
 		{
 			label: "เรื่อง",
 			value: (
-				<TextField
-					fullWidth
-					autoFocus
-					error={isTitleEmpty}
+				<BaseInputTextField
+					shouldAutoFocus
+					isError={isTitleEmpty}
 					value={fieldTitle}
-					onChange={(e) =>
-						setFieldTitle(e.target.value)
-					}
+					onChange={setFieldTitle}
 					placeholder={initFormData.title}
 				/>
 			),
@@ -153,15 +166,12 @@ export const PickupRouteReportForm: FC<
 		{
 			label: "รายละเอียด",
 			value: (
-				<TextField
-					fullWidth
+				<BaseInputTextField
 					multiline
 					minRows={6}
-					value={fieldContent}
-					onChange={(e) =>
-						setFieldContent(e.target.value)
-					}
 					placeholder={initFormData.content}
+					value={fieldContent}
+					onChange={setFieldContent}
 				/>
 			),
 		},
@@ -182,9 +192,10 @@ export const PickupRouteReportForm: FC<
 			slotProps={{
 				submitButton: {
 					disabled: isFormIncomplete,
-					startIcon: <SaveRounded />,
-					variant: "contained",
+					startIcon:
+						slotProps.submitButton.startIcon,
 					onClick: handleSubmit,
+					label: slotProps.submitButton.label,
 				},
 				cancelButton: {
 					onClick: handleCancel,

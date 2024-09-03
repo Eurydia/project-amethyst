@@ -1,8 +1,9 @@
+import { TRANSLATION } from "$locale/th";
 import {
+	List,
 	ListItem,
 	ListItemText,
 	Typography,
-	List,
 } from "@mui/material";
 import { FC } from "react";
 import { Fragment } from "react/jsx-runtime";
@@ -50,7 +51,9 @@ export const BaseTOC: FC<BaseTOCProps> = (
 	);
 	return (
 		<Fragment>
-			<Typography>สารบัญ</Typography>
+			<Typography>
+				{TRANSLATION.globalTOC}
+			</Typography>
 			<List
 				dense
 				disablePadding

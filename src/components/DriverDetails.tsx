@@ -1,10 +1,10 @@
-import { BaseInfoGroup } from "$components/BaseDetails";
 import { Gallery } from "$components/Gallery";
 import { TRANSLATION } from "$locale/th";
 import { DriverModel } from "$types/models/Driver";
 import { Typography } from "@mui/material";
 import { FC, ReactNode } from "react";
 import { useSubmit } from "react-router-dom";
+import { BaseInfoGroup } from "./BaseInfoGroup";
 
 type DriverDetailsProps = {
 	images: {
@@ -58,6 +58,7 @@ export const DriverDetails: FC<
 		<BaseInfoGroup
 			slotProps={{
 				editButton: {
+					children: TRANSLATION.driverEditInfo,
 					onClick: () =>
 						submit(
 							{},

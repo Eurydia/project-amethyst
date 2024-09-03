@@ -1,5 +1,20 @@
 export const TRANSLATION = {
+	globalTopics: `หัวข้อที่เกี่ยวข้อง`,
+	globalContent: `รายละเอียด`,
+	globalDatetimePosted: `วันที่ลงบันทึก`,
+	globalTitle: `เรื่อง`,
+
+	globalCancel: `ยกเลิก`,
+	globalPost: `ลงทะเบียน`,
+	globalTOC: `สารบัญ`,
+	globalSelectAll: `เลือกทั้งหมด`,
 	globalEditInfo: `แก้ไขข้อมูล`,
+	globalSortAscending: "น้อยขึ้นไปมาก",
+	globalSortDescending: "มากลงไปน้อย",
+	globalNoEntryFoundInTable: `ไม่มีพบรายการในตาราง`,
+	globalFoundXEntriesInTable: (x: number) =>
+		`พบ ${x} รายการ`,
+	globalAdvancedSearch: `ตัวกรองขั้นสูง`,
 
 	pickupRouteGeneralReportIdIsMissingFromParams: `ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Params is missing "reportId")`,
 	pickupRouteGeneralReportIsMissingFromDatabase: `ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องไม่พบเรื่องการร้องเรียนสายรถรับส่งที่ต้องการในฐานข้อมูล (Cannot find pickup route general report with given ID in database)`,
@@ -75,10 +90,13 @@ export const TRANSLATION = {
 	postDriver: "ลงทะเบียนคนขับรถ",
 	driverTable: "รายชื่อคนขับรถ",
 	driverInfo: `ข้อมูลของคนขับรถ`,
+	driverName: "ชื่อ",
+	driverSurname: "นามสกุล",
 	driverNameAndSurname: "ชื่อและนามสกุล",
 	driverContact: "เบอร์ติดต่อ",
 	driverLicenseType: "ประเภทใบขับขี่",
 
+	driverEditInfo: "แก้ไขข้อมูลคนขับรถ",
 	infoOf: (label: string) =>
 		`ข้อมูลของ "${label}"`,
 	editInfoOf: (label: string) =>

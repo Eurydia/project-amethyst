@@ -15,7 +15,7 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import { BaseMultiSelect } from "./BaseMultiSelect";
+import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 import { BaseSortableTable } from "./BaseSortableTable";
 
 const toOptions = (
@@ -187,7 +187,7 @@ export const PickupRouteReportTable: FC<
 		{
 			label: TRANSLATION.pickupRoute,
 			value: (
-				<BaseMultiSelect
+				<BaseInputMultiSelect
 					options={routeOptions}
 					selectedOptions={selectedRoutes}
 					onChange={setSelectedRoutes}
@@ -220,7 +220,7 @@ export const PickupRouteReportTable: FC<
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
-				<BaseMultiSelect
+				<BaseInputMultiSelect
 					options={topicOptions}
 					selectedOptions={selectedTopics}
 					onChange={setSelectedTopics}

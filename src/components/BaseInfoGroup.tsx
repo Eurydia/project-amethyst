@@ -1,5 +1,4 @@
 import { FormalLayout } from "$layouts/FormalLayout";
-import { TRANSLATION } from "$locale/th";
 import { EditRounded } from "@mui/icons-material";
 import {
 	ButtonProps,
@@ -27,7 +26,6 @@ export const BaseInfoGroup: FC<
 				{...slotProps.editButton}
 				startIcon={<EditRounded />}
 				variant="contained"
-				children={TRANSLATION.globalEditInfo}
 			/>
 			<FormalLayout>{children}</FormalLayout>
 		</Stack>

@@ -1,3 +1,4 @@
+import { TRANSLATION } from "$locale/th";
 import {
 	Checkbox,
 	List,
@@ -9,13 +10,13 @@ import {
 } from "@mui/material";
 import { FC } from "react";
 
-type CustomListItemProps = {
+type CustomItemProps = {
 	isChecked?: boolean;
 	isBold?: boolean;
 	label: string;
 	onClick: () => void;
 };
-const CustomListItem: FC<CustomListItemProps> = (
+const CustomItem: FC<CustomItemProps> = (
 	props,
 ) => {
 	const { isBold, isChecked, onClick, label } =
@@ -57,41 +58,38 @@ const CustomListItem: FC<CustomListItemProps> = (
 	);
 };
 
-type BaseMultiSelectProps = {
+type BaseInputMultiSelectProps = {
 	options: { label: string; value: string }[];
 	selectedOptions: string[];
 	onChange: (option: string[]) => void;
 };
-export const BaseMultiSelect: FC<
-	BaseMultiSelectProps
+export const BaseInputMultiSelect: FC<
+	BaseInputMultiSelectProps
 > = (props) => {
 	const { options, selectedOptions, onChange } =
 		props;
 
-	const createToggleHandler =
-		(value: string) => () => {
-			if (!selectedOptions.includes(value)) {
-				onChange([...selectedOptions, value]);
-				return;
-			}
-			onChange(
-				selectedOptions.filter(
-					(selectOption) =>
-						selectOption !== value,
-				),
-			);
-		};
+	const toggleHandler = (value: string) => () => {
+		if (!selectedOptions.includes(value)) {
+			onChange([...selectedOptions, value]);
+			return;
+		}
+		onChange(
+			selectedOptions.filter(
+				(selectOption) => selectOption !== value,
+			),
+		);
+	};
 
 	const renderedOptions = options.map(
 		({ label, value }, index) => {
-			const handleClick =
-				createToggleHandler(value);
+			const handleClick = toggleHandler(value);
 			const isChecked =
 				selectedOptions.includes(value);
 
 			return (
-				<CustomListItem
-					key={"option" + index}
+				<CustomItem
+					key={"item" + index}
 					onClick={handleClick}
 					label={label}
 					isChecked={isChecked}
@@ -122,8 +120,8 @@ export const BaseMultiSelect: FC<
 				flexWrap: "wrap",
 			}}
 		>
-			<CustomListItem
-				label="ทั้งหมด"
+			<CustomItem
+				label={TRANSLATION.globalSelectAll}
 				onClick={handleToggleAll}
 				isChecked={isPartiallySelect}
 				isBold

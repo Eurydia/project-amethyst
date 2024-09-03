@@ -1,3 +1,5 @@
+import { filterItems } from "$core/filter";
+import { DriverModel } from "$types/models/Driver";
 import { LockRounded } from "@mui/icons-material";
 import {
 	Autocomplete,
@@ -5,8 +7,6 @@ import {
 	TextField,
 } from "@mui/material";
 import { FC, SyntheticEvent } from "react";
-import { filterItems } from "../core/filter";
-import { DriverModel } from "$types/models/Driver";
 
 type DriverSelectProps = {
 	showError?: boolean;

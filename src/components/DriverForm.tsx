@@ -1,7 +1,8 @@
+import { TRANSLATION } from "$locale/th";
 import { DriverFormData } from "$types/models/Driver";
-import { TextField } from "@mui/material";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
+import { BaseInputTextField } from "./BaseInputTextField";
 import { DriverLicenseSelect } from "./DriverInputLicenseSelect";
 
 type DriverFormProps = {
@@ -53,49 +54,40 @@ export const DriverForm: FC<DriverFormProps> = (
 		value: ReactNode;
 	}[] = [
 		{
-			label: "ชื่อ",
+			label: TRANSLATION.driverName,
 			value: (
-				<TextField
-					fullWidth
-					autoFocus
-					error={missingFieldName}
-					value={fieldName}
-					onChange={(e) =>
-						setFieldName(e.target.value)
-					}
+				<BaseInputTextField
+					shouldAutoFocus
+					isRequired
 					placeholder={initFormData.name}
+					value={fieldName}
+					onChange={setFieldName}
 				/>
 			),
 		},
 		{
-			label: "นามสกุล",
+			label: TRANSLATION.driverSurname,
 			value: (
-				<TextField
-					fullWidth
-					error={missingFieldSurname}
+				<BaseInputTextField
+					isRequired
 					value={fieldSurname}
-					onChange={(e) =>
-						setFielSurname(e.target.value)
-					}
 					placeholder={initFormData.surname}
+					onChange={setFielSurname}
 				/>
 			),
 		},
 		{
-			label: "เบอร์ติดต่อ",
+			label: TRANSLATION.driverContact,
 			value: (
-				<TextField
-					fullWidth
+				<BaseInputTextField
 					placeholder={initFormData.contact}
 					value={fieldContact}
-					onChange={(e) =>
-						setFieldContact(e.target.value)
-					}
+					onChange={setFieldContact}
 				/>
 			),
 		},
 		{
-			label: "ประเภทใบขับขี่",
+			label: TRANSLATION.driverLicenseType,
 			value: (
 				<DriverLicenseSelect
 					value={fieldLicenseType}
@@ -111,9 +103,11 @@ export const DriverForm: FC<DriverFormProps> = (
 				submitButton: {
 					disabled: isFormIncomplete,
 					onClick: handleSubmit,
+					children: TRANSLATION.globalPost,
 				},
 				cancelButton: {
 					onClick: onCancel,
+					children: TRANSLATION.globalCancel,
 				},
 			}}
 		>

@@ -1,19 +1,19 @@
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
-import { Typography, Stack } from "@mui/material";
+import { VehicleEntry } from "$types/models/Vehicle";
+import { Stack, Typography } from "@mui/material";
 import {
 	FC,
+	ReactNode,
 	useMemo,
 	useState,
-	ReactNode,
 } from "react";
 import {
 	Link,
 	useSubmit,
 } from "react-router-dom";
-import { BaseMultiSelect } from "./BaseMultiSelect";
+import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 import { BaseSortableTable } from "./BaseSortableTable";
-import { VehicleEntry } from "$types/models/Vehicle";
 
 const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
 	[
@@ -144,7 +144,7 @@ export const VehicleTable: FC<
 		{
 			label: "เลขทะเบียนรถ",
 			value: (
-				<BaseMultiSelect
+				<BaseInputMultiSelect
 					onChange={setSelected}
 					options={vehicleOptions}
 					selectedOptions={selected}

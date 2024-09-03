@@ -1,3 +1,10 @@
+import { FormalLayout } from "$layouts/FormalLayout";
+import { TRANSLATION } from "$locale/th";
+import {
+	AddRounded,
+	FilterAlt,
+	SearchRounded,
+} from "@mui/icons-material";
 import {
 	ButtonProps,
 	Collapse,
@@ -21,14 +28,63 @@ import {
 	useState,
 } from "react";
 import { TableHeaderDefinition } from "../types/generics";
-import { TypographyTooltip } from "./TypographyTooltip";
 import { TypographyButton } from "./TypographyButton";
-import {
-	AddRounded,
-	FilterAlt,
-	SearchRounded,
-} from "@mui/icons-material";
-import { FormalLayout } from "$layouts/FormalLayout";
+import { TypographyTooltip } from "./TypographyTooltip";
+
+type CustomTableHeaderProps = {
+	isSortable: boolean;
+	isSorted: boolean;
+	label: string;
+	order: "asc" | "desc";
+	onSort: () => void;
+};
+const CustomTableHeader = (
+	props: CustomTableHeaderProps,
+) => {
+	const {
+		order,
+		isSortable,
+		label,
+		isSorted,
+		onSort,
+	} = props;
+	if (!isSortable) {
+		return (
+			<TableCell>
+				<Typography>{label}</Typography>
+			</TableCell>
+		);
+	}
+
+	const sortOrder = isSorted ? order : undefined;
+
+	let header: ReactNode = (
+		<TableSortLabel
+			active={isSorted}
+			direction={sortOrder}
+			onClick={onSort}
+		>
+			<Typography>{label}</Typography>
+		</TableSortLabel>
+	);
+	if (isSorted) {
+		const toolTipTitle =
+			sortOrder === "asc"
+				? TRANSLATION.globalSortAscending
+				: TRANSLATION.globalSortDescending;
+		header = (
+			<TypographyTooltip title={toolTipTitle}>
+				{header}
+			</TypographyTooltip>
+		);
+	}
+
+	return (
+		<TableCell sortDirection={sortOrder}>
+			{header}
+		</TableCell>
+	);
+};
 
 type CustomTableHeadProps<T> = {
 	headerDefinitions: TableHeaderDefinition<T>[];
@@ -36,7 +92,7 @@ type CustomTableHeadProps<T> = {
 	orderByColumn: number;
 	onRequestSort: (colNumber: number) => void;
 };
-const CustomTableHeader = <T,>(
+const CustomTableHead = <T,>(
 	props: CustomTableHeadProps<T>,
 ) => {
 	const {
@@ -46,65 +102,20 @@ const CustomTableHeader = <T,>(
 		onRequestSort,
 	} = props;
 
-	const createSortHandler =
-		(colNumber: number) => () =>
-			onRequestSort(colNumber);
+	const sortHandler = (colNumber: number) => () =>
+		onRequestSort(colNumber);
 
 	const renderedHeaders = headerDefinitions.map(
-		(headCell, index) => {
-			const sortDisabled =
-				headCell.compare === null;
-
-			if (sortDisabled) {
-				return (
-					<TableCell key={"header" + index}>
-						<Typography>
-							{headCell.label}
-						</Typography>
-					</TableCell>
-				);
-			}
-
-			const isActive = orderByColumn === index;
-			const sortOrder = isActive
-				? order
-				: undefined;
-
-			const handleClick =
-				createSortHandler(index);
-
-			let header: ReactNode = (
-				<TableSortLabel
-					active={isActive}
-					direction={sortOrder}
-					onClick={handleClick}
-				>
-					<Typography>
-						{headCell.label}
-					</Typography>
-				</TableSortLabel>
-			);
-			if (isActive) {
-				const toolTipTitle =
-					sortOrder === "asc"
-						? "น้อยขึ้นไปมาก"
-						: "มากลงไปน้อย";
-				header = (
-					<TypographyTooltip title={toolTipTitle}>
-						{header}
-					</TypographyTooltip>
-				);
-			}
-
-			return (
-				<TableCell
-					key={"header" + index}
-					sortDirection={sortOrder}
-				>
-					{header}
-				</TableCell>
-			);
-		},
+		(headCell, index) => (
+			<CustomTableHeader
+				key={"header" + index}
+				isSortable={headCell.compare !== null}
+				isSorted={orderByColumn === index}
+				label={headCell.label}
+				order={order}
+				onSort={sortHandler(index)}
+			/>
+		),
 	);
 
 	return (
@@ -129,7 +140,9 @@ const CustomTableBody = <T,>(
 				<TableRow hover>
 					<TableCell colSpan={headers.length}>
 						<Typography>
-							ไม่มีรายการในตาราง
+							{
+								TRANSLATION.globalNoEntryFoundInTable
+							}
 						</Typography>
 					</TableCell>
 				</TableRow>
@@ -177,13 +190,17 @@ const CustomToolbar: FC<CustomToolbarProps> = (
 				flexWrap: "wrap",
 			}}
 		>
-			<Typography>พบ {count} รายการ</Typography>
+			<Typography>
+				{TRANSLATION.globalFoundXEntriesInTable(
+					count,
+				)}
+			</Typography>
 			<TypographyButton
 				variant="text"
 				startIcon={<FilterAlt />}
 				onClick={onFilterToggle}
 			>
-				ตัวกรองขั้นสูง
+				{TRANSLATION.globalAdvancedSearch}
 			</TypographyButton>
 		</Toolbar>
 	);
@@ -253,7 +270,6 @@ export const BaseSortableTable = <T,>(
 			sortOrder === "asc";
 		setOrderDirection(isAsc ? "desc" : "asc");
 		setOrderColumn(colNumber);
-		console.log("Sort by column", colNumber);
 	};
 
 	const sortedEntries = useMemo(
@@ -303,7 +319,7 @@ export const BaseSortableTable = <T,>(
 				<FormalLayout>{children}</FormalLayout>
 			</Collapse>
 			<Table>
-				<CustomTableHeader
+				<CustomTableHead
 					headerDefinitions={headers}
 					order={sortOrder}
 					orderByColumn={sortByColumn}

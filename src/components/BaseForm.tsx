@@ -4,8 +4,8 @@ import {
 	ButtonProps,
 	Grid2,
 } from "@mui/material";
-import { TypographyButton } from "./TypographyButton";
 import { FC, ReactNode } from "react";
+import { TypographyButton } from "./TypographyButton";
 
 type BaseFormProps = {
 	children: {
@@ -43,15 +43,11 @@ export const BaseForm: FC<BaseFormProps> = (
 					{...slotProps.submitButton}
 					startIcon={<SaveRounded />}
 					variant="contained"
-				>
-					บันทึก
-				</TypographyButton>
+				/>
 				<TypographyButton
 					{...slotProps.cancelButton}
 					variant="outlined"
-				>
-					ยกเลิก
-				</TypographyButton>
+				/>
 			</Grid2>
 		</Grid2>
 	);

@@ -1,5 +1,6 @@
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
+import { VehicleReportInspectionEntry } from "$types/models/Vehicle";
 import {
 	FormControlLabel,
 	Radio,
@@ -15,9 +16,8 @@ import {
 	useState,
 } from "react";
 import { Link } from "react-router-dom";
+import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 import { BaseSortableTable } from "./BaseSortableTable";
-import { BaseMultiSelect } from "./BaseMultiSelect";
-import { VehicleReportInspectionEntry } from "$types/models/Vehicle";
 
 const HEADER_DEFINITIONS: TableHeaderDefinition<VehicleReportInspectionEntry>[] =
 	[
@@ -237,7 +237,7 @@ export const VehicleReportInspectionTable: FC<
 		{
 			label: "เลขทะเบียนรถ",
 			value: (
-				<BaseMultiSelect
+				<BaseInputMultiSelect
 					options={vehicleOptions}
 					selectedOptions={selectedVehicles}
 					onChange={setSelectedVehicles}
@@ -270,7 +270,7 @@ export const VehicleReportInspectionTable: FC<
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
-				<BaseMultiSelect
+				<BaseInputMultiSelect
 					options={topicOptions}
 					selectedOptions={selectedTopics}
 					onChange={setSelectedTopics}

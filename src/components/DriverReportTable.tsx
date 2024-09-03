@@ -16,8 +16,8 @@ import {
 	useMemo,
 	useState,
 } from "react";
+import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 import { BaseSortableTable } from "./BaseSortableTable";
-import { BaseMultiSelect } from "./BaseMultiSelect";
 
 const getOptions = (
 	entries: DriverReportEntry[],
@@ -190,7 +190,7 @@ export const DriverReportTable: FC<
 		{
 			label: "คนขับรถ",
 			value: (
-				<BaseMultiSelect
+				<BaseInputMultiSelect
 					options={driverOptions}
 					selectedOptions={selectedDrivers}
 					onChange={setSelectedDrivers}
@@ -223,7 +223,7 @@ export const DriverReportTable: FC<
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
-				<BaseMultiSelect
+				<BaseInputMultiSelect
 					options={topicOptions}
 					selectedOptions={selectedTopics}
 					onChange={setSelectedTopics}

@@ -1,3 +1,4 @@
+import { TRANSLATION } from "$locale/th";
 import { DriverReport } from "$types/models/Driver";
 import { Typography } from "@mui/material";
 import { FC } from "react";
@@ -18,7 +19,7 @@ export const DriverReportDetails: FC<
 
 	const infoItems = [
 		{
-			label: "คนขับ",
+			label: TRANSLATION.driverNameAndSurname,
 			value: (
 				<Link
 					to={"/drivers/info/" + report.driverId}
@@ -29,19 +30,19 @@ export const DriverReportDetails: FC<
 			),
 		},
 		{
-			label: "บันทึกเมื่อวันที่",
+			label: TRANSLATION.globalDatetimePosted,
 			value: report.datetime,
 		},
 		{
-			label: "เรื่อง",
+			label: TRANSLATION.globalTitle,
 			value: report.title,
 		},
 		{
-			label: "รายละเอียด",
+			label: TRANSLATION.globalContent,
 			value: report.content,
 		},
 		{
-			label: "หัวข้อที่เกี่ยวข้อง",
+			label: TRANSLATION.globalTopics,
 			value: report.topics.join(", "),
 		},
 	].map((item) => ({
@@ -53,6 +54,7 @@ export const DriverReportDetails: FC<
 		<BaseInfoGroup
 			slotProps={{
 				editButton: {
+					children: TRANSLATION.globalEditInfo,
 					onClick: () =>
 						submit({}, { action: "./edit" }),
 				},

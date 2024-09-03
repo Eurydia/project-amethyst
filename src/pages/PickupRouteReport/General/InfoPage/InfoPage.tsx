@@ -9,11 +9,11 @@ import {
 import { InfoPageLoaderData } from "./loader";
 
 export const InfoPage: FC = () => {
-	const { entry } =
+	const { report } =
 		useLoaderData() as InfoPageLoaderData;
 	const submit = useSubmit();
 
-	const heading = `บันทึกเรื่องร้องเรียนสายรถ เลขที่ ${entry.id}`;
+	const heading = `บันทึกเรื่องร้องเรียนสายรถ เลขที่ ${report.id}`;
 
 	return (
 		<Stack sx={{ gap: 1 }}>
@@ -21,7 +21,7 @@ export const InfoPage: FC = () => {
 				{heading}
 			</Typography>
 			<PickupRouteReportDetails
-				entry={entry}
+				report={report}
 				onEdit={() =>
 					submit({}, { action: "./edit" })
 				}

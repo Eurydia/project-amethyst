@@ -8,6 +8,8 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { InfoEditPageLoaderData } from "./loader";
+import { putPickupRouteReportGeneral } from "$backend/database/put";
+import { toast } from "react-toastify";
 
 export const InfoEditPage: FC = () => {
 	const {
@@ -20,17 +22,32 @@ export const InfoEditPage: FC = () => {
 
 	const handleSubmit = (
 		formData: PickupRouteReportFormData,
-	) => {};
-
-	const handleCancel = () => {
-		submit(
-			{},
-			{
-				action:
-					"/pickup-route/report/general/info/" +
-					reportId,
-			},
-		);
+	) => {
+		if (formData.route === null) {
+			return;
+		}
+		putPickupRouteReportGeneral({
+			content: formData.content,
+			id: reportId,
+			datetime: formData.datetime,
+			route_id: formData.route.id,
+			title: formData.title,
+			topics: formData.topics.join(","),
+		})
+			.then(
+				() => toast.success("แก้ไขสำเร็จ"),
+				() => toast.error("แก้ไขล้มเหลว"),
+			)
+			.finally(() =>
+				submit(
+					{},
+					{
+						action:
+							"/pickup-route/report/general/info/" +
+							reportId,
+					},
+				),
+			);
 	};
 
 	const heading = `บันทึกเรื่องร้องเรียนสายรถ เลขที่ ${reportId} (แก้ไข)`;
@@ -44,8 +61,17 @@ export const InfoEditPage: FC = () => {
 				routeOptions={routeOptions}
 				topicOptions={topicOptions}
 				initFormData={initFormData}
-				onCancel={handleCancel}
 				onSubmit={handleSubmit}
+				onCancel={() => {
+					submit(
+						{},
+						{
+							action:
+								"/pickup-route/report/general/info/" +
+								reportId,
+						},
+					);
+				}}
 			/>
 		</Stack>
 	);

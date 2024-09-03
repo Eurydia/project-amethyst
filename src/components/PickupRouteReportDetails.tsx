@@ -5,16 +5,16 @@ import dayjs from "dayjs";
 import { FC, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { TypographyButton } from "./TypographyButton";
-import { PickupRouteReport } from "$types/models";
+import { PickupRouteReport } from "$types/models/PickupRoute";
 
 type PickupRouteReportDetailsProps = {
-	entry: PickupRouteReport;
+	report: PickupRouteReport;
 	onEdit: () => void;
 };
 export const PickupRouteReportDetails: FC<
 	PickupRouteReportDetailsProps
 > = (props) => {
-	const { onEdit, entry } = props;
+	const { onEdit, report } = props;
 
 	const infoItems: {
 		label: string;
@@ -24,7 +24,7 @@ export const PickupRouteReportDetails: FC<
 			label: "บันทึกเมื่อ",
 			value: (
 				<Typography>
-					{dayjs(entry.datetime)
+					{dayjs(report.datetime)
 						.locale("th")
 						.format(
 							"HH:mm น. วันdddที่ DD MMMM YYYY",
@@ -38,30 +38,31 @@ export const PickupRouteReportDetails: FC<
 				<Typography
 					component={Link}
 					to={
-						"/pickup-routes/info/" + entry.routeId
+						"/pickup-routes/info/" +
+						report.routeId
 					}
 				>
-					{entry.routeName}
+					{report.routeName}
 				</Typography>
 			),
 		},
 		{
 			label: "เรื่อง",
 			value: (
-				<Typography>{entry.title}</Typography>
+				<Typography>{report.title}</Typography>
 			),
 		},
 		{
 			label: "รายละเอียด",
 			value: (
-				<Typography>{entry.content}</Typography>
+				<Typography>{report.content}</Typography>
 			),
 		},
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
 				<Typography>
-					{entry.topics.join(", ")}
+					{report.topics.join(", ")}
 				</Typography>
 			),
 		},

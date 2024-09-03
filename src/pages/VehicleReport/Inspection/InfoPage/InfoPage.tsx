@@ -1,4 +1,4 @@
-import { VehicleReportInspectiondDetails } from "$components/VehicleReportInspectiondDetails";
+import { VehicleReportInspectionDetails } from "$components/VehicleReportInspectionDetails";
 import { Stack, Typography } from "@mui/material";
 import "dayjs/locale/th";
 import { FC } from "react";
@@ -16,7 +16,7 @@ export const InfoPage: FC = () => {
 			<Typography variant="h1">
 				{heading}
 			</Typography>
-			<VehicleReportInspectiondDetails
+			<VehicleReportInspectionDetails
 				report={report}
 			/>
 		</Stack>

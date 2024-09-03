@@ -1,6 +1,7 @@
 import { filterItems } from "$core/filter";
+import { TRANSLATION } from "$locale/th";
 import { TableHeaderDefinition } from "$types/generics";
-import { PickupRouteReport } from "$types/models";
+import { PickupRouteReportEntry } from "$types/models/PickupRoute";
 import {
 	FormControlLabel,
 	Radio,
@@ -14,40 +15,27 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseMultiSelect } from "./BaseMultiSelect";
+import { BaseSortableTable } from "./BaseSortableTable";
 
-const entriesToOptions = (
-	entries: PickupRouteReport[],
-): {
-	routeOptions: {
-		value: string;
-		label: string;
-	}[];
-	topicOptions: {
-		value: string;
-		label: string;
-	}[];
-} => {
-	const uniqueDrivers: Record<string, string> =
-		{};
-	const uniqueTopics = new Set<string>();
+const toOptions = (
+	entries: PickupRouteReportEntry[],
+) => {
+	const routes: Record<string, string> = {};
+	const topics = new Set<string>();
 	for (const entry of entries) {
-		uniqueDrivers[entry.routeId] =
-			entry.routeName;
-
+		routes[entry.routeId] = entry.routeName;
 		for (const topic of entry.topics) {
-			uniqueTopics.add(topic);
+			topics.add(topic);
 		}
 	}
-	const routeOptions = Object.entries(
-		uniqueDrivers,
-	).map(([value, label]) => ({
-		value,
-		label,
-	}));
-
-	const topicOptions = [...uniqueTopics].map(
+	const routeOptions = Object.entries(routes).map(
+		([value, label]) => ({
+			value,
+			label,
+		}),
+	);
+	const topicOptions = [...topics].map(
 		(topic) => ({
 			value: topic,
 			label: topic,
@@ -60,24 +48,24 @@ const entriesToOptions = (
 };
 
 const filterEntries = (
-	entries: PickupRouteReport[],
+	entries: PickupRouteReportEntry[],
 	afterDate: Dayjs | null,
 	beforeDate: Dayjs | null,
 	selectedRoutes: string[],
 	selectedTopics: string[],
 	topicMustHaveAll: boolean,
 ) => {
-	let items = entries;
-	if (afterDate !== null) {
-		items = items.filter((entry) =>
-			dayjs(entry.datetime).isAfter(afterDate),
+	const items = entries
+		.filter(
+			({ datetime }) =>
+				afterDate !== null ||
+				dayjs(datetime).isAfter(afterDate),
+		)
+		.filter(
+			({ datetime }) =>
+				beforeDate !== null ||
+				dayjs(datetime).isBefore(beforeDate),
 		);
-	}
-	if (beforeDate !== null) {
-		items = items.filter((entry) =>
-			dayjs(entry.datetime).isBefore(beforeDate),
-		);
-	}
 	const rotueSet = new Set(selectedRoutes);
 
 	return items
@@ -97,16 +85,10 @@ const filterEntries = (
 };
 
 const searchEntries = (
+	entries: PickupRouteReportEntry[],
 	search: string,
-	entries: PickupRouteReport[],
 ) => {
-	const tokens = search
-		.normalize()
-		.split(" ")
-		.map((token) => token.trim())
-		.filter((token) => token.length > 0);
-
-	return filterItems(entries, tokens, [
+	return filterItems(entries, search, [
 		"title",
 		"topics",
 		"routeName",
@@ -114,9 +96,9 @@ const searchEntries = (
 };
 
 type PickupRouteReportTableProps = {
-	headers: TableHeaderDefinition<PickupRouteReport>[];
+	headers: TableHeaderDefinition<PickupRouteReportEntry>[];
 	searchPlaceholder?: string;
-	entries: PickupRouteReport[];
+	entries: PickupRouteReportEntry[];
 	onAdd: () => void;
 };
 export const PickupRouteReportTable: FC<
@@ -130,7 +112,7 @@ export const PickupRouteReportTable: FC<
 	} = props;
 
 	const { routeOptions, topicOptions } = useMemo(
-		() => entriesToOptions(entries),
+		() => toOptions(entries),
 		[entries],
 	);
 
@@ -203,7 +185,7 @@ export const PickupRouteReportTable: FC<
 			),
 		},
 		{
-			label: "สายรถ",
+			label: TRANSLATION.pickupRoute,
 			value: (
 				<BaseMultiSelect
 					options={routeOptions}

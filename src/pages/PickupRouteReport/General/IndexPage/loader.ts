@@ -1,45 +1,50 @@
 import {
-	getPickupRouteReportGeneralAll,
 	getPickupRoute,
+	getPickupRouteReportGeneralAll,
 } from "$backend/database/get";
-import { PickupRouteReport } from "$types/models";
+import {
+	PickupRouteModel,
+	PickupRouteReportEntry,
+	PickupRouteReportModel,
+} from "$types/models/PickupRoute";
 import { LoaderFunction } from "react-router-dom";
 
-export type IndexPageLoaderData = {
-	entries: PickupRouteReport[];
+const toEntry = async (
+	report: PickupRouteReportModel,
+	route: PickupRouteModel,
+) => {
+	const entry: PickupRouteReportEntry = {
+		id: report.id,
+		datetime: report.datetime,
+		title: report.title,
+		topics: report.topics.split(","),
+
+		routeId: route.id,
+		routeName: route.name,
+	};
+
+	return entry;
 };
 
+export type IndexPageLoaderData = {
+	entries: PickupRouteReportEntry[];
+};
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		const rawEntries =
+		const reports =
 			await getPickupRouteReportGeneralAll();
 
-		const entryRequests: Promise<PickupRouteReport | null>[] =
-			rawEntries.map(async (rawEntry) => {
-				const route = await getPickupRoute(
-					rawEntry.id,
-				);
-				if (route === null) {
-					return null;
-				}
-
-				const entry: PickupRouteReport = {
-					id: rawEntry.id,
-					topics: rawEntry.topics.split(","),
-					datetime: rawEntry.datetime,
-					title: rawEntry.title,
-					content: rawEntry.content,
-					routeId: rawEntry.route_id,
-
-					routeName: route.name,
-				};
-
-				return entry;
-			});
-		const entries = (
-			await Promise.all(entryRequests)
-		).filter((entry) => entry !== null);
-
+		const entries: PickupRouteReportEntry[] = [];
+		for (const report of reports) {
+			const route = await getPickupRoute(
+				report.route_id,
+			);
+			if (route === null) {
+				continue;
+			}
+			const entry = await toEntry(report, route);
+			entries.push(entry);
+		}
 		const loaderData: IndexPageLoaderData = {
 			entries,
 		};

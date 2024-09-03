@@ -1,4 +1,3 @@
-import { putPickupRouteReportGeneral } from "$backend/database/put";
 import { PickupRouteReportForm } from "$components/PickupRouteReportForm";
 import { PickupRouteReportFormData } from "$types/models/PickupRoute";
 import { Stack, Typography } from "@mui/material";
@@ -9,6 +8,7 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
+import { postPickupRouteReportGeneral } from "$backend/database/post";
 
 export const NewPage: FC = () => {
 	const {
@@ -22,15 +22,28 @@ export const NewPage: FC = () => {
 	const handleSubmit = async (
 		formData: PickupRouteReportFormData,
 	) => {
-		putPickupRouteReportGeneral(formData)
-			.then(() => {
+		postPickupRouteReportGeneral(formData).then(
+			(reportId) => {
 				toast.success("บันทึกสำเร็จ");
-				submit({}, { action: "/" });
-			})
-			.catch((error) => {
-				console.error(error);
+				submit(
+					{},
+					{
+						action:
+							"/pickup-routes/report/info/" +
+							reportId,
+					},
+				);
+			},
+			() => {
 				toast.error("บันทึกล้มเหลว");
-			});
+				submit(
+					{},
+					{
+						action: "/pickup-routes/report",
+					},
+				);
+			},
+		);
 	};
 
 	const handleCancel = () =>

@@ -11,7 +11,7 @@ import {
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
-import { PickupRouteSelect } from "./PickupRouteSelect";
+import { PickupRouteSelect } from "./PickupRouteInputSelect";
 import { TopicComboBox } from "./TopicComboBox";
 
 type PickupRouteReportFormProps = {

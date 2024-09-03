@@ -1,4 +1,6 @@
+import { postPickupRoute } from "$backend/database/post";
 import { PickupRouteForm } from "$components/PickupRouteForm";
+import { TRANSLATION } from "$locale/th";
 import { PickupRouteFormData } from "$types/models/PickupRoute";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
@@ -8,7 +10,6 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
-import { postPickupRoute } from "$backend/database/post";
 
 export const NewPage: FC = () => {
 	const { initFormData } =
@@ -20,7 +21,7 @@ export const NewPage: FC = () => {
 	) => {
 		postPickupRoute(formData)
 			.then((routeId) => {
-				toast.success("บันทึกสำเร็จ");
+				toast.success(TRANSLATION.postSuccess);
 				submit(
 					{},
 					{
@@ -30,7 +31,7 @@ export const NewPage: FC = () => {
 				);
 			})
 			.catch(() => {
-				toast.error("บันทึกล้มเหลว");
+				toast.error(TRANSLATION.postFail);
 				submit(
 					{},
 					{
@@ -43,7 +44,7 @@ export const NewPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				ลงทะเบียนสายรถ
+				{TRANSLATION.pickupRoutePostFormTitle}
 			</Typography>
 			<PickupRouteForm
 				initFormData={initFormData}

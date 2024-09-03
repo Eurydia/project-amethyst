@@ -6,6 +6,22 @@ export type PickupRouteModel = {
 	departure_time: string;
 };
 
+export type PickupRouteEntry = {
+	id: string;
+	name: string;
+
+	vehicles: {
+		id: string;
+		licensePlate: string;
+	}[];
+
+	drivers: {
+		id: string;
+		name: string;
+		surname: string;
+	}[];
+};
+
 export type PickupRouteReportModel = {
 	id: string;
 	route_id: string;
@@ -27,10 +43,21 @@ export type PickupRouteReport = {
 	datetime: string;
 };
 
-export type PickupRouteFormData = Omit<
-	PickupRouteModel,
-	"id"
->;
+export type PickupRouteReportEntry = {
+	id: string;
+	routeId: string;
+	routeName: string;
+
+	title: string;
+	topics: string[];
+	datetime: string;
+};
+
+export type PickupRouteFormData = {
+	name: string;
+	arrivalTime: string;
+	departureTime: string;
+};
 
 export type PickupRouteReportFormData = {
 	datetime: string;

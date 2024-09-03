@@ -2,7 +2,7 @@ import { DriverFormData } from "$types/models/Driver";
 import { TextField } from "@mui/material";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
-import { DriverLicenseSelect } from "./DriverLicenseSelect";
+import { DriverLicenseSelect } from "./DriverInputLicenseSelect";
 
 type DriverFormProps = {
 	initFormData: DriverFormData;

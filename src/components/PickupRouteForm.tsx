@@ -1,10 +1,11 @@
+import { TRANSLATION } from "$locale/th";
+import { PickupRouteFormData } from "$types/models/PickupRoute";
 import { SaveRounded } from "@mui/icons-material";
 import { TextField } from "@mui/material";
-import { TimeField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
-import { PickupRouteFormData } from "$types/models/PickupRoute";
+import { PickupRouteInputTimeField } from "./PickupRouteInputTimeField";
 
 type PickupRouteFormProps = {
 	initFormData: PickupRouteFormData;
@@ -16,42 +17,50 @@ type PickupRouteFormProps = {
 export const PickupRouteForm: FC<
 	PickupRouteFormProps
 > = (props) => {
-	const { initFormData, onCancel, onSubmit } =
-		props;
+	const {
+		initFormData: {
+			arrivalTime,
+			departureTime,
+			name,
+		},
+		onCancel,
+		onSubmit,
+	} = props;
 
-	const [fieldName, setFieldName] = useState(
-		initFormData.name,
-	);
-	const [fieldArrialTime, setFieldArrialTime] =
+	const [fieldName, setFieldName] =
+		useState(name);
+	const [fieldArrivalTime, setFieldArrivalTime] =
 		useState(
-			dayjs(initFormData.arrival_time, "HH:mm"),
+			arrivalTime.length === 0
+				? dayjs().startOf("day")
+				: dayjs(arrivalTime, "HH:mm"),
 		);
 	const [
 		fieldDepartureTime,
 		setFieldDepartureTime,
 	] = useState(
-		dayjs(initFormData.departure_time, "HH:mm"),
+		dayjs(
+			departureTime.length === 0
+				? dayjs().startOf("day")
+				: dayjs(departureTime, "HH:mm"),
+		),
 	);
 
 	const handleSubmit = () => {
 		if (isFormIncomplete) {
 			return;
 		}
-		const formData: PickupRouteFormData = {
-			arrival_time:
-				fieldArrialTime.format("HH:mm"),
-			departure_time:
-				fieldDepartureTime.format("HH:mm"),
+		onSubmit({
 			name: fieldName.trim().normalize(),
-		};
-		onSubmit(formData);
+			arrivalTime:
+				fieldArrivalTime.format("HH:mm"),
+			departureTime:
+				fieldDepartureTime.format("HH:mm"),
+		});
 	};
-
-	const handleCancel = () => onCancel();
 
 	const missingFieldName =
 		fieldName.trim().normalize() === "";
-
 	const isFormIncomplete = missingFieldName;
 
 	const formItems: {
@@ -59,14 +68,14 @@ export const PickupRouteForm: FC<
 		value: ReactNode;
 	}[] = [
 		{
-			label: "ชื่อ",
+			label: TRANSLATION.pickupRouteName,
 			value: (
 				<TextField
 					fullWidth
 					autoFocus
 					error={missingFieldName}
 					value={fieldName}
-					placeholder={initFormData.name}
+					placeholder={name}
 					onChange={(e) =>
 						setFieldName(e.target.value)
 					}
@@ -74,36 +83,20 @@ export const PickupRouteForm: FC<
 			),
 		},
 		{
-			label: "เวลานำเข้า",
+			label: TRANSLATION.arrivalTime,
 			value: (
-				<TimeField
-					fullWidth
-					required
-					formatDensity="spacious"
-					format="HH:mm น."
-					value={fieldArrialTime}
-					onChange={(value) => {
-						if (value === null) {
-							return;
-						}
-						setFieldArrialTime(value);
-					}}
+				<PickupRouteInputTimeField
+					value={fieldArrivalTime}
+					onChange={setFieldArrivalTime}
 				/>
 			),
 		},
 		{
-			label: "เวลานำออก",
+			label: TRANSLATION.departureTime,
 			value: (
-				<TimeField
-					fullWidth
-					format="HH:mm น."
+				<PickupRouteInputTimeField
 					value={fieldDepartureTime}
-					onChange={(value) => {
-						if (value === null) {
-							return;
-						}
-						setFieldDepartureTime(value);
-					}}
+					onChange={setFieldDepartureTime}
 				/>
 			),
 		},
@@ -119,7 +112,7 @@ export const PickupRouteForm: FC<
 					onClick: handleSubmit,
 				},
 				cancelButton: {
-					onClick: handleCancel,
+					onClick: onCancel,
 				},
 			}}
 		>

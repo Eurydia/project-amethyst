@@ -14,6 +14,7 @@ import {
 } from "react-router-dom";
 
 export type ReportGeneralPageLoaderData = {
+	routeId: string;
 	driverOptions: PickupRouteModel[];
 	topicOptions: string[];
 	initFormData: PickupRouteReportFormData;
@@ -47,6 +48,7 @@ export const reportGeneralPageLoader: LoaderFunction =
 			};
 		const loaderData: ReportGeneralPageLoaderData =
 			{
+				routeId,
 				driverOptions,
 				initFormData,
 				topicOptions,

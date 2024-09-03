@@ -1,5 +1,6 @@
 import { putPickupRoute } from "$backend/database/put";
 import { PickupRouteForm } from "$components/PickupRouteForm";
+import { TRANSLATION } from "$locale/th";
 import { PickupRouteFormData } from "$types/models/PickupRoute";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
@@ -11,27 +12,39 @@ import { toast } from "react-toastify";
 import { EditPageLoaderData } from "./loader";
 
 export const EditPage: FC = () => {
-	const { initFormData } =
+	const { initFormData, routeId } =
 		useLoaderData() as EditPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = async (
 		formData: PickupRouteFormData,
 	) => {
-		putPickupRoute(formData)
-			.then(() => {
-				toast.success("แก้ไขสำเร็จ");
-				submit({}, { action: "/" });
-			})
-			.catch((error) => {
-				console.error(error);
-				toast.error("แก้ไขล้มเหลว");
-			});
+		putPickupRoute({
+			arrival_time: formData.arrivalTime,
+			departure_time: formData.departureTime,
+			name: formData.name,
+			id: routeId,
+		})
+			.then(
+				() =>
+					toast.success(TRANSLATION.putSuccess),
+				() => toast.error(TRANSLATION.putFail),
+			)
+			.finally(() =>
+				submit(
+					{},
+					{
+						action:
+							"/pickup-routes/info/" + routeId,
+					},
+				),
+			);
 	};
-	const handleCancel = () =>
-		submit({}, { action: "/" });
 
-	const heading = `ข้อมูลสายรถ "${initFormData.name}" (แก้ไข)`;
+	const heading =
+		TRANSLATION.pickupRouteEditDetailsWithLabel(
+			initFormData.name,
+		);
 
 	return (
 		<Stack spacing={1}>
@@ -41,7 +54,15 @@ export const EditPage: FC = () => {
 			<PickupRouteForm
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
-				onCancel={handleCancel}
+				onCancel={() =>
+					submit(
+						{},
+						{
+							action:
+								"/pickup-routes/info/" + routeId,
+						},
+					)
+				}
 			/>
 		</Stack>
 	);

@@ -15,6 +15,17 @@ import {
 import { fakerTH } from "@faker-js/faker";
 import dayjs from "dayjs";
 
+//#region Topics
+const topics = fakerTH.word.words(10);
+export const getTopicAll = async (): Promise<
+	string[]
+> => {
+	const entries: string[] = topics.split(" ");
+	const entrySet = new Set(entries);
+	return [...entrySet];
+};
+//#endregion
+
 //#region Operational Log
 let operationLogId = 0;
 const operationLogs = fakerTH.helpers
@@ -64,9 +75,27 @@ export const getOperationLogAll = async () => {
 		operationLogs;
 	return entries;
 };
+
+export const getOperationLogToday = async () => {
+	const today = dayjs();
+	const opLogs = await getOperationLogAll();
+	return opLogs
+		.filter(
+			({ start_date }) =>
+				start_date === null ||
+				today.isAfter(dayjs(start_date)),
+		)
+		.filter(
+			({ end_date }) =>
+				end_date === null ||
+				today.isBefore(dayjs(end_date)),
+		);
+};
+
 //#endregion
 
 //#region Driver
+
 let driverId = 0;
 const drivers = fakerTH.helpers.multiple(
 	() =>
@@ -342,17 +371,6 @@ export const getVehicleReportInspection = async (
 	// 	vehicle_id: "0",
 	// 	windows: fakerTH.lorem.sentence(),
 	// } as VehicleReportInspectionModel;
-};
-//#endregion
-
-//#region Topics
-const topics = fakerTH.word.words(10);
-export const getTopicAll = async (): Promise<
-	string[]
-> => {
-	const entries: string[] = topics.split(" ");
-	const entrySet = new Set(entries);
-	return [...entrySet];
 };
 //#endregion
 

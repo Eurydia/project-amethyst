@@ -37,15 +37,9 @@ export const PickupRouteSelect: FC<
 			getOptionKey={(option) => option.id}
 			getOptionLabel={(option) => option.name}
 			filterOptions={(options, params) =>
-				filterItems(
-					options,
-					params.inputValue
-						.normalize()
-						.split(" ")
-						.map((token) => token.trim())
-						.filter((token) => token.length > 0),
-					["name"],
-				)
+				filterItems(options, params.inputValue, [
+					"name",
+				])
 			}
 			renderInput={({ InputProps, ...rest }) => (
 				<TextField

@@ -1,59 +1,15 @@
 import {
 	getDriverAll,
-	getOperationLogAll,
-	getPickupRouteAll,
-	getVehicleAll,
+	getOperationLogToday,
+	getPickupRouteMany,
+	getVehicleMany,
 } from "$backend/database/get";
 import {
 	DriverEntry,
 	DriverModel,
 } from "$types/models/Driver";
 import { OperationalLogModel } from "$types/models/OperatonalLog";
-import dayjs from "dayjs";
 import { LoaderFunction } from "react-router-dom";
-
-const resolveVehicles = async (
-	vehicleIds: Set<string>,
-) => {
-	const vehicles = await getVehicleAll();
-	const collected: {
-		id: string;
-		licensePlate: string;
-	}[] = [];
-
-	for (const vehicle of vehicles) {
-		if (!vehicleIds.has(vehicle.id)) {
-			continue;
-		}
-		const entry = {
-			id: vehicle.id,
-			licensePlate: vehicle.license_plate,
-		};
-		collected.push(entry);
-	}
-	return collected;
-};
-
-const resolveRoutes = async (
-	routeIds: Set<string>,
-) => {
-	const routes = await getPickupRouteAll();
-	const collected: {
-		id: string;
-		name: string;
-	}[] = [];
-	for (const route of routes) {
-		if (!routeIds.has(route.id)) {
-			continue;
-		}
-		const entry = {
-			id: route.id,
-			name: route.name,
-		};
-		collected.push(entry);
-	}
-	return collected;
-};
 
 const toEntry = async (
 	opLogs: OperationalLogModel[],
@@ -62,42 +18,54 @@ const toEntry = async (
 	const logs = opLogs.filter(
 		(log) => log.driver_id === driver.id,
 	);
-	const vehicleSet = new Set<string>();
-	const routeSet = new Set<string>();
-	for (const log of logs) {
-		vehicleSet.add(log.vehicle_id);
-		routeSet.add(log.route_id);
+	const vehicleIds = new Set<string>();
+	const routeIds = new Set<string>();
+	for (const { route_id, vehicle_id } of logs) {
+		vehicleIds.add(vehicle_id);
+		routeIds.add(route_id);
 	}
 
-	const vehicles = await resolveVehicles(
-		vehicleSet,
+	const vehicles = await getVehicleMany(
+		vehicleIds,
 	);
-	const routes = await resolveRoutes(routeSet);
+	const routes = await getPickupRouteMany(
+		routeIds,
+	);
 
 	const entry: DriverEntry = {
 		id: driver.id,
 		name: driver.name,
 		surname: driver.surname,
-		routes,
-		vehicles,
+		routes: routes.map(({ id, name }) => ({
+			id,
+			name,
+		})),
+		vehicles: vehicles.map(
+			({ id, license_plate }) => ({
+				id,
+				licensePlate: license_plate,
+			}),
+		),
 	};
 	return entry;
 };
 
-const getLogs = async () => {
-	const today = dayjs();
-	const opLogs = await getOperationLogAll();
-	return opLogs
-		.filter(
-			({ start_date }) =>
-				start_date === null ||
-				today.isAfter(dayjs(start_date)),
-		)
-		.filter(
-			({ end_date }) =>
-				end_date === null ||
-				today.isBefore(dayjs(end_date)),
+const toEntries = async (
+	logs: OperationalLogModel[],
+	drivers: DriverModel[],
+) => {
+	const entries = [];
+	for (const driver of drivers) {
+		const entry = toEntry(
+			logs.filter(
+				({ driver_id }) =>
+					driver_id === driver.id,
+			),
+			driver,
 		);
+		entries.push(entry);
+	}
+	return Promise.all(entries);
 };
 
 export type IndexPageLoaderData = {
@@ -105,16 +73,12 @@ export type IndexPageLoaderData = {
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		// Collect relevant log entries
-		const logs = await getLogs();
+		const logs = await getOperationLogToday();
 		const drivers = await getDriverAll();
-
-		const entries: DriverEntry[] = [];
-		for (const driver of drivers) {
-			const entry = await toEntry(logs, driver);
-			entries.push(entry);
-		}
-
+		const entries = await toEntries(
+			logs,
+			drivers,
+		);
 		const loaderData: IndexPageLoaderData = {
 			entries,
 		};

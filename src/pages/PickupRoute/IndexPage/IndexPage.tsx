@@ -1,7 +1,8 @@
+import { PickupRouteTable } from "$components/PickupRouteTable";
+import { TRANSLATION } from "$locale/th";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import { useLoaderData } from "react-router-dom";
-import { CustomTable } from "./custom-components/CustomTable";
 import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
@@ -10,9 +11,9 @@ export const IndexPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				รายชื่อสายรถ
+				{TRANSLATION.pickupRouteTable}
 			</Typography>
-			<CustomTable entries={entries} />
+			<PickupRouteTable entries={entries} />
 		</Stack>
 	);
 };

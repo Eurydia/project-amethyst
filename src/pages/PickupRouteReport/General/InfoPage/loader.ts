@@ -2,14 +2,14 @@ import {
 	getPickupRouteReportGeneral,
 	getPickupRoute,
 } from "$backend/database/get";
-import { PickupRouteReport } from "$types/models";
+import { PickupRouteReport } from "$types/models/PickupRoute";
 import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
 
 export type InfoPageLoaderData = {
-	entry: PickupRouteReport;
+	report: PickupRouteReport;
 };
 export const infoPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -50,7 +50,7 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 
-		const entry: PickupRouteReport = {
+		const report: PickupRouteReport = {
 			content: rawEntry.content,
 			datetime: rawEntry.datetime,
 			id: rawEntry.id,
@@ -61,7 +61,7 @@ export const infoPageLoader: LoaderFunction =
 		};
 
 		const loaderData: InfoPageLoaderData = {
-			entry,
+			report,
 		};
 
 		return loaderData;

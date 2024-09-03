@@ -1,9 +1,9 @@
+import { DriverTable } from "$components/DriverTable";
+import { TRANSLATION } from "$locale/th";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import { useLoaderData } from "react-router-dom";
 import { IndexPageLoaderData } from "./loader";
-import { TRANSLATION } from "$locale/th";
-import { DriverTable } from "$components/DriverTable";
 
 export const IndexPage: FC = () => {
 	const { entries } =

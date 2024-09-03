@@ -8,8 +8,8 @@ export const newPageLoader: LoaderFunction =
 	async () => {
 		const initFormData: PickupRouteFormData = {
 			name: "",
-			arrival_time: "08:00",
-			departure_time: "17:00",
+			arrivalTime: "",
+			departureTime: "",
 		};
 		const loaderData: NewPageLoaderData = {
 			initFormData,

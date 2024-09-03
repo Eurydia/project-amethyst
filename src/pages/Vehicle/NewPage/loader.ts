@@ -2,12 +2,12 @@ import { getVehicleAll } from "$backend/database/get";
 import { VehicleFormData } from "$types/models/Vehicle";
 import { LoaderFunction } from "react-router-dom";
 
-const resolveVendors = async () => {
+const toOptions = async () => {
 	const vehicles = await getVehicleAll();
-	const uniqueVendors = new Set(
+	const vendors = new Set(
 		vehicles.map(({ vendor }) => vendor),
 	);
-	return [...uniqueVendors];
+	return [...vendors];
 };
 
 export type NewPageLoaderData = {
@@ -16,7 +16,7 @@ export type NewPageLoaderData = {
 };
 export const newPageLoader: LoaderFunction =
 	async () => {
-		const vendorOptions = await resolveVendors();
+		const vendorOptions = await toOptions();
 		const initFormData: VehicleFormData = {
 			licensePlate: "",
 			vendor: "",

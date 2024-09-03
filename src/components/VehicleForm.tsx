@@ -3,8 +3,8 @@ import { SaveRounded } from "@mui/icons-material";
 import { TextField } from "@mui/material";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
-import { VehicleCitySelect } from "./VehicleCitySelect";
 import { VehicleClassRadioGroup } from "./VehicleClassRadioGroup";
+import { VehicleCitySelect } from "./VehicleInputCitySelect";
 import { VehicleInputVendorAutocomplete } from "./VehicleInputVendorAutocomplete";
 
 type VehicleFormProps = {

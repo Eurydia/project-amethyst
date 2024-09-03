@@ -26,13 +26,15 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<PickupRouteReportEntry>[] =
 			compare: (a, b) =>
 				a.routeName.localeCompare(b.routeName),
 			render: (item) => (
-				<Typography
-					component={Link}
-					to={
-						"/pickup-routes/info/" + item.routeId
-					}
-				>
-					{item.routeName}
+				<Typography>
+					<Link
+						to={
+							"/pickup-routes/info/" +
+							item.routeId
+						}
+					>
+						{item.routeName}
+					</Link>
 				</Typography>
 			),
 		},
@@ -40,14 +42,15 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<PickupRouteReportEntry>[] =
 			label: "เรื่อง",
 			compare: null,
 			render: (item) => (
-				<Typography
-					component={Link}
-					to={
-						"/pickup-routes/report/general/info/" +
-						item.id
-					}
-				>
-					{item.title}
+				<Typography>
+					<Link
+						to={
+							"/pickup-routes/report/general/info/" +
+							item.id
+						}
+					>
+						{item.title}
+					</Link>
 				</Typography>
 			),
 		},

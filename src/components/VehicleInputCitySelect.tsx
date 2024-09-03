@@ -95,7 +95,7 @@ export const VehicleCitySelect: FC<
 	const { onChange, value } = props;
 
 	useEffect(() => {
-		if (value.length === 0) {
+		if (value.trim().length === 0) {
 			onChange(OPTIONS[0]);
 		}
 	}, []);

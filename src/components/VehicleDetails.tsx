@@ -2,8 +2,8 @@ import { VehicleModel } from "$types/models/Vehicle";
 import { Typography } from "@mui/material";
 import { FC } from "react";
 import { useSubmit } from "react-router-dom";
+import { BaseGallery } from "./BaseGallery";
 import { BaseInfoGroup } from "./BaseInfoGroup";
-import { BaseGallery } from "./ฺBaseGallery";
 
 type VehicleDetailsProps = {
 	vehicle: VehicleModel;

@@ -227,7 +227,7 @@ export const DriverReportTable: FC<
 				searchField: {
 					value: search,
 					placeholder:
-						"ค้นหาด้วยชื่อ, นามสกุล, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง",
+						"ค้นหาด้วยชื่อนามสกุลคนขับรถ, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง",
 					onChange: setSearch,
 				},
 			}}

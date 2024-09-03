@@ -25,7 +25,7 @@ export const PickupRouteReportDetails: FC<
 			value: dayjs(report.datetime)
 				.locale("th")
 				.format(
-					"HH:mm น. วันdddที่ DD MMMM YYYY",
+					"HH:mm น. วันddddที่ DD MMMM YYYY",
 				),
 		},
 		{
@@ -43,9 +43,7 @@ export const PickupRouteReportDetails: FC<
 		},
 		{
 			label: "เรื่อง",
-			value: (
-				<Typography>{report.title}</Typography>
-			),
+			value: report.title,
 		},
 		{
 			label: "รายละเอียด",

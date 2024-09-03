@@ -2,8 +2,8 @@ import { DriverModel } from "$types/models/Driver";
 import { Typography } from "@mui/material";
 import { FC, ReactNode } from "react";
 import { useSubmit } from "react-router-dom";
+import { BaseGallery } from "./BaseGallery";
 import { BaseInfoGroup } from "./BaseInfoGroup";
-import { BaseGallery } from "./ฺBaseGallery";
 
 type DriverInfoGroupProps = {
 	driver: DriverModel;

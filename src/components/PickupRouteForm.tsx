@@ -1,10 +1,9 @@
-import { TRANSLATION } from "$locale/th";
 import { PickupRouteFormData } from "$types/models/PickupRoute";
 import { TextField } from "@mui/material";
+import { TimeField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
-import { PickupRouteInputTimeField } from "./PickupRouteInputTimeField";
 
 type PickupRouteFormProps = {
 	initFormData: PickupRouteFormData;
@@ -74,7 +73,7 @@ export const PickupRouteForm: FC<
 		value: ReactNode;
 	}[] = [
 		{
-			label: TRANSLATION.pickupRouteName,
+			label: "ชื่อสายรถ",
 			value: (
 				<TextField
 					fullWidth
@@ -89,20 +88,36 @@ export const PickupRouteForm: FC<
 			),
 		},
 		{
-			label: TRANSLATION.arrivalTime,
+			label: "เวลานำเข้า",
 			value: (
-				<PickupRouteInputTimeField
+				<TimeField
+					fullWidth
+					format="HH:mm น."
+					formatDensity="spacious"
 					value={fieldArrivalTime}
-					onChange={setFieldArrivalTime}
+					onChange={(value) => {
+						if (value === null) {
+							return;
+						}
+						setFieldArrivalTime(value);
+					}}
 				/>
 			),
 		},
 		{
-			label: TRANSLATION.departureTime,
+			label: "เวลานำออก",
 			value: (
-				<PickupRouteInputTimeField
+				<TimeField
+					fullWidth
+					format="HH:mm น."
+					formatDensity="spacious"
 					value={fieldDepartureTime}
-					onChange={setFieldDepartureTime}
+					onChange={(value) => {
+						if (value === null) {
+							return;
+						}
+						setFieldDepartureTime(value);
+					}}
 				/>
 			),
 		},

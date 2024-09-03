@@ -72,7 +72,7 @@ type DriverSelectProps = {
 	isDisabled?: boolean;
 	options: DriverModel[];
 	value: DriverModel | null;
-	onChange: (value: DriverModel | null) => void;
+	onChange: (value: DriverModel) => void;
 };
 export const DriverSelect: FC<
 	DriverSelectProps
@@ -90,6 +90,9 @@ export const DriverSelect: FC<
 		<Autocomplete
 			disabled={isDisabled}
 			onChange={(_, value) => {
+				if (value === null) {
+					return;
+				}
 				onChange(value);
 			}}
 			value={value}

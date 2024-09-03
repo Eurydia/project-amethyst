@@ -37,10 +37,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 				item.vehicles.length === 0 ? (
 					<Typography>ไม่มี</Typography>
 				) : (
-					<Stack
-						spacing={1}
-						useFlexGap
-					>
+					<Stack spacing={1}>
 						{item.vehicles.map(
 							(vehicle, index) => (
 								<Typography
@@ -64,10 +61,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 				item.drivers.length === 0 ? (
 					<Typography>ไม่มี</Typography>
 				) : (
-					<Stack
-						spacing={1}
-						useFlexGap
-					>
+					<Stack spacing={1}>
 						{item.drivers.map((driver, index) => (
 							<Typography
 								key={"driver" + index}

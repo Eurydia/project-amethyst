@@ -12,7 +12,7 @@ import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
-import { VehicleSelect } from "./VehicleSelect";
+import { VehicleSelect } from "./VehicleInputSelect";
 
 type VehicleReportGeneralFormProps = {
 	vehicleOptions: VehicleModel[];

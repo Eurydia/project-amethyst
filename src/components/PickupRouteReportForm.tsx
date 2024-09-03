@@ -81,10 +81,9 @@ export const PickupRouteReportForm: FC<
 		onSubmit(formData);
 	};
 
-	const handleCancel = () => onCancel();
-
 	const shouldLockRoute =
 		initFormData.route !== null;
+
 	const isTimeInvalid =
 		Number.isNaN(fieldTime.hour()) ||
 		Number.isNaN(fieldTime.minute());
@@ -198,7 +197,7 @@ export const PickupRouteReportForm: FC<
 					label: slotProps.submitButton.label,
 				},
 				cancelButton: {
-					onClick: handleCancel,
+					onClick: onCancel,
 				},
 			}}
 		>

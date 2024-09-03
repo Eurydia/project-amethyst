@@ -85,10 +85,21 @@ export const DriverReportForm: FC<
 
 	const shouldLockDriver =
 		initFormData.driver !== null;
-	const isDriverEmpty = fieldDriver === null;
+
+	const isFieldTimeInvalid =
+		Number.isNaN(fieldTime.hour()) ||
+		Number.isNaN(fieldTime.minute());
+	const isFieldDateInvalid =
+		Number.isNaN(fieldDate.day()) ||
+		Number.isNaN(fieldDate.month()) ||
+		Number.isNaN(fieldDate.year());
 	const isTitleEmpty = fieldTitle.trim() === "";
+	const isDriverEmpty = fieldDriver === null;
 	const isFormIncomplete =
-		isDriverEmpty || isTitleEmpty;
+		isTitleEmpty ||
+		isDriverEmpty ||
+		isFieldDateInvalid ||
+		isFieldTimeInvalid;
 
 	const formItems: {
 		label: string;

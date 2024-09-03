@@ -6,6 +6,7 @@ import {
 	getVehicleReportGeneralAll,
 	getVehicleReportInspectionAll,
 } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import { DriverModel } from "$types/models/Driver";
 import {
 	OperationalLogEntry,
@@ -55,7 +56,7 @@ const inspectionToEntry = (
 	return entry;
 };
 
-const generalToEntry = (
+const reportToEntry = (
 	report: VehicleReportGeneralModel,
 	vehicle: VehicleModel,
 ) => {
@@ -132,14 +133,20 @@ export const indexPageLoader: LoaderFunction =
 		const { vehicleId } = params;
 		if (vehicleId === undefined) {
 			throw json(
-				{ message: "ข้อมูลไม่ครบ" },
+				{
+					message:
+						TRANSLATION.vehicleIdIsMissingFromParams,
+				},
 				{ status: 400 },
 			);
 		}
 		const vehicle = await getVehicle(vehicleId);
 		if (vehicle === null) {
 			throw json(
-				{ message: "ไม่พบคนขับรถในระบบ" },
+				{
+					message:
+						TRANSLATION.vehicleIsMissingFromDatabase,
+				},
 				{ status: 404 },
 			);
 		}
@@ -152,7 +159,7 @@ export const indexPageLoader: LoaderFunction =
 			if (report.vehicle_id !== vehicle.id) {
 				continue;
 			}
-			const entry = generalToEntry(
+			const entry = reportToEntry(
 				report,
 				vehicle,
 			);
@@ -175,24 +182,26 @@ export const indexPageLoader: LoaderFunction =
 			inspectionEntries.push(entry);
 		}
 
-		const logReports = await getOperationLogAll();
+		const logs = await getOperationLogAll();
 		const logEntries: OperationalLogEntry[] = [];
-
-		for (const report of logReports) {
-			if (report.vehicle_id !== vehicle.id) {
+		for (const log of logs) {
+			if (log.vehicle_id !== vehicle.id) {
 				continue;
 			}
 			const driver = await getDriver(
-				report.driver_id,
+				log.driver_id,
 			);
+			if (driver === null) {
+				continue;
+			}
 			const route = await getPickupRoute(
-				report.route_id,
+				log.route_id,
 			);
-			if (driver === null || route === null) {
+			if (route === null) {
 				continue;
 			}
 			const entry = await logToEntry(
-				report,
+				log,
 				vehicle,
 				driver,
 				route,

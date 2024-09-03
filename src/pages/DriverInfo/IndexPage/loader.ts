@@ -97,7 +97,10 @@ const getImages = async (driverId: string) => {
 
 export type IndexPageLoaderData = {
 	driver: DriverModel;
-	images: Awaited<ReturnType<typeof getImages>>;
+	images: {
+		src: string;
+		fileName: string;
+	}[];
 	generalEntries: DriverReportEntry[];
 	medicalEntries: DriverReportEntry[];
 	logEntries: OperationalLogEntry[];
@@ -109,7 +112,7 @@ export const indexPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						TRANSLATION.paramsIsMissingDriverId,
+						TRANSLATION.driverIdIsMissingFromParams,
 				},
 				{ status: 400 },
 			);

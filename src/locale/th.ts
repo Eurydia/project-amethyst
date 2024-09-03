@@ -21,6 +21,9 @@ export const TRANSLATION = {
 	departureTime: `เวลานำรถออก`,
 
 	vehicleLicensePlate: `เลขทะเบียนรถ`,
+	vehicleIdIsMissingFromParams: `ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Params is missing "vehicleId")`,
+
+	vehicleIsMissingFromDatabase: `ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องไม่พบข้อมูลรถรับส่งที่ต้องการในฐานข้อมูล (Cannot find vehicle with given ID in database),`,
 
 	gallery: `คลังภาพ`,
 	postReportSuccess: `ลงบันทึกสำเร็จ`,
@@ -35,10 +38,10 @@ export const TRANSLATION = {
 	operationalLogTable:
 		"ตารางบันทึกประวัติการเดินรถ",
 
-	paramsIsMissingDriverId:
+	driverIdIsMissingFromParams:
 		"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing driverId in params)",
 	driverIsMissingFromDatabase:
-		"ไม่พบข้อมูลคนขับที่ต้องการฐานข้อมูล (Cannot find driver with given ID)",
+		"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับรถที่ต้องการฐานข้อมูล (Cannot find driver with given ID)",
 
 	driver: "คนขับรถ",
 	driverGeneralReportTable:

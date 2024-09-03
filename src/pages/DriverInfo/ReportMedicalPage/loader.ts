@@ -1,16 +1,17 @@
 import {
-	json,
-	LoaderFunction,
-} from "react-router-dom";
-import {
 	getDriver,
 	getTopicAll,
 } from "$backend/database/get";
-import dayjs from "dayjs";
+import { TRANSLATION } from "$locale/th";
 import {
 	DriverModel,
 	DriverReportFormData,
 } from "$types/models/Driver";
+import dayjs from "dayjs";
+import {
+	json,
+	LoaderFunction,
+} from "react-router-dom";
 
 export type ReportMedicalPageLoaderData = {
 	driverId: string;
@@ -25,7 +26,7 @@ export const reportMedicalPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing driverId in params)",
+						TRANSLATION.driverIdIsMissingFromParams,
 				},
 				{ status: 400 },
 			);
@@ -35,13 +36,13 @@ export const reportMedicalPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่พบข้อมูลคนขับที่ต้องการฐานข้อมูล (Cannot find driver with given ID)",
+						TRANSLATION.driverIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
 		}
 		const topicOptions = await getTopicAll();
-		const driverOptions: DriverModel[] = [driver];
+		const driverOptions = [driver];
 		const initFormData: DriverReportFormData = {
 			content: "",
 			datetime: dayjs().format(),

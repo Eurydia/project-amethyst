@@ -2,6 +2,7 @@ import {
 	getPickupRoute,
 	getTopicAll,
 } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import {
 	PickupRouteModel,
 	PickupRouteReportFormData,
@@ -15,7 +16,7 @@ import {
 
 export type ReportGeneralPageLoaderData = {
 	routeId: string;
-	driverOptions: PickupRouteModel[];
+	routeOptions: PickupRouteModel[];
 	topicOptions: string[];
 	initFormData: PickupRouteReportFormData;
 };
@@ -24,7 +25,10 @@ export const reportGeneralPageLoader: LoaderFunction =
 		const { routeId } = params;
 		if (routeId === undefined) {
 			throw json(
-				{ message: "ข้อมูลคนขับรถไม่ถูกต้อง" },
+				{
+					message:
+						TRANSLATION.pickupRouteIdIsMissingFromParams,
+				},
 				{ status: 400 },
 			);
 		}
@@ -32,12 +36,15 @@ export const reportGeneralPageLoader: LoaderFunction =
 		const route = await getPickupRoute(routeId);
 		if (route === null) {
 			throw json(
-				{ message: "ไม่พบข้อมูลคนขับรถ" },
+				{
+					message:
+						TRANSLATION.pickupRouteIsMissingFromDatabase,
+				},
 				{ status: 404 },
 			);
 		}
 		const topicOptions = await getTopicAll();
-		const driverOptions = [route];
+		const routeOptions = [route];
 		const initFormData: PickupRouteReportFormData =
 			{
 				route,
@@ -49,7 +56,7 @@ export const reportGeneralPageLoader: LoaderFunction =
 		const loaderData: ReportGeneralPageLoaderData =
 			{
 				routeId,
-				driverOptions,
+				routeOptions,
 				initFormData,
 				topicOptions,
 			};

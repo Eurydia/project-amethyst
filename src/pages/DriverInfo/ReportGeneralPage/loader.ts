@@ -1,18 +1,18 @@
 import {
-	json,
-	LoaderFunction,
-} from "react-router-dom";
-import {
 	getDriver,
 	getTopicAll,
 } from "$backend/database/get";
-import dayjs from "dayjs";
-import "dayjs/locale/th";
+import { TRANSLATION } from "$locale/th";
 import {
 	DriverModel,
 	DriverReportFormData,
 } from "$types/models/Driver";
-import { TRANSLATION } from "$locale/th";
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import {
+	json,
+	LoaderFunction,
+} from "react-router-dom";
 
 export type ReportGeneralPageLoaderData = {
 	driverId: string;
@@ -27,7 +27,7 @@ export const reportGeneralPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						TRANSLATION.paramsIsMissingDriverId,
+						TRANSLATION.driverIdIsMissingFromParams,
 				},
 				{ status: 400 },
 			);
@@ -46,8 +46,8 @@ export const reportGeneralPageLoader: LoaderFunction =
 		const topicOptions = await getTopicAll();
 		const driverOptions = [driver];
 		const initFormData: DriverReportFormData = {
-			driver,
 			datetime: dayjs().format(),
+			driver,
 			content: "",
 			title: "",
 			topics: [],

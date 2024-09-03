@@ -2,6 +2,7 @@ import {
 	getVehicle,
 	getVehicleAll,
 } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import { VehicleFormData } from "$types/models/Vehicle";
 import {
 	json,
@@ -27,14 +28,20 @@ export const editPageLoader: LoaderFunction =
 		const { vehicleId } = params;
 		if (vehicleId === undefined) {
 			throw json(
-				{ message: "ข้อมูลไม่ครบ" },
+				{
+					message:
+						TRANSLATION.vehicleIdIsMissingFromParams,
+				},
 				{ status: 400 },
 			);
 		}
 		const vehicle = await getVehicle(vehicleId);
 		if (vehicle === null) {
 			throw json(
-				{ message: "ไม่พบคนขับรถในระบบ" },
+				{
+					message:
+						TRANSLATION.vehicleIsMissingFromDatabase,
+				},
 				{ status: 404 },
 			);
 		}

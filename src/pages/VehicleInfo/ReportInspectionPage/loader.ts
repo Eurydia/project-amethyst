@@ -2,6 +2,7 @@ import {
 	getTopicAll,
 	getVehicle,
 } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import {
 	VehicleModel,
 	VehicleReportInspectionFormData,
@@ -22,14 +23,20 @@ export const reportInspectionPageLoader: LoaderFunction =
 		const { vehicleId } = params;
 		if (vehicleId === undefined) {
 			throw json(
-				{ message: "ข้อมูลไม่ถูกต้อง" },
+				{
+					message:
+						TRANSLATION.vehicleIdIsMissingFromParams,
+				},
 				{ status: 400 },
 			);
 		}
 		const vehicle = await getVehicle(vehicleId);
 		if (vehicle === null) {
 			throw json(
-				{ message: "ไม่พบข้อมูล" },
+				{
+					message:
+						TRANSLATION.vehicleIsMissingFromDatabase,
+				},
 				{ status: 404 },
 			);
 		}

@@ -17,7 +17,7 @@ export const editPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						TRANSLATION.paramsIsMissingDriverId,
+						TRANSLATION.driverIdIsMissingFromParams,
 				},
 				{ status: 400 },
 			);

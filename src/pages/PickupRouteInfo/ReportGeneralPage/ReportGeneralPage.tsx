@@ -1,3 +1,4 @@
+import { postPickupRouteReportGeneral } from "$backend/database/post";
 import { PickupRouteReportForm } from "$components/PickupRouteReportForm";
 import { PickupRouteReportFormData } from "$types/models/PickupRoute";
 import { Stack, Typography } from "@mui/material";
@@ -8,16 +9,14 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ReportGeneralPageLoaderData } from "./loader";
-import { postPickupRouteReportGeneral } from "$backend/database/post";
 
 export const ReportGeneralPage: FC = () => {
 	const {
 		topicOptions,
 		initFormData,
-		driverOptions,
+		routeOptions: driverOptions,
 		routeId,
-	} =
-		useLoaderData() as ReportGeneralPageLoaderData;
+	} = useLoaderData() as ReportGeneralPageLoaderData;
 
 	const submit = useSubmit();
 

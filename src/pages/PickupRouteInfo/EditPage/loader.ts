@@ -1,4 +1,5 @@
 import { getPickupRoute } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import { PickupRouteFormData } from "$types/models/PickupRoute";
 import {
 	json,
@@ -14,14 +15,20 @@ export const editPageLoader: LoaderFunction =
 		const { routeId } = params;
 		if (routeId === undefined) {
 			throw json(
-				{ message: "ข้อมูลไม่ครบ" },
+				{
+					message:
+						TRANSLATION.pickupRouteIdIsMissingFromParams,
+				},
 				{ status: 400 },
 			);
 		}
 		const route = await getPickupRoute(routeId);
 		if (route === null) {
 			throw json(
-				{ message: "ไม่พบคนขับรถในระบบ" },
+				{
+					message:
+						TRANSLATION.pickupRouteIsMissingFromDatabase,
+				},
 				{ status: 404 },
 			);
 		}

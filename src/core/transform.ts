@@ -1,108 +1,63 @@
+import { DriverModel } from "$types/models/Driver";
+import { OperationalLogModel } from "$types/models/OperatonalLog";
 import {
-	getDriver,
-	getVehicle,
-	getPickupRoute,
-} from "$backend/database/get";
-import {
-	DriverReportModel,
-	DriverModel,
-	DriverReportEntry,
-} from "$types/models/Driver";
-import {
-	OperationalLogModel,
-	OperationalLogEntry,
-} from "$types/models/OperatonalLog";
-import { PickupRouteModel } from "$types/models/PickupRoute";
+	PickupRouteEntry,
+	PickupRouteModel,
+} from "$types/models/PickupRoute";
 import { VehicleModel } from "$types/models/Vehicle";
 
-export const fromDriverReportModelToEntry = (
-	model: DriverReportModel,
-	driver: DriverModel,
+const pickupRouteToEntryItem = () => {};
+
+export const logToPickupRouteEntry = (
+	logs: OperationalLogModel[],
+	route: PickupRouteModel,
+	drivers: DriverModel[],
+	vehicles: VehicleModel[],
 ) => {
-	const entry: DriverReportEntry = {
-		id: model.id,
-		datetime: model.datetime,
-		title: model.title,
-		topics: model.topics
-			.split(",")
-			.map((topic) => topic.trim())
-			.filter((topic) => topic.length > 0),
-		driverId: driver.id,
-		driverName: driver.name,
-		driverSurname: driver.surname,
+	const driverIds = new Set<string>();
+	const vehicleIds = new Set<string>();
+	for (const { vehicle_id, driver_id } of logs) {
+		driverIds.add(driver_id);
+		vehicleIds.add(vehicle_id);
+	}
+
+	const entry: PickupRouteEntry = {
+		id: route.id,
+		name: route.name,
+		vehicles: vehicles
+			.filter(({ id }) => vehicleIds.has(id))
+			.map(({ id, license_plate }) => ({
+				id,
+				licensePlate: license_plate,
+			})),
+		drivers: drivers
+			.filter(({ id }) => driverIds.has(id))
+			.map(({ id, name, surname }) => ({
+				id,
+				name,
+				surname,
+			})),
 	};
 	return entry;
 };
 
-export const transformVehicleModelToLogItem = (
-	model: VehicleModel,
-): { id: string; licensePlate: string } => {
-	return {
-		id: model.id,
-		licensePlate: model.license_plate,
-	};
+const toEntries = (
+	logs: OperationalLogModel[],
+	routes: PickupRouteModel[],
+	drivers: DriverModel[],
+	vehicles: VehicleModel[],
+) => {
+	const entries = [];
+	for (const route of routes) {
+		const entry = logToPickupRouteEntry(
+			logs.filter(
+				({ route_id }) => route_id === route.id,
+			),
+			route,
+			drivers,
+			vehicles,
+		);
+		entries.push(entry);
+	}
+	return entries;
 };
-
-export const transformDriverModelToLogItem = (
-	model: DriverModel,
-): {
-	id: string;
-	name: string;
-	surname: string;
-} => {
-	return {
-		id: model.id,
-		name: model.name,
-		surname: model.surname,
-	};
-};
-
-export const transformPickupRouteModelToLogItem =
-	(
-		model: PickupRouteModel,
-	): { id: string; name: string } => {
-		return {
-			id: model.id,
-			name: model.name,
-		};
-	};
-
-export const fromOperationalLogModelToEntry =
-	async (
-		model: OperationalLogModel,
-	): Promise<OperationalLogEntry | null> => {
-		const driver = await getDriver(
-			model.driver_id,
-		);
-		if (driver === null) {
-			return null;
-		}
-		const vehicle = await getVehicle(
-			model.vehicle_id,
-		);
-		if (vehicle === null) {
-			return null;
-		}
-		const route = await getPickupRoute(
-			model.route_id,
-		);
-		if (route === null) {
-			return null;
-		}
-		const entry: OperationalLogEntry = {
-			id: model.id,
-			startDate: model.start_date,
-			endDate: model.end_date,
-
-			routeId: model.route_id,
-			routeName: route.name,
-
-			vehicleId: model.vehicle_id,
-			vehicleLicensePlate: vehicle.license_plate,
-
-			driverId: model.driver_id,
-			driverName: driver.name,
-			driverSurname: driver.surname,
-		};
-		return entry;
-	};

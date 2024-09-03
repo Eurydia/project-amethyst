@@ -14,12 +14,12 @@ export const PICKUP_ROUTE_ROUTES: RouteObject = {
 		{
 			index: true,
 			element: <IndexPage />,
-			loader: indexPageLoader,
+			loader: indexPageLoader, // OK
 		},
 		{
 			path: "new",
 			element: <NewPage />,
-			loader: newPageLoader,
+			loader: newPageLoader, // OK
 		},
 	],
 };

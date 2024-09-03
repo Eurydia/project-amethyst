@@ -22,7 +22,7 @@ export const DRIVER_INFO_ROUTES: RouteObject = {
 		{
 			index: true,
 			element: <IndexPage />,
-			loader: indexPageLoader,
+			loader: indexPageLoader, // OK
 		},
 		{
 			path: "edit",

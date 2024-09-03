@@ -1,4 +1,5 @@
 import { FormalLayout } from "$layouts/FormalLayout";
+import { TRANSLATION } from "$locale/th";
 import { EditRounded } from "@mui/icons-material";
 import {
 	ButtonProps,
@@ -7,7 +8,7 @@ import {
 import { FC, ReactNode } from "react";
 import { TypographyButton } from "./TypographyButton";
 
-type BaseDetailsProps = {
+type BaseInfoGroupProps = {
 	children: {
 		label: string;
 		value: ReactNode;
@@ -16,21 +17,17 @@ type BaseDetailsProps = {
 		editButton: ButtonProps;
 	};
 };
-export const BaseDetails: FC<BaseDetailsProps> = (
-	props,
-) => {
+export const BaseInfoGroup: FC<
+	BaseInfoGroupProps
+> = (props) => {
 	const { slotProps, children } = props;
 	return (
-		<Stack
-			sx={{
-				gap: 1,
-			}}
-		>
+		<Stack spacing={1}>
 			<TypographyButton
 				{...slotProps.editButton}
 				startIcon={<EditRounded />}
 				variant="contained"
-				children="แก้ไขข้อมูล"
+				children={TRANSLATION.globalEditInfo}
 			/>
 			<FormalLayout>{children}</FormalLayout>
 		</Stack>

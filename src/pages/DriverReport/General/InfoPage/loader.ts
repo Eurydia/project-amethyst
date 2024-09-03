@@ -1,7 +1,8 @@
 import {
 	getDriver,
-	getDriverReportMedical,
+	getDriverReportGeneral,
 } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import { DriverReport } from "$types/models/Driver";
 import {
 	json,
@@ -18,48 +19,50 @@ export const infoPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing report ID in params)",
+						TRANSLATION.driverReportIdIsMissingFromParams,
 				},
 				{ status: 400 },
 			);
 		}
-		const model = await getDriverReportMedical(
+		const _report = await getDriverReportGeneral(
 			reportId,
 		);
-		if (model === null) {
+		if (_report === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบผลการตรวจสารเสพติดในฐานข้อมูล (Cannot find report with given ID)",
+						TRANSLATION.driverGeneralReportIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
 		}
 		const driver = await getDriver(
-			model.driver_id,
+			_report.driver_id,
 		);
 		if (driver === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับในฐานข้อมูล (Cannot find driver with ID given in report entry)",
+						TRANSLATION.driverIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
 		}
 
 		const report: DriverReport = {
-			content: model.content,
-			datetime: model.datetime,
-			driverId: model.driver_id,
-			driverName: driver.name,
-			driverSurname: driver.surname,
-			id: model.id,
-			title: model.title,
-			topics: model.topics
+			id: _report.id,
+			content: _report.content,
+			datetime: _report.datetime,
+			driverId: _report.driver_id,
+			title: _report.title,
+			topics: _report.topics
+				.normalize()
 				.split(",")
 				.map((topic) => topic.trim())
 				.filter((topic) => topic.length > 0),
+
+			driverName: driver.name,
+			driverSurname: driver.surname,
 		};
 
 		const loaderData: InfoPageLoaderData = {

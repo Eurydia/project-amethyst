@@ -1,20 +1,20 @@
 import { RouteObject } from "react-router-dom";
 import {
-	NewPage,
-	newPageLoader,
-} from "./NewPage";
-import {
 	IndexPage,
 	indexPageLoader,
 } from "./IndexPage";
+import {
+	InfoEditPage,
+	infoEditPageLoader,
+} from "./InfoEditPage";
 import {
 	InfoPage,
 	infoPageLoader,
 } from "./InfoPage";
 import {
-	InfoEditPage,
-	infoEditPageLoader,
-} from "./InfoEditPage";
+	NewPage,
+	newPageLoader,
+} from "./NewPage";
 
 export const DRIVER_REPORT_MEDICAL_ROUTES: RouteObject =
 	{
@@ -23,17 +23,17 @@ export const DRIVER_REPORT_MEDICAL_ROUTES: RouteObject =
 			{
 				index: true,
 				element: <IndexPage />,
-				loader: indexPageLoader,
+				loader: indexPageLoader, // OK
 			},
 			{
 				path: "new",
 				element: <NewPage />,
-				loader: newPageLoader,
+				loader: newPageLoader, // OK
 			},
 			{
 				path: "info/:reportId",
 				element: <InfoPage />,
-				loader: infoPageLoader,
+				loader: infoPageLoader, // OK
 			},
 			{
 				path: "info/:reportId/edit",

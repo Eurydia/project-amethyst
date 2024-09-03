@@ -1,7 +1,8 @@
 import {
-	getPickupRouteReportGeneral,
 	getPickupRoute,
+	getPickupRouteReportGeneral,
 } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import { PickupRouteReport } from "$types/models/PickupRoute";
 import {
 	json,
@@ -18,46 +19,48 @@ export const infoPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (400-Missing report ID in params)",
+						TRANSLATION.pickupRouteGeneralReportIdIsMissingFromParams,
 				},
 				{ status: 400 },
 			);
 		}
-
-		const rawEntry =
+		const _report =
 			await getPickupRouteReportGeneral(reportId);
-		if (rawEntry === null) {
+		if (_report === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบรายการในฐานข้อมูล (404-Cannot find report with given ID)",
+						TRANSLATION.pickupRouteGeneralReportIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
 		}
-
 		const route = await getPickupRoute(
-			rawEntry.route_id,
+			_report.route_id,
 		);
 
 		if (route === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับในฐานข้อมูล (404-Cannot find driver with ID given in report entry)",
+						TRANSLATION.pickupRouteIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
 		}
 
 		const report: PickupRouteReport = {
-			content: rawEntry.content,
-			datetime: rawEntry.datetime,
-			id: rawEntry.id,
-			title: rawEntry.title,
-			routeId: rawEntry.route_id,
+			content: _report.content,
+			datetime: _report.datetime,
+			id: _report.id,
+			title: _report.title,
+			routeId: _report.route_id,
 			routeName: route.name,
-			topics: rawEntry.topics.split(","),
+			topics: _report.topics
+				.normalize()
+				.split(",")
+				.map((topic) => topic.trim())
+				.filter((topic) => topic.length > 0),
 		};
 
 		const loaderData: InfoPageLoaderData = {

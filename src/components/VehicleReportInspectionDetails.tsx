@@ -1,12 +1,12 @@
 import { VehicleReportInspection } from "$types/models/Vehicle";
-import { BaseDetails } from "./BaseDetails";
+import { Typography } from "@mui/material";
+import dayjs from "dayjs";
+import { FC } from "react";
 import {
 	Link,
 	useSubmit,
 } from "react-router-dom";
-import dayjs from "dayjs";
-import { FC } from "react";
-import { Typography } from "@mui/material";
+import { BaseInfoGroup } from "./BaseInfoGroup";
 
 type VehicleReportInspectionDetailsProps = {
 	report: VehicleReportInspection;
@@ -98,7 +98,7 @@ export const VehicleReportInspectionDetails: FC<
 	}));
 
 	return (
-		<BaseDetails
+		<BaseInfoGroup
 			slotProps={{
 				editButton: {
 					onClick: () =>
@@ -107,6 +107,6 @@ export const VehicleReportInspectionDetails: FC<
 			}}
 		>
 			{detailItems}
-		</BaseDetails>
+		</BaseInfoGroup>
 	);
 };

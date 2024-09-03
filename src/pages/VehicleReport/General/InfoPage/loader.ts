@@ -1,7 +1,8 @@
 import {
-	getVehicleReportGeneral,
 	getVehicle,
+	getVehicleReportGeneral,
 } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import { VehicleReportGeneral } from "$types/models/Vehicle";
 import {
 	json,
@@ -9,7 +10,7 @@ import {
 } from "react-router-dom";
 
 export type InfoPageLoaderData = {
-	entry: VehicleReportGeneral;
+	report: VehicleReportGeneral;
 };
 export const infoPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -18,50 +19,54 @@ export const infoPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (400-Missing report ID in params)",
+						TRANSLATION.vehicleReportIdIsMissingFromParams,
 				},
 				{ status: 400 },
 			);
 		}
 
-		const rawEntry =
-			await getVehicleReportGeneral(reportId);
-		if (rawEntry === null) {
+		const _report = await getVehicleReportGeneral(
+			reportId,
+		);
+		if (_report === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบรายการในฐานข้อมูล (404-Cannot find report with given ID)",
+						TRANSLATION.vehicleGeneralReportIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
 		}
-
 		const vehicle = await getVehicle(
-			rawEntry.vehicle_id,
+			_report.vehicle_id,
 		);
-
 		if (vehicle === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับในฐานข้อมูล (404-Cannot find driver with ID given in report entry)",
+						TRANSLATION.vehicleIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
 		}
 
-		const entry: VehicleReportGeneral = {
-			id: rawEntry.id,
-			datetime: rawEntry.datetime,
-			title: rawEntry.title,
-			content: rawEntry.content,
-			topics: rawEntry.topics.split(","),
+		const report: VehicleReportGeneral = {
+			id: _report.id,
+			datetime: _report.datetime,
+			title: _report.title,
+			content: _report.content,
+			topics: _report.topics
+				.normalize()
+				.split(",")
+				.map((topic) => topic.trim())
+				.filter((topic) => topic.length > 0),
+
 			vehicleId: vehicle.id,
 			vehicleLicensePlate: vehicle.license_plate,
 		};
 
 		const loaderData: InfoPageLoaderData = {
-			entry,
+			report,
 		};
 
 		return loaderData;

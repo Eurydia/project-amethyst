@@ -1,8 +1,9 @@
 import {
 	getTopicAll,
-	getVehicleReportGeneral,
 	getVehicle,
+	getVehicleReportGeneral,
 } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import {
 	VehicleModel,
 	VehicleReportGeneralFormData,
@@ -25,7 +26,7 @@ export const infoEditPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing report ID in params)",
+						TRANSLATION.vehicleReportIdIsMissingFromParams,
 				},
 				{ status: 400 },
 			);
@@ -37,7 +38,7 @@ export const infoEditPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบรายการในฐานข้อมูล (Cannot find report with given ID)",
+						TRANSLATION.vehicleGeneralReportIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
@@ -49,7 +50,7 @@ export const infoEditPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับในฐานข้อมูล (Cannot find driver with ID given in report entry)",
+						TRANSLATION.vehicleIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
@@ -62,7 +63,11 @@ export const infoEditPageLoader: LoaderFunction =
 				content: report.content,
 				datetime: report.datetime,
 				title: report.title,
-				topics: report.topics.split(","),
+				topics: report.topics
+					.normalize()
+					.split(",")
+					.map((topic) => topic.trim())
+					.filter((topic) => topic.length > 0),
 			};
 
 		const loaderData: InfoEditPageLoaderData = {

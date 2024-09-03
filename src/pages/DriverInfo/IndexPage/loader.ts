@@ -1,9 +1,10 @@
 import {
 	getDriver,
+	getDriverReportGeneralAll,
 	getDriverReportMedicalAll,
 	getOperationLogAll,
-	getPickupRoute,
-	getVehicle,
+	getPickupRouteAll,
+	getVehicleAll,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
 import {
@@ -45,28 +46,77 @@ const reportToEntry = (
 	return entry;
 };
 
-const logToEntry = async (
-	report: OperationalLogModel,
+const reportToEntries = (
+	reports: DriverReportModel[],
+	driver: DriverModel,
+) => {
+	const generalEntries: DriverReportEntry[] = [];
+	for (const report of reports) {
+		if (report.driver_id !== driver.id) {
+			continue;
+		}
+		const entry = reportToEntry(report, driver);
+		generalEntries.push(entry);
+	}
+	return generalEntries;
+};
+
+const logToEntry = (
+	log: OperationalLogModel,
 	vehicle: VehicleModel,
 	driver: DriverModel,
 	route: PickupRouteModel,
 ) => {
 	const entry: OperationalLogEntry = {
-		id: report.id,
-		startDate: report.start_date,
-		endDate: report.end_date,
+		id: log.id,
+		startDate: log.start_date,
+		endDate: log.end_date,
 
 		vehicleId: vehicle.id,
 		vehicleLicensePlate: vehicle.license_plate,
 
-		driverId: report.driver_id,
+		driverId: driver.id,
 		driverName: driver.name,
 		driverSurname: driver.surname,
 
-		routeId: report.route_id,
+		routeId: route.id,
 		routeName: route.name,
 	};
 	return entry;
+};
+
+const logToEntries = async (
+	logAll: OperationalLogModel[],
+	driver: DriverModel,
+	vehicleAll: VehicleModel[],
+	routeAll: PickupRouteModel[],
+): Promise<OperationalLogEntry[]> => {
+	const logEntries: OperationalLogEntry[] = [];
+	for (const log of logAll) {
+		if (log.driver_id !== driver.id) {
+			continue;
+		}
+		const vehicle = vehicleAll.find(
+			({ id }) => id === log.vehicle_id,
+		);
+		if (vehicle === undefined) {
+			continue;
+		}
+		const route = routeAll.find(
+			({ id }) => id === log.route_id,
+		);
+		if (route === undefined) {
+			continue;
+		}
+		const entry = logToEntry(
+			log,
+			vehicle,
+			driver,
+			route,
+		);
+		logEntries.push(entry);
+	}
+	return logEntries;
 };
 
 const getImages = async (driverId: string) => {
@@ -128,55 +178,29 @@ export const indexPageLoader: LoaderFunction =
 			);
 		}
 
-		const medicalReports =
+		const medicalReportAll =
 			await getDriverReportMedicalAll();
-		const medicalEntries: DriverReportEntry[] =
-			[];
-		for (const report of medicalReports) {
-			if (report.driver_id !== driverId) {
-				continue;
-			}
-			const entry = reportToEntry(report, driver);
-			medicalEntries.push(entry);
-		}
-		const generalReports =
-			await getDriverReportMedicalAll();
-		const generalEntries: DriverReportEntry[] =
-			[];
-		for (const report of generalReports) {
-			if (report.driver_id !== driverId) {
-				continue;
-			}
-			const entry = reportToEntry(report, driver);
-			generalEntries.push(entry);
-		}
+		const medicalEntries = reportToEntries(
+			medicalReportAll,
+			driver,
+		);
+
+		const generalReportAll =
+			await getDriverReportGeneralAll();
+		const generalEntries = reportToEntries(
+			generalReportAll,
+			driver,
+		);
 
 		const logs = await getOperationLogAll();
-		const logEntries: OperationalLogEntry[] = [];
-		for (const log of logs) {
-			if (log.driver_id !== driverId) {
-				continue;
-			}
-			const vehicle = await getVehicle(
-				log.vehicle_id,
-			);
-			if (vehicle === null) {
-				continue;
-			}
-			const route = await getPickupRoute(
-				log.route_id,
-			);
-			if (route === null) {
-				continue;
-			}
-			const entry = await logToEntry(
-				log,
-				vehicle,
-				driver,
-				route,
-			);
-			logEntries.push(entry);
-		}
+		const vehicleAll = await getVehicleAll();
+		const routeAll = await getPickupRouteAll();
+		const logEntries = await logToEntries(
+			logs,
+			driver,
+			vehicleAll,
+			routeAll,
+		);
 
 		const images = await getImages(driverId);
 

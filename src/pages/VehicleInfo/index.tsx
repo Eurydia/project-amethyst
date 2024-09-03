@@ -22,21 +22,21 @@ export const VEHICLE_INFO_ROUTES: RouteObject = {
 		{
 			index: true,
 			element: <IndexPage />,
-			loader: indexPageLoader,
+			loader: indexPageLoader, // OK
 		},
 		{
 			path: "edit",
 			element: <EditPage />,
-			loader: editPageLoader,
+			loader: editPageLoader, // OK
 		},
 		{
 			path: "report/general",
 			element: <ReportGeneralPage />,
-			loader: reportGeneralPageLoader,
+			loader: reportGeneralPageLoader, // OK
 		},
 		{
 			path: "report/inspection",
-			element: <ReportInspectionPage />,
+			element: <ReportInspectionPage />, // OK
 			loader: reportInspectionPageLoader,
 		},
 	],

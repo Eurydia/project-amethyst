@@ -4,17 +4,17 @@ import {
 	indexPageLoader,
 } from "./IndexPage";
 import {
-	NewPage,
-	newPageLoader,
-} from "./NewPage";
+	InfoEditPage,
+	infoEditPageLoader,
+} from "./InfoEditPage";
 import {
 	InfoPage,
 	infoPageLoader,
 } from "./InfoPage";
 import {
-	InfoEditPage,
-	infoEditPageLoader,
-} from "./InfoEditPage";
+	NewPage,
+	newPageLoader,
+} from "./NewPage";
 
 export const DRIVER_REPORT_GENERAL_ROUTES: RouteObject =
 	{
@@ -23,22 +23,22 @@ export const DRIVER_REPORT_GENERAL_ROUTES: RouteObject =
 			{
 				index: true,
 				element: <IndexPage />,
-				loader: indexPageLoader,
+				loader: indexPageLoader, // OK
 			},
 			{
 				path: "new",
 				element: <NewPage />,
-				loader: newPageLoader,
+				loader: newPageLoader, // OK
 			},
 			{
 				path: "info/:reportId",
 				element: <InfoPage />,
-				loader: infoPageLoader,
+				loader: infoPageLoader, // OK
 			},
 			{
 				path: "info/:reportId/edit",
 				element: <InfoEditPage />,
-				loader: infoEditPageLoader,
+				loader: infoEditPageLoader, // OK
 			},
 		],
 	};

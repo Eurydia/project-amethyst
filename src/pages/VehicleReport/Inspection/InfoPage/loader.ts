@@ -1,7 +1,9 @@
 import {
 	getVehicle,
 	getVehicleReportInspection,
+	getVehicleReportInspectionAll,
 } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import { VehicleReportInspection } from "$types/models/Vehicle";
 import {
 	json,
@@ -18,54 +20,72 @@ export const infoPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing report ID in params)",
+						TRANSLATION.vehicleReportIdIsMissingFromParams,
 				},
 				{ status: 400 },
 			);
 		}
-		const reportModel =
+		const _report =
 			await getVehicleReportInspection(reportId);
-		if (reportModel === null) {
+		if (_report === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบรายการในฐานข้อมูล (Cannot find report with given ID)",
+						TRANSLATION.vehicleInspectionReportIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
 		}
 		const vehicle = await getVehicle(
-			reportModel.vehicle_id,
+			_report.vehicle_id,
 		);
 		if (vehicle === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับในฐานข้อมูล (404-Cannot find driver with ID given in report entry)",
+						TRANSLATION.vehicleIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
 		}
 
+		const reportAll =
+			await getVehicleReportInspectionAll();
+		let count = 0;
+		for (const { vehicle_id, id } of reportAll) {
+			if (vehicle_id === vehicle.id) {
+				count++;
+			}
+			if (id === _report.id) {
+				break;
+			}
+		}
+
 		const report: VehicleReportInspection = {
-			frame: reportModel.frame,
-			windows: reportModel.windows,
-			frontCamera: reportModel.front_camera,
-			content: reportModel.content,
-			datetime: reportModel.datetime,
-			overheadFan: reportModel.overhead_fan,
-			id: reportModel.id,
-			brakeLights: reportModel.brake_light,
-			headlights: reportModel.headlights,
-			turnSignals: reportModel.turn_signals,
-			rearviewMirror: reportModel.rearview_mirror,
-			sideviewMirror: reportModel.sideview_mirror,
-			seatbelts: reportModel.seatbelts,
-			seats: reportModel.seats,
-			tires: reportModel.tires,
-			vehicleId: reportModel.vehicle_id,
+			frame: _report.frame,
+			windows: _report.windows,
+			frontCamera: _report.front_camera,
+			content: _report.content,
+			datetime: _report.datetime,
+			overheadFan: _report.overhead_fan,
+			id: _report.id,
+			brakeLights: _report.brake_light,
+			headlights: _report.headlights,
+			turnSignals: _report.turn_signals,
+			rearviewMirror: _report.rearview_mirror,
+			sideviewMirror: _report.sideview_mirror,
+			seatbelts: _report.seatbelts,
+			seats: _report.seats,
+			tires: _report.tires,
+			vehicleId: _report.vehicle_id,
 			vehicleLicensePlate: vehicle.license_plate,
-			topics: reportModel.topics.split(","),
+			topics: _report.topics
+				.normalize()
+				.split(",")
+				.map((topic) => topic.trim())
+				.filter((topic) => topic.length > 0),
+
+			inspectionRoundNumber: count.toString(),
 		};
 
 		const loaderData: InfoPageLoaderData = {

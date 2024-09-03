@@ -1,11 +1,11 @@
 import { DriverReport } from "$types/models/Driver";
+import { Typography } from "@mui/material";
 import { FC } from "react";
 import {
 	Link,
 	useSubmit,
 } from "react-router-dom";
-import { BaseDetails } from "./BaseDetails";
-import { Typography } from "@mui/material";
+import { BaseInfoGroup } from "./BaseInfoGroup";
 
 type DriverReportDetailsProps = {
 	report: DriverReport;
@@ -50,7 +50,7 @@ export const DriverReportDetails: FC<
 	}));
 
 	return (
-		<BaseDetails
+		<BaseInfoGroup
 			slotProps={{
 				editButton: {
 					onClick: () =>
@@ -59,6 +59,6 @@ export const DriverReportDetails: FC<
 			}}
 		>
 			{infoItems}
-		</BaseDetails>
+		</BaseInfoGroup>
 	);
 };

@@ -1,8 +1,8 @@
 import { VehicleModel } from "$types/models/Vehicle";
-import { BaseDetails } from "./BaseDetails";
-import { useSubmit } from "react-router-dom";
-import { FC } from "react";
 import { Typography } from "@mui/material";
+import { FC } from "react";
+import { useSubmit } from "react-router-dom";
+import { BaseInfoGroup } from "./BaseInfoGroup";
 import { Gallery } from "./Gallery";
 
 type VehicleDetailsProps = {
@@ -48,7 +48,7 @@ export const VehicleDetails: FC<
 	});
 
 	return (
-		<BaseDetails
+		<BaseInfoGroup
 			slotProps={{
 				editButton: {
 					onClick: () =>
@@ -57,6 +57,6 @@ export const VehicleDetails: FC<
 			}}
 		>
 			{detailItems}
-		</BaseDetails>
+		</BaseInfoGroup>
 	);
 };

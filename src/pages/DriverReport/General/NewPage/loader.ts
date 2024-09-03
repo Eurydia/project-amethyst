@@ -18,6 +18,7 @@ export const newPageLoader: LoaderFunction =
 	async () => {
 		const topicOptions = await getTopicAll();
 		const driverOptions = await getDriverAll();
+
 		const initFormData: DriverReportFormData = {
 			datetime: dayjs().format(),
 			content: "",

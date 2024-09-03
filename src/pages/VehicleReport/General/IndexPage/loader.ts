@@ -1,6 +1,6 @@
 import {
+	getVehicleAll,
 	getVehicleReportGeneralAll,
-	getVehicle,
 } from "$backend/database/get";
 import {
 	VehicleModel,
@@ -9,7 +9,7 @@ import {
 } from "$types/models/Vehicle";
 import { LoaderFunction } from "react-router-dom";
 
-const toEntry = async (
+const toEntry = (
 	report: VehicleReportGeneralModel,
 	vehicle: VehicleModel,
 ) => {
@@ -17,7 +17,11 @@ const toEntry = async (
 		id: report.id,
 		datetime: report.datetime,
 		title: report.title,
-		topics: report.topics.split(","),
+		topics: report.topics
+			.normalize()
+			.split(",")
+			.map((topic) => topic.trim())
+			.filter((topic) => topic.length > 0),
 
 		vehicleId: vehicle.id,
 		vehicleLicensePlate: vehicle.license_plate,
@@ -26,30 +30,35 @@ const toEntry = async (
 	return entry;
 };
 
+const toEntries = (
+	reportAll: VehicleReportGeneralModel[],
+	vehicleAll: VehicleModel[],
+) => {
+	const entries = [];
+	for (const report of reportAll) {
+		const vehicle = vehicleAll.find(
+			({ id }) => id === report.vehicle_id,
+		);
+		if (vehicle === undefined) {
+			continue;
+		}
+		const entry = toEntry(report, vehicle);
+		entries.push(entry);
+	}
+	return entries;
+};
 export type IndexPageLoaderData = {
 	entries: VehicleReportGeneralEntry[];
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		const reports =
+		const reportAll =
 			await getVehicleReportGeneralAll();
-
-		const entries: VehicleReportGeneralEntry[] =
-			[];
-		for (const report of reports) {
-			const vehicle = await getVehicle(
-				report.vehicle_id,
-			);
-			if (vehicle === null) {
-				continue;
-			}
-			const entry = await toEntry(
-				report,
-				vehicle,
-			);
-
-			entries.push(entry);
-		}
+		const vehicleAll = await getVehicleAll();
+		const entries = toEntries(
+			reportAll,
+			vehicleAll,
+		);
 		const loaderData: IndexPageLoaderData = {
 			entries,
 		};

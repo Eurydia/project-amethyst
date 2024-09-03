@@ -1,4 +1,4 @@
-import { BaseDetails } from "$components/BaseDetails";
+import { BaseInfoGroup } from "$components/BaseDetails";
 import { Gallery } from "$components/Gallery";
 import { TRANSLATION } from "$locale/th";
 import { DriverModel } from "$types/models/Driver";
@@ -55,7 +55,7 @@ export const DriverDetails: FC<
 		},
 	];
 	return (
-		<BaseDetails
+		<BaseInfoGroup
 			slotProps={{
 				editButton: {
 					onClick: () =>
@@ -69,6 +69,6 @@ export const DriverDetails: FC<
 			}}
 		>
 			{infoItems}
-		</BaseDetails>
+		</BaseInfoGroup>
 	);
 };

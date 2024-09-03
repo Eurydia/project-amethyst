@@ -1,71 +1,75 @@
 import {
 	getDriverAll,
 	getOperationLogToday,
-	getPickupRouteMany,
-	getVehicleMany,
+	getPickupRouteAll,
+	getVehicleAll,
 } from "$backend/database/get";
 import {
 	DriverEntry,
 	DriverModel,
 } from "$types/models/Driver";
 import { OperationalLogModel } from "$types/models/OperatonalLog";
+import { PickupRouteModel } from "$types/models/PickupRoute";
+import { VehicleModel } from "$types/models/Vehicle";
 import { LoaderFunction } from "react-router-dom";
 
-const toEntry = async (
-	opLogs: OperationalLogModel[],
+const toEntry = (
+	logAll: OperationalLogModel[],
 	driver: DriverModel,
+	vehicleAll: VehicleModel[],
+	routeAll: PickupRouteModel[],
 ) => {
-	const logs = opLogs.filter(
-		(log) => log.driver_id === driver.id,
-	);
 	const vehicleIds = new Set<string>();
 	const routeIds = new Set<string>();
-	for (const { route_id, vehicle_id } of logs) {
+	for (const {
+		route_id,
+		vehicle_id,
+		driver_id,
+	} of logAll) {
+		if (driver_id !== driver.id) {
+			continue;
+		}
 		vehicleIds.add(vehicle_id);
 		routeIds.add(route_id);
 	}
-
-	const vehicles = await getVehicleMany(
-		vehicleIds,
-	);
-	const routes = await getPickupRouteMany(
-		routeIds,
-	);
 
 	const entry: DriverEntry = {
 		id: driver.id,
 		name: driver.name,
 		surname: driver.surname,
-		routes: routes.map(({ id, name }) => ({
-			id,
-			name,
-		})),
-		vehicles: vehicles.map(
-			({ id, license_plate }) => ({
+		routes: routeAll
+			.filter(({ id }) => routeIds.has(id))
+			.map(({ id, name }) => ({
+				id,
+				name,
+			})),
+		vehicles: vehicleAll
+			.filter(({ id }) => vehicleIds.has(id))
+			.map(({ id, license_plate }) => ({
 				id,
 				licensePlate: license_plate,
-			}),
-		),
+			})),
 	};
 	return entry;
 };
 
-const toEntries = async (
-	logs: OperationalLogModel[],
-	drivers: DriverModel[],
+const toEntries = (
+	logAll: OperationalLogModel[],
+	driverAll: DriverModel[],
+	vehicleAll: VehicleModel[],
+	routeAll: PickupRouteModel[],
 ) => {
 	const entries = [];
-	for (const driver of drivers) {
+	for (const driver of driverAll) {
 		const entry = toEntry(
-			logs.filter(
-				({ driver_id }) =>
-					driver_id === driver.id,
-			),
+			logAll,
 			driver,
+			vehicleAll,
+			routeAll,
 		);
 		entries.push(entry);
 	}
-	return Promise.all(entries);
+	return entries;
 };
 
 export type IndexPageLoaderData = {
@@ -73,11 +77,15 @@ export type IndexPageLoaderData = {
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		const logs = await getOperationLogToday();
-		const drivers = await getDriverAll();
-		const entries = await toEntries(
-			logs,
-			drivers,
+		const logAll = await getOperationLogToday();
+		const driverAll = await getDriverAll();
+		const vehicleAll = await getVehicleAll();
+		const routeAll = await getPickupRouteAll();
+		const entries = toEntries(
+			logAll,
+			driverAll,
+			vehicleAll,
+			routeAll,
 		);
 		const loaderData: IndexPageLoaderData = {
 			entries,

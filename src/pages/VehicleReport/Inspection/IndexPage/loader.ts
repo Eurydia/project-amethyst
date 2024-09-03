@@ -1,6 +1,6 @@
 import {
+	getVehicleAll,
 	getVehicleReportInspectionAll,
-	getVehicle,
 } from "$backend/database/get";
 import {
 	VehicleModel,
@@ -9,44 +9,57 @@ import {
 } from "$types/models/Vehicle";
 import { LoaderFunction } from "react-router-dom";
 
-const getInspectionRoundNumber = (
-	reports: VehicleReportInspectionModel[],
-	currentReport: VehicleReportInspectionModel,
-	vehicle: VehicleModel,
-) => {
-	let count = 0;
-	for (const report of reports) {
-		if (report.vehicle_id === vehicle.id) {
-			count++;
-		}
-		if (report.id === currentReport.id) {
-			break;
-		}
-	}
-	return count.toString();
-};
-
-const toEntry = async (
+const toEntry = (
 	reportAll: VehicleReportInspectionModel[],
 	report: VehicleReportInspectionModel,
 	vehicle: VehicleModel,
 ) => {
-	const inspectionRoundNumber =
-		getInspectionRoundNumber(
-			reportAll,
-			report,
-			vehicle,
-		);
+	let count = 0;
+	for (const { vehicle_id, id } of reportAll) {
+		if (vehicle_id === vehicle.id) {
+			count++;
+		}
+		if (id === report.id) {
+			break;
+		}
+	}
 
 	const entry: VehicleReportInspectionEntry = {
+		inspectionRoundNumber: count.toString(),
 		id: report.id,
-		inspectionRoundNumber,
 		datetime: report.datetime,
-		topics: report.topics.split(","),
+		topics: report.topics
+			.normalize()
+			.split(",")
+			.map((topic) => topic.trim())
+			.filter((topic) => topic.length > 0),
+
 		vehicleId: vehicle.id,
 		vehicleLicensePlate: vehicle.license_plate,
 	};
 	return entry;
+};
+
+const toEntries = (
+	reportAll: VehicleReportInspectionModel[],
+	vehicleAll: VehicleModel[],
+) => {
+	const entries = [];
+	for (const report of reportAll) {
+		const vehicle = vehicleAll.find(
+			({ id }) => id === report.vehicle_id,
+		);
+		if (vehicle === undefined) {
+			continue;
+		}
+		const entry = toEntry(
+			reportAll,
+			report,
+			vehicle,
+		);
+		entries.push(entry);
+	}
+	return entries;
 };
 
 export type IndexPageLoaderData = {
@@ -54,23 +67,13 @@ export type IndexPageLoaderData = {
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		const reports =
+		const reportAll =
 			await getVehicleReportInspectionAll();
-
-		const entries: VehicleReportInspectionEntry[] =
-			[];
-		for (const report of reports) {
-			const vehicle = await getVehicle(report.id);
-			if (vehicle === null) {
-				continue;
-			}
-			const entry = await toEntry(
-				reports,
-				report,
-				vehicle,
-			);
-			entries.push(entry);
-		}
+		const vehicleAll = await getVehicleAll();
+		const entries = toEntries(
+			reportAll,
+			vehicleAll,
+		);
 		const loaderData: IndexPageLoaderData = {
 			entries,
 		};

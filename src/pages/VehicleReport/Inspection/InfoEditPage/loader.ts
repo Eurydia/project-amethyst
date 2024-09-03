@@ -4,6 +4,7 @@ import {
 	getVehicleReportInspection,
 	getVehicleReportInspectionAll,
 } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import {
 	VehicleModel,
 	VehicleReportInspectionFormData,
@@ -12,24 +13,6 @@ import {
 	LoaderFunction,
 	json,
 } from "react-router-dom";
-
-const getInspectionRoundNumber = async (
-	reportId: string,
-	vehicleId: string,
-) => {
-	const reports =
-		await getVehicleReportInspectionAll();
-	let roundNumber = 0;
-	for (const report of reports) {
-		if (report.vehicle_id === vehicleId) {
-			roundNumber++;
-		}
-		if (report.id === reportId) {
-			break;
-		}
-	}
-	return roundNumber.toString();
-};
 
 export type InfoPageLoaderData = {
 	inspectionRoundNumber: string;
@@ -45,65 +28,75 @@ export const infoEditPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Missing report ID in params)",
+						TRANSLATION.vehicleReportIdIsMissingFromParams,
 				},
 				{ status: 400 },
 			);
 		}
-		const rawReport =
+		const report =
 			await getVehicleReportInspection(reportId);
-		if (rawReport === null) {
+		if (report === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบรายการในฐานข้อมูล (Cannot find report with given ID)",
+						TRANSLATION.vehicleInspectionReportIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
 		}
 		const vehicle = await getVehicle(
-			rawReport.vehicle_id,
+			report.vehicle_id,
 		);
 		if (vehicle === null) {
 			throw json(
 				{
 					message:
-						"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับในฐานข้อมูล (Cannot find driver with ID given in report entry)",
+						TRANSLATION.vehicleIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);
 		}
 
-		const inspectionRoundNumber =
-			await getInspectionRoundNumber(
-				reportId,
-				rawReport.vehicle_id,
-			);
+		const reportAll =
+			await getVehicleReportInspectionAll();
+		let count = 0;
+		for (const { vehicle_id, id } of reportAll) {
+			if (vehicle_id === vehicle.id) {
+				count++;
+			}
+			if (id === report.id) {
+				break;
+			}
+		}
+
 		const topicOptions = await getTopicAll();
 		const vehicleOptions = [vehicle];
 		const initFormData: VehicleReportInspectionFormData =
 			{
+				datetime: report.datetime,
+				content: report.content,
+				frame: report.frame,
+				windows: report.windows,
+				frontCamera: report.front_camera,
+				overheadFan: report.overhead_fan,
+				brakeLights: report.brake_light,
+				headlights: report.headlights,
+				turnSignals: report.turn_signals,
+				rearviewMirror: report.rearview_mirror,
+				sideviewMirror: report.sideview_mirror,
+				seatbelts: report.seatbelts,
+				seats: report.seats,
+				tires: report.tires,
+				topics: report.topics
+					.normalize()
+					.split(",")
+					.map((topic) => topic.trim())
+					.filter((topic) => topic.length > 0),
 				vehicle,
-				datetime: rawReport.datetime,
-				topics: rawReport.topics.split(","),
-				content: rawReport.content,
-
-				frame: rawReport.frame,
-				windows: rawReport.windows,
-				frontCamera: rawReport.front_camera,
-				overheadFan: rawReport.overhead_fan,
-				brakeLights: rawReport.brake_light,
-				headlights: rawReport.headlights,
-				turnSignals: rawReport.turn_signals,
-				rearviewMirror: rawReport.rearview_mirror,
-				sideviewMirror: rawReport.sideview_mirror,
-				seatbelts: rawReport.seatbelts,
-				seats: rawReport.seats,
-				tires: rawReport.tires,
 			};
 
 		const loaderData: InfoPageLoaderData = {
-			inspectionRoundNumber,
+			inspectionRoundNumber: count.toString(),
 			vehicleOptions,
 			topicOptions,
 			initFormData,

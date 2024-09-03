@@ -1,5 +1,5 @@
 import {
-	getDriver,
+	getDriverAll,
 	getDriverReportMedicalAll,
 } from "$backend/database/get";
 import {
@@ -17,7 +17,11 @@ const toEntry = (
 		datetime: report.datetime,
 		id: report.id,
 		title: report.title,
-		topics: report.topics.split(","),
+		topics: report.topics
+			.normalize()
+			.split(",")
+			.map((topic) => topic.trim())
+			.filter((topic) => topic.length > 0),
 
 		driverId: driver.id,
 		driverName: driver.name,
@@ -25,23 +29,37 @@ const toEntry = (
 	};
 	return entry;
 };
+
+const toEntries = (
+	reportAll: DriverReportModel[],
+	driverAll: DriverModel[],
+) => {
+	const entries: DriverReportEntry[] = [];
+	for (const report of reportAll) {
+		const driver = driverAll.find(
+			({ id }) => id === report.driver_id,
+		);
+		if (driver === undefined) {
+			continue;
+		}
+		const entry = toEntry(report, driver);
+		entries.push(entry);
+	}
+	return entries;
+};
+
 export type IndexPageLoaderData = {
 	entries: DriverReportEntry[];
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		const reports =
+		const reportAll =
 			await getDriverReportMedicalAll();
-		const entries: DriverReportEntry[] = [];
-		for (const report of reports) {
-			const driver = await getDriver(report.id);
-			if (driver === null) {
-				continue;
-			}
-			const entry = toEntry(report, driver);
-			entries.push(entry);
-		}
-
+		const driverAll = await getDriverAll();
+		const entries = toEntries(
+			reportAll,
+			driverAll,
+		);
 		const loaderData: IndexPageLoaderData = {
 			entries,
 		};

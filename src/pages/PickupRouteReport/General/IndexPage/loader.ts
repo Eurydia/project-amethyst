@@ -1,5 +1,5 @@
 import {
-	getPickupRoute,
+	getPickupRouteAll,
 	getPickupRouteReportGeneralAll,
 } from "$backend/database/get";
 import {
@@ -9,7 +9,7 @@ import {
 } from "$types/models/PickupRoute";
 import { LoaderFunction } from "react-router-dom";
 
-const toEntry = async (
+const toEntry = (
 	report: PickupRouteReportModel,
 	route: PickupRouteModel,
 ) => {
@@ -17,7 +17,11 @@ const toEntry = async (
 		id: report.id,
 		datetime: report.datetime,
 		title: report.title,
-		topics: report.topics.split(","),
+		topics: report.topics
+			.normalize()
+			.split(",")
+			.map((topic) => topic.trim())
+			.filter((topic) => topic.length > 0),
 
 		routeId: route.id,
 		routeName: route.name,
@@ -26,25 +30,36 @@ const toEntry = async (
 	return entry;
 };
 
+const toEntries = (
+	reportAll: PickupRouteReportModel[],
+	routeAll: PickupRouteModel[],
+) => {
+	const entries = [];
+	for (const report of reportAll) {
+		const route = routeAll.find(
+			({ id }) => id === report.route_id,
+		);
+		if (route === undefined) {
+			continue;
+		}
+		const entry = toEntry(report, route);
+		entries.push(entry);
+	}
+	return entries;
+};
+
 export type IndexPageLoaderData = {
 	entries: PickupRouteReportEntry[];
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		const reports =
+		const reportAll =
 			await getPickupRouteReportGeneralAll();
-
-		const entries: PickupRouteReportEntry[] = [];
-		for (const report of reports) {
-			const route = await getPickupRoute(
-				report.route_id,
-			);
-			if (route === null) {
-				continue;
-			}
-			const entry = await toEntry(report, route);
-			entries.push(entry);
-		}
+		const routeAll = await getPickupRouteAll();
+		const entries = toEntries(
+			reportAll,
+			routeAll,
+		);
 		const loaderData: IndexPageLoaderData = {
 			entries,
 		};

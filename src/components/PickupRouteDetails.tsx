@@ -1,9 +1,9 @@
-import { BaseDetails } from "./BaseDetails";
-import { useSubmit } from "react-router-dom";
-import { FC } from "react";
-import { Typography } from "@mui/material";
 import { PickupRouteModel } from "$types/models/PickupRoute";
+import { Typography } from "@mui/material";
 import dayjs from "dayjs";
+import { FC } from "react";
+import { useSubmit } from "react-router-dom";
+import { BaseInfoGroup } from "./BaseInfoGroup";
 
 type PickupRouteDetailsProps = {
 	route: PickupRouteModel;
@@ -39,7 +39,7 @@ export const PickupRouteDetails: FC<
 	}));
 
 	return (
-		<BaseDetails
+		<BaseInfoGroup
 			slotProps={{
 				editButton: {
 					onClick: () =>
@@ -48,6 +48,6 @@ export const PickupRouteDetails: FC<
 			}}
 		>
 			{detailItems}
-		</BaseDetails>
+		</BaseInfoGroup>
 	);
 };

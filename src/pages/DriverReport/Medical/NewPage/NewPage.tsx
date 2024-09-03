@@ -45,12 +45,10 @@ export const NewPage: FC = () => {
 		);
 	};
 
-	const heading = `ลงบันทึกผลการตรวจสารเสพติด`;
-
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				ลงบันทึกผลการตรวจสารเสพติด
 			</Typography>
 			<DriverReportForm
 				driverOptions={driverOptions}

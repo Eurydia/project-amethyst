@@ -34,8 +34,6 @@ export const IndexPage: FC = () => {
 
 	const submit = useSubmit();
 
-	const heading = `ข้อมูลสายรถ`;
-
 	return (
 		<Stack spacing={1}>
 			<BaseTOC>{TOC_ITEMS}</BaseTOC>
@@ -43,7 +41,7 @@ export const IndexPage: FC = () => {
 				variant="h1"
 				id="info"
 			>
-				{heading}
+				ข้อมูลสายรถ
 			</Typography>
 			<PickupRouteDetails route={route} />
 			<Typography
@@ -56,7 +54,11 @@ export const IndexPage: FC = () => {
 				entries={logEntries}
 				slotProps={{
 					addButton: {
-						onClick: () => {},
+						onClick: () =>
+							submit(
+								{},
+								{ action: "./log/operational" },
+							),
 					},
 				}}
 			/>

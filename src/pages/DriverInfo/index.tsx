@@ -8,6 +8,10 @@ import {
 	indexPageLoader,
 } from "./IndexPage";
 import {
+	LogOperationalPage,
+	logOperationalPageLoader,
+} from "./LogOperationalPage";
+import {
 	ReportGeneralPage,
 	reportGeneralPageLoader,
 } from "./ReportGeneralPage";
@@ -38,6 +42,11 @@ export const DRIVER_INFO_ROUTES: RouteObject = {
 			path: "report/medical",
 			element: <ReportMedicalPage />,
 			loader: reportMedicalPageLoader,
+		},
+		{
+			path: "log/operational",
+			element: <LogOperationalPage />,
+			loader: logOperationalPageLoader,
 		},
 	],
 };

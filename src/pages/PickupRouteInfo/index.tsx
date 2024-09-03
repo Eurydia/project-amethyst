@@ -8,6 +8,10 @@ import {
 	indexPageLoader,
 } from "./IndexPage";
 import {
+	LogOperationalPage,
+	logOperationalPageLoader,
+} from "./LogOperationalPage";
+import {
 	ReportGeneralPage,
 	reportGeneralPageLoader,
 } from "./ReportGeneralPage";
@@ -30,6 +34,11 @@ export const PICKUP_ROUTE_INFO_ROUTES: RouteObject =
 				path: "report/general",
 				element: <ReportGeneralPage />,
 				loader: reportGeneralPageLoader,
+			},
+			{
+				path: "log/operational",
+				element: <LogOperationalPage />,
+				loader: logOperationalPageLoader,
 			},
 		],
 	};

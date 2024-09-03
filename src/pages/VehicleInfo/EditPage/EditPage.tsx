@@ -42,12 +42,11 @@ export const EditPage: FC = () => {
 				),
 			);
 	};
-	const heading = `แก้ไขข้อมูลรถรับส่ง`;
 
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				แก้ไขข้อมูลรถรับส่ง
 			</Typography>
 			<VehicleForm
 				vendorOptions={vendorOptions}

@@ -19,6 +19,10 @@ export const DriverReportDetails: FC<
 
 	const infoItems = [
 		{
+			label: "เลขที่รายงาน",
+			value: report.id,
+		},
+		{
 			label: "คนขับรถ",
 			value: (
 				<Link

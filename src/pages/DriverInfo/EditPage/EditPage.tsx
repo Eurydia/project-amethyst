@@ -38,12 +38,10 @@ export const EditPage: FC = () => {
 			);
 	};
 
-	const heading = "แก้ไขข้อมูลคนขับรถ";
-
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				แก้ไขข้อมูลคนขับรถ
 			</Typography>
 			<DriverForm
 				slotProps={{

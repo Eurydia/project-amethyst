@@ -9,6 +9,7 @@ import {
 	Stack,
 	TextField,
 	Toolbar,
+	Typography,
 } from "@mui/material";
 import { FC, useMemo, useState } from "react";
 
@@ -43,16 +44,16 @@ const CustomListItem: FC<CustomListItemProps> = (
 						checked={isChecked}
 					/>
 				</ListItemIcon>
-				<ListItemText
-					primaryTypographyProps={{
-						sx: {
+				<ListItemText disableTypography>
+					<Typography
+						sx={{
 							fontWeight: isBold
 								? "bold"
 								: undefined,
-						},
-					}}
-				>
-					{label}
+						}}
+					>
+						{label}
+					</Typography>
 				</ListItemText>
 			</ListItemButton>
 		</ListItem>

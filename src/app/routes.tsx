@@ -4,6 +4,7 @@ import { DRIVER_REPORT_GENERAL_ROUTES } from "$pages/DriverReport/General";
 import { DRIVER_REPORT_MEDICAL_ROUTES } from "$pages/DriverReport/Medical";
 import { HomePage } from "$pages/HomePage/HomePage";
 import { homePageLoader } from "$pages/HomePage/loader";
+import { OPERATIONAL_LOG_ROUTES } from "$pages/OperationalLog";
 import { PICKUP_ROUTE_ROUTES } from "$pages/PickupRoute";
 import { PICKUP_ROUTE_INFO_ROUTES } from "$pages/PickupRouteInfo";
 import { PICKUP_ROUTE_REPORT_GENERAL_ROUTES } from "$pages/PickupRouteReport/General";
@@ -31,7 +32,10 @@ export const routes = createBrowserRouter([
 				element: <HomePage />,
 				loader: homePageLoader,
 			},
+
 			///////////////////////
+			OPERATIONAL_LOG_ROUTES,
+
 			PICKUP_ROUTE_ROUTES,
 			PICKUP_ROUTE_INFO_ROUTES,
 			PICKUP_ROUTE_REPORT_GENERAL_ROUTES,

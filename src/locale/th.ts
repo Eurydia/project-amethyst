@@ -83,7 +83,6 @@ export const TRANSLATION = {
 	driverSelectSearch:
 		"ค้นหาด้วยชื่อ, นามสกุล, หรือเบอร์ติดต่อ",
 
-	driverFormSubmit: "ลงทะเบียน",
 	driver: "คนขับรถ",
 	driverGeneralReportTable:
 		"ตารางเรื่องร้องเรียนคนขับรถ",

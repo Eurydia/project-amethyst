@@ -8,6 +8,10 @@ import {
 	indexPageLoader,
 } from "./IndexPage";
 import {
+	LogOperationalPage,
+	logOperationalPageLoader,
+} from "./LogOperationalPage";
+import {
 	ReportGeneralPage,
 	reportGeneralPageLoader,
 } from "./ReportGeneralPage";
@@ -38,6 +42,11 @@ export const VEHICLE_INFO_ROUTES: RouteObject = {
 			path: "report/inspection",
 			element: <ReportInspectionPage />, // OK
 			loader: reportInspectionPageLoader,
+		},
+		{
+			path: "log/operational",
+			element: <LogOperationalPage />,
+			loader: logOperationalPageLoader,
 		},
 	],
 };

@@ -11,11 +11,10 @@ export const IndexPage: FC = () => {
 	const { entries } =
 		useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
-	const heading = `ตารางบันทึกเรื่องร้องเรียนรถรับส่ง`;
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				ตารางบันทึกเรื่องร้องเรียนรถรับส่ง
 			</Typography>
 			<VehicleReportGeneralTable
 				entries={entries}

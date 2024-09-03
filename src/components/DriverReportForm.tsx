@@ -11,7 +11,7 @@ import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
-import { DriverSelect } from "./DriverInputSelect";
+import { DriverInputSelect } from "./DriverInputSelect";
 
 type DriverReportFormProps = {
 	driverOptions: DriverModel[];
@@ -70,17 +70,16 @@ export const DriverReportForm: FC<
 			.set("millisecond", fieldTime.millisecond())
 			.format();
 
-		const formData: DriverReportFormData = {
+		onSubmit({
 			content: fieldContent.normalize().trim(),
-			datetime: datetime,
 			driver: fieldDriver,
 			title: fieldTitle.normalize().trim(),
 			topics: fieldTopics
 				.map((topic) => topic.trim().normalize())
 				.filter((topic) => topic.length > 0),
-		};
 
-		onSubmit(formData);
+			datetime,
+		});
 	};
 
 	const shouldLockDriver =
@@ -142,7 +141,7 @@ export const DriverReportForm: FC<
 		{
 			label: "คนขับรถ",
 			value: (
-				<DriverSelect
+				<DriverInputSelect
 					options={driverOptions}
 					value={fieldDriver}
 					onChange={setFieldDriver}

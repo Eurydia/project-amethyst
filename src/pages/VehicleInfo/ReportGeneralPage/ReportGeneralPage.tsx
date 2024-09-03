@@ -49,11 +49,10 @@ export const ReportGeneralPage: FC = () => {
 		);
 	};
 
-	const heading = `ลงบันทึกเรื่องร้องเรียนรถรับส่ง`;
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				ลงบันทึกเรื่องร้องเรียนรถรับส่ง
 			</Typography>
 			<VehicleReportGeneralForm
 				vehicleOptions={vehicleOptions}

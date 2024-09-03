@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
-import { VehicleSelect } from "./VehicleInputSelect";
+import { VehicleInputSelect } from "./VehicleInputSelect";
 
 const CustomTextField: FC<TextFieldProps> = (
 	props,
@@ -213,7 +213,7 @@ export const VehicleReportInspectionForm: FC<
 		{
 			label: "เลขทะเบียน",
 			value: (
-				<VehicleSelect
+				<VehicleInputSelect
 					isError={isVehicleEmpty}
 					isDisabled={shouldLockVehicleField}
 					options={vehicleOptions}

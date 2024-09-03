@@ -64,7 +64,11 @@ export const IndexPage: FC = () => {
 				entries={logEntries}
 				slotProps={{
 					addButton: {
-						onClick: () => {},
+						onClick: () =>
+							submit(
+								{},
+								{ action: "./log/operational" },
+							),
 					},
 				}}
 			/>

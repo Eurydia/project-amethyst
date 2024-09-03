@@ -26,7 +26,7 @@ export const ReportGeneralPage: FC = () => {
 	) => {
 		postDriverReportGeneral(formData).then(
 			(reportId) => {
-				toast.success("บันทึกสำเร็จ");
+				toast.success("ลงบันทึกสำเร็จ");
 				submit(
 					{},
 					{
@@ -37,7 +37,7 @@ export const ReportGeneralPage: FC = () => {
 				);
 			},
 			() => {
-				toast.error("บันทึกล้มเหลว");
+				toast.error("ลงบันทึกล้มเหลว");
 				submit(
 					{},
 					{
@@ -48,12 +48,10 @@ export const ReportGeneralPage: FC = () => {
 		);
 	};
 
-	const heading = `ลงบันทึกเรื่องร้องเรียนคนขับรถ`;
-
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				ลงบันทึกเรื่องร้องเรียนคนขับรถ
 			</Typography>
 			<DriverReportForm
 				driverOptions={driverOptions}

@@ -2,7 +2,6 @@ import {
 	getTopicAll,
 	getVehicle,
 	getVehicleReportInspection,
-	getVehicleReportInspectionAll,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
 import {
@@ -15,7 +14,6 @@ import {
 } from "react-router-dom";
 
 export type InfoPageLoaderData = {
-	inspectionRoundNumber: string;
 	reportId: string;
 	topicOptions: string[];
 	vehicleOptions: VehicleModel[];
@@ -57,18 +55,6 @@ export const infoEditPageLoader: LoaderFunction =
 			);
 		}
 
-		const reportAll =
-			await getVehicleReportInspectionAll();
-		let count = 0;
-		for (const { vehicle_id, id } of reportAll) {
-			if (vehicle_id === vehicle.id) {
-				count++;
-			}
-			if (id === report.id) {
-				break;
-			}
-		}
-
 		const topicOptions = await getTopicAll();
 		const vehicleOptions = [vehicle];
 		const initFormData: VehicleReportInspectionFormData =
@@ -96,7 +82,6 @@ export const infoEditPageLoader: LoaderFunction =
 			};
 
 		const loaderData: InfoPageLoaderData = {
-			inspectionRoundNumber: count.toString(),
 			vehicleOptions,
 			topicOptions,
 			initFormData,

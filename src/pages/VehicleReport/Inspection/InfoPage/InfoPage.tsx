@@ -12,9 +12,8 @@ export const InfoPage: FC = () => {
 	return (
 		<Stack sx={{ gap: 1 }}>
 			<Typography variant="h1">
-				{`ผลการตรวจสภาพรถ รอบที่ ${report.inspectionRoundNumber}`}
+				ผลการตรวจสภาพรถ
 			</Typography>
-			<Typography>{`รหัสเลขที่ ${report.id}`}</Typography>
 			<VehicleReportInspectionDetails
 				report={report}
 			/>

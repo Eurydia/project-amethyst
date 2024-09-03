@@ -12,17 +12,12 @@ import {
 	Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { FC, HTMLAttributes } from "react";
+import {
+	FC,
+	HTMLAttributes,
+	useEffect,
+} from "react";
 
-type PickupRouteSelectProps = {
-	showError?: boolean;
-	disabled?: boolean;
-	options: PickupRouteModel[];
-	value: PickupRouteModel | null;
-	onChange: (
-		value: PickupRouteModel | null,
-	) => void;
-};
 const filterOptions = (
 	options: PickupRouteModel[],
 	state: FilterOptionsState<PickupRouteModel>,
@@ -77,16 +72,35 @@ const renderOption = (
 		</ListItemText>
 	</ListItem>
 );
-export const PickupRouteSelect: FC<
-	PickupRouteSelectProps
+
+type PickupRouteInputSelectProps = {
+	isDisabled?: boolean;
+	options: PickupRouteModel[];
+	value: PickupRouteModel | null;
+	onChange: (value: PickupRouteModel) => void;
+};
+
+export const PickupRouteInputSelect: FC<
+	PickupRouteInputSelectProps
 > = (props) => {
-	const { options, value, onChange, disabled } =
+	const { options, value, onChange, isDisabled } =
 		props;
+
+	useEffect(() => {
+		if (value === null && options.length > 0) {
+			onChange(options[0]);
+		}
+	}, []);
 
 	return (
 		<Autocomplete
-			disabled={disabled}
-			onChange={(_, value) => onChange(value)}
+			disabled={isDisabled}
+			onChange={(_, value) => {
+				if (value === null) {
+					return;
+				}
+				onChange(value);
+			}}
 			value={value}
 			options={options}
 			getOptionKey={(option) => option.id}

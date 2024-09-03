@@ -13,7 +13,7 @@ export const IndexPage: FC = () => {
 	const submit = useSubmit();
 
 	return (
-		<Stack sx={{ gap: 1 }}>
+		<Stack spacing={1}>
 			<Typography variant="h1">
 				ตารางบันทึกเรื่องร้องเรียนสายรถ
 			</Typography>
@@ -25,7 +25,8 @@ export const IndexPage: FC = () => {
 							submit(
 								{},
 								{
-									action: "./new",
+									action:
+										"/pickup-routes/reports/general/new",
 								},
 							),
 					},

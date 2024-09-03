@@ -1,6 +1,7 @@
 import { postPickupRouteReportGeneral } from "$backend/database/post";
 import { PickupRouteReportForm } from "$components/PickupRouteReportForm";
 import { PickupRouteReportFormData } from "$types/models/PickupRoute";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -49,11 +50,10 @@ export const ReportGeneralPage: FC = () => {
 		);
 	};
 
-	const heading = `ลงบันทึกเรื่องร้องเรียนสายรถ`;
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				ลงบันทึกเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportForm
 				routeOptions={routeOptions}
@@ -69,6 +69,12 @@ export const ReportGeneralPage: FC = () => {
 						},
 					)
 				}
+				slotProps={{
+					submitButton: {
+						label: "ลงบันทึก",
+						startIcon: <AddRounded />,
+					},
+				}}
 			/>
 		</Stack>
 	);

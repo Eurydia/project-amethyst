@@ -68,14 +68,14 @@ const renderInput = ({
 	/>
 );
 
-type DriverSelectProps = {
+type DriverInputSelectProps = {
 	isDisabled?: boolean;
 	options: DriverModel[];
 	value: DriverModel | null;
 	onChange: (value: DriverModel) => void;
 };
-export const DriverSelect: FC<
-	DriverSelectProps
+export const DriverInputSelect: FC<
+	DriverInputSelectProps
 > = (props) => {
 	const { options, value, onChange, isDisabled } =
 		props;

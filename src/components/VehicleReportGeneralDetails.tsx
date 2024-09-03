@@ -18,6 +18,10 @@ export const VehicleReportGeneralDetails: FC<
 	const submit = useSubmit();
 	const details = [
 		{
+			label: "เลขที่ร้องเรียน",
+			value: report.id,
+		},
+		{
 			label: "วันที่ลงบันทึก",
 			value: dayjs(report.datetime)
 				.locale("th")

@@ -51,12 +51,10 @@ export const InfoEditPage: FC = () => {
 			);
 	};
 
-	const heading = ` แก้ไขเรื่องร้องเรียนรถรับส่ง`;
-
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				แก้ไขเรื่องร้องเรียนรถรับส่ง
 			</Typography>
 			<VehicleReportGeneralForm
 				vehicleOptions={vehicleOptions}

@@ -11,7 +11,7 @@ import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
-import { VehicleSelect } from "./VehicleInputSelect";
+import { VehicleInputSelect } from "./VehicleInputSelect";
 
 type VehicleReportGeneralFormProps = {
 	vehicleOptions: VehicleModel[];
@@ -129,7 +129,7 @@ export const VehicleReportGeneralForm: FC<
 		{
 			label: "รถรับส่ง",
 			value: (
-				<VehicleSelect
+				<VehicleInputSelect
 					isError={isVehicleEmpty}
 					isDisabled={shouldLockVehicleField}
 					options={vehicleOptions}

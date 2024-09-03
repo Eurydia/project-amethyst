@@ -11,7 +11,7 @@ import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
-import { PickupRouteSelect } from "./PickupRouteInputSelect";
+import { PickupRouteInputSelect } from "./PickupRouteInputSelect";
 
 type PickupRouteReportFormProps = {
 	routeOptions: PickupRouteModel[];
@@ -141,7 +141,7 @@ export const PickupRouteReportForm: FC<
 		{
 			label: "สายรถ",
 			value: (
-				<PickupRouteSelect
+				<PickupRouteInputSelect
 					showError={isRouteEmpty}
 					disabled={shouldLockRoute}
 					options={routeOptions}

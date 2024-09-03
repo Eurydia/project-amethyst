@@ -9,12 +9,10 @@ export const InfoPage: FC = () => {
 	const { report } =
 		useLoaderData() as InfoPageLoaderData;
 
-	const heading = `เรื่องร้องเรียนคนขับรถ เลขรหัส ${report.id}`;
-
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				เรื่องร้องเรียนคนขับรถ
 			</Typography>
 			<DriverReportDetails report={report} />
 		</Stack>

@@ -1,3 +1,7 @@
+import { DriverModel } from "./Driver";
+import { PickupRouteModel } from "./PickupRoute";
+import { VehicleModel } from "./Vehicle";
+
 export type OperationalLogModel = {
 	id: string;
 	driver_id: string;
@@ -17,6 +21,15 @@ export type OperationalLogEntry = {
 	vehicleLicensePlate: string;
 	routeId: string;
 	routeName: string;
+
+	startDate: string | null;
+	endDate: string | null;
+};
+
+export type OperationalLogFormData = {
+	driver: DriverModel | null;
+	vehicle: VehicleModel | null;
+	route: PickupRouteModel | null;
 
 	startDate: string | null;
 	endDate: string | null;

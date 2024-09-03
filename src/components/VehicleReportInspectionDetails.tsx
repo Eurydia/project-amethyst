@@ -19,6 +19,14 @@ export const VehicleReportInspectionDetails: FC<
 
 	const detailItems = [
 		{
+			label: "เลขที่ผลตรวจ",
+			value: report.id,
+		},
+		{
+			label: "ผลตรวจครั้งที่",
+			value: report.inspectionRoundNumber,
+		},
+		{
 			label: "ลงบันทึกเมื่อ",
 			value: dayjs(report.datetime)
 				.locale("th")

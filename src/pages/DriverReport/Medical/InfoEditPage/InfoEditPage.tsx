@@ -51,12 +51,10 @@ export const InfoEditPage: FC = () => {
 			);
 	};
 
-	const heading = `แก้ไขผลการตรวจสารเสพติด เลขรหัส ${reportId}`;
-
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				แก้ไขผลการตรวจสารเสพติด
 			</Typography>
 			<DriverReportForm
 				driverOptions={driverOptions}

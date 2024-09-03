@@ -14,7 +14,6 @@ import { InfoPageLoaderData } from "./loader";
 
 export const InfoEditPage: FC = () => {
 	const {
-		inspectionRoundNumber,
 		reportId,
 		initFormData,
 		topicOptions,
@@ -64,12 +63,10 @@ export const InfoEditPage: FC = () => {
 	};
 
 	return (
-		<Stack sx={{ gap: 1 }}>
+		<Stack spacing={1}>
 			<Typography variant="h1">
-				{`แก้ไขผลการตรวจสภาพรถ รอบที่ ${inspectionRoundNumber}`}
+				แก้ไขผลการตรวจสภาพรถ{" "}
 			</Typography>
-			<Typography>{`รหัสเลขที่ ${reportId}`}</Typography>
-
 			<VehicleReportInspectionForm
 				vehicleOptions={vehicleOptions}
 				topicOptions={topicOptions}

@@ -27,7 +27,7 @@ export const ReportInspectionPage: FC = () => {
 	) => {
 		postVehicleReportInspection(formData).then(
 			(reportId) => {
-				toast.success("บันทึกสำเร็จ");
+				toast.success("ลงบันทึกสำเร็จ");
 				submit(
 					{},
 					{
@@ -38,7 +38,7 @@ export const ReportInspectionPage: FC = () => {
 				);
 			},
 			() => {
-				toast.error("บันทึกล้มเหลว");
+				toast.error("ลงบันทึกล้มเหลว");
 				submit(
 					{},
 					{
@@ -49,12 +49,10 @@ export const ReportInspectionPage: FC = () => {
 		);
 	};
 
-	const heading = `ลงบันทึกผลการตรวจสภาพรถ`;
-
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				ลงบันทึกผลการตรวจสภาพรถ
 			</Typography>
 			<VehicleReportInspectionForm
 				vehicleOptions={vehicleOptions}

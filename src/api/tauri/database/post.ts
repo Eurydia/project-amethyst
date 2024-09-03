@@ -2,6 +2,7 @@ import {
 	DriverFormData,
 	DriverReportFormData,
 } from "$types/models/Driver";
+import { OperationalLogFormData } from "$types/models/OperatonalLog";
 import {
 	PickupRouteFormData,
 	PickupRouteReportFormData,
@@ -11,6 +12,15 @@ import {
 	VehicleReportGeneralFormData,
 	VehicleReportInspectionFormData,
 } from "$types/models/Vehicle";
+
+//#region Operational Log
+
+export const postOperationalLog = async (
+	log: OperationalLogFormData,
+): Promise<number> => {
+	return 0;
+};
+//#endregion
 
 //#region Driver
 export const postDriver = async (

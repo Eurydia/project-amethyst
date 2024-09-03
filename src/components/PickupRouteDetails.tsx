@@ -16,7 +16,11 @@ export const PickupRouteDetails: FC<
 
 	const detailItems = [
 		{
-			label: "ชื่อสายรถ",
+			label: "รหัสเลขที่สายรถ",
+			value: route.id,
+		},
+		{
+			label: "ชื่อสาย",
 			value: route.name,
 		},
 		{

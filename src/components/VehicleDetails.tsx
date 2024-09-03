@@ -17,6 +17,10 @@ export const VehicleDetails: FC<
 
 	const detailItems = [
 		{
+			label: "เลขที่รถรับส่ง",
+			value: vehicle.id,
+		},
+		{
 			label: "เลขทะเบียน",
 			value: vehicle.license_plate,
 		},

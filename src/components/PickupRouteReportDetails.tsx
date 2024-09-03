@@ -21,6 +21,10 @@ export const PickupRouteReportDetails: FC<
 		value: ReactNode;
 	}[] = [
 		{
+			label: "เลขที่ร้องเรียน",
+			value: report.id,
+		},
+		{
 			label: "บันทึกเมื่อ",
 			value: dayjs(report.datetime)
 				.locale("th")

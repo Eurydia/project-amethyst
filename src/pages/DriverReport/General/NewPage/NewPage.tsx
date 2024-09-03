@@ -46,12 +46,10 @@ export const NewPage: FC = () => {
 			});
 	};
 
-	const heading = "ลงบันทึกเรื่องร้องเรียนคนขับ";
-
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				ลงบันทึกเรื่องร้องเรียนคนขับ
 			</Typography>
 			<DriverReportForm
 				driverOptions={driverOptions}

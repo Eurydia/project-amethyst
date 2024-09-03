@@ -2,6 +2,7 @@ import {
 	List,
 	ListItem,
 	ListItemText,
+	Typography,
 } from "@mui/material";
 import { FC } from "react";
 
@@ -18,13 +19,13 @@ const CustomItem: FC<CustomItemProps> = (
 			disablePadding
 			disableGutters
 		>
-			<ListItemText
-				primaryTypographyProps={{
-					component: "a",
-					href,
-				}}
-			>
-				{label}
+			<ListItemText disableTypography>
+				<Typography
+					component="a"
+					href={href}
+				>
+					{label}
+				</Typography>
 			</ListItemText>
 		</ListItem>
 	);
@@ -46,6 +47,7 @@ export const BaseTOC: FC<BaseTOCProps> = (
 			/>
 		),
 	);
+
 	return (
 		<List
 			dense

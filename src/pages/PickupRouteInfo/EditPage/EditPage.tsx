@@ -1,6 +1,5 @@
 import { putPickupRoute } from "$backend/database/put";
 import { PickupRouteForm } from "$components/PickupRouteForm";
-import { TRANSLATION } from "$locale/th";
 import { PickupRouteFormData } from "$types/models/PickupRoute";
 import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
@@ -41,15 +40,10 @@ export const EditPage: FC = () => {
 			);
 	};
 
-	const heading = "แก้ไขข้อมูลสายรถ";
-	TRANSLATION.pickupRouteEditDetailsWithLabel(
-		initFormData.name,
-	);
-
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				แก้ไขข้อมูลสายรถ
 			</Typography>
 			<PickupRouteForm
 				initFormData={initFormData}

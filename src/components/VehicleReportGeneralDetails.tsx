@@ -8,10 +8,15 @@ import {
 } from "react-router-dom";
 import { BaseInfoGroup } from "./BaseInfoGroup";
 
-const toDetails = (
-	report: VehicleReportGeneral,
-) => {
-	return [
+type VehicleReportGeneralDetailsProps = {
+	report: VehicleReportGeneral;
+};
+export const VehicleReportGeneralDetails: FC<
+	VehicleReportGeneralDetailsProps
+> = (props) => {
+	const { report } = props;
+	const submit = useSubmit();
+	const details = [
 		{
 			label: "วันที่ลงบันทึก",
 			value: dayjs(report.datetime)
@@ -51,17 +56,6 @@ const toDetails = (
 		label: item.label,
 		value: <Typography>{item.value}</Typography>,
 	}));
-};
-
-type VehicleReportGeneralDetailsProps = {
-	report: VehicleReportGeneral;
-};
-export const VehicleReportGeneralDetails: FC<
-	VehicleReportGeneralDetailsProps
-> = (props) => {
-	const { report } = props;
-	const submit = useSubmit();
-	const details = toDetails(report);
 	return (
 		<BaseInfoGroup
 			slotProps={{

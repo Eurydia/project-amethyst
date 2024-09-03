@@ -1,17 +1,19 @@
+import { postVehicleReportInspection } from "$backend/database/post";
 import { VehicleReportInspectionForm } from "$components/VehicleReportInspectionForm";
 import { VehicleReportInspectionFormData } from "$types/models/Vehicle";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
-import { ReportInspectionPageLoaderData } from "./loader";
-import { postVehicleReportInspection } from "$backend/database/post";
 import { toast } from "react-toastify";
+import { ReportInspectionPageLoaderData } from "./loader";
 
 export const ReportInspectionPage: FC = () => {
 	const {
+		vehicleId,
 		topicOptions,
 		vehicleOptions,
 		initFormData,
@@ -40,14 +42,14 @@ export const ReportInspectionPage: FC = () => {
 				submit(
 					{},
 					{
-						action: "/vehicles/report/inspection",
+						action: "/vehicles/info" + vehicleId,
 					},
 				);
 			},
 		);
 	};
 
-	const heading = `บันทึกผลการตรวจสภาพรถ`;
+	const heading = `ลงบันทึกผลการตรวจสภาพรถ`;
 
 	return (
 		<Stack spacing={1}>
@@ -68,6 +70,12 @@ export const ReportInspectionPage: FC = () => {
 						},
 					)
 				}
+				slotProps={{
+					submitButton: {
+						startIcon: <AddRounded />,
+						label: "ลงบันทึก",
+					},
+				}}
 			/>
 		</Stack>
 	);

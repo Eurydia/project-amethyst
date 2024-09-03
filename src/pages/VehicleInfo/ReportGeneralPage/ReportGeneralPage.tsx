@@ -1,20 +1,22 @@
+import { postVehicleReportGeneral } from "$backend/database/post";
 import { VehicleReportGeneralForm } from "$components/VehicleReportGeneralForm";
 import { VehicleReportGeneralFormData } from "$types/models/Vehicle";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
-import { ReportGeneralPageLoaderData } from "./loader";
-import { postVehicleReportGeneral } from "$backend/database/post";
 import { toast } from "react-toastify";
+import { ReportGeneralPageLoaderData } from "./loader";
 
 export const ReportGeneralPage: FC = () => {
 	const {
 		topicOptions,
 		initFormData,
 		vehicleOptions,
+		vehicleId,
 	} =
 		useLoaderData() as ReportGeneralPageLoaderData;
 
@@ -25,29 +27,29 @@ export const ReportGeneralPage: FC = () => {
 	) => {
 		postVehicleReportGeneral(formData).then(
 			(reportId) => {
-				toast.success("บันทึกสำเร็จ");
+				toast.success("ลงบันทึกสำเร็จ");
 				submit(
 					{},
 					{
 						action:
-							"/vehicle/report/general/info" +
+							"/vehicles/report/general/info" +
 							reportId,
 					},
 				);
 			},
 			() => {
-				toast.error("บันทึกล้มเหลว");
+				toast.error("ลงบันทึกล้มเหลว");
 				submit(
 					{},
 					{
-						action: "/vehicle/report/general",
+						action: "/vehicles/info/" + vehicleId,
 					},
 				);
 			},
 		);
 	};
 
-	const heading = `ลงบันทึกเรื่องร้องเรียนคนขับรถ`;
+	const heading = `ลงบันทึกเรื่องร้องเรียนรถรับส่ง`;
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
@@ -62,10 +64,17 @@ export const ReportGeneralPage: FC = () => {
 					submit(
 						{},
 						{
-							action: "/vehicle/report/general",
+							action:
+								"/vehicles/info/" + vehicleId,
 						},
 					)
 				}
+				slotProps={{
+					submitButton: {
+						label: "ลงบันทึก",
+						startIcon: <AddRounded />,
+					},
+				}}
 			/>
 		</Stack>
 	);

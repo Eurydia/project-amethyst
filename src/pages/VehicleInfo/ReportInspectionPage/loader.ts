@@ -14,6 +14,7 @@ import {
 } from "react-router-dom";
 
 export type ReportInspectionPageLoaderData = {
+	vehicleId: string;
 	vehicleOptions: VehicleModel[];
 	topicOptions: string[];
 	initFormData: VehicleReportInspectionFormData;
@@ -47,8 +48,8 @@ export const reportInspectionPageLoader: LoaderFunction =
 				vehicle,
 				topics: [],
 				datetime: dayjs().format(),
-
 				content: "",
+
 				frame: "",
 				windows: "",
 				frontCamera: "",
@@ -65,6 +66,7 @@ export const reportInspectionPageLoader: LoaderFunction =
 
 		const loaderData: ReportInspectionPageLoaderData =
 			{
+				vehicleId,
 				vehicleOptions,
 				initFormData,
 				topicOptions,

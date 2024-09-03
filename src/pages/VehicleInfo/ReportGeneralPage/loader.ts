@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 
 export type ReportGeneralPageLoaderData = {
+	vehicleId: string;
 	vehicleOptions: VehicleModel[];
 	topicOptions: string[];
 	initFormData: VehicleReportGeneralFormData;
@@ -53,6 +54,7 @@ export const reportGeneralPageLoader: LoaderFunction =
 			};
 		const loaderData: ReportGeneralPageLoaderData =
 			{
+				vehicleId,
 				vehicleOptions,
 				initFormData,
 				topicOptions,

@@ -40,13 +40,10 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 						{TRANSLATION.globalNone}
 					</Typography>
 				) : (
-					<Stack
-						spacing={1}
-						useFlexGap
-					>
+					<Stack spacing={1}>
 						{item.routes.map((route, index) => (
 							<Typography
-								key={"vehicle" + index}
+								key={"route" + index}
 								component={Link}
 								to={
 									"/pickup-routes/info/" +
@@ -66,10 +63,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 				item.vehicles.length === 0 ? (
 					<Typography>ไม่มี</Typography>
 				) : (
-					<Stack
-						spacing={1}
-						useFlexGap
-					>
+					<Stack spacing={1}>
 						{item.vehicles.map(
 							(vehicle, index) => (
 								<Typography

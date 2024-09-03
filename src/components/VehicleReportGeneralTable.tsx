@@ -1,12 +1,7 @@
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
 import { VehicleReportGeneralEntry } from "$types/models/Vehicle";
-import {
-	FormControlLabel,
-	Radio,
-	RadioGroup,
-	Typography,
-} from "@mui/material";
+import { Typography } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -17,6 +12,7 @@ import {
 } from "react";
 import { Link } from "react-router-dom";
 import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
+import { BaseInputTopicMatchMode } from "./BaseInputTopicMatchMode";
 import { BaseSortableTable } from "./BaseSortableTable";
 
 const HEADER_DEFINITIONS: TableHeaderDefinition<VehicleReportGeneralEntry>[] =
@@ -74,7 +70,7 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<VehicleReportGeneralEntry>[] =
 		},
 	];
 
-const entriesToOptions = (
+const toOptions = (
 	entries: VehicleReportGeneralEntry[],
 ) => {
 	const uniqVehicles: Record<string, string> = {};
@@ -114,17 +110,20 @@ const filterEntries = (
 	selectedTopics: string[],
 	topicMustHaveAll: boolean,
 ) => {
-	let items = entries;
-	if (afterDate !== null) {
-		items = items.filter((entry) =>
-			dayjs(entry.datetime).isAfter(afterDate),
+	let items = entries
+		.filter(
+			(entry) =>
+				afterDate === null ||
+				dayjs(entry.datetime).isAfter(afterDate),
+		)
+		.filter(
+			(entry) =>
+				beforeDate === null ||
+				dayjs(entry.datetime).isBefore(
+					beforeDate,
+				),
 		);
-	}
-	if (beforeDate !== null) {
-		items = items.filter((entry) =>
-			dayjs(entry.datetime).isBefore(beforeDate),
-		);
-	}
+
 	const vehicleSet = new Set(selectedVehicles);
 
 	return items
@@ -156,18 +155,19 @@ const searchEntries = (
 
 type VehicleReportGeneralTableProps = {
 	entries: VehicleReportGeneralEntry[];
-	onAdd: () => void;
+	slotProps: {
+		addButton: {
+			onClick: () => void;
+		};
+	};
 };
 export const VehicleReportGeneralTable: FC<
 	VehicleReportGeneralTableProps
 > = (props) => {
-	const { onAdd, entries } = props;
+	const { entries, slotProps } = props;
 
 	const { vehicleOptions, topicOptions } =
-		useMemo(
-			() => entriesToOptions(entries),
-			[entries],
-		);
+		useMemo(() => toOptions(entries), [entries]);
 
 	const [search, setSearch] = useState("");
 	const [afterDate, setAfterDate] =
@@ -175,7 +175,7 @@ export const VehicleReportGeneralTable: FC<
 	const [beforeDate, setBeforeDate] =
 		useState<Dayjs | null>(null);
 	const [topicMustHaveAll, setTopicMustHaveAll] =
-		useState("no");
+		useState(false);
 	const [selectedTopics, setSelectedTopics] =
 		useState(
 			topicOptions.map(({ value }) => value),
@@ -193,7 +193,7 @@ export const VehicleReportGeneralTable: FC<
 				beforeDate,
 				selectedVehicles,
 				selectedTopics,
-				topicMustHaveAll === "yes",
+				topicMustHaveAll,
 			),
 		[
 			afterDate,
@@ -238,7 +238,7 @@ export const VehicleReportGeneralTable: FC<
 			),
 		},
 		{
-			label: "เลขทะเบียนรถ",
+			label: "เลขทะเบียน",
 			value: (
 				<BaseInputMultiSelect
 					options={vehicleOptions}
@@ -250,24 +250,10 @@ export const VehicleReportGeneralTable: FC<
 		{
 			label: "ประเภทการกรองหัวข้อ",
 			value: (
-				<RadioGroup
-					row
+				<BaseInputTopicMatchMode
 					value={topicMustHaveAll}
-					onChange={(e) =>
-						setTopicMustHaveAll(e.target.value)
-					}
-				>
-					<FormControlLabel
-						value="yes"
-						control={<Radio />}
-						label="มีทุกหัวข้อที่เลือก"
-					/>
-					<FormControlLabel
-						value="no"
-						control={<Radio />}
-						label="มีอย่างน้อยหนึ่งหัวข้อที่เลือก"
-					/>
-				</RadioGroup>
+					onChange={setTopicMustHaveAll}
+				/>
 			),
 		},
 		{
@@ -290,15 +276,14 @@ export const VehicleReportGeneralTable: FC<
 			headers={HEADER_DEFINITIONS}
 			slotProps={{
 				addButton: {
-					onClick: onAdd,
-					children: "ลงบันทึก",
+					onClick: slotProps.addButton.onClick,
+					label: "ลงบันทึก",
 				},
 				searchField: {
 					placeholder:
-						"ค้นหาเรื่องร้องเรียนรถ (ด้วยเลขทะเบียน, เรื่อง หรือหัวข้อ)",
+						"ค้นหาด้วยเลขทะเบียน, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง",
 					value: search,
-					onChange: (e) =>
-						setSearch(e.target.value),
+					onChange: setSearch,
 				},
 			}}
 		>

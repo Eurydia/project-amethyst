@@ -2,8 +2,6 @@ import {
 	VehicleModel,
 	VehicleReportGeneralFormData,
 } from "$types/models/Vehicle";
-import { SaveRounded } from "@mui/icons-material";
-import { TextField } from "@mui/material";
 import {
 	DateField,
 	TimeField,
@@ -11,6 +9,7 @@ import {
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
+import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { VehicleSelect } from "./VehicleInputSelect";
 
@@ -22,6 +21,12 @@ type VehicleReportGeneralFormProps = {
 		formData: VehicleReportGeneralFormData,
 	) => void;
 	onCancel: () => void;
+	slotProps: {
+		submitButton: {
+			startIcon: ReactNode;
+			label: string;
+		};
+	};
 };
 export const VehicleReportGeneralForm: FC<
 	VehicleReportGeneralFormProps
@@ -30,6 +35,7 @@ export const VehicleReportGeneralForm: FC<
 		vehicleOptions,
 		topicOptions,
 		initFormData,
+		slotProps,
 		onSubmit,
 		onCancel,
 	} = props;
@@ -63,25 +69,22 @@ export const VehicleReportGeneralForm: FC<
 			.set("millisecond", fieldTime.millisecond())
 			.format();
 
-		const formData: VehicleReportGeneralFormData =
-			{
-				content: fieldContent,
-				datetime: datetime,
-				title: fieldTitle,
-				topics: fieldTopics,
-				vehicle: fieldVehicle,
-			};
-
-		onSubmit(formData);
+		onSubmit({
+			content: fieldContent.normalize().trim(),
+			datetime: datetime,
+			title: fieldTitle.normalize().trim(),
+			topics: fieldTopics
+				.map((topic) => topic.normalize().trim())
+				.filter((topic) => topic.length > 0),
+			vehicle: fieldVehicle,
+		});
 	};
-
-	const handleCancel = () => onCancel();
 
 	const shouldLockVehicleField =
 		initFormData.vehicle !== null;
+
 	const isVehicleEmpty = fieldVehicle === null;
 	const isTitleEmpty = fieldTitle.trim() === "";
-
 	const isFormIncomplete =
 		isVehicleEmpty || isTitleEmpty;
 
@@ -124,7 +127,7 @@ export const VehicleReportGeneralForm: FC<
 			),
 		},
 		{
-			label: "ทะเบียนรถ",
+			label: "รถรับส่ง",
 			value: (
 				<VehicleSelect
 					isError={isVehicleEmpty}
@@ -138,14 +141,11 @@ export const VehicleReportGeneralForm: FC<
 		{
 			label: "เรื่อง",
 			value: (
-				<TextField
-					fullWidth
-					autoFocus
-					error={isTitleEmpty}
+				<BaseInputTextField
+					shouldAutoFocus
+					isError={isTitleEmpty}
 					value={fieldTitle}
-					onChange={(e) =>
-						setFieldTitle(e.target.value)
-					}
+					onChange={setFieldTitle}
 					placeholder={initFormData.title}
 				/>
 			),
@@ -153,14 +153,11 @@ export const VehicleReportGeneralForm: FC<
 		{
 			label: "รายละเอียด",
 			value: (
-				<TextField
-					fullWidth
+				<BaseInputTextField
 					multiline
 					minRows={6}
 					value={fieldContent}
-					onChange={(e) =>
-						setFieldContent(e.target.value)
-					}
+					onChange={setFieldContent}
 					placeholder={initFormData.content}
 				/>
 			),
@@ -181,13 +178,14 @@ export const VehicleReportGeneralForm: FC<
 		<BaseForm
 			slotProps={{
 				submitButton: {
+					startIcon:
+						slotProps.submitButton.startIcon,
+					label: slotProps.submitButton.label,
 					disabled: isFormIncomplete,
-					startIcon: <SaveRounded />,
-					variant: "contained",
 					onClick: handleSubmit,
 				},
 				cancelButton: {
-					onClick: handleCancel,
+					onClick: onCancel,
 				},
 			}}
 		>

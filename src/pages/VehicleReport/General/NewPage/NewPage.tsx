@@ -1,14 +1,15 @@
+import { postVehicleReportGeneral } from "$backend/database/post";
 import { VehicleReportGeneralForm } from "$components/VehicleReportGeneralForm";
 import { VehicleReportGeneralFormData } from "$types/models/Vehicle";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
-import { NewPageLoaderData } from "./loader";
-import { postVehicleReportGeneral } from "$backend/database/post";
 import { toast } from "react-toastify";
+import { NewPageLoaderData } from "./loader";
 
 export const NewPage: FC = () => {
 	const {
@@ -24,7 +25,7 @@ export const NewPage: FC = () => {
 	) => {
 		postVehicleReportGeneral(formData)
 			.then((reportId) => {
-				toast.success("บันทึกสำเร็จ");
+				toast.success("ลงบันทึกสำเร็จ");
 				submit(
 					{},
 					{
@@ -34,7 +35,7 @@ export const NewPage: FC = () => {
 				);
 			})
 			.catch(() => {
-				toast.error("บันทึกล้มเหลว");
+				toast.error("ลงบันทึกล้มเหลว");
 				submit(
 					{},
 					{
@@ -44,7 +45,8 @@ export const NewPage: FC = () => {
 			});
 	};
 
-	const heading = "ลงบันทึกเรื่องร้องเรียนคนขับ";
+	const heading =
+		"ลงบันทึกเรื่องร้องเรียนรถรับส่ง";
 
 	return (
 		<Stack spacing={1}>
@@ -59,6 +61,12 @@ export const NewPage: FC = () => {
 				onCancel={() =>
 					submit({}, { action: "/" })
 				}
+				slotProps={{
+					submitButton: {
+						label: "ลงบันทึก",
+						startIcon: <AddRounded />,
+					},
+				}}
 			/>
 		</Stack>
 	);

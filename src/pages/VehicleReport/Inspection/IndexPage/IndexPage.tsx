@@ -16,18 +16,22 @@ export const IndexPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				สมุดบันทึกผลการตรวจสารเสพติด
+				ตารางบันทึกผลการตรวจสภาพรถ
 			</Typography>
 			<VehicleReportInspectionTable
 				entries={entries}
-				onAdd={() =>
-					submit(
-						{},
-						{
-							action: "./new",
-						},
-					)
-				}
+				slotProps={{
+					addButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/vehicles/report/inspection/new",
+								},
+							),
+					},
+				}}
 			/>
 		</Stack>
 	);

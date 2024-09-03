@@ -1,5 +1,4 @@
 import { filterItems } from "$core/filter";
-import { TRANSLATION } from "$locale/th";
 import { TableHeaderDefinition } from "$types/generics";
 import { VehicleEntry } from "$types/models/Vehicle";
 import { Stack, Typography } from "@mui/material";
@@ -19,7 +18,7 @@ import { BaseSortableTable } from "./BaseSortableTable";
 const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
 	[
 		{
-			label: "เลขทะเบียน",
+			label: "ทะเบียนรถ",
 			compare: null,
 			render: ({ id, licensePlate }) => (
 				<Typography
@@ -31,13 +30,11 @@ const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
 			),
 		},
 		{
-			label: TRANSLATION.vehicleTableRouteHeader,
+			label: "สายรถ",
 			compare: null,
 			render: (item) =>
 				item.routes.length === 0 ? (
-					<Typography>
-						{TRANSLATION.globalNone}
-					</Typography>
+					<Typography>ไม่มี</Typography>
 				) : (
 					<Stack spacing={1}>
 						{item.routes.map(
@@ -55,7 +52,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
 				),
 		},
 		{
-			label: TRANSLATION.vehicleTableDriverHeader,
+			label: "คนขับรถ",
 			compare: null,
 			render: ({ drivers }) =>
 				drivers.length === 0 ? (
@@ -162,18 +159,14 @@ export const VehicleTable: FC<
 			defaultSortByColumn={0}
 			entries={searchedEntries}
 			slotProps={{
-				tableBody: {
-					emptyText: "ไม่พบข้อมูลรถรับส่ง",
-				},
 				searchField: {
 					placeholder:
-						"ค้นหาด้วยทะเบียนรถ, สายรถ, หรือชื่อและนามสกุลคนขับรถ",
+						"ค้นหาด้วยทะเบียนรถ, สายรถ, หรือชื่อนามสกุลคนขับรถ",
 					value: search,
-					onChange: (e) =>
-						setSearch(e.target.value),
+					onChange: setSearch,
 				},
 				addButton: {
-					children: "ลงทะเบียนรถรับส่ง",
+					label: "ลงทะเบียน",
 					onClick: () =>
 						submit(
 							{},

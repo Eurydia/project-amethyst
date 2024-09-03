@@ -1,3 +1,7 @@
+import { postVehicleReportInspection } from "$backend/database/post";
+import { VehicleReportInspectionForm } from "$components/VehicleReportInspectionForm";
+import { VehicleReportInspectionFormData } from "$types/models/Vehicle";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -6,9 +10,6 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
-import { postVehicleReportInspection } from "$backend/database/post";
-import { VehicleReportInspectionFormData } from "$types/models/Vehicle";
-import { VehicleReportInspectionForm } from "$components/VehicleReportInspectionForm";
 
 export const NewPage: FC = () => {
 	const {
@@ -24,7 +25,7 @@ export const NewPage: FC = () => {
 	) => {
 		postVehicleReportInspection(formData)
 			.then((reportId) => {
-				toast.success("บันทึกสำเร็จ");
+				toast.success("ลงบันทึกสำเร็จ");
 				submit(
 					{},
 					{
@@ -35,7 +36,7 @@ export const NewPage: FC = () => {
 				);
 			})
 			.catch(() => {
-				toast.error("บันทึกล้มเหลว");
+				toast.error("ลงบันทึกล้มเหลว");
 				submit(
 					{},
 					{
@@ -45,12 +46,10 @@ export const NewPage: FC = () => {
 			});
 	};
 
-	const heading = `ลงบันทึกผลการตรวจรถ`;
-
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{heading}
+				ลงบันทึกผลการตรวจสภาพรถ
 			</Typography>
 			<VehicleReportInspectionForm
 				vehicleOptions={vehicleOptions}
@@ -65,6 +64,12 @@ export const NewPage: FC = () => {
 								"/vehicles/report/inspection",
 						},
 					);
+				}}
+				slotProps={{
+					submitButton: {
+						label: "ลงบันทึก",
+						startIcon: <AddRounded />,
+					},
 				}}
 			/>
 		</Stack>

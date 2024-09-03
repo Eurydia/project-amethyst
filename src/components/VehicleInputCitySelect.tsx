@@ -1,8 +1,9 @@
+import { filterItems } from "$core/filter";
 import {
 	Autocomplete,
+	FilterOptionsState,
 	TextField,
 } from "@mui/material";
-import { matchSorter } from "match-sorter";
 import { FC, useEffect } from "react";
 
 const OPTIONS: string[] = [
@@ -85,6 +86,17 @@ const OPTIONS: string[] = [
 	"อุบลราชธานี",
 ];
 
+const filterOptions = (
+	options: string[],
+	state: FilterOptionsState<string>,
+) => {
+	return filterItems(
+		options,
+		state.inputValue,
+		[],
+	);
+};
+
 type VehicleCitySelectProps = {
 	value: string;
 	onChange: (value: string) => void;
@@ -108,7 +120,7 @@ export const VehicleCitySelect: FC<
 			disabledItemsFocusable
 			fullWidth
 			options={OPTIONS}
-			value={value || OPTIONS[0]}
+			value={value}
 			getOptionLabel={(option) => option}
 			getOptionKey={(option) => option}
 			onChange={(_, newValue) =>
@@ -117,17 +129,7 @@ export const VehicleCitySelect: FC<
 			renderInput={(params) => (
 				<TextField {...params} />
 			)}
-			filterOptions={(options, state) =>
-				state.inputValue
-					.split(" ")
-					.map((token) => token.trim())
-					.filter((token) => token.length > 0)
-					.reduceRight(
-						(filteredOptions, token) =>
-							matchSorter(filteredOptions, token),
-						options,
-					)
-			}
+			filterOptions={filterOptions}
 		/>
 	);
 };

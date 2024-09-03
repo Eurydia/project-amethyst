@@ -1,3 +1,4 @@
+import { VehicleReportGeneralTable } from "$components/VehicleReportGeneralTable";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -5,13 +6,12 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { IndexPageLoaderData } from "./loader";
-import { VehicleReportGeneralTable } from "$components/VehicleReportGeneralTable";
 
 export const IndexPage: FC = () => {
 	const { entries } =
 		useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
-	const heading = `สมุดบันทึกเรื่องร้องเรียนทะเบียนรถ`;
+	const heading = `ตารางบันทึกเรื่องร้องเรียนรถรับส่ง`;
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
@@ -19,14 +19,18 @@ export const IndexPage: FC = () => {
 			</Typography>
 			<VehicleReportGeneralTable
 				entries={entries}
-				onAdd={() =>
-					submit(
-						{},
-						{
-							action: "./new",
-						},
-					)
-				}
+				slotProps={{
+					addButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/vehicles/report/general/new",
+								},
+							),
+					},
+				}}
 			/>
 		</Stack>
 	);

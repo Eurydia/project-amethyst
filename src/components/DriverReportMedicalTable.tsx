@@ -36,7 +36,8 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReportEntry>[] =
 		},
 		{
 			label: "เรื่อง",
-			compare: null,
+			compare: (a, b) =>
+				a.title.localeCompare(b.title),
 			render: (item) => (
 				<Typography
 					component={Link}

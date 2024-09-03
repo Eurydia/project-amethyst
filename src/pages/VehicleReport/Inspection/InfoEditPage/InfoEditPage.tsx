@@ -1,3 +1,7 @@
+import { putVehicleReportInspection } from "$backend/database/put";
+import { VehicleReportInspectionForm } from "$components/VehicleReportInspectionForm";
+import { VehicleReportInspectionFormData } from "$types/models/Vehicle";
+import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import "dayjs/locale/th";
 import { FC } from "react";
@@ -5,14 +9,12 @@ import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
-import { InfoPageLoaderData } from "./loader";
-import { VehicleReportInspectionForm } from "$components/VehicleReportInspectionForm";
-import { VehicleReportInspectionFormData } from "$types/models/Vehicle";
-import { putVehicleReportInspection } from "$backend/database/put";
 import { toast } from "react-toastify";
+import { InfoPageLoaderData } from "./loader";
 
 export const InfoEditPage: FC = () => {
 	const {
+		inspectionRoundNumber,
 		reportId,
 		initFormData,
 		topicOptions,
@@ -46,8 +48,8 @@ export const InfoEditPage: FC = () => {
 			id: reportId,
 		})
 			.then(
-				() => toast.success("แก้ไขข้อมูลสำเร็จ"),
-				() => toast.error("cannot save data"),
+				() => toast.success("แก้ไขสำเร็จ"),
+				() => toast.error("แก้ไขล้มเหลว"),
 			)
 			.finally(() =>
 				submit(
@@ -61,13 +63,13 @@ export const InfoEditPage: FC = () => {
 			);
 	};
 
-	const heading = `ผลการตรวจสารเสพติด เลขที่ ${reportId} (แก้ไข)`;
-
 	return (
 		<Stack sx={{ gap: 1 }}>
 			<Typography variant="h1">
-				{heading}
+				{`แก้ไขผลการตรวจสภาพรถ รอบที่ ${inspectionRoundNumber}`}
 			</Typography>
+			<Typography>{`รหัสเลขที่ ${reportId}`}</Typography>
+
 			<VehicleReportInspectionForm
 				vehicleOptions={vehicleOptions}
 				topicOptions={topicOptions}
@@ -83,6 +85,12 @@ export const InfoEditPage: FC = () => {
 						},
 					)
 				}
+				slotProps={{
+					submitButton: {
+						label: "บันทึก",
+						startIcon: <SaveRounded />,
+					},
+				}}
 			/>
 		</Stack>
 	);

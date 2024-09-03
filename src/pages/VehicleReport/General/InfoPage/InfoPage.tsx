@@ -6,10 +6,10 @@ import { useLoaderData } from "react-router-dom";
 import { InfoPageLoaderData } from "./loader";
 
 export const InfoPage: FC = () => {
-	const { report: entry } =
+	const { report } =
 		useLoaderData() as InfoPageLoaderData;
 
-	const heading = `บันทึกเรื่องร้องเรียนทะเบียนรถ เลขที่ ${entry.id}`;
+	const heading = `เรื่องร้องเรียนทะเบียนรถ (รหัส ${report.id})`;
 
 	return (
 		<Stack sx={{ gap: 1 }}>
@@ -17,7 +17,7 @@ export const InfoPage: FC = () => {
 				{heading}
 			</Typography>
 			<VehicleReportGeneralDetails
-				report={entry}
+				report={report}
 			/>
 		</Stack>
 	);

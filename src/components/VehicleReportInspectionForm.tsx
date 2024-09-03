@@ -2,7 +2,6 @@ import {
 	VehicleModel,
 	VehicleReportInspectionFormData,
 } from "$types/models/Vehicle";
-import { SaveRounded } from "@mui/icons-material";
 import {
 	TextField,
 	TextFieldProps,
@@ -40,6 +39,12 @@ type VehicleReportInspectionFormProps = {
 		formData: VehicleReportInspectionFormData,
 	) => void;
 	onCancel: () => void;
+	slotProps: {
+		submitButton: {
+			label: string;
+			startIcon: ReactNode;
+		};
+	};
 };
 export const VehicleReportInspectionForm: FC<
 	VehicleReportInspectionFormProps
@@ -111,23 +116,49 @@ export const VehicleReportInspectionForm: FC<
 		const formData: VehicleReportInspectionFormData =
 			{
 				datetime: datetime,
-				topics: fieldTopics,
 				vehicle: fieldVehicle,
-				content: fieldContent,
-				frame: fieldBodyFrame || "ปกติ",
-				windows: fieldWindows || "ปกติ",
-				frontCamera: fieldFrontCam || "ปกติ",
-				overheadFan: fieldFanOverhead || "ปกติ",
-				brakeLights: fieldBrakeLight || "ปกติ",
-				headlights: fieldHeadlights || "ปกติ",
-				turnSignals: fieldTurnSignals || "ปกติ",
+				content: fieldContent.normalize().trim(),
+				topics: fieldTopics
+					.map((topic) =>
+						topic.normalize().trim(),
+					)
+					.filter((topic) => topic.length > 0),
+				frame:
+					fieldBodyFrame.normalize().trim() ||
+					"ปกติ",
+				windows:
+					fieldWindows.normalize().trim() ||
+					"ปกติ",
+				frontCamera:
+					fieldFrontCam.normalize().trim() ||
+					"ปกติ",
+				overheadFan:
+					fieldFanOverhead.normalize().trim() ||
+					"ปกติ",
+				brakeLights:
+					fieldBrakeLight.normalize().trim() ||
+					"ปกติ",
+				headlights:
+					fieldHeadlights.normalize().trim() ||
+					"ปกติ",
+				turnSignals:
+					fieldTurnSignals.normalize().trim() ||
+					"ปกติ",
 				rearviewMirror:
-					fieldMirrorRearview || "ปกติ",
+					fieldMirrorRearview
+						.normalize()
+						.trim() || "ปกติ",
 				sideviewMirror:
-					fieldMirrorSideview || "ปกติ",
-				seatbelts: fieldSeatbelts || "ปกติ",
-				seats: fieldSeats || "ปกติ",
-				tires: fieldTires || "ปกติ",
+					fieldMirrorSideview
+						.normalize()
+						.trim() || "ปกติ",
+				seatbelts:
+					fieldSeatbelts.normalize().trim() ||
+					"ปกติ",
+				seats:
+					fieldSeats.normalize().trim() || "ปกติ",
+				tires:
+					fieldTires.normalize().trim() || "ปกติ",
 			};
 
 		onSubmit(formData);
@@ -137,8 +168,8 @@ export const VehicleReportInspectionForm: FC<
 
 	const shouldLockVehicleField =
 		initFormData.vehicle !== null;
-	const isVehicleEmpty = fieldVehicle === null;
 
+	const isVehicleEmpty = fieldVehicle === null;
 	const isFormIncomplete = isVehicleEmpty;
 
 	const formItems: {
@@ -180,7 +211,7 @@ export const VehicleReportInspectionForm: FC<
 			),
 		},
 		{
-			label: "ทะเบียนรถ",
+			label: "เลขทะเบียน",
 			value: (
 				<VehicleSelect
 					isError={isVehicleEmpty}
@@ -355,9 +386,13 @@ export const VehicleReportInspectionForm: FC<
 			slotProps={{
 				submitButton: {
 					disabled: isFormIncomplete,
-					startIcon: <SaveRounded />,
-					variant: "contained",
 					onClick: handleSubmit,
+
+					label:
+						props.slotProps.submitButton.label,
+					startIcon:
+						props.slotProps.submitButton
+							.startIcon,
 				},
 				cancelButton: {
 					onClick: handleCancel,

@@ -1,6 +1,7 @@
 import { putVehicleReportGeneral } from "$backend/database/put";
 import { VehicleReportGeneralForm } from "$components/VehicleReportGeneralForm";
 import { VehicleReportGeneralFormData } from "$types/models/Vehicle";
+import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -33,9 +34,12 @@ export const InfoEditPage: FC = () => {
 			datetime: formData.datetime,
 			title: formData.title,
 			topics: formData.topics.join(","),
-		}).then(
-			() => {
-				toast.success("บันทึกสำเร็จ");
+		})
+			.then(
+				() => toast.success("แก้ไขสำเร็จ"),
+				() => toast.error("แก้ไขล้มเหลว"),
+			)
+			.finally(() =>
 				submit(
 					{},
 					{
@@ -43,21 +47,11 @@ export const InfoEditPage: FC = () => {
 							"/vehicle/reports/general/info/" +
 							reportId,
 					},
-				);
-			},
-			() => {
-				toast.error("บันทึกล้มเหลว");
-				submit(
-					{},
-					{
-						action: "/vehicle/reports/general",
-					},
-				);
-			},
-		);
+				),
+			);
 	};
 
-	const heading = `บันทึกเรื่องร้องเรียนคนขับรถ เลขที่ ${reportId} (แก้ไข)`;
+	const heading = ` แก้ไขเรื่องร้องเรียนรถรับส่ง`;
 
 	return (
 		<Stack spacing={1}>
@@ -73,10 +67,18 @@ export const InfoEditPage: FC = () => {
 					submit(
 						{},
 						{
-							action: "/vehicle/reports/general",
+							action:
+								"/vehicle/reports/general/info/" +
+								reportId,
 						},
 					)
 				}
+				slotProps={{
+					submitButton: {
+						label: "บันทึก",
+						startIcon: <SaveRounded />,
+					},
+				}}
 			/>
 		</Stack>
 	);

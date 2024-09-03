@@ -1,12 +1,7 @@
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
 import { VehicleReportInspectionEntry } from "$types/models/Vehicle";
-import {
-	FormControlLabel,
-	Radio,
-	RadioGroup,
-	Typography,
-} from "@mui/material";
+import { Typography } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -17,6 +12,7 @@ import {
 } from "react";
 import { Link } from "react-router-dom";
 import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
+import { BaseInputTopicMatchMode } from "./BaseInputTopicMatchMode";
 import { BaseSortableTable } from "./BaseSortableTable";
 
 const HEADER_DEFINITIONS: TableHeaderDefinition<VehicleReportInspectionEntry>[] =
@@ -156,12 +152,16 @@ const searchEntries = (
 
 type VehicleReportInspectionTableProps = {
 	entries: VehicleReportInspectionEntry[];
-	onAdd: () => void;
+	slotProps: {
+		addButton: {
+			onClick: () => void;
+		};
+	};
 };
 export const VehicleReportInspectionTable: FC<
 	VehicleReportInspectionTableProps
 > = (props) => {
-	const { onAdd, entries } = props;
+	const { slotProps, entries } = props;
 
 	const { vehicleOptions, topicOptions } =
 		useMemo(() => getOptions(entries), [entries]);
@@ -172,7 +172,7 @@ export const VehicleReportInspectionTable: FC<
 	const [beforeDate, setBeforeDate] =
 		useState<Dayjs | null>(null);
 	const [topicMustHaveAll, setTopicMustHaveAll] =
-		useState("no");
+		useState(false);
 	const [selectedTopics, setSelectedTopics] =
 		useState(
 			topicOptions.map(({ value }) => value),
@@ -190,7 +190,7 @@ export const VehicleReportInspectionTable: FC<
 				beforeDate,
 				selectedVehicles,
 				selectedTopics,
-				topicMustHaveAll === "yes",
+				topicMustHaveAll,
 			),
 		[
 			afterDate,
@@ -235,7 +235,7 @@ export const VehicleReportInspectionTable: FC<
 			),
 		},
 		{
-			label: "เลขทะเบียนรถ",
+			label: "เลขทะเบียน",
 			value: (
 				<BaseInputMultiSelect
 					options={vehicleOptions}
@@ -247,24 +247,10 @@ export const VehicleReportInspectionTable: FC<
 		{
 			label: "ประเภทการกรองหัวข้อ",
 			value: (
-				<RadioGroup
-					row
+				<BaseInputTopicMatchMode
+					onChange={setTopicMustHaveAll}
 					value={topicMustHaveAll}
-					onChange={(e) =>
-						setTopicMustHaveAll(e.target.value)
-					}
-				>
-					<FormControlLabel
-						value="yes"
-						control={<Radio />}
-						label="มีทุกหัวข้อที่เลือก"
-					/>
-					<FormControlLabel
-						value="no"
-						control={<Radio />}
-						label="มีอย่างน้อยหนึ่งหัวข้อที่เลือก"
-					/>
-				</RadioGroup>
+				/>
 			),
 		},
 		{
@@ -287,15 +273,14 @@ export const VehicleReportInspectionTable: FC<
 			headers={HEADER_DEFINITIONS}
 			slotProps={{
 				addButton: {
-					onClick: onAdd,
-					children: "ลงบันทึกผลการตรวจสภาพรถ",
+					onClick: slotProps.addButton.onClick,
+					label: "ลงบันทึก",
 				},
 				searchField: {
 					placeholder:
-						"ค้นหาผลการตรวจสภาพรถ (ด้วยเลขทะเบียน, รอบการตรวจ หรือหัวข้อที่เกี่ยวข้อง)",
+						"ค้นหาด้วยเลขทะเบียน, รอบการตรวจ หรือหัวข้อที่เกี่ยวข้อง",
 					value: search,
-					onChange: (e) =>
-						setSearch(e.target.value),
+					onChange: setSearch,
 				},
 			}}
 		>

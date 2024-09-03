@@ -1,8 +1,7 @@
 import { VehicleFormData } from "$types/models/Vehicle";
-import { SaveRounded } from "@mui/icons-material";
-import { TextField } from "@mui/material";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
+import { BaseInputTextField } from "./BaseInputTextField";
 import { VehicleClassRadioGroup } from "./VehicleClassRadioGroup";
 import { VehicleCitySelect } from "./VehicleInputCitySelect";
 import { VehicleInputVendorAutocomplete } from "./VehicleInputVendorAutocomplete";
@@ -12,6 +11,12 @@ type VehicleFormProps = {
 	initFormData: VehicleFormData;
 	onSubmit: (formData: VehicleFormData) => void;
 	onCancel: () => void;
+	slotProps: {
+		submitButton: {
+			label: string;
+			startIcon: ReactNode;
+		};
+	};
 };
 export const VehicleForm: FC<VehicleFormProps> = (
 	props,
@@ -21,6 +26,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
 		onCancel,
 		onSubmit,
 		vendorOptions,
+		slotProps,
 	} = props;
 
 	const [
@@ -43,18 +49,15 @@ export const VehicleForm: FC<VehicleFormProps> = (
 		if (isFormIncomplete) {
 			return;
 		}
-		const formData: VehicleFormData = {
+		onSubmit({
 			licensePlate: fieldLicensePlate
 				.normalize()
 				.trim(),
 			vendor: fieldVendor,
 			registeredCity: fieldRegisteredCity,
 			vehicleClass: fieldVehicleClass,
-		};
-		onSubmit(formData);
+		});
 	};
-
-	const handleCancel = () => onCancel();
 
 	const missingFieldLicensePlate =
 		fieldLicensePlate.trim().normalize() === "";
@@ -75,15 +78,12 @@ export const VehicleForm: FC<VehicleFormProps> = (
 		{
 			label: "เลขทะเบียน",
 			value: (
-				<TextField
-					fullWidth
-					autoFocus
-					error={missingFieldLicensePlate}
+				<BaseInputTextField
+					shouldAutoFocus
+					isError={missingFieldLicensePlate}
 					value={fieldLicensePlate}
 					placeholder={initFormData.licensePlate}
-					onChange={(e) =>
-						setFieldLicensePlate(e.target.value)
-					}
+					onChange={setFieldLicensePlate}
 				/>
 			),
 		},
@@ -109,6 +109,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
 			label: "หจก.",
 			value: (
 				<VehicleInputVendorAutocomplete
+					placeholder={initFormData.vendor}
 					options={vendorOptions}
 					value={fieldVendor}
 					onChange={setFieldVendor}
@@ -122,12 +123,13 @@ export const VehicleForm: FC<VehicleFormProps> = (
 			slotProps={{
 				submitButton: {
 					disabled: isFormIncomplete,
-					startIcon: <SaveRounded />,
-					variant: "contained",
+					startIcon:
+						slotProps.submitButton.startIcon,
+					label: slotProps.submitButton.label,
 					onClick: handleSubmit,
 				},
 				cancelButton: {
-					onClick: handleCancel,
+					onClick: onCancel,
 				},
 			}}
 		>

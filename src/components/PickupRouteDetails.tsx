@@ -33,9 +33,9 @@ export const PickupRouteDetails: FC<
 				"HH:mm",
 			).format("HH:mm น."),
 		},
-	].map((item) => ({
-		label: item.label,
-		value: <Typography>{item.value}</Typography>,
+	].map(({ label, value }) => ({
+		label,
+		value: <Typography>{value}</Typography>,
 	}));
 
 	return (

@@ -15,17 +15,17 @@ const TOC_ITEMS: {
 	label: string;
 	href: string;
 }[] = [
-	{ label: "ข้อมูลรถ", href: "#info" },
+	{ label: "ข้อมูลรถรับส่ง", href: "#info" },
 	{
-		label: "oplog",
+		label: "ตารางบันทึกประวัติการเดินรถ",
 		href: "#operational-log",
 	},
 	{
-		label: "เรื่องร้องเรียน",
+		label: "ตารางบันทึกเรื่องร้องเรียนรถรับส่ง",
 		href: "#general-report",
 	},
 	{
-		label: "ผลการตรวจสภาพ",
+		label: "ตารางบันทึกผลการตรวจสภาพรถ",
 		href: "#inspection-report",
 	},
 ];
@@ -41,7 +41,7 @@ export const IndexPage: FC = () => {
 
 	const submit = useSubmit();
 
-	const heading = `ข้อมูลทะเบียนรถ +++++++++++++++++++++++++`;
+	const heading = `ข้อมูลรถรับส่ง`;
 
 	return (
 		<Stack spacing={1}>
@@ -60,41 +60,51 @@ export const IndexPage: FC = () => {
 				variant="h2"
 				id="operational-log"
 			>
-				ประวัติการเดินรถ++++++++++++++++
+				ตารางบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogTable
 				entries={logEntries}
-				onAdd={() => {}}
+				slotProps={{
+					addButton: {
+						onClick: () => {},
+					},
+				}}
 			/>
 			<Typography
 				variant="h2"
 				id="general-report"
 			>
-				เรื่องร้องเรียน++++++++++++++++++++
+				ตารางบันทึกเรื่องร้องเรียนรถรับส่ง
 			</Typography>
 			<VehicleReportGeneralTable
 				entries={generalEntries}
-				onAdd={() =>
-					submit(
-						{},
-						{ action: "./report/general" },
-					)
-				}
+				slotProps={{
+					addButton: {
+						onClick: () =>
+							submit(
+								{},
+								{ action: "./report/general" },
+							),
+					},
+				}}
 			/>
 			<Typography
 				variant="h2"
 				id="inspection-report"
 			>
-				ผลการตรวจสภาพรถ++++++++++++++++++++++
+				ตารางบันทึกผลการตรวจสภาพรถ
 			</Typography>
 			<VehicleReportInspectionTable
 				entries={inspectionEntries}
-				onAdd={() =>
-					submit(
-						{},
-						{ action: "./report/inspection" },
-					)
-				}
+				slotProps={{
+					addButton: {
+						onClick: () =>
+							submit(
+								{},
+								{ action: "./report/inspection" },
+							),
+					},
+				}}
 			/>
 		</Stack>
 	);

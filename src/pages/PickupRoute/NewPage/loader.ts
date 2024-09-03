@@ -1,4 +1,5 @@
 import { PickupRouteFormData } from "$types/models/PickupRoute";
+import dayjs from "dayjs";
 import { LoaderFunction } from "react-router-dom";
 
 export type NewPageLoaderData = {
@@ -8,8 +9,12 @@ export const newPageLoader: LoaderFunction =
 	async () => {
 		const initFormData: PickupRouteFormData = {
 			name: "",
-			arrivalTime: "",
-			departureTime: "",
+			arrivalTime: dayjs()
+				.startOf("day")
+				.format("HH:mm"),
+			departureTime: dayjs()
+				.endOf("day")
+				.format("HH:mm"),
 		};
 		const loaderData: NewPageLoaderData = {
 			initFormData,

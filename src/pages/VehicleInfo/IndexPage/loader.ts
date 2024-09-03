@@ -176,7 +176,10 @@ const getImages = async (vehicleId: string) => {
 	);
 	const files = await readDir(dirPath, {
 		dir: BaseDirectory.AppData,
-	});
+	}).then(
+		(files) => files,
+		() => [],
+	);
 
 	const images: {
 		src: string;

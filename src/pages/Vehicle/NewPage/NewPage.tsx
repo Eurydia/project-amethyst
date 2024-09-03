@@ -1,5 +1,7 @@
+import { postVehicle } from "$backend/database/post";
 import { VehicleForm } from "$components/VehicleForm";
 import { VehicleFormData } from "$types/models/Vehicle";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -8,19 +10,18 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
-import { postVehicle } from "$backend/database/post";
 
 export const NewPage: FC = () => {
 	const { initFormData, vendorOptions } =
 		useLoaderData() as NewPageLoaderData;
 	const submit = useSubmit();
 
-	const handleSubmit = async (
+	const handleSubmit = (
 		formData: VehicleFormData,
 	) => {
 		postVehicle(formData).then(
 			(vehicleId) => {
-				toast.success("บันทึกสำเร็จ");
+				toast.success("ลงทะเบียนสำเร็จ");
 				submit(
 					{},
 					{
@@ -29,7 +30,7 @@ export const NewPage: FC = () => {
 				);
 			},
 			() => {
-				toast.error("บันทึกล้มเหลว");
+				toast.error("ลงทะเบียนล้มเหลว");
 				submit(
 					{},
 					{
@@ -43,20 +44,25 @@ export const NewPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				ลงทะเบียนรถ
+				ลงทะเบียนรถรับส่ง
 			</Typography>
 			<VehicleForm
 				vendorOptions={vendorOptions}
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={() => {
-					toast.error("บันทึกล้มเหลว");
 					submit(
 						{},
 						{
 							action: "/vehicles",
 						},
 					);
+				}}
+				slotProps={{
+					submitButton: {
+						startIcon: <AddRounded />,
+						label: "ลงทะเบียน",
+					},
 				}}
 			/>
 		</Stack>

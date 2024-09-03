@@ -1,4 +1,7 @@
 import { putVehicle } from "$backend/database/put";
+import { VehicleForm } from "$components/VehicleForm";
+import { VehicleFormData } from "$types/models/Vehicle";
+import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -7,8 +10,6 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { EditPageLoaderData } from "./loader";
-import { VehicleForm } from "$components/VehicleForm";
-import { VehicleFormData } from "$types/models/Vehicle";
 
 export const EditPage: FC = () => {
 	const {
@@ -41,7 +42,7 @@ export const EditPage: FC = () => {
 				),
 			);
 	};
-	const heading = `ข้อมูลคนขับรถ  (แก้ไข)`;
+	const heading = `แก้ไขข้อมูลรถรับส่ง`;
 
 	return (
 		<Stack spacing={1}>
@@ -61,6 +62,12 @@ export const EditPage: FC = () => {
 						},
 					)
 				}
+				slotProps={{
+					submitButton: {
+						label: "บันทึก",
+						startIcon: <SaveRounded />,
+					},
+				}}
 			/>
 		</Stack>
 	);

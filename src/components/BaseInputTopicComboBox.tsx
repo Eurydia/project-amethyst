@@ -1,3 +1,4 @@
+import { filterItems } from "$core/filter";
 import {
 	Checkbox,
 	List,
@@ -8,9 +9,7 @@ import {
 	Stack,
 	TextField,
 	Toolbar,
-	Typography,
 } from "@mui/material";
-import { matchSorter } from "match-sorter";
 import { FC, useMemo, useState } from "react";
 
 type CustomListItemProps = {
@@ -44,16 +43,16 @@ const CustomListItem: FC<CustomListItemProps> = (
 						checked={isChecked}
 					/>
 				</ListItemIcon>
-				<ListItemText>
-					<Typography
-						sx={{
+				<ListItemText
+					primaryTypographyProps={{
+						sx: {
 							fontWeight: isBold
 								? "bold"
 								: undefined,
-						}}
-					>
-						{label}
-					</Typography>
+						},
+					}}
+				>
+					{label}
 				</ListItemText>
 			</ListItemButton>
 		</ListItem>
@@ -140,7 +139,7 @@ const CustomList: FC<CustomListProps> = (
 			}}
 		>
 			<CustomListItem
-				label="ทั้งหมด"
+				label="เลือกทั้งหมด"
 				onClick={handleToggleAll}
 				isChecked={isPartiallySelect}
 				isBold
@@ -150,36 +149,46 @@ const CustomList: FC<CustomListProps> = (
 	);
 };
 
-type TopicComboBoxProps = {
+const filterOptions = (
+	options: string[],
+	values: string[],
+	search: string,
+) => {
+	const optionSet = new Set([
+		...options,
+		...values,
+	]);
+
+	const items = filterItems(
+		[...optionSet],
+		search,
+		undefined,
+	);
+	if (
+		items.length === 0 &&
+		search.trim().normalize() !== ""
+	) {
+		items.push(search.trim().normalize());
+	}
+	return items;
+};
+
+type BaseInputTopicComboBoxProps = {
 	options: string[];
 	value: string[];
 	onChange: (value: string[]) => void;
 };
-export const TopicComboBox: FC<
-	TopicComboBoxProps
+export const BaseInputTopicComboBox: FC<
+	BaseInputTopicComboBoxProps
 > = (props) => {
 	const { options, value, onChange } = props;
 
 	const [search, setSearch] = useState("");
 
-	const filteredOptions = useMemo(() => {
-		const targetOptions = new Set([
-			...options,
-			...value,
-		]);
-
-		const items = matchSorter(
-			[...targetOptions],
-			search,
-		);
-		if (
-			items.length === 0 &&
-			search.trim().normalize() !== ""
-		) {
-			items.push(search.trim().normalize());
-		}
-		return items;
-	}, [search, options, value]);
+	const filteredOptions = useMemo(
+		() => filterOptions(options, value, search),
+		[search, options, value],
+	);
 
 	return (
 		<Stack spacing={1}>
@@ -195,16 +204,13 @@ export const TopicComboBox: FC<
 			>
 				<TextField
 					fullWidth
-					placeholder="ค้นหาหัวข้อ หรือสร้างหัวข้อใหม่"
+					placeholder="ค้นหา หรือสร้างหัวข้อใหม่"
 					value={search}
 					onChange={(e) =>
 						setSearch(e.target.value)
 					}
 				/>
 			</Toolbar>
-			<Typography>
-				เลือกแล้ว {value.length} หัวข้อ
-			</Typography>
 			<CustomList
 				options={filteredOptions}
 				selectedOptions={value}

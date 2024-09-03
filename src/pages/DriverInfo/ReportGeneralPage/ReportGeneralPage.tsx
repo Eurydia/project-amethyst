@@ -1,5 +1,7 @@
+import { postDriverReportGeneral } from "$backend/database/post";
 import { DriverReportForm } from "$components/DriverReportForm";
 import { DriverReportFormData } from "$types/models/Driver";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -8,8 +10,6 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ReportGeneralPageLoaderData } from "./loader";
-import { TRANSLATION } from "$locale/th";
-import { postDriverReportGeneral } from "$backend/database/post";
 
 export const ReportGeneralPage: FC = () => {
 	const {
@@ -26,9 +26,7 @@ export const ReportGeneralPage: FC = () => {
 	) => {
 		postDriverReportGeneral(formData).then(
 			(reportId) => {
-				toast.success(
-					TRANSLATION.postReportSuccess,
-				);
+				toast.success("บันทึกสำเร็จ");
 				submit(
 					{},
 					{
@@ -39,7 +37,7 @@ export const ReportGeneralPage: FC = () => {
 				);
 			},
 			() => {
-				toast.error(TRANSLATION.postReportFail);
+				toast.error("บันทึกล้มเหลว");
 				submit(
 					{},
 					{
@@ -50,9 +48,7 @@ export const ReportGeneralPage: FC = () => {
 		);
 	};
 
-	const heading = `ลงบันทึกเรื่องร้องเรียน "${
-		initFormData.driver!.name
-	} ${initFormData.driver!.surname}"`;
+	const heading = `ลงบันทึกเรื่องร้องเรียนคนขับรถ`;
 
 	return (
 		<Stack spacing={1}>
@@ -72,6 +68,12 @@ export const ReportGeneralPage: FC = () => {
 						},
 					)
 				}
+				slotProps={{
+					submitButton: {
+						startIcon: <AddRounded />,
+						label: "บันทึก",
+					},
+				}}
 			/>
 		</Stack>
 	);

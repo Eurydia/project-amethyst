@@ -1,17 +1,17 @@
+import { filterItems } from "$core/filter";
 import {
 	Autocomplete,
 	TextField,
 } from "@mui/material";
-import { matchSorter } from "match-sorter";
 import { FC } from "react";
 
-type VehicleVendorComboBoxProps = {
+type VehicleInputVendorAutocompleteProps = {
 	options: string[];
 	value: string;
 	onChange: (value: string) => void;
 };
-export const VehicleVendorComboBox: FC<
-	VehicleVendorComboBoxProps
+export const VehicleInputVendorAutocomplete: FC<
+	VehicleInputVendorAutocompleteProps
 > = (props) => {
 	const { onChange, options, value } = props;
 
@@ -33,15 +33,11 @@ export const VehicleVendorComboBox: FC<
 				<TextField {...params} />
 			)}
 			filterOptions={(options, state) =>
-				state.inputValue
-					.split(" ")
-					.map((token) => token.trim())
-					.filter((token) => token.length > 0)
-					.reduceRight(
-						(filteredOptions, token) =>
-							matchSorter(filteredOptions, token),
-						options,
-					)
+				filterItems(
+					options,
+					state.inputValue,
+					undefined,
+				)
 			}
 		/>
 	);

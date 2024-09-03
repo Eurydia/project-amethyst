@@ -1,9 +1,5 @@
 import { FormalLayout } from "$layouts/FormalLayout";
-import { SaveRounded } from "@mui/icons-material";
-import {
-	ButtonProps,
-	Grid2,
-} from "@mui/material";
+import { Grid2 } from "@mui/material";
 import { FC, ReactNode } from "react";
 import { TypographyButton } from "./TypographyButton";
 
@@ -13,8 +9,15 @@ type BaseFormProps = {
 		value: ReactNode;
 	}[];
 	slotProps: {
-		submitButton: ButtonProps;
-		cancelButton: ButtonProps;
+		submitButton: {
+			startIcon: ReactNode;
+			disabled: boolean;
+			label: string;
+			onClick: () => void;
+		};
+		cancelButton: {
+			onClick: () => void;
+		};
 	};
 };
 export const BaseForm: FC<BaseFormProps> = (
@@ -40,14 +43,23 @@ export const BaseForm: FC<BaseFormProps> = (
 				}}
 			>
 				<TypographyButton
-					{...slotProps.submitButton}
-					startIcon={<SaveRounded />}
 					variant="contained"
-				/>
+					startIcon={
+						slotProps.submitButton.startIcon
+					}
+					onClick={slotProps.submitButton.onClick}
+					disabled={
+						slotProps.submitButton.disabled
+					}
+				>
+					{slotProps.submitButton.label}
+				</TypographyButton>
 				<TypographyButton
-					{...slotProps.cancelButton}
 					variant="outlined"
-				/>
+					onClick={slotProps.cancelButton.onClick}
+				>
+					ยกเลิก
+				</TypographyButton>
 			</Grid2>
 		</Grid2>
 	);

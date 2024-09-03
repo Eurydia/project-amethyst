@@ -1,4 +1,7 @@
+import { postDriverReportMedical } from "$backend/database/post";
 import { DriverReportForm } from "$components/DriverReportForm";
+import { DriverReportFormData } from "$types/models/Driver";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -7,8 +10,6 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ReportMedicalPageLoaderData } from "./loader";
-import { DriverReportFormData } from "$types/models/Driver";
-import { postDriverReportMedical } from "$backend/database/post";
 
 export const ReportMedicalPage: FC = () => {
 	const {
@@ -26,6 +27,7 @@ export const ReportMedicalPage: FC = () => {
 	) => {
 		postDriverReportMedical(formData).then(
 			(reportId) => {
+				toast.success("ลงบันทึกสำเร็จ");
 				submit(
 					{},
 					{
@@ -36,7 +38,7 @@ export const ReportMedicalPage: FC = () => {
 				);
 			},
 			() => {
-				toast.error("บันทึกล้มเหลว");
+				toast.error("ลงบันทึกล้มเหลว");
 				submit(
 					{},
 					{
@@ -47,9 +49,7 @@ export const ReportMedicalPage: FC = () => {
 		);
 	};
 
-	const heading = `ลงบันทึกผลการตรวจสารเสพติด "${
-		initFormData.driver!.name
-	} ${initFormData.driver!.surname}"`;
+	const heading = `ลงบันทึกผลการตรวจสารเสพติด`;
 
 	return (
 		<Stack spacing={1}>
@@ -69,6 +69,12 @@ export const ReportMedicalPage: FC = () => {
 						},
 					)
 				}
+				slotProps={{
+					submitButton: {
+						label: "บันทึกข้อมูล",
+						startIcon: <AddRounded />,
+					},
+				}}
 			/>
 		</Stack>
 	);

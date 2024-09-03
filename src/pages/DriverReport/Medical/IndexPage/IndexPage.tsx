@@ -20,14 +20,17 @@ export const IndexPage: FC = () => {
 			</Typography>
 			<DriverReportMedicalTable
 				entries={entries}
-				onAdd={() =>
-					submit(
-						{},
-						{
-							action: "./new",
-						},
-					)
-				}
+				slotProps={{
+					addButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action: "./new",
+								},
+							),
+					},
+				}}
 			/>
 		</Stack>
 	);

@@ -2,8 +2,7 @@ import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
 import { OperationalLogEntry } from "$types/models/OperatonalLog";
 import { Typography } from "@mui/material";
-import { DateField } from "@mui/x-date-pickers";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import {
 	FC,
 	ReactNode,
@@ -90,56 +89,95 @@ const HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry>[] =
 		},
 	];
 
+const toOptions = (
+	entries: OperationalLogEntry[],
+) => {
+	const drivers: Record<string, string> = {};
+	const vehicles: Record<string, string> = {};
+	const routes: Record<string, string> = {};
+
+	for (const entry of entries) {
+		drivers[
+			entry.driverId
+		] = `${entry.driverName} ${entry.driverSurname}`;
+		vehicles[entry.vehicleId] =
+			entry.vehicleLicensePlate;
+		routes[entry.routeId] = entry.routeName;
+	}
+
+	const driverOptions = Object.entries(
+		drivers,
+	).map(([value, label]) => ({ value, label }));
+	const vehicleOptions = Object.entries(
+		vehicles,
+	).map(([value, label]) => ({ value, label }));
+	const routeOptions = Object.entries(routes).map(
+		([value, label]) => ({ value, label }),
+	);
+	return {
+		driverOptions,
+		vehicleOptions,
+		routeOptions,
+	};
+};
+
+const filterOptions = (
+	entries: OperationalLogEntry[],
+	selectedDrivers: string[],
+	selectedRoutes: string[],
+	selectedVehicles: string[],
+) => {
+	const routeSet = new Set(selectedRoutes);
+	const vehicleSet = new Set(selectedVehicles);
+	const driverSet = new Set(selectedDrivers);
+
+	return entries
+		.filter((entry) =>
+			routeSet.has(entry.routeId),
+		)
+		.filter((entry) =>
+			vehicleSet.has(entry.vehicleId),
+		)
+		.filter((entry) =>
+			driverSet.has(entry.driverId),
+		);
+};
+
+const searchEntries = (
+	entries: OperationalLogEntry[],
+	search: string,
+) => {
+	return filterItems(entries, search, [
+		"driverName",
+		"driverSurname",
+		"vehicleLicensePlate",
+		"routeName",
+	]);
+};
+
 type OperationalLogTableProps = {
 	entries: OperationalLogEntry[];
-	onAdd: () => void;
+	slotProps: {
+		addButton: {
+			onClick: () => void;
+		};
+	};
 };
 export const OperationalLogTable: FC<
 	OperationalLogTableProps
 > = (props) => {
-	const { entries, onAdd } = props;
+	const { entries, slotProps } = props;
 
 	const {
 		driverOptions,
 		vehicleOptions,
 		routeOptions,
-	} = useMemo(() => {
-		const uniqDrivers: Record<string, string> =
-			{};
-		const uniqVehicle: Record<string, string> =
-			{};
-		const uniqRoute: Record<string, string> = {};
-
-		for (const entry of entries) {
-			uniqDrivers[
-				entry.driverId
-			] = `${entry.driverName} ${entry.driverSurname}`;
-			uniqVehicle[entry.vehicleId] =
-				entry.vehicleLicensePlate;
-			uniqRoute[entry.routeId] = entry.routeName;
-		}
-
-		const driverOptions = Object.entries(
-			uniqDrivers,
-		).map(([value, label]) => ({ value, label }));
-		const vehicleOptions = Object.entries(
-			uniqVehicle,
-		).map(([value, label]) => ({ value, label }));
-		const routeOptions = Object.entries(
-			uniqRoute,
-		).map(([value, label]) => ({ value, label }));
-		return {
-			driverOptions,
-			vehicleOptions,
-			routeOptions,
-		};
-	}, [entries]);
+	} = useMemo(
+		() => toOptions(entries),
+		[entries],
+	);
 
 	const [search, setSearch] = useState("");
-	const [afterDate, setAfterDate] =
-		useState<Dayjs | null>(null);
-	const [beforeDate, setBeforeDate] =
-		useState<Dayjs | null>(null);
 	const [selectedRoutes, setSelectedRoutes] =
 		useState(
 			routeOptions.map(({ value }) => value),
@@ -153,81 +191,31 @@ export const OperationalLogTable: FC<
 			driverOptions.map(({ value }) => value),
 		);
 
-	const filteredEntries = useMemo(() => {
-		let items = entries;
-		if (afterDate !== null) {
-			items = items.filter((entry) =>
-				dayjs(entry.startDate).isAfter(afterDate),
-			);
-		}
-		if (beforeDate !== null) {
-			items = items.filter((entry) =>
-				dayjs(entry.startDate).isBefore(
-					beforeDate,
-				),
-			);
-		}
-		const routeSet = new Set(selectedRoutes);
-		const vehicleSet = new Set(selectedVehicles);
-		const driverSet = new Set(selectedDrivers);
+	const filteredEntries = useMemo(
+		() =>
+			filterOptions(
+				entries,
+				selectedDrivers,
+				selectedRoutes,
+				selectedVehicles,
+			),
+		[
+			entries,
+			selectedDrivers,
+			selectedVehicles,
+			selectedRoutes,
+		],
+	);
 
-		items = items
-			.filter((entry) =>
-				routeSet.has(entry.routeId),
-			)
-			.filter((entry) =>
-				vehicleSet.has(entry.vehicleId),
-			)
-			.filter((entry) =>
-				driverSet.has(entry.driverId),
-			);
-		return items;
-	}, [
-		entries,
-		selectedDrivers,
-		selectedRoutes,
-		selectedRoutes,
-		afterDate,
-		beforeDate,
-	]);
-
-	const searchedEntries = useMemo(() => {
-		return filterItems(entries, search, [
-			"driverName",
-			"driverSurname",
-			"vehicleLicensePlate",
-			"routeName",
-		]);
-	}, [search, filteredEntries]);
+	const searchedEntries = useMemo(
+		() => searchEntries(filteredEntries, search),
+		[search, filteredEntries],
+	);
 
 	const fitlerFormItems: {
 		label: string;
 		value: ReactNode;
 	}[] = [
-		{
-			label: "หลังจากวันที่",
-			value: (
-				<DateField
-					fullWidth
-					format="DD/MM/YYYY"
-					formatDensity="spacious"
-					value={afterDate}
-					onChange={setAfterDate}
-				/>
-			),
-		},
-		{
-			label: "ก่อนจากวันที่",
-			value: (
-				<DateField
-					fullWidth
-					format="DD/MM/YYYY"
-					formatDensity="spacious"
-					value={beforeDate}
-					onChange={setBeforeDate}
-				/>
-			),
-		},
 		{
 			label: "สายรถ",
 			value: (
@@ -268,15 +256,14 @@ export const OperationalLogTable: FC<
 			defaultSortOrder="desc"
 			slotProps={{
 				searchField: {
-					placeholder: "ค้นหา",
+					placeholder:
+						"ค้นหาด้วยชื่อนามสกุล, ทะเบียนรถ, สายรถ",
 					value: search,
-					onChange: (e) =>
-						setSearch(e.target.value),
+					onChange: setSearch,
 				},
 				addButton: {
-					onClick: onAdd,
-					variant: "contained",
-					children: "ลงบันทึกประวัติการเดินรถ",
+					onClick: slotProps.addButton.onClick,
+					label: "ลงบันทึก",
 				},
 			}}
 		>

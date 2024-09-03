@@ -1,4 +1,3 @@
-import { TRANSLATION } from "$locale/th";
 import { DriverFormData } from "$types/models/Driver";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
@@ -9,12 +8,22 @@ type DriverFormProps = {
 	initFormData: DriverFormData;
 	onSubmit: (formData: DriverFormData) => void;
 	onCancel: () => void;
+	slotProps: {
+		submitButton: {
+			startIcon: ReactNode;
+			label: string;
+		};
+	};
 };
 export const DriverForm: FC<DriverFormProps> = (
 	props,
 ) => {
-	const { initFormData, onCancel, onSubmit } =
-		props;
+	const {
+		initFormData,
+		onCancel,
+		slotProps,
+		onSubmit,
+	} = props;
 
 	const [fieldName, setFieldName] = useState(
 		initFormData.name,
@@ -54,11 +63,11 @@ export const DriverForm: FC<DriverFormProps> = (
 		value: ReactNode;
 	}[] = [
 		{
-			label: TRANSLATION.driverName,
+			label: "ชื่อ",
 			value: (
 				<BaseInputTextField
 					shouldAutoFocus
-					isRequired
+					isError={missingFieldName}
 					placeholder={initFormData.name}
 					value={fieldName}
 					onChange={setFieldName}
@@ -66,10 +75,10 @@ export const DriverForm: FC<DriverFormProps> = (
 			),
 		},
 		{
-			label: TRANSLATION.driverSurname,
+			label: "นามสกุล",
 			value: (
 				<BaseInputTextField
-					isRequired
+					isError={missingFieldSurname}
 					value={fieldSurname}
 					placeholder={initFormData.surname}
 					onChange={setFielSurname}
@@ -77,7 +86,7 @@ export const DriverForm: FC<DriverFormProps> = (
 			),
 		},
 		{
-			label: TRANSLATION.driverContact,
+			label: "เบอร์ติดต่อ",
 			value: (
 				<BaseInputTextField
 					placeholder={initFormData.contact}
@@ -87,7 +96,7 @@ export const DriverForm: FC<DriverFormProps> = (
 			),
 		},
 		{
-			label: TRANSLATION.driverLicenseType,
+			label: "ประเภทใบขับขี่",
 			value: (
 				<DriverLicenseSelect
 					value={fieldLicenseType}
@@ -103,11 +112,10 @@ export const DriverForm: FC<DriverFormProps> = (
 				submitButton: {
 					disabled: isFormIncomplete,
 					onClick: handleSubmit,
-					children: TRANSLATION.globalPost,
+					...slotProps.submitButton,
 				},
 				cancelButton: {
 					onClick: onCancel,
-					children: TRANSLATION.globalCancel,
 				},
 			}}
 		>

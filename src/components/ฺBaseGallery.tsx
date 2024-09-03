@@ -8,11 +8,11 @@ import {
 import { FC } from "react";
 import { TypographyButton } from "./TypographyButton";
 
-type GalleryProps = {
+type BaseGalleryProps = {
 	images: { fileName: string; src: string }[];
 	onOpenRoot: () => void;
 };
-export const Gallery: FC<GalleryProps> = (
+export const BaseGallery: FC<BaseGalleryProps> = (
 	props,
 ) => {
 	const { images, onOpenRoot } = props;

@@ -14,7 +14,7 @@ export const DRIVER_ROUTES: RouteObject = {
 		{
 			index: true,
 			element: <IndexPage />,
-			loader: indexPageLoader, // OK
+			loader: indexPageLoader,
 		},
 		{
 			path: "new",

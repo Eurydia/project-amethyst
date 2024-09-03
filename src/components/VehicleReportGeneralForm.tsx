@@ -5,13 +5,13 @@ import {
 import { SaveRounded } from "@mui/icons-material";
 import { TextField } from "@mui/material";
 import {
-	TimeField,
 	DateField,
+	TimeField,
 } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { FC, useState, ReactNode } from "react";
+import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
-import { TopicComboBox } from "./TopicComboBox";
+import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { VehicleSelect } from "./VehicleSelect";
 
 type VehicleReportGeneralFormProps = {
@@ -168,7 +168,7 @@ export const VehicleReportGeneralForm: FC<
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
-				<TopicComboBox
+				<BaseInputTopicComboBox
 					options={topicOptions}
 					value={fieldTopics}
 					onChange={setFieldTopics}

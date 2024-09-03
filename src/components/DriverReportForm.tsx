@@ -2,8 +2,6 @@ import {
 	DriverModel,
 	DriverReportFormData,
 } from "$types/models/Driver";
-import { SaveRounded } from "@mui/icons-material";
-import { TextField } from "@mui/material";
 import {
 	DateField,
 	TimeField,
@@ -11,8 +9,9 @@ import {
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
+import { BaseInputTextField } from "./BaseInputTextField";
+import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { DriverSelect } from "./DriverInputSelect";
-import { TopicComboBox } from "./TopicComboBox";
 
 type DriverReportFormProps = {
 	driverOptions: DriverModel[];
@@ -22,6 +21,12 @@ type DriverReportFormProps = {
 		formData: DriverReportFormData,
 	) => void;
 	onCancel: () => void;
+	slotProps: {
+		submitButton: {
+			startIcon: ReactNode;
+			label: string;
+		};
+	};
 };
 export const DriverReportForm: FC<
 	DriverReportFormProps
@@ -30,6 +35,7 @@ export const DriverReportForm: FC<
 		driverOptions,
 		topicOptions,
 		initFormData,
+		slotProps,
 		onSubmit,
 		onCancel,
 	} = props;
@@ -123,51 +129,44 @@ export const DriverReportForm: FC<
 			),
 		},
 		{
-			label: "คนขับ",
+			label: "คนขับรถ",
 			value: (
 				<DriverSelect
-					showError={isDriverEmpty}
 					options={driverOptions}
 					value={fieldDriver}
 					onChange={setFieldDriver}
-					disabled={shouldLockDriver}
+					isDisabled={shouldLockDriver}
 				/>
 			),
 		},
 		{
 			label: "เรื่อง",
 			value: (
-				<TextField
-					fullWidth
-					autoFocus
-					error={isTitleEmpty}
-					value={fieldTitle}
-					onChange={(e) =>
-						setFieldTitle(e.target.value)
-					}
+				<BaseInputTextField
+					shouldAutoFocus
+					onChange={setFieldTitle}
 					placeholder={initFormData.title}
+					value={fieldTitle}
+					isError={isTitleEmpty}
 				/>
 			),
 		},
 		{
 			label: "รายละเอียด",
 			value: (
-				<TextField
-					fullWidth
+				<BaseInputTextField
 					multiline
 					minRows={6}
 					value={fieldContent}
-					onChange={(e) =>
-						setFieldContent(e.target.value)
-					}
 					placeholder={initFormData.content}
+					onChange={setFieldContent}
 				/>
 			),
 		},
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
-				<TopicComboBox
+				<BaseInputTopicComboBox
 					options={topicOptions}
 					value={fieldTopics}
 					onChange={setFieldTopics}
@@ -181,9 +180,10 @@ export const DriverReportForm: FC<
 			slotProps={{
 				submitButton: {
 					disabled: isFormIncomplete,
-					startIcon: <SaveRounded />,
-					variant: "contained",
 					onClick: handleSubmit,
+					label: slotProps.submitButton.label,
+					startIcon:
+						slotProps.submitButton.startIcon,
 				},
 				cancelButton: {
 					onClick: onCancel,

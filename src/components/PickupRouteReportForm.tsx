@@ -11,8 +11,8 @@ import {
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
+import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { PickupRouteSelect } from "./PickupRouteInputSelect";
-import { TopicComboBox } from "./TopicComboBox";
 
 type PickupRouteReportFormProps = {
 	routeOptions: PickupRouteModel[];
@@ -168,7 +168,7 @@ export const PickupRouteReportForm: FC<
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
-				<TopicComboBox
+				<BaseInputTopicComboBox
 					options={topicOptions}
 					value={fieldTopics}
 					onChange={setFieldTopics}

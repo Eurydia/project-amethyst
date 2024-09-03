@@ -1,12 +1,10 @@
 import { FormalLayout } from "$layouts/FormalLayout";
-import { TRANSLATION } from "$locale/th";
 import {
 	AddRounded,
 	FilterAlt,
 	SearchRounded,
 } from "@mui/icons-material";
 import {
-	ButtonProps,
 	Collapse,
 	InputAdornment,
 	Table,
@@ -17,7 +15,6 @@ import {
 	TableRow,
 	TableSortLabel,
 	TextField,
-	TextFieldProps,
 	Toolbar,
 	Typography,
 } from "@mui/material";
@@ -70,8 +67,8 @@ const CustomTableHeader = (
 	if (isSorted) {
 		const toolTipTitle =
 			sortOrder === "asc"
-				? TRANSLATION.globalSortAscending
-				: TRANSLATION.globalSortDescending;
+				? "น้อยขึ้นไปมาก"
+				: "มากลงไปน้อย";
 		header = (
 			<TypographyTooltip title={toolTipTitle}>
 				{header}
@@ -139,11 +136,7 @@ const CustomTableBody = <T,>(
 			<TableBody>
 				<TableRow hover>
 					<TableCell colSpan={headers.length}>
-						<Typography>
-							{
-								TRANSLATION.globalNoEntryFoundInTable
-							}
-						</Typography>
+						<Typography>ไม่พบรายการ</Typography>
 					</TableCell>
 				</TableRow>
 			</TableBody>
@@ -190,17 +183,13 @@ const CustomToolbar: FC<CustomToolbarProps> = (
 				flexWrap: "wrap",
 			}}
 		>
-			<Typography>
-				{TRANSLATION.globalFoundXEntriesInTable(
-					count,
-				)}
-			</Typography>
+			<Typography>พบ {count} รายการ</Typography>
 			<TypographyButton
 				variant="text"
 				startIcon={<FilterAlt />}
 				onClick={onFilterToggle}
 			>
-				{TRANSLATION.globalAdvancedSearch}
+				ตัวเลือกการกรอง
 			</TypographyButton>
 		</Toolbar>
 	);
@@ -233,8 +222,15 @@ type BaseSortableTableProps<T> = {
 	defaultSortByColumn: number;
 	defaultSortOrder: "asc" | "desc";
 	slotProps: {
-		searchField: TextFieldProps;
-		addButton: ButtonProps;
+		searchField: {
+			placeholder: string;
+			value: string;
+			onChange: (value: string) => void;
+		};
+		addButton: {
+			onClick: () => void;
+			label: string;
+		};
 	};
 	children: {
 		label: string;
@@ -292,13 +288,17 @@ export const BaseSortableTable = <T,>(
 			}}
 		>
 			<TypographyButton
-				{...slotProps.addButton}
 				startIcon={<AddRounded />}
 				variant="contained"
-			/>
+				onClick={slotProps.addButton.onClick}
+			>
+				{slotProps.addButton.label}
+			</TypographyButton>
 			<TextField
-				{...slotProps.searchField}
 				fullWidth
+				placeholder={
+					slotProps.searchField.placeholder
+				}
 				slotProps={{
 					input: {
 						startAdornment: (

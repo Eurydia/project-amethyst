@@ -1,4 +1,3 @@
-import { BaseMultiSelect } from "$components/BaseMultiSelect";
 import { BaseSortableTable } from "$components/BaseSortableTable";
 import { filterItems } from "$core/filter";
 import { TRANSLATION } from "$locale/th";
@@ -15,11 +14,12 @@ import {
 	Link,
 	useSubmit,
 } from "react-router-dom";
+import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 
 const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 	[
 		{
-			label: TRANSLATION.pickupRoute,
+			label: "ชื่อสาย",
 			compare: (a, b) =>
 				a.name.localeCompare(b.name),
 			render: (item) => (
@@ -32,11 +32,13 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 			),
 		},
 		{
-			label: TRANSLATION.driverLicenseType,
+			label: "เลขทะเบียน",
 			compare: null,
 			render: (item) =>
 				item.vehicles.length === 0 ? (
-					<Typography>ไม่มี</Typography>
+					<Typography>
+						{TRANSLATION.globalNone}
+					</Typography>
 				) : (
 					<Stack
 						spacing={1}
@@ -58,13 +60,14 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 					</Stack>
 				),
 		},
-
 		{
-			label: TRANSLATION.driver,
+			label: "คนขับรถ",
 			compare: null,
 			render: (item) =>
 				item.drivers.length === 0 ? (
-					<Typography>ไม่มี</Typography>
+					<Typography>
+						{TRANSLATION.globalNone}
+					</Typography>
 				) : (
 					<Stack
 						spacing={1}
@@ -149,9 +152,9 @@ export const PickupRouteTable: FC<
 		value: ReactNode;
 	}[] = [
 		{
-			label: TRANSLATION.pickupRoute,
+			label: TRANSLATION.pickupRouteName,
 			value: (
-				<BaseMultiSelect
+				<BaseInputMultiSelect
 					onChange={setSelectedRoutes}
 					options={routeOptions}
 					selectedOptions={selectedRoutes}
@@ -166,6 +169,9 @@ export const PickupRouteTable: FC<
 			defaultSortByColumn={0}
 			entries={searchedEntries}
 			slotProps={{
+				tableBody: {
+					emptyText: "ไม่พบข้อมูลสายรถ",
+				},
 				searchField: {
 					placeholder:
 						TRANSLATION.pickupRouteTableSearch,

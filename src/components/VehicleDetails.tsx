@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 import { FC } from "react";
 import { useSubmit } from "react-router-dom";
 import { BaseInfoGroup } from "./BaseInfoGroup";
-import { Gallery } from "./Gallery";
+import { BaseGallery } from "./ฺBaseGallery";
 
 type VehicleDetailsProps = {
 	vehicle: VehicleModel;
@@ -40,7 +40,7 @@ export const VehicleDetails: FC<
 	detailItems.push({
 		label: "คลังภาพ",
 		value: (
-			<Gallery
+			<BaseGallery
 				images={images}
 				onOpenRoot={() => {}}
 			/>

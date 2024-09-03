@@ -1,13 +1,6 @@
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
 import { DriverReportEntry } from "$types/models/Driver";
-import {
-	ButtonProps,
-	FormControlLabel,
-	Radio,
-	RadioGroup,
-	TextFieldProps,
-} from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -17,9 +10,10 @@ import {
 	useState,
 } from "react";
 import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
+import { BaseInputTopicMatchMode } from "./BaseInputTopicMatchMode";
 import { BaseSortableTable } from "./BaseSortableTable";
 
-const getOptions = (
+const toOptions = (
 	entries: DriverReportEntry[],
 ) => {
 	const drivers: Record<string, string> = {};
@@ -105,8 +99,9 @@ type DriverReportTableProps = {
 	headers: TableHeaderDefinition<DriverReportEntry>[];
 	entries: DriverReportEntry[];
 	slotProps: {
-		addButton: ButtonProps;
-		searchField: TextFieldProps;
+		addButton: {
+			onClick: () => void;
+		};
 	};
 };
 export const DriverReportTable: FC<
@@ -115,7 +110,7 @@ export const DriverReportTable: FC<
 	const { headers, entries, slotProps } = props;
 
 	const { driverOptions, topicOptions } = useMemo(
-		() => getOptions(entries),
+		() => toOptions(entries),
 		[entries],
 	);
 
@@ -125,7 +120,7 @@ export const DriverReportTable: FC<
 	const [beforeDate, setBeforeDate] =
 		useState<Dayjs | null>(null);
 	const [topicMustHaveAll, setTopicMustHaveAll] =
-		useState("no");
+		useState(false);
 	const [selectedTopics, setSelectedTopics] =
 		useState(
 			topicOptions.map(({ value }) => value),
@@ -143,7 +138,7 @@ export const DriverReportTable: FC<
 				afterDate,
 				beforeDate,
 				selectedTopics,
-				topicMustHaveAll === "yes",
+				topicMustHaveAll,
 			),
 		[
 			afterDate,
@@ -200,24 +195,10 @@ export const DriverReportTable: FC<
 		{
 			label: "ประเภทการกรองหัวข้อ",
 			value: (
-				<RadioGroup
-					row
+				<BaseInputTopicMatchMode
 					value={topicMustHaveAll}
-					onChange={(e) =>
-						setTopicMustHaveAll(e.target.value)
-					}
-				>
-					<FormControlLabel
-						value="yes"
-						control={<Radio />}
-						label="มีทุกหัวข้อที่เลือก"
-					/>
-					<FormControlLabel
-						value="no"
-						control={<Radio />}
-						label="มีอย่างน้อยหนึ่งหัวข้อที่เลือก"
-					/>
-				</RadioGroup>
+					onChange={setTopicMustHaveAll}
+				/>
 			),
 		},
 		{
@@ -239,12 +220,15 @@ export const DriverReportTable: FC<
 			entries={searchedEntries}
 			headers={headers}
 			slotProps={{
-				addButton: slotProps.addButton,
+				addButton: {
+					label: "ลงบันทึก",
+					onClick: slotProps.addButton.onClick,
+				},
 				searchField: {
-					...slotProps.searchField,
 					value: search,
-					onChange: (e) =>
-						setSearch(e.target.value),
+					placeholder:
+						"ค้นหาด้วยชื่อ, นามสกุล, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง",
+					onChange: setSearch,
 				},
 			}}
 		>

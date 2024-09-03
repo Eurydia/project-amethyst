@@ -5,7 +5,7 @@ import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
 import { VehicleCitySelect } from "./VehicleCitySelect";
 import { VehicleClassRadioGroup } from "./VehicleClassRadioGroup";
-import { VehicleVendorComboBox } from "./VehicleVendorComboBox";
+import { VehicleInputVendorAutocomplete } from "./VehicleInputVendorAutocomplete";
 
 type VehicleFormProps = {
 	vendorOptions: string[];
@@ -108,7 +108,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
 		{
 			label: "หจก.",
 			value: (
-				<VehicleVendorComboBox
+				<VehicleInputVendorAutocomplete
 					options={vendorOptions}
 					value={fieldVendor}
 					onChange={setFieldVendor}

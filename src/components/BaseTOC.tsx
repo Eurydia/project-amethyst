@@ -1,18 +1,15 @@
-import { TRANSLATION } from "$locale/th";
 import {
 	List,
 	ListItem,
 	ListItemText,
-	Typography,
 } from "@mui/material";
 import { FC } from "react";
-import { Fragment } from "react/jsx-runtime";
 
-type CustomTOCItem = {
+type CustomItemProps = {
 	label: string;
 	href: string;
 };
-const CustomTOCItem: FC<CustomTOCItem> = (
+const CustomItem: FC<CustomItemProps> = (
 	props,
 ) => {
 	const { label, href } = props;
@@ -21,13 +18,13 @@ const CustomTOCItem: FC<CustomTOCItem> = (
 			disablePadding
 			disableGutters
 		>
-			<ListItemText>
-				<Typography
-					href={href}
-					component="a"
-				>
-					{label}
-				</Typography>
+			<ListItemText
+				primaryTypographyProps={{
+					component: "a",
+					href,
+				}}
+			>
+				{label}
 			</ListItemText>
 		</ListItem>
 	);
@@ -42,7 +39,7 @@ export const BaseTOC: FC<BaseTOCProps> = (
 
 	const renderedItems = children.map(
 		({ label, href }, index) => (
-			<CustomTOCItem
+			<CustomItem
 				key={"toc-item" + index}
 				href={href}
 				label={label}
@@ -50,16 +47,11 @@ export const BaseTOC: FC<BaseTOCProps> = (
 		),
 	);
 	return (
-		<Fragment>
-			<Typography>
-				{TRANSLATION.globalTOC}
-			</Typography>
-			<List
-				dense
-				disablePadding
-			>
-				{renderedItems}
-			</List>
-		</Fragment>
+		<List
+			dense
+			disablePadding
+		>
+			{renderedItems}
+		</List>
 	);
 };

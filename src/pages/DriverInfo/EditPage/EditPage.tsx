@@ -1,6 +1,7 @@
 import { putDriver } from "$backend/database/put";
 import { DriverForm } from "$components/DriverForm";
 import { DriverFormData } from "$types/models/Driver";
+import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -9,7 +10,6 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { EditPageLoaderData } from "./loader";
-import { TRANSLATION } from "$locale/th";
 
 export const EditPage: FC = () => {
 	const { initFormData, driverId } =
@@ -27,9 +27,8 @@ export const EditPage: FC = () => {
 			surname: formData.surname,
 		})
 			.then(
-				() =>
-					toast.success(TRANSLATION.putSuccess),
-				() => toast.error(TRANSLATION.putFail),
+				() => toast.success("แก้ไขข้อมูลสำเร็จ"),
+				() => toast.error("แก้ไขข้อมูลล้มเหลว"),
 			)
 			.finally(() =>
 				submit(
@@ -39,9 +38,7 @@ export const EditPage: FC = () => {
 			);
 	};
 
-	const heading = TRANSLATION.editInfoOf(
-		`${initFormData.name}	${initFormData.surname}`,
-	);
+	const heading = "แก้ไขข้อมูลคนขับรถ";
 
 	return (
 		<Stack spacing={1}>
@@ -49,6 +46,12 @@ export const EditPage: FC = () => {
 				{heading}
 			</Typography>
 			<DriverForm
+				slotProps={{
+					submitButton: {
+						startIcon: <SaveRounded />,
+						label: "บันทึก",
+					},
+				}}
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={() =>

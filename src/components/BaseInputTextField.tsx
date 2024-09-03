@@ -2,9 +2,11 @@ import { TextField } from "@mui/material";
 import { FC } from "react";
 
 type BaseInputTextFieldProps = {
+	multiline?: boolean;
+	minRows?: number;
 	placeholder?: string;
 	shouldAutoFocus?: boolean;
-	isRequired?: boolean;
+	isError?: boolean;
 	isDisabled?: boolean;
 	value: string;
 	onChange: (value: string) => void;
@@ -13,7 +15,9 @@ export const BaseInputTextField: FC<
 	BaseInputTextFieldProps
 > = (props) => {
 	const {
-		isRequired,
+		minRows,
+		multiline,
+		isError,
 		onChange,
 		value,
 		isDisabled,
@@ -21,23 +25,17 @@ export const BaseInputTextField: FC<
 		shouldAutoFocus,
 	} = props;
 
-	const isEmpty = value.trim().length === 0;
-
 	return (
 		<TextField
 			fullWidth
-			error={isEmpty && isRequired}
+			multiline={multiline}
+			minRows={minRows}
+			error={isError}
 			autoFocus={shouldAutoFocus}
 			placeholder={placeholder}
 			disabled={isDisabled}
-			required={isRequired}
 			value={value}
-			onChange={(e) => {
-				if (isEmpty) {
-					return;
-				}
-				onChange(e.target.value);
-			}}
+			onChange={(e) => onChange(e.target.value)}
 		/>
 	);
 };

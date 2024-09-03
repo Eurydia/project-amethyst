@@ -1,26 +1,27 @@
 export const TRANSLATION = {
+	driverFormSubmit: "ลงทะเบียนคนขับรถ",
+
+	systemEditInfo: "แก้ไขข้อมูล",
 	globalTopics: `หัวข้อที่เกี่ยวข้อง`,
 	globalContent: `รายละเอียด`,
 	globalDatetimePosted: `วันที่ลงบันทึก`,
 	globalTitle: `เรื่อง`,
-
-	globalCancel: `ยกเลิก`,
+	globalNone: `ไม่มี`,
+	globalGallery: `คลังภาพ`,
+	systemCancel: `ยกเลิก`,
 	globalPost: `ลงทะเบียน`,
 	globalTOC: `สารบัญ`,
-	globalSelectAll: `เลือกทั้งหมด`,
+	systemSelectAll: `เลือกทั้งหมด`,
 	globalEditInfo: `แก้ไขข้อมูล`,
-	globalSortAscending: "น้อยขึ้นไปมาก",
-	globalSortDescending: "มากลงไปน้อย",
-	globalNoEntryFoundInTable: `ไม่มีพบรายการในตาราง`,
-	globalFoundXEntriesInTable: (x: number) =>
+	systemSortAscending: "น้อยขึ้นไปมาก",
+	systemSortDescending: "มากลงไปน้อย",
+	globalTableFoundXEntries: (x: number) =>
 		`พบ ${x} รายการ`,
-	globalAdvancedSearch: `ตัวกรองขั้นสูง`,
+	globalTableAdvancedFilter: `ตัวกรองขั้นสูง`,
 
 	pickupRouteGeneralReportIdIsMissingFromParams: `ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Params is missing "reportId")`,
 	pickupRouteGeneralReportIsMissingFromDatabase: `ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องไม่พบเรื่องการร้องเรียนสายรถรับส่งที่ต้องการในฐานข้อมูล (Cannot find pickup route general report with given ID in database)`,
-
 	pickupRouteIdIsMissingFromParams: `ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Params is missing "routeId")`,
-
 	pickupRouteIsMissingFromDatabase: `ไม่พบข้อมูลสายรถรับส่งที่ต้องการในฐานข้อมูล (Cannot find pickup route with given ID in database)`,
 
 	pickupRouteDetails: `ข้อมูลสายรถรับส่ง`,
@@ -33,14 +34,17 @@ export const TRANSLATION = {
 
 	pickupRoutePostFormTitle: `ลงทะเบียนสายรถรับส่ง`,
 	pickupRouteTableSearch: `ค้นหาด้วยสายรถ, ทะเบียนรถ, หรือชื่อนามสกุลคนขับรถ`,
-	pickupRouteTable: `รายชื่อสายรถรับส่ง`,
-	pickupRoute: `สายรถรับส่ง`,
-	pickupRouteName: `ชื่อสายรถรับส่ง`,
-	pickupRoutePost: `ลงทะเบียนสายรถรับส่ง`,
+	pickupRouteTable: `ตารางสายรถ`,
+	pickupRoute: `สายรถ`,
+	pickupRouteName: `ชื่อสาย`,
+	pickupRoutePost: `ลงทะเบียนสายรถ`,
 
 	arrivalTime: `เวลานำรถเข้า`,
 	departureTime: `เวลานำรถออก`,
-
+	vehicleTableDriverHeader: "TBA",
+	vehicleTableRouteHeader: "TBA",
+	vehicleTableVehicleHeader: "TBA",
+	vehicle: `รถรับส่ง`,
 	vehicleLicensePlate: `เลขทะเบียนรถ`,
 	vehicleIdIsMissingFromParams: `ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Params is missing "vehicleId")`,
 	vehicleInspectionReportIsMissingFromDatabase: `ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องไม่พบผลการตรวจสภาพรถที่ต้องการในฐานข้อมูล (Cannot find vehicle inspection report with given ID in database)`,
@@ -49,7 +53,6 @@ export const TRANSLATION = {
 		"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Params is missing reportId)",
 	vehicleIsMissingFromDatabase: `ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องไม่พบข้อมูลรถรับส่งที่ต้องการในฐานข้อมูล (Cannot find vehicle with given ID in database)`,
 
-	gallery: `คลังภาพ`,
 	postReportSuccess: `ลงบันทึกสำเร็จ`,
 	postReportFail: `ลงบันทึกล้มเหลว`,
 
@@ -74,6 +77,13 @@ export const TRANSLATION = {
 	driverIsMissingFromDatabase:
 		"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับรถที่ต้องการฐานข้อมูล (Cannot find driver with given ID)",
 
+	driverTableSearch:
+		"ค้นหาด้วยชื่อ, นามสกุล, หรือเบอร์ติดต่อ",
+
+	driverSelectSearch:
+		"ค้นหาด้วยชื่อ, นามสกุล, หรือเบอร์ติดต่อ",
+
+	driverFormSubmit: "ลงทะเบียน",
 	driver: "คนขับรถ",
 	driverGeneralReportTable:
 		"ตารางเรื่องร้องเรียนคนขับรถ",
@@ -95,6 +105,9 @@ export const TRANSLATION = {
 	driverNameAndSurname: "ชื่อและนามสกุล",
 	driverContact: "เบอร์ติดต่อ",
 	driverLicenseType: "ประเภทใบขับขี่",
+	driverInputSelectPlaceholder: "TBA",
+
+	driverInfoGroupEdit: "แก้ไขข้อมูลคนขับรถ",
 
 	driverEditInfo: "แก้ไขข้อมูลคนขับรถ",
 	infoOf: (label: string) =>

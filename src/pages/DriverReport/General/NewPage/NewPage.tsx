@@ -1,4 +1,7 @@
+import { postDriverReportGeneral } from "$backend/database/post";
 import { DriverReportForm } from "$components/DriverReportForm";
+import { DriverReportFormData } from "$types/models/Driver";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -7,8 +10,6 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
-import { DriverReportFormData } from "$types/models/Driver";
-import { postDriverReportGeneral } from "$backend/database/post";
 
 export const NewPage: FC = () => {
 	const {
@@ -24,7 +25,7 @@ export const NewPage: FC = () => {
 	) => {
 		postDriverReportGeneral(formData)
 			.then((reportId) => {
-				toast.success("บันทึกสำเร็จ");
+				toast.success("ลงบันทึกสำเร็จ");
 				submit(
 					{},
 					{
@@ -35,7 +36,7 @@ export const NewPage: FC = () => {
 				);
 			})
 			.catch(() => {
-				toast.error("บันทึกล้มเหลว");
+				toast.error("ลงบันทึกล้มเหลว");
 				submit(
 					{},
 					{
@@ -65,6 +66,12 @@ export const NewPage: FC = () => {
 						},
 					)
 				}
+				slotProps={{
+					submitButton: {
+						label: "ลงบันทึก",
+						startIcon: <AddRounded />,
+					},
+				}}
 			/>
 		</Stack>
 	);

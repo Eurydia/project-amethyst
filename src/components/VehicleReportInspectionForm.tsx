@@ -1,3 +1,7 @@
+import {
+	VehicleModel,
+	VehicleReportInspectionFormData,
+} from "$types/models/Vehicle";
 import { SaveRounded } from "@mui/icons-material";
 import {
 	TextField,
@@ -10,12 +14,8 @@ import {
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
-import { TopicComboBox } from "./TopicComboBox";
+import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { VehicleSelect } from "./VehicleSelect";
-import {
-	VehicleModel,
-	VehicleReportInspectionFormData,
-} from "$types/models/Vehicle";
 
 const CustomTextField: FC<TextFieldProps> = (
 	props,
@@ -341,7 +341,7 @@ export const VehicleReportInspectionForm: FC<
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
-				<TopicComboBox
+				<BaseInputTopicComboBox
 					options={topicOptions}
 					value={fieldTopics}
 					onChange={setFieldTopics}

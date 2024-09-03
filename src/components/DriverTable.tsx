@@ -1,6 +1,8 @@
-import { BaseMultiSelect } from "$components/BaseMultiSelect";
 import { BaseSortableTable } from "$components/BaseSortableTable";
+import { filterItems } from "$core/filter";
+import { TRANSLATION } from "$locale/th";
 import { TableHeaderDefinition } from "$types/generics";
+import { DriverEntry } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
 import {
 	FC,
@@ -12,8 +14,7 @@ import {
 	Link,
 	useSubmit,
 } from "react-router-dom";
-import { DriverEntry } from "$types/models/Driver";
-import { filterItems } from "$core/filter";
+import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 
 const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 	[
@@ -31,11 +32,13 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 			),
 		},
 		{
-			label: "สายรถประจำ",
+			label: "สายรถ",
 			compare: null,
 			render: (item) =>
 				item.routes.length === 0 ? (
-					<Typography>ไม่มี</Typography>
+					<Typography>
+						{TRANSLATION.globalNone}
+					</Typography>
 				) : (
 					<Stack
 						spacing={1}
@@ -57,7 +60,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 				),
 		},
 		{
-			label: "ทะเบียนรถประจำ",
+			label: "ทะเบียนรถ",
 			compare: null,
 			render: (item) =>
 				item.vehicles.length === 0 ? (
@@ -150,7 +153,7 @@ export const DriverTable: FC<DriverTableProps> = (
 		{
 			label: "คนขับรถ",
 			value: (
-				<BaseMultiSelect
+				<BaseInputMultiSelect
 					onChange={setSelected}
 					options={driverOptions}
 					selectedOptions={selected}
@@ -167,13 +170,12 @@ export const DriverTable: FC<DriverTableProps> = (
 			slotProps={{
 				searchField: {
 					placeholder:
-						"ค้นหาด้วยชื่อ, นามสกุล, เลขทะเบียนรถ หรือสายรถ",
+						"ค้นหาด้วยชื่อ, นามสกุล, สายรถ, หรือทะเบียนรถ",
 					value: search,
-					onChange: (e) =>
-						setSearch(e.target.value),
+					onChange: setSearch,
 				},
 				addButton: {
-					children: "ลงทะเบียนคนขับรถ",
+					label: "ลงทะเบียน",
 					onClick: () =>
 						submit(
 							{},

@@ -1,11 +1,10 @@
 import { TableHeaderDefinition } from "$types/generics";
-import { Typography } from "@mui/material";
-import { FC } from "react";
-import { DriverReportTable } from "./DriverReportTable";
-import { Link } from "react-router-dom";
-import dayjs from "dayjs";
 import { DriverReportEntry } from "$types/models/Driver";
-import { TRANSLATION } from "$locale/th";
+import { Typography } from "@mui/material";
+import dayjs from "dayjs";
+import { FC } from "react";
+import { Link } from "react-router-dom";
+import { DriverReportTable } from "./DriverReportTable";
 
 const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReportEntry>[] =
 	[
@@ -63,12 +62,16 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReportEntry>[] =
 
 type DriverReportMedicalTableProps = {
 	entries: DriverReportEntry[];
-	onAdd: () => void;
+	slotProps: {
+		addButton: {
+			onClick: () => void;
+		};
+	};
 };
 export const DriverReportMedicalTable: FC<
 	DriverReportMedicalTableProps
 > = (props) => {
-	const { entries, onAdd } = props;
+	const { entries, slotProps } = props;
 
 	return (
 		<DriverReportTable
@@ -76,13 +79,7 @@ export const DriverReportMedicalTable: FC<
 			entries={entries}
 			slotProps={{
 				addButton: {
-					children:
-						TRANSLATION.postDriverMedicalReport,
-					onClick: onAdd,
-				},
-				searchField: {
-					placeholder:
-						TRANSLATION.searchDriverMedicalReport,
+					onClick: slotProps.addButton.onClick,
 				},
 			}}
 		/>

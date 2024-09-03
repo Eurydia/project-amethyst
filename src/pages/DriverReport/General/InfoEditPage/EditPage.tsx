@@ -1,5 +1,7 @@
+import { putDriverReportGeneral } from "$backend/database/put";
 import { DriverReportForm } from "$components/DriverReportForm";
 import { DriverReportFormData } from "$types/models/Driver";
+import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import "dayjs/locale/th";
 import { FC } from "react";
@@ -7,9 +9,8 @@ import {
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
-import { InfoEditPageLoaderData } from "./loader";
 import { toast } from "react-toastify";
-import { putDriverReportGeneral } from "$backend/database/put";
+import { InfoEditPageLoaderData } from "./loader";
 
 export const InfoEditPage: FC = () => {
 	const {
@@ -50,7 +51,7 @@ export const InfoEditPage: FC = () => {
 			);
 	};
 
-	const heading = `บันทึกเรื่องร้องเรียนคนขับรถ เลขที่ ${reportId} (แก้ไข)`;
+	const heading = `แก้ไขเรื่องร้องเรียนคนขับรถ เลขรหัส ${reportId}`;
 
 	return (
 		<Stack spacing={1}>
@@ -71,6 +72,12 @@ export const InfoEditPage: FC = () => {
 								reportId,
 						},
 					);
+				}}
+				slotProps={{
+					submitButton: {
+						label: "บันทึก",
+						startIcon: <SaveRounded />,
+					},
 				}}
 			/>
 		</Stack>

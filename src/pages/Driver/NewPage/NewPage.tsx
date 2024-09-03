@@ -1,5 +1,7 @@
+import { postDriver } from "$backend/database/post";
 import { DriverForm } from "$components/DriverForm";
 import { DriverFormData } from "$types/models/Driver";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -8,8 +10,6 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
-import { TRANSLATION } from "$locale/th";
-import { postDriver } from "$backend/database/post";
 
 export const NewPage: FC = () => {
 	const { initFormData } =
@@ -21,7 +21,7 @@ export const NewPage: FC = () => {
 	) => {
 		postDriver(formData).then(
 			(driverId) => {
-				toast.success(TRANSLATION.postDriver);
+				toast.success("ลงทะเบียนสำเร็จ");
 				submit(
 					{},
 					{
@@ -30,7 +30,7 @@ export const NewPage: FC = () => {
 				);
 			},
 			() => {
-				toast.error(TRANSLATION.postFail);
+				toast.error("ลงทะเบียนล้มเหลว");
 				submit(
 					{},
 					{
@@ -44,7 +44,7 @@ export const NewPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				{TRANSLATION.postDriver}
+				ลงทะเบียนคนขับรถ
 			</Typography>
 			<DriverForm
 				initFormData={initFormData}
@@ -52,6 +52,12 @@ export const NewPage: FC = () => {
 				onCancel={() =>
 					submit({}, { action: "/drivers" })
 				}
+				slotProps={{
+					submitButton: {
+						startIcon: <AddRounded />,
+						label: "ลงทะเบียน",
+					},
+				}}
 			/>
 		</Stack>
 	);

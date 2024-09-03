@@ -1,6 +1,6 @@
-import { TRANSLATION } from "$locale/th";
 import { DriverReport } from "$types/models/Driver";
 import { Typography } from "@mui/material";
+import dayjs from "dayjs";
 import { FC } from "react";
 import {
 	Link,
@@ -19,30 +19,33 @@ export const DriverReportDetails: FC<
 
 	const infoItems = [
 		{
-			label: TRANSLATION.driverNameAndSurname,
+			label: "คนขับรถ",
 			value: (
 				<Link
 					to={"/drivers/info/" + report.driverId}
 				>
-					{report.driverName}{" "}
-					{report.driverSurname}
+					{`${report.driverName} ${report.driverSurname}`}
 				</Link>
 			),
 		},
 		{
-			label: TRANSLATION.globalDatetimePosted,
-			value: report.datetime,
+			label: "ลงบันทึกเมื่อ",
+			value: dayjs(report.datetime)
+				.locale("th")
+				.format(
+					" HH:mm น. วันddddที่ DD MMMM YYYY",
+				),
 		},
 		{
-			label: TRANSLATION.globalTitle,
+			label: "เรื่อง",
 			value: report.title,
 		},
 		{
-			label: TRANSLATION.globalContent,
+			label: "รายละเอียด",
 			value: report.content,
 		},
 		{
-			label: TRANSLATION.globalTopics,
+			label: "หัวข้อที่เกี่ยวข้อง",
 			value: report.topics.join(", "),
 		},
 	].map((item) => ({
@@ -54,7 +57,6 @@ export const DriverReportDetails: FC<
 		<BaseInfoGroup
 			slotProps={{
 				editButton: {
-					children: TRANSLATION.globalEditInfo,
 					onClick: () =>
 						submit({}, { action: "./edit" }),
 				},

@@ -1,4 +1,3 @@
-import { TRANSLATION } from "$locale/th";
 import {
 	Checkbox,
 	List,
@@ -116,12 +115,12 @@ export const BaseInputMultiSelect: FC<
 			sx={{
 				overflow: "auto",
 				display: "flex",
-				flexDirection: "row",
 				flexWrap: "wrap",
+				flexDirection: "row",
 			}}
 		>
 			<CustomItem
-				label={TRANSLATION.globalSelectAll}
+				label="เลือกทั้งหมด"
 				onClick={handleToggleAll}
 				isChecked={isPartiallySelect}
 				isBold

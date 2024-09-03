@@ -1,4 +1,5 @@
 import { BaseTOC } from "$components/BaseTOC";
+import { DriverInfoGroup } from "$components/DriverInfoGroup";
 import { DriverReportGeneralTable } from "$components/DriverReportGeneralTable";
 import { DriverReportMedicalTable } from "$components/DriverReportMedicalTable";
 import { OperationalLogTable } from "$components/OperationalLogTable";
@@ -10,7 +11,6 @@ import {
 	useSubmit,
 } from "react-router-dom";
 import { IndexPageLoaderData } from "./loader";
-import { DriverDetails } from "$components/DriverDetails";
 
 const TOC_ITEMS = [
 	{
@@ -48,9 +48,9 @@ export const IndexPage: FC = () => {
 				variant="h1"
 				id="info"
 			>
-				{TRANSLATION.driverTable}
+				ข้อมูลคนขับรถ
 			</Typography>
-			<DriverDetails
+			<DriverInfoGroup
 				images={images}
 				driver={driver}
 			/>
@@ -58,41 +58,51 @@ export const IndexPage: FC = () => {
 				variant="h2"
 				id="operational-log"
 			>
-				{TRANSLATION.operationalLogTable}
+				ตารางบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogTable
 				entries={logEntries}
-				onAdd={() => {}}
+				slotProps={{
+					addButton: {
+						onClick: () => {},
+					},
+				}}
 			/>
 			<Typography
 				variant="h2"
 				id="general-report"
 			>
-				{TRANSLATION.driverGeneralReportTable}
+				ตารางบันทึกเรื่องร้องเรียนคนขับ
 			</Typography>
 			<DriverReportGeneralTable
 				entries={generalEntries}
-				onAdd={() =>
-					submit(
-						{},
-						{ action: "./report/general" },
-					)
-				}
+				slotProps={{
+					addButton: {
+						onClick: () =>
+							submit(
+								{},
+								{ action: "./report/general" },
+							),
+					},
+				}}
 			/>
 			<Typography
 				variant="h2"
 				id="medical-report"
 			>
-				{TRANSLATION.driverMedicalReportTable}
+				ตารางบันทึกผลการตรวจสารเสพติด
 			</Typography>
 			<DriverReportMedicalTable
 				entries={medicalEntries}
-				onAdd={() =>
-					submit(
-						{},
-						{ action: "./report/medical" },
-					)
-				}
+				slotProps={{
+					addButton: {
+						onClick: () =>
+							submit(
+								{},
+								{ action: "./report/medical" },
+							),
+					},
+				}}
 			/>
 		</Stack>
 	);

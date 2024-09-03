@@ -11,7 +11,7 @@ export const IndexPage: FC = () => {
 	const { entries } =
 		useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
-	const heading = `สมุดบันทึกเรื่องร้องเรียนคนขับรถ`;
+	const heading = `ตารางบันทึกเรื่องร้องเรียนคนขับรถ`;
 
 	return (
 		<Stack sx={{ gap: 1 }}>
@@ -20,15 +20,18 @@ export const IndexPage: FC = () => {
 			</Typography>
 			<DriverReportGeneralTable
 				entries={entries}
-				onAdd={() =>
-					submit(
-						{},
-						{
-							action:
-								"/drivers/report/general/new",
-						},
-					)
-				}
+				slotProps={{
+					addButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/drivers/report/general/new",
+								},
+							),
+					},
+				}}
 			/>
 		</Stack>
 	);

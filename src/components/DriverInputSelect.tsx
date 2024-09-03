@@ -3,73 +3,104 @@ import { DriverModel } from "$types/models/Driver";
 import { LockRounded } from "@mui/icons-material";
 import {
 	Autocomplete,
+	AutocompleteRenderInputParams,
+	FilterOptionsState,
 	InputAdornment,
+	ListItem,
+	ListItemText,
 	TextField,
 } from "@mui/material";
-import { FC, SyntheticEvent } from "react";
+import {
+	FC,
+	HTMLAttributes,
+	useEffect,
+} from "react";
+
+const filterOptions = (
+	options: DriverModel[],
+	state: FilterOptionsState<DriverModel>,
+) => {
+	return filterItems(options, state.inputValue, [
+		"name",
+		"surname",
+		"contact",
+	]);
+};
+
+const renderOption = (
+	props: HTMLAttributes<HTMLLIElement> & {
+		key: any;
+	},
+	option: DriverModel,
+) => {
+	return (
+		<ListItem {...props}>
+			<ListItemText>
+				{`${option.name} ${option.surname} (${option.contact})`}
+			</ListItemText>
+		</ListItem>
+	);
+};
+
+const renderInput = ({
+	InputProps,
+	disabled,
+	...rest
+}: AutocompleteRenderInputParams) => (
+	<TextField
+		{...rest}
+		required
+		placeholder="ค้นหาด้วยชื่อ, นามสกุล, หรือเบอร์ติดต่อ"
+		slotProps={{
+			input: {
+				...InputProps,
+				endAdornment: (
+					<InputAdornment position="end">
+						{disabled ? (
+							<LockRounded />
+						) : (
+							InputProps.endAdornment
+						)}
+					</InputAdornment>
+				),
+			},
+		}}
+	/>
+);
 
 type DriverSelectProps = {
-	showError?: boolean;
+	isDisabled?: boolean;
 	options: DriverModel[];
 	value: DriverModel | null;
 	onChange: (value: DriverModel | null) => void;
-	disabled?: boolean;
 };
 export const DriverSelect: FC<
 	DriverSelectProps
 > = (props) => {
-	const {
-		options,
-		value,
-		onChange,
-		showError,
-		disabled,
-	} = props;
+	const { options, value, onChange, isDisabled } =
+		props;
 
-	const handleChange = (
-		_: SyntheticEvent,
-		value: DriverModel | null,
-	) => {
-		onChange(value);
-	};
+	useEffect(() => {
+		if (value === null && options.length > 0) {
+			onChange(options[0]);
+		}
+	}, []);
 
 	return (
 		<Autocomplete
-			disabled={disabled}
-			onChange={handleChange}
+			disabled={isDisabled}
+			onChange={(_, value) => {
+				onChange(value);
+			}}
 			value={value}
 			options={options}
 			getOptionKey={(option) => option.id}
 			getOptionLabel={(option) =>
 				`${option.name} ${option.surname}`
 			}
-			filterOptions={(options, params) =>
-				filterItems(options, params.inputValue, [
-					"name",
-					"surname",
-				])
-			}
-			renderInput={({ InputProps, ...rest }) => (
-				<TextField
-					{...rest}
-					error={showError}
-					placeholder="ค้นหาคนขับรถ (ด้วยชื่อ หรือนามสกุล)"
-					slotProps={{
-						input: {
-							...InputProps,
-							endAdornment: (
-								<InputAdornment position="end">
-									{disabled ? (
-										<LockRounded />
-									) : (
-										InputProps.endAdornment
-									)}
-								</InputAdornment>
-							),
-						},
-					}}
-				/>
-			)}
+			renderOption={renderOption}
+			filterOptions={filterOptions}
+			renderInput={renderInput}
 		/>
 	);
 };

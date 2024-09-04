@@ -1,5 +1,5 @@
 export type PickupRouteModel = {
-	id: string;
+	id: number;
 
 	name: string;
 	arrival_time: string;

@@ -1,3 +1,4 @@
+import { AttendanceLogModel } from "$types/models/AttendanceLog";
 import {
 	DriverModel,
 	DriverReportModel,
@@ -11,50 +12,54 @@ import {
 	VehicleReportGeneralModel,
 	VehicleReportInspectionModel,
 } from "$types/models/Vehicle";
+import { invoke } from "@tauri-apps/api/tauri";
+
+//#region Attendance log
+export const putAttendanceLog = async (
+	log: AttendanceLogModel,
+) => invoke("put_attendance_log", { log });
+//#endregion
 
 //#region Driver
 export const putDriver = async (
 	model: DriverModel,
-): Promise<number> => {
-	return 0;
-};
+) => invoke("put_driver", { model });
 export const putDriverReportGeneral = async (
 	report: DriverReportModel,
-) => {
-	return 0;
-};
+) =>
+	invoke("put_driver_report_general", { report });
 export const putDriverReportMedical = async (
 	report: DriverReportModel,
-) => {
-	return 0;
-};
+) =>
+	invoke("put_driver_report_medical", { report });
 //#endregion
 
 //#region Pickup Route
 export const putPickupRoute = async (
 	model: PickupRouteModel,
-): Promise<number> => {
-	return 0;
-};
+) => invoke("put_pickup_route", { model });
 export const putPickupRouteReportGeneral = async (
 	report: PickupRouteReportModel,
-) => {
-	return 0;
-};
+) =>
+	invoke("put_pickup_route_report_general", {
+		report,
+	});
 //#endregion
 
 //#region Vehicle
 export const putVehicle = async (
 	model: VehicleModel,
-) => {};
+) => invoke("put_vehicle", { model });
 export const putVehicleReportGeneral = async (
 	report: VehicleReportGeneralModel,
-) => {
-	return 0;
-};
+) =>
+	invoke("put_vehicle_report_general", {
+		report,
+	});
 export const putVehicleReportInspection = async (
 	report: VehicleReportInspectionModel,
-) => {
-	return 0;
-};
+) =>
+	invoke("put_vehicle_report_inspection", {
+		report,
+	});
 //#endregion

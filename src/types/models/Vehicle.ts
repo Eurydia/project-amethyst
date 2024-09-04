@@ -1,6 +1,6 @@
 //#region Vehicle
 export type VehicleModel = {
-	id: string;
+	id: number;
 
 	license_plate: string;
 	vendor: string;
@@ -42,13 +42,13 @@ export type VehicleFormData = {
 
 //#region General Report
 export type VehicleReportGeneralModel = {
-	id: string;
+	id: number;
 	datetime: string;
 	title: string;
 	content: string;
 	topics: string;
 
-	vehicle_id: string;
+	vehicle_id: number;
 };
 
 export type VehicleReportGeneral = {
@@ -83,9 +83,9 @@ export type VehicleReportGeneralEntry = {
 
 //#region Inspection Reports
 export type VehicleReportInspectionModel = {
-	id: string;
+	id: number;
+	vehicle_id: number;
 	datetime: string;
-	vehicle_id: string;
 	content: string;
 	topics: string;
 

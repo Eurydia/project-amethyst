@@ -1,6 +1,6 @@
 //#region Driver
 export type DriverModel = {
-	id: string;
+	id: number;
 
 	name: string;
 	surname: string;
@@ -32,8 +32,8 @@ export type DriverFormData = {
 
 //#region Generic Report
 export type DriverReportModel = {
-	id: string;
-	driver_id: string;
+	id: number;
+	driver_id: number;
 
 	datetime: string;
 	title: string;

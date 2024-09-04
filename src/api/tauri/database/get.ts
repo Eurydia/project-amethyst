@@ -1,3 +1,4 @@
+import { AttendanceLogModel } from "$types/models/AttendanceLog";
 import {
 	DriverModel,
 	DriverReportModel,
@@ -12,324 +13,133 @@ import {
 	VehicleReportGeneralModel,
 	VehicleReportInspectionModel,
 } from "$types/models/Vehicle";
-import { fakerTH } from "@faker-js/faker";
-import dayjs from "dayjs";
+import { invoke } from "@tauri-apps/api/tauri";
 
 //#region Topics
-const topics = fakerTH.word.words(10);
-export const getTopicAll = async (): Promise<
-	string[]
-> => {
-	const entries: string[] = topics.split(" ");
-	const entrySet = new Set(entries);
-	return [...entrySet];
+export const getTopicAll = async () => {
+	const items: string[] = await invoke(
+		"get_topic_all",
+	);
+	return items;
 };
 //#endregion
 
 //#region Operational Log
-let operationLogId = 0;
-const operationLogs = fakerTH.helpers
-	.multiple(
-		() =>
-			fakerTH.helpers.multiple(
-				() =>
-					({
-						driver_id: fakerTH.number
-							.int({
-								min: 0,
-								max: 10,
-							})
-							.toString(),
-						vehicle_id: fakerTH.number
-							.int({
-								min: 0,
-								max: 10,
-							})
-							.toString(),
-						route_id: fakerTH.number
-							.int({
-								min: 0,
-								max: 10,
-							})
-							.toString(),
-						end_date: dayjs(
-							fakerTH.date.future(),
-						).format(),
-						id: (operationLogId++).toString(),
-						start_date: dayjs(
-							fakerTH.date.past(),
-						).format(),
-					} as OperationalLogModel),
-				{
-					count: 3,
-				},
-			),
-		{
-			count: 10,
-		},
-	)
-	.flat();
-
 export const getOperationLogAll = async () => {
 	const entries: OperationalLogModel[] =
-		operationLogs;
+		await invoke("get_operational_log_all");
 	return entries;
 };
 
 export const getOperationLogToday = async () => {
-	const today = dayjs();
-	const opLogs = await getOperationLogAll();
-	return opLogs
-		.filter(
-			({ start_date }) =>
-				start_date === null ||
-				today.isAfter(dayjs(start_date)),
-		)
-		.filter(
-			({ end_date }) =>
-				end_date === null ||
-				today.isBefore(dayjs(end_date)),
-		);
+	const entries: OperationalLogModel[] =
+		await invoke("get_operational_log_today");
+	return entries;
 };
 
 //#endregion
 
-//#region Driver
-
-let driverId = 0;
-const drivers = fakerTH.helpers.multiple(
-	() =>
-		({
-			images: "",
-			license_type: fakerTH.helpers.arrayElement([
-				"ท.1",
-				"ท.2",
-			]),
-			name: fakerTH.person.firstName(),
-			surname: fakerTH.person.lastName(),
-			contact: fakerTH.phone.number(),
-			id: (driverId++).toString(),
-		} as DriverModel),
-	{ count: 10 },
-);
+//#region drivers
 export const getDriverAll = async () => {
-	const entries: DriverModel[] = drivers;
+	const entries: DriverModel[] = await invoke(
+		"get_driver_all",
+	);
 	return entries;
 };
 
 export const getDriver = async (
 	driverId: string,
-): Promise<DriverModel | null> => {
-	const entries = await getDriverAll();
-	for (const entry of entries) {
-		if (entry.id === driverId) {
-			return entry;
-		}
-	}
-	return null;
-};
-export const getDriverMany = async (
-	driverIds: Set<string>,
 ) => {
-	const entries = await getDriverAll();
-	const collected: DriverModel[] = [];
-	for (const entry of entries) {
-		if (driverIds.has(entry.id)) {
-			collected.push(entry);
-		}
-	}
-	return collected;
+	const entry: DriverModel | null = await invoke(
+		"get_driver",
+		{
+			driver_id: driverId,
+		},
+	);
+
+	return entry;
 };
-//#endregion
 
-//#region Driver Report General
-let driverGeneralReportId = 0;
-const driverGeneralReports: DriverReportModel[] =
-	fakerTH.helpers
-		.multiple(
-			() => {
-				const id =
-					driverGeneralReportId.toString();
-				driverGeneralReportId++;
-				return fakerTH.helpers.multiple(
-					() => ({
-						datetime: dayjs(
-							fakerTH.date.past(),
-						).format(),
-						title: fakerTH.lorem.sentence(),
-						content: fakerTH.lorem.paragraph(),
-						topics: fakerTH.helpers
-							.arrayElements(topics.split(" "), 3)
-							.join(","),
-						driver_id:
-							driverGeneralReportId.toString(),
-						id,
-					}),
-					{ count: 3 },
-				);
-			},
-			{
-				count: 10,
-			},
-		)
-		.flat();
-
+//#region Driver general report
 export const getDriverReportGeneralAll =
 	async () => {
 		const entry: DriverReportModel[] =
-			driverGeneralReports;
+			await invoke(
+				"get_driver_report_general_all",
+			);
 		return entry;
 	};
 
 export const getDriverReportGeneral = async (
 	reportId: string,
 ) => {
-	const entries: DriverReportModel[] =
-		driverGeneralReports;
-	for (const entry of entries) {
-		if (entry.id === reportId) {
-			return entry;
-		}
-	}
-	return null;
+	const entry: DriverReportModel | null =
+		await invoke("get_driver_report_general", {
+			report_id: reportId,
+		});
+	return entry;
 };
 //#endregion
 
 //#region Driver Report Medical
-let driverMedicalReportId = 0;
-const driverMedicalReports: DriverReportModel[] =
-	fakerTH.helpers.multiple(
-		() => {
-			const id = driverMedicalReportId.toString();
-			driverMedicalReportId++;
-			return {
-				datetime: dayjs(
-					fakerTH.date.past(),
-				).format(),
-				title: fakerTH.lorem.sentence(),
-				content: fakerTH.lorem.paragraph(),
-				topics: fakerTH.helpers
-					.arrayElements(topics.split(" "), 3)
-					.join(","),
-				driver_id: (
-					driverMedicalReportId % 10
-				).toString(),
-				id,
-			};
-		},
-		{
-			count: 10,
-		},
-	);
 export const getDriverReportMedicalAll =
 	async () => {
 		const entries: DriverReportModel[] =
-			driverMedicalReports;
+			await invoke(
+				"get_driver_report_medical_all",
+			);
 		return entries;
 	};
 export const getDriverReportMedical = async (
 	reportId: string,
 ) => {
-	const entries: DriverReportModel[] =
-		driverMedicalReports;
-	for (const entry of entries) {
-		if (entry.id === reportId) {
-			return entry;
-		}
-	}
-	return null;
+	const entry: DriverReportModel | null =
+		await invoke("get_driver_report_medical", {
+			report_id: reportId,
+		});
+	return entry;
 };
 //#endregion
 
 //#region Vehicle
-let vehicleId = 0;
-const vehicles = fakerTH.helpers.multiple(
-	() =>
-		({
-			vendor: fakerTH.company.name(),
-			vehicle_class: fakerTH.vehicle.type(),
-			license_plate: fakerTH.vehicle.vrm(),
-			registered_city: fakerTH.location.city(),
-			images: "",
-			id: (vehicleId++).toString(),
-		} as VehicleModel),
-	{ count: 10 },
-);
-
 export const getVehicleAll = async () => {
-	const entries: VehicleModel[] = vehicles;
+	const entries: VehicleModel[] = await invoke(
+		"get_vehicle_all",
+	);
 	return entries;
 };
 export const getVehicle = async (
 	vehicleId: string,
 ) => {
-	const vehicles = await getVehicleAll();
-	for (const vehicle of vehicles) {
-		if (vehicle.id === vehicleId) {
-			return vehicle;
-		}
-	}
-	return null;
-};
-export const getVehicleMany = async (
-	vehicleIds: Set<string>,
-) => {
-	const entries = await getVehicleAll();
-	const collected: VehicleModel[] = [];
-	for (const entry of entries) {
-		if (vehicleIds.has(entry.id)) {
-			collected.push(entry);
-		}
-	}
-	return collected;
+	const entry: VehicleModel | null = await invoke(
+		"get_vehicle",
+		{
+			vehicle_id: vehicleId,
+		},
+	);
+	return entry;
 };
 //#endregion
 
 //#region Vehicle Report General
-const vehicleReportGeneral: VehicleReportGeneralModel[] =
-	[
-		{
-			content: fakerTH.lorem.paragraph(),
-			datetime: dayjs(
-				fakerTH.date.past(),
-			).format(),
-			id: "0",
-			title: fakerTH.lorem.sentence(),
-			topics: "",
-			vehicle_id: "0",
-		},
-	];
 export const getVehicleReportGeneralAll =
 	async () => {
 		const entries: VehicleReportGeneralModel[] =
-			vehicleReportGeneral;
+			await invoke(
+				"get_vehicle_report_general_all",
+			);
 		return entries;
 	};
 
 export const getVehicleReportGeneral = async (
 	reportId: string,
 ) => {
-	const entries =
-		await getVehicleReportGeneralAll();
-	for (const entry of entries) {
-		if (entry.id === reportId) {
-			return entry;
-		}
-	}
-	return null;
-	// return {
-	// 	id: reportId,
-	// 	datetime: dayjs(fakerTH.date.past()).format(),
-	// 	title: fakerTH.lorem.sentence(),
-	// 	content: fakerTH.lorem.paragraph(),
-	// 	topics: "",
-	// 	vehicle_id: fakerTH.number
-	// 		.int({
-	// 			min: 0,
-	// 			max: 10,
-	// 		})
-	// 		.toString(),
-	// } as VehicleReportGeneralModel;
+	const entry: VehicleReportGeneralModel | null =
+		await invoke("get_vehicle_report_general", {
+			report_id: reportId,
+		});
+
+	return entry;
 };
 //#endregion
 
@@ -337,144 +147,76 @@ export const getVehicleReportGeneral = async (
 export const getVehicleReportInspectionAll =
 	async () => {
 		const entries: VehicleReportInspectionModel[] =
-			[];
+			await invoke(
+				"get_vehicle_report_inspection_all",
+			);
 		return entries;
 	};
 export const getVehicleReportInspection = async (
 	reportId: string,
 ) => {
-	const entries =
-		await getVehicleReportInspectionAll();
-	for (const entry of entries) {
-		if (entry.id === reportId) {
-			return entry;
-		}
-	}
-	return null;
-
-	// return {
-	// 	frame: fakerTH.lorem.paragraph(),
-	// 	front_camera: fakerTH.lorem.sentence(),
-	// 	content: fakerTH.lorem.paragraph(),
-	// 	datetime: dayjs(fakerTH.date.past()).format(),
-	// 	fan_overhead: fakerTH.lorem.sentence(),
-	// 	id: reportId,
-	// 	inspection_round_number: "1",
-	// 	brake_light: fakerTH.lorem.sentence(),
-	// 	headlights: fakerTH.lorem.sentence(),
-	// 	turn_signals: fakerTH.lorem.sentence(),
-	// 	rearview_mirror: fakerTH.lorem.sentence(),
-	// 	sideview_mirror: fakerTH.lorem.sentence(),
-	// 	seatbelts: fakerTH.lorem.sentence(),
-	// 	seats: fakerTH.lorem.sentence(),
-	// 	topics: "",
-	// 	vehicle_id: "0",
-	// 	windows: fakerTH.lorem.sentence(),
-	// } as VehicleReportInspectionModel;
+	const entry: VehicleReportInspectionModel | null =
+		await invoke(
+			"get_vehicle_report_inspection",
+			{
+				report_id: reportId,
+			},
+		);
+	return entry;
 };
 //#endregion
 
 //#region Pickup Route
-let pickupRouteId = 0;
-const pickupRoutes: PickupRouteModel[] =
-	fakerTH.helpers.multiple(
-		() => {
-			const id = pickupRouteId.toString();
-			pickupRouteId++;
-			return {
-				arrival_time: "08:00",
-				departure_time: "17:00",
-				assigned_vehicle_ids: "",
-				name: fakerTH.location.city(),
-				id,
-			};
-		},
-		{
-			count: 10,
-		},
-	);
 export const getPickupRouteAll = async () => {
 	const entries: PickupRouteModel[] =
-		pickupRoutes;
+		await invoke("get_pickup_route_all");
 	return entries;
 };
 export const getPickupRoute = async (
 	routeId: string,
 ) => {
-	const entries = await getPickupRouteAll();
-	for (const entry of entries) {
-		if (entry.id === routeId) {
-			return entry;
-		}
-	}
-	return null;
-};
-export const getPickupRouteMany = async (
-	routeIds: Set<string>,
-) => {
-	const entries = await getPickupRouteAll();
-	const collected: PickupRouteModel[] = [];
-	for (const entry of entries) {
-		if (routeIds.has(entry.id)) {
-			collected.push(entry);
-		}
-	}
-	return collected;
+	const entry: PickupRouteModel | null =
+		await invoke("get_pickup_route", {
+			route_id: routeId,
+		});
+	return entry;
 };
 //#endregion
 
 //#region Pickup Route Report General
-let routeGeneralReportId = 0;
-const routeGeneralReport: PickupRouteReportModel[] =
-	fakerTH.helpers
-		.multiple(
-			() => {
-				const id =
-					routeGeneralReportId.toString();
-				routeGeneralReportId++;
-				return fakerTH.helpers.multiple(
-					() =>
-						({
-							datetime: dayjs(
-								fakerTH.date.past(),
-							).format(),
-							title: fakerTH.lorem.sentence(),
-							content: fakerTH.lorem.paragraph(),
-							topics: fakerTH.helpers
-								.arrayElements(
-									topics.split(" "),
-									3,
-								)
-								.join(","),
-							id,
-							route_id: id,
-						} as PickupRouteReportModel),
-					{ count: 3 },
-				);
-			},
-			{
-				count: 10,
-			},
-		)
-		.flat();
-
 export const getPickupRouteReportGeneralAll =
 	async () => {
 		const entries: PickupRouteReportModel[] =
-			routeGeneralReport;
+			await invoke(
+				"get_pickup_route_report_general_all",
+			);
 		return entries;
 	};
 
 export const getPickupRouteReportGeneral = async (
 	reportId: string,
 ) => {
-	const entries =
-		await getPickupRouteReportGeneralAll();
-	for (const entry of entries) {
-		if (entry.id === reportId) {
-			return entry;
-		}
-	}
-	return null;
+	const entry: PickupRouteReportModel | null =
+		await invoke(
+			"get_pickup_route_report_general",
+			{
+				report_id: reportId,
+			},
+		);
+	return entry;
+};
+//#endregion
+
+//#region Attendance Log
+export const getAttendanceLogAll = async () => {
+	const entries: AttendanceLogModel[] =
+		await invoke("get_attendance_log_all");
+	return entries;
+};
+
+export const getAttendanceLogToday = async () => {
+	const entries: AttendanceLogModel[] =
+		await invoke("get_attendance_log_today");
+	return entries;
 };
 //#endregion

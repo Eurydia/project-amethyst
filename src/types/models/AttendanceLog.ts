@@ -1,0 +1,46 @@
+import { Dayjs } from "dayjs";
+import { DriverModel } from "./Driver";
+import { PickupRouteModel } from "./PickupRoute";
+import { VehicleModel } from "./Vehicle";
+
+export type AttendanceLogModel = {
+	id: number;
+
+	driver_id: number;
+	vehicle_id: number;
+	route_id: number;
+
+	expected_arrival_datetime: string;
+	actual_arrival_datetime: string | null;
+
+	expected_departure_datetime: string;
+	actual_departure_datetime: string | null;
+};
+
+export type AttendanceLogFormData = {
+	driver: DriverModel | null;
+	vehicle: VehicleModel | null;
+	route: PickupRouteModel | null;
+
+	expected_arrival_datetime: Dayjs;
+	expected_departure_datetime: Dayjs;
+};
+
+export type AttendanceLogEntry = {
+	id: string;
+	vehicleId: string;
+	vehicleLicensePlate: string;
+
+	driverId: string;
+	driverName: string;
+	driverSurname: string;
+
+	routeId: string;
+	routeName: string;
+
+	expectedArrivalDatetime: string;
+	actualArrivalDatetime: string | null;
+
+	expectedDepartureDatetime: string;
+	actualDepartureDatetime: string | null;
+};

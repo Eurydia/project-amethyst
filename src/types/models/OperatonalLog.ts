@@ -3,10 +3,10 @@ import { PickupRouteModel } from "./PickupRoute";
 import { VehicleModel } from "./Vehicle";
 
 export type OperationalLogModel = {
-	id: string;
-	driver_id: string;
-	vehicle_id: string;
-	route_id: string;
+	id: number;
+	driver_id: number;
+	vehicle_id: number;
+	route_id: number;
 
 	start_date: string | null;
 	end_date: string | null;

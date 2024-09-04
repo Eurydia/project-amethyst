@@ -7,6 +7,7 @@ import {
 import {
 	Collapse,
 	InputAdornment,
+	SxProps,
 	Table,
 	TableBody,
 	TableCell,
@@ -230,6 +231,7 @@ type BaseSortableTableProps<T> = {
 		addButton: {
 			onClick: () => void;
 			label: string;
+			sx?: SxProps;
 		};
 	};
 	children: {
@@ -291,6 +293,7 @@ export const BaseSortableTable = <T,>(
 				startIcon={<AddRounded />}
 				variant="contained"
 				onClick={slotProps.addButton.onClick}
+				sx={slotProps.addButton.sx}
 			>
 				{slotProps.addButton.label}
 			</TypographyButton>

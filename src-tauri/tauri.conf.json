@@ -52,7 +52,7 @@
 				"providerShortName": null,
 				"signingIdentity": null
 			},
-			"resources": [],
+			"resources": ["resources/migrations/*"],
 			"shortDescription": "",
 			"targets": "all",
 			"windows": {

@@ -25,7 +25,9 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 		const _report =
-			await getPickupRouteReportGeneral(reportId);
+			await getPickupRouteReportGeneral(
+				Number.parseInt(reportId),
+			);
 		if (_report === null) {
 			throw json(
 				{

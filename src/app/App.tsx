@@ -4,7 +4,6 @@ import {
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
 import "dayjs/locale/th";
 import { RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";

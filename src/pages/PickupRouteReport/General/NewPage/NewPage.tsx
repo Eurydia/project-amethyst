@@ -23,7 +23,17 @@ export const NewPage: FC = () => {
 	const handleSubmit = async (
 		formData: PickupRouteReportFormData,
 	) => {
-		postPickupRouteReportGeneral(formData).then(
+		if (formData.route === null) {
+			return;
+		}
+
+		postPickupRouteReportGeneral({
+			content: formData.content,
+			datetime: formData.datetime,
+			title: formData.title,
+			topics: formData.topics.join(","),
+			route_id: formData.route.id,
+		}).then(
 			(reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(

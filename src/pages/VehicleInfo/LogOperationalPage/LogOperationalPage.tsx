@@ -32,7 +32,13 @@ export const LogOperationalPage: FC = () => {
 			return;
 		}
 
-		postOperationalLog(formData)
+		postOperationalLog({
+			driver_id: formData.driver.id,
+			end_date: formData.endDate,
+			route_id: formData.route.id,
+			start_date: formData.startDate,
+			vehicle_id: formData.vehicle.id,
+		})
 			.then(
 				() => toast.success("ลงบันทึกสำเร็จ"),
 				() => toast.error("ลงบันทึกล้มเหลว"),

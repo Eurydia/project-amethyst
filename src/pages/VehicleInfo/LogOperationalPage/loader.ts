@@ -1,6 +1,7 @@
 import {
 	getDriverAll,
 	getPickupRouteAll,
+	getVehicle,
 	getVehicleAll,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
@@ -32,11 +33,11 @@ export const logOperationalPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const vehicleOptions = await getVehicleAll();
-		const vehicle = vehicleOptions.find(
-			({ id }) => id === vehicleId,
+
+		const vehicle = await getVehicle(
+			Number.parseInt(vehicleId),
 		);
-		if (vehicle === undefined) {
+		if (vehicle === null) {
 			throw json(
 				{
 					message:
@@ -45,6 +46,7 @@ export const logOperationalPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
+		const vehicleOptions = await getVehicleAll();
 		const driverOptions = await getDriverAll();
 		const routeOptions =
 			await getPickupRouteAll();

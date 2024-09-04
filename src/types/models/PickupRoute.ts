@@ -7,24 +7,24 @@ export type PickupRouteModel = {
 };
 
 export type PickupRouteEntry = {
-	id: string;
+	id: number;
 	name: string;
 
 	vehicles: {
-		id: string;
+		id: number;
 		licensePlate: string;
 	}[];
 
 	drivers: {
-		id: string;
+		id: number;
 		name: string;
 		surname: string;
 	}[];
 };
 
 export type PickupRouteReportModel = {
-	id: string;
-	route_id: string;
+	id: number;
+	route_id: number;
 
 	datetime: string;
 	title: string;
@@ -33,10 +33,10 @@ export type PickupRouteReportModel = {
 };
 
 export type PickupRouteReport = {
-	id: string;
-	routeId: string;
-	routeName: string;
+	id: number;
+	routeId: number;
 
+	routeName: string;
 	title: string;
 	content: string;
 	topics: string[];
@@ -44,10 +44,10 @@ export type PickupRouteReport = {
 };
 
 export type PickupRouteReportEntry = {
-	id: string;
-	routeId: string;
-	routeName: string;
+	id: number;
+	routeId: number;
 
+	routeName: string;
 	title: string;
 	topics: string[];
 	datetime: string;
@@ -60,9 +60,9 @@ export type PickupRouteFormData = {
 };
 
 export type PickupRouteReportFormData = {
+	route: PickupRouteModel | null;
 	datetime: string;
 	title: string;
 	content: string;
 	topics: string[];
-	route: PickupRouteModel | null;
 };

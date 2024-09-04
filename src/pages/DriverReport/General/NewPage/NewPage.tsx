@@ -23,7 +23,16 @@ export const NewPage: FC = () => {
 	const handleSubmit = async (
 		formData: DriverReportFormData,
 	) => {
-		postDriverReportGeneral(formData)
+		if (formData.driver === null) {
+			return;
+		}
+		postDriverReportGeneral({
+			content: formData.content,
+			datetime: formData.datetime,
+			title: formData.title,
+			driver_id: formData.driver.id,
+			topics: formData.topics.join(","),
+		})
 			.then((reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(

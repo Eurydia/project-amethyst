@@ -28,7 +28,7 @@ export const InfoEditPage: FC = () => {
 		}
 
 		putVehicleReportGeneral({
-			id: reportId,
+			id: Number.parseInt(reportId),
 			content: formData.content,
 			vehicle_id: formData.vehicle.id,
 			datetime: formData.datetime,

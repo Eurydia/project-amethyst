@@ -133,13 +133,13 @@ const filterOptions = (
 
 	return entries
 		.filter((entry) =>
-			routeSet.has(entry.routeId),
+			routeSet.has(entry.routeId.toString()),
 		)
 		.filter((entry) =>
-			vehicleSet.has(entry.vehicleId),
+			vehicleSet.has(entry.vehicleId.toString()),
 		)
 		.filter((entry) =>
-			driverSet.has(entry.driverId),
+			driverSet.has(entry.driverId.toString()),
 		);
 };
 

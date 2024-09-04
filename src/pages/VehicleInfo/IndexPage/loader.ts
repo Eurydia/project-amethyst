@@ -46,7 +46,7 @@ const inspectionToEntry = (
 		}
 	}
 	const entry: VehicleReportInspectionEntry = {
-		inspectionRoundNumber: count.toString(),
+		inspectionRoundNumber: count,
 
 		datetime: inspection.datetime,
 		id: inspection.id,
@@ -168,10 +168,10 @@ const logToEntries = (
 	return entries;
 };
 
-const getImages = async (vehicleId: string) => {
+const getImages = async (vehicleId: number) => {
 	const dirPath = await join(
 		"vehicles",
-		vehicleId,
+		vehicleId.toString(),
 		"images",
 	);
 	const files = await readDir(dirPath, {
@@ -216,7 +216,9 @@ export const indexPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const vehicle = await getVehicle(vehicleId);
+		const vehicle = await getVehicle(
+			Number.parseInt(vehicleId),
+		);
 		if (vehicle === null) {
 			throw json(
 				{

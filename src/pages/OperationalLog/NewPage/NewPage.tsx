@@ -30,7 +30,13 @@ export const NewPage: FC = () => {
 			return;
 		}
 
-		postOperationalLog(formData)
+		postOperationalLog({
+			driver_id: formData.driver.id,
+			vehicle_id: formData.vehicle.id,
+			route_id: formData.route.id,
+			end_date: formData.endDate,
+			start_date: formData.endDate,
+		})
 			.then(
 				() => toast.success("ลงบันทึกสำเร็จ"),
 				() => toast.error("ลงบันทึกล้มเหลว"),

@@ -25,7 +25,13 @@ export const ReportMedicalPage: FC = () => {
 	const handleSubmit = async (
 		formData: DriverReportFormData,
 	) => {
-		postDriverReportMedical(formData).then(
+		postDriverReportMedical({
+			content: formData.content,
+			datetime: formData.datetime,
+			title: formData.title,
+			topics: formData.topics.join(","),
+			driver_id: Number.parseInt(driverId),
+		}).then(
 			(reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(

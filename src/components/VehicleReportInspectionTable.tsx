@@ -124,7 +124,7 @@ const filterEntries = (
 	const vehicleSet = new Set(selectedVehicles);
 	return items
 		.filter((entry) =>
-			vehicleSet.has(entry.vehicleId),
+			vehicleSet.has(entry.vehicleId.toString()),
 		)
 		.filter((entry) => {
 			const topicSet = new Set(entry.topics);

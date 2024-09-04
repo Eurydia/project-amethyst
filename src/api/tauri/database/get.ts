@@ -48,7 +48,7 @@ export const getDriverAll = async () => {
 };
 
 export const getDriver = async (
-	driverId: string,
+	driverId: number,
 ) => {
 	const entry: DriverModel | null = await invoke(
 		"get_driver",
@@ -71,7 +71,7 @@ export const getDriverReportGeneralAll =
 	};
 
 export const getDriverReportGeneral = async (
-	reportId: string,
+	reportId: number,
 ) => {
 	const entry: DriverReportModel | null =
 		await invoke("get_driver_report_general", {
@@ -91,7 +91,7 @@ export const getDriverReportMedicalAll =
 		return entries;
 	};
 export const getDriverReportMedical = async (
-	reportId: string,
+	reportId: number,
 ) => {
 	const entry: DriverReportModel | null =
 		await invoke("get_driver_report_medical", {
@@ -109,7 +109,7 @@ export const getVehicleAll = async () => {
 	return entries;
 };
 export const getVehicle = async (
-	vehicleId: string,
+	vehicleId: number,
 ) => {
 	const entry: VehicleModel | null = await invoke(
 		"get_vehicle",
@@ -132,7 +132,7 @@ export const getVehicleReportGeneralAll =
 	};
 
 export const getVehicleReportGeneral = async (
-	reportId: string,
+	reportId: number,
 ) => {
 	const entry: VehicleReportGeneralModel | null =
 		await invoke("get_vehicle_report_general", {
@@ -153,7 +153,7 @@ export const getVehicleReportInspectionAll =
 		return entries;
 	};
 export const getVehicleReportInspection = async (
-	reportId: string,
+	reportId: number,
 ) => {
 	const entry: VehicleReportInspectionModel | null =
 		await invoke(
@@ -173,7 +173,7 @@ export const getPickupRouteAll = async () => {
 	return entries;
 };
 export const getPickupRoute = async (
-	routeId: string,
+	routeId: number,
 ) => {
 	const entry: PickupRouteModel | null =
 		await invoke("get_pickup_route", {
@@ -194,7 +194,7 @@ export const getPickupRouteReportGeneralAll =
 	};
 
 export const getPickupRouteReportGeneral = async (
-	reportId: string,
+	reportId: number,
 ) => {
 	const entry: PickupRouteReportModel | null =
 		await invoke(

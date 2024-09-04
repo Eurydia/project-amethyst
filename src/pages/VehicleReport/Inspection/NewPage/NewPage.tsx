@@ -23,7 +23,28 @@ export const NewPage: FC = () => {
 	const handleSubmit = async (
 		formData: VehicleReportInspectionFormData,
 	) => {
-		postVehicleReportInspection(formData)
+		if (formData.vehicle === null) {
+			return;
+		}
+
+		postVehicleReportInspection({
+			brake_light: formData.brakeLights,
+			content: formData.content,
+			datetime: formData.datetime,
+			frame: formData.frame,
+			rearview_mirror: formData.rearviewMirror,
+			front_camera: formData.frontCamera,
+			headlights: formData.headlights,
+			overhead_fan: formData.overheadFan,
+			turn_signals: formData.turnSignals,
+			seatbelts: formData.seatbelts,
+			seats: formData.seats,
+			sideview_mirror: formData.sideviewMirror,
+			tires: formData.tires,
+			windows: formData.windows,
+			topics: formData.topics.join(","),
+			vehicle_id: formData.vehicle.id,
+		})
 			.then((reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(

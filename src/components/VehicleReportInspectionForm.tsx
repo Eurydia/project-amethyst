@@ -214,7 +214,6 @@ export const VehicleReportInspectionForm: FC<
 			label: "เลขทะเบียน",
 			value: (
 				<VehicleInputSelect
-					isError={isVehicleEmpty}
 					isDisabled={shouldLockVehicleField}
 					options={vehicleOptions}
 					value={fieldVehicle}

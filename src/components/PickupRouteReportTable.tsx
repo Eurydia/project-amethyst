@@ -65,7 +65,7 @@ const filterEntries = (
 
 	return items
 		.filter((entry) =>
-			rotueSet.has(entry.routeId),
+			rotueSet.has(entry.routeId.toString()),
 		)
 		.filter((entry) => {
 			const topicSet = new Set(entry.topics);

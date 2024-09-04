@@ -26,7 +26,7 @@ export const infoPageLoader: LoaderFunction =
 		}
 
 		const _report = await getVehicleReportGeneral(
-			reportId,
+			Number.parseInt(reportId),
 		);
 		if (_report === null) {
 			throw json(

@@ -32,7 +32,9 @@ export const infoEditPageLoader: LoaderFunction =
 			);
 		}
 		const report =
-			await getPickupRouteReportGeneral(reportId);
+			await getPickupRouteReportGeneral(
+				Number.parseInt(reportId),
+			);
 		if (report === null) {
 			throw json(
 				{

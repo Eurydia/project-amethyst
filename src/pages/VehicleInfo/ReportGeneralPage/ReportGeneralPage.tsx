@@ -25,7 +25,13 @@ export const ReportGeneralPage: FC = () => {
 	const handleSubmit = async (
 		formData: VehicleReportGeneralFormData,
 	) => {
-		postVehicleReportGeneral(formData).then(
+		postVehicleReportGeneral({
+			content: formData.content,
+			datetime: formData.datetime,
+			title: formData.title,
+			topics: formData.topics.join(","),
+			vehicle_id: Number.parseInt(vehicleId),
+		}).then(
 			(reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(

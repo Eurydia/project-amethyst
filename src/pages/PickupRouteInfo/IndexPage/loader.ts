@@ -125,7 +125,9 @@ export const indexPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const route = await getPickupRoute(routeId);
+		const route = await getPickupRoute(
+			Number.parseInt(routeId),
+		);
 		if (route === null) {
 			throw json(
 				{

@@ -20,8 +20,8 @@ export const EditPage: FC = () => {
 		formData: DriverFormData,
 	) => {
 		putDriver({
+			id: Number.parseInt(driverId),
 			contact: formData.contact,
-			id: driverId,
 			license_type: formData.contact,
 			name: formData.name,
 			surname: formData.surname,

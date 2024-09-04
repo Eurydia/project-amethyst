@@ -1,5 +1,6 @@
 import {
 	getDriverAll,
+	getPickupRoute,
 	getPickupRouteAll,
 	getVehicleAll,
 } from "$backend/database/get";
@@ -33,13 +34,10 @@ export const logOperationalPageLoader: LoaderFunction =
 			);
 		}
 
-		const routeOptions =
-			await getPickupRouteAll();
-
-		const route = routeOptions.find(
-			({ id }) => id === routeId,
+		const route = await getPickupRoute(
+			Number.parseInt(routeId),
 		);
-		if (route === undefined) {
+		if (route === null) {
 			throw json(
 				{
 					message:
@@ -48,6 +46,8 @@ export const logOperationalPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
+		const routeOptions =
+			await getPickupRouteAll();
 		const driverOptions = await getDriverAll();
 		const vehicleOptions = await getVehicleAll();
 		const initFormData: OperationalLogFormData = {
@@ -55,8 +55,8 @@ export const logOperationalPageLoader: LoaderFunction =
 			endDate: "",
 
 			driver: null,
-			route,
 			vehicle: null,
+			route,
 		};
 		const loaderData: LogOperationalPageLoaderData =
 			{

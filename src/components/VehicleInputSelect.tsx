@@ -51,12 +51,6 @@ const renderInput = ({
 	/>
 );
 
-type VehicleInputSelectProps = {
-	isDisabled?: boolean;
-	options: VehicleModel[];
-	value: VehicleModel | null;
-	onChange: (value: VehicleModel) => void;
-};
 const renderOption = (
 	props: HTMLAttributes<HTMLLIElement> & {
 		key: any;
@@ -71,6 +65,12 @@ const renderOption = (
 		</ListItemText>
 	</ListItem>
 );
+type VehicleInputSelectProps = {
+	isDisabled?: boolean;
+	options: VehicleModel[];
+	value: VehicleModel | null;
+	onChange: (value: VehicleModel) => void;
+};
 export const VehicleInputSelect: FC<
 	VehicleInputSelectProps
 > = (props) => {

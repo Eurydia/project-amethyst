@@ -25,7 +25,7 @@ const toEntry = (
 	}
 
 	const entry: VehicleReportInspectionEntry = {
-		inspectionRoundNumber: count.toString(),
+		inspectionRoundNumber: count,
 		id: report.id,
 		datetime: report.datetime,
 		topics: report.topics

@@ -23,7 +23,7 @@ export const EditPage: FC = () => {
 		formData: VehicleFormData,
 	) => {
 		putVehicle({
-			id: vehicleId,
+			id: Number.parseInt(vehicleId),
 			license_plate: formData.licensePlate,
 			registered_city: formData.registeredCity,
 			vendor: formData.vendor,

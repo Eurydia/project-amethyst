@@ -9,7 +9,8 @@ export type VehicleModel = {
 };
 
 export type Vehicle = {
-	id: string;
+	id: number;
+
 	licensePlate: string;
 	registeredCity: string;
 	vehicleClass: string;
@@ -17,17 +18,17 @@ export type Vehicle = {
 };
 
 export type VehicleEntry = {
-	id: string;
+	id: number;
 	licensePlate: string;
 
 	drivers: {
-		id: string;
+		id: number;
 		name: string;
 		surname: string;
 	}[];
 
 	routes: {
-		id: string;
+		id: number;
 		name: string;
 	}[];
 };
@@ -52,13 +53,13 @@ export type VehicleReportGeneralModel = {
 };
 
 export type VehicleReportGeneral = {
-	id: string;
+	id: number;
 	datetime: string;
 	title: string;
 	content: string;
 	topics: string[];
 
-	vehicleId: string;
+	vehicleId: number;
 	vehicleLicensePlate: string;
 };
 
@@ -71,12 +72,12 @@ export type VehicleReportGeneralFormData = {
 };
 
 export type VehicleReportGeneralEntry = {
-	id: string;
+	id: number;
 	datetime: string;
 	title: string;
 	topics: string[];
 
-	vehicleId: string;
+	vehicleId: number;
 	vehicleLicensePlate: string;
 };
 //#endregion
@@ -104,11 +105,11 @@ export type VehicleReportInspectionModel = {
 };
 
 export type VehicleReportInspection = {
-	id: string;
+	id: number;
 	datetime: string;
 	content: string;
 	topics: string[];
-	vehicleId: string;
+	vehicleId: number;
 	vehicleLicensePlate: string;
 	inspectionRoundNumber: string;
 
@@ -147,11 +148,12 @@ export type VehicleReportInspectionFormData = {
 };
 
 export type VehicleReportInspectionEntry = {
-	id: string;
-	inspectionRoundNumber: string;
+	id: number;
+	inspectionRoundNumber: number;
+	vehicleId: number;
+
 	datetime: string;
 	topics: string[];
-	vehicleId: string;
 	vehicleLicensePlate: string;
 };
 //#endregion

@@ -88,34 +88,35 @@ const toEntries = (
 
 const prepareAttendanceLog = async (
 	logs: OperationalLogModel[],
-	drivers: DriverModel[],
-	vehicles: VehicleModel[],
 	routes: PickupRouteModel[],
 ) => {
 	const postRequests = logs.map((log) => {
 		const route = routes.find(
 			({ id }) => id === log.route_id,
 		);
-		const vehicle = vehicles.find(
-			({ id }) => id === log.vehicle_id,
-		);
-		const driver = drivers.find(
-			({ id }) => id === log.driver_id,
-		);
 
 		return postAttendanceLog({
-			route: route ?? null,
-			vehicle: vehicle ?? null,
-			driver: driver ?? null,
+			driver_id: log.driver_id,
+			vehicle_id: log.vehicle_id,
+			route_id: log.route_id,
+
+			actual_arrival_datetime: null,
+			actual_departure_datetime: null,
 
 			expected_arrival_datetime:
 				route === undefined
-					? dayjs().startOf("day")
-					: dayjs(route.arrival_time, "HH:mm"),
+					? dayjs().startOf("day").format()
+					: dayjs(
+							route.arrival_time,
+							"HH:mm",
+					  ).format(),
 			expected_departure_datetime:
 				route === undefined
-					? dayjs().endOf("day")
-					: dayjs(route.departure_time, "HH:mm"),
+					? dayjs().endOf("day").format()
+					: dayjs(
+							route.departure_time,
+							"HH:mm",
+					  ).format(),
 		});
 	});
 
@@ -138,12 +139,7 @@ export const HomePage: FC = () => {
 		) {
 			return;
 		}
-		prepareAttendanceLog(
-			operationalLogs,
-			drivers,
-			vehicles,
-			routes,
-		);
+		prepareAttendanceLog(operationalLogs, routes);
 		revalidate();
 	}, []);
 

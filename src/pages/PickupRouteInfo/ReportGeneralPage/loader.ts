@@ -33,7 +33,9 @@ export const reportGeneralPageLoader: LoaderFunction =
 			);
 		}
 
-		const route = await getPickupRoute(routeId);
+		const route = await getPickupRoute(
+			Number.parseInt(routeId),
+		);
 		if (route === null) {
 			throw json(
 				{

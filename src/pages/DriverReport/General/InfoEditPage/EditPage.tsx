@@ -28,7 +28,7 @@ export const InfoEditPage: FC = () => {
 			return;
 		}
 		putDriverReportGeneral({
-			id: reportId,
+			id: Number.parseInt(reportId),
 			content: formData.content,
 			datetime: formData.datetime,
 			driver_id: formData.driver.id,

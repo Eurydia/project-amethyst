@@ -32,7 +32,9 @@ export const reportGeneralPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const vehicle = await getVehicle(vehicleId);
+		const vehicle = await getVehicle(
+			Number.parseInt(vehicleId),
+		);
 		if (vehicle === null) {
 			throw json(
 				{

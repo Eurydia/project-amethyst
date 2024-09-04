@@ -44,7 +44,7 @@ export const InfoEditPage: FC = () => {
 			vehicle_id: formData.vehicle.id,
 			front_camera: formData.frontCamera,
 			topics: formData.topics.join(","),
-			id: reportId,
+			id: Number.parseInt(reportId),
 		})
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),

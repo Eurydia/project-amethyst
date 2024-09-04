@@ -31,7 +31,9 @@ export const reportMedicalPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const driver = await getDriver(driverId);
+		const driver = await getDriver(
+			Number.parseInt(driverId),
+		);
 		if (driver === null) {
 			throw json(
 				{

@@ -101,7 +101,7 @@ export const filterEntries = (
 ) => {
 	const selectedSet = new Set(selected);
 	return entries.filter((entry) =>
-		selectedSet.has(entry.id),
+		selectedSet.has(entry.id.toString()),
 	);
 };
 export const searchEntries = (

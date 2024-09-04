@@ -5,7 +5,6 @@ import { VehicleModel } from "./Vehicle";
 
 export type AttendanceLogModel = {
 	id: number;
-
 	driver_id: number;
 	vehicle_id: number;
 	route_id: number;
@@ -27,15 +26,15 @@ export type AttendanceLogFormData = {
 };
 
 export type AttendanceLogEntry = {
-	id: string;
-	vehicleId: string;
+	id: number;
+	vehicleId: number;
 	vehicleLicensePlate: string;
 
-	driverId: string;
+	driverId: number;
 	driverName: string;
 	driverSurname: string;
 
-	routeId: string;
+	routeId: number;
 	routeName: string;
 
 	expectedArrivalDatetime: string;

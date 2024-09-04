@@ -76,14 +76,17 @@ const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
 	];
 
 const toOptions = (entries: VehicleEntry[]) => {
-	const options = entries.map(
-		({ id, licensePlate }) => ({
-			value: id,
-			label: licensePlate,
+	const vehicles: Record<string, string> = {};
+	for (const entry of entries) {
+		vehicles[entry.id] = entry.licensePlate;
+	}
+
+	return Object.entries(vehicles).map(
+		([value, label]) => ({
+			value,
+			label,
 		}),
 	);
-
-	return options;
 };
 
 const filterEntries = (
@@ -92,7 +95,7 @@ const filterEntries = (
 ) => {
 	const vehicleSet = new Set(selectedVehicles);
 	return entries.filter((entry) =>
-		vehicleSet.has(entry.id),
+		vehicleSet.has(entry.id.toString()),
 	);
 };
 

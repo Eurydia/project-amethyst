@@ -142,8 +142,7 @@ export const PickupRouteReportForm: FC<
 			label: "สายรถ",
 			value: (
 				<PickupRouteInputSelect
-					showError={isRouteEmpty}
-					disabled={shouldLockRoute}
+					isDisabled={shouldLockRoute}
 					options={routeOptions}
 					value={fieldRoute}
 					onChange={setFieldRoute}

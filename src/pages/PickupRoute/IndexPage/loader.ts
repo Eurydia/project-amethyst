@@ -19,8 +19,8 @@ const toEntry = (
 	drivers: DriverModel[],
 	vehicles: VehicleModel[],
 ) => {
-	const driverIds = new Set<string>();
-	const vehicleIds = new Set<string>();
+	const driverIds = new Set<number>();
+	const vehicleIds = new Set<number>();
 	for (const {
 		route_id,
 		vehicle_id,

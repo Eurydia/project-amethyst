@@ -16,7 +16,7 @@ import { BaseSortableTable } from "./BaseSortableTable";
 const toOptions = (
 	entries: DriverReportEntry[],
 ) => {
-	const drivers: Record<string, string> = {};
+	const drivers: Record<number, string> = {};
 	const topics = new Set<string>();
 	for (const entry of entries) {
 		drivers[
@@ -69,7 +69,7 @@ const filterEntries = (
 				),
 		)
 		.filter((entry) =>
-			driverSet.has(entry.driverId),
+			driverSet.has(entry.driverId.toString()),
 		)
 		.filter((entry) => {
 			const topicSet = new Set(entry.topics);

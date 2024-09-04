@@ -1,4 +1,5 @@
 import {
+	getDriver,
 	getDriverAll,
 	getPickupRouteAll,
 	getVehicleAll,
@@ -33,11 +34,10 @@ export const logOperationalPageLoader: LoaderFunction =
 			);
 		}
 
-		const driverOptions = await getDriverAll();
-		const driver = driverOptions.find(
-			({ id }) => id === driverId,
+		const driver = await getDriver(
+			Number.parseInt(driverId),
 		);
-		if (driver === undefined) {
+		if (driver === null) {
 			throw json(
 				{
 					message:
@@ -46,7 +46,7 @@ export const logOperationalPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-
+		const driverOptions = await getDriverAll();
 		const vehicleOptions = await getVehicleAll();
 		const routeOptions =
 			await getPickupRouteAll();

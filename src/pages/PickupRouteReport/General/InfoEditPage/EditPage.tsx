@@ -29,7 +29,7 @@ export const InfoEditPage: FC = () => {
 		}
 		putPickupRouteReportGeneral({
 			content: formData.content,
-			id: reportId,
+			id: Number.parseInt(reportId),
 			datetime: formData.datetime,
 			route_id: formData.route.id,
 			title: formData.title,

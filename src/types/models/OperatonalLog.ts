@@ -13,13 +13,15 @@ export type OperationalLogModel = {
 };
 
 export type OperationalLogEntry = {
-	id: string;
-	driverId: string;
+	id: number;
+	driverId: number;
 	driverName: string;
 	driverSurname: string;
-	vehicleId: string;
+
+	vehicleId: number;
 	vehicleLicensePlate: string;
-	routeId: string;
+
+	routeId: number;
 	routeName: string;
 
 	startDate: string | null;
@@ -36,13 +38,16 @@ export type OperationalLogFormData = {
 };
 
 export type OperationalLog = {
-	id: string;
-	driverId: string;
+	id: number;
+
+	driverId: number;
 	driverName: string;
 	driverSurname: string;
-	vehicleId: string;
+
+	vehicleId: number;
 	vehiclePlate: string;
-	routeId: string;
+
+	routeId: number;
 	routeName: string;
 
 	startDate: string | null;

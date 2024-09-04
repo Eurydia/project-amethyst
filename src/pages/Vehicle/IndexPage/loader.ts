@@ -19,8 +19,8 @@ const toEntry = (
 	driverAll: DriverModel[],
 	routeAll: PickupRouteModel[],
 ) => {
-	const driverIds = new Set<string>();
-	const routeIds = new Set<string>();
+	const driverIds = new Set<number>();
+	const routeIds = new Set<number>();
 	for (const { driver_id, route_id } of logAll) {
 		driverIds.add(driver_id);
 		routeIds.add(route_id);

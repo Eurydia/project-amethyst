@@ -8,17 +8,17 @@ export type DriverModel = {
 	license_type: string;
 };
 export type DriverEntry = {
-	id: string;
+	id: number;
 	name: string;
 	surname: string;
 
 	vehicles: {
-		id: string;
+		id: number;
 		licensePlate: string;
 	}[];
 
 	routes: {
-		id: string;
+		id: number;
 		name: string;
 	}[];
 };
@@ -41,8 +41,8 @@ export type DriverReportModel = {
 	topics: string;
 };
 export type DriverReport = {
-	id: string;
-	driverId: string;
+	id: number;
+	driverId: number;
 	driverName: string;
 	driverSurname: string;
 
@@ -52,12 +52,12 @@ export type DriverReport = {
 	topics: string[];
 };
 export type DriverReportEntry = {
-	id: string;
+	id: number;
 	datetime: string;
 	title: string;
 	topics: string[];
 
-	driverId: string;
+	driverId: number;
 	driverName: string;
 	driverSurname: string;
 };

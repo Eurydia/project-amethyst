@@ -1,11 +1,8 @@
-import { TypographyTooltip } from "$components/TypographyTooltip";
-import { KeyboardArrowUpRounded } from "@mui/icons-material";
 import {
 	AppBar,
 	Box,
 	Container,
 	Divider,
-	Fab,
 	Stack,
 	Toolbar,
 	Typography,

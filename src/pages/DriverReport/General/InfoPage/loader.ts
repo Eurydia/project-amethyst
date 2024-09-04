@@ -25,7 +25,7 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 		const _report = await getDriverReportGeneral(
-			reportId,
+			Number.parseInt(reportId),
 		);
 		if (_report === null) {
 			throw json(

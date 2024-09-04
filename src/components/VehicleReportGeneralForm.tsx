@@ -130,7 +130,6 @@ export const VehicleReportGeneralForm: FC<
 			label: "รถรับส่ง",
 			value: (
 				<VehicleInputSelect
-					isError={isVehicleEmpty}
 					isDisabled={shouldLockVehicleField}
 					options={vehicleOptions}
 					value={fieldVehicle}

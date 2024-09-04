@@ -32,7 +32,9 @@ export const infoEditPageLoader: LoaderFunction =
 			);
 		}
 		const report =
-			await getVehicleReportInspection(reportId);
+			await getVehicleReportInspection(
+				Number.parseInt(reportId),
+			);
 		if (report === null) {
 			throw json(
 				{

@@ -79,7 +79,6 @@ type PickupRouteInputSelectProps = {
 	value: PickupRouteModel | null;
 	onChange: (value: PickupRouteModel) => void;
 };
-
 export const PickupRouteInputSelect: FC<
 	PickupRouteInputSelectProps
 > = (props) => {

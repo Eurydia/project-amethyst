@@ -23,7 +23,7 @@ export const EditPage: FC = () => {
 			arrival_time: formData.arrivalTime,
 			departure_time: formData.departureTime,
 			name: formData.name,
-			id: routeId,
+			id: Number.parseInt(routeId),
 		})
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),

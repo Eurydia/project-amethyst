@@ -24,7 +24,13 @@ export const ReportGeneralPage: FC = () => {
 	const handleSubmit = (
 		formData: DriverReportFormData,
 	) => {
-		postDriverReportGeneral(formData).then(
+		postDriverReportGeneral({
+			content: formData.content,
+			datetime: formData.datetime,
+			title: formData.title,
+			topics: formData.topics.join(","),
+			driver_id: Number.parseInt(driverId),
+		}).then(
 			(reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(

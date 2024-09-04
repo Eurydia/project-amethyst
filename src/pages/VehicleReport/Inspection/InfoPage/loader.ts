@@ -26,7 +26,9 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 		const _report =
-			await getVehicleReportInspection(reportId);
+			await getVehicleReportInspection(
+				Number.parseInt(reportId),
+			);
 		if (_report === null) {
 			throw json(
 				{

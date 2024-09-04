@@ -32,7 +32,7 @@ export const infoEditPageLoader: LoaderFunction =
 			);
 		}
 		const report = await getDriverReportGeneral(
-			reportId,
+			Number.parseInt(reportId),
 		);
 		if (report === null) {
 			throw json(

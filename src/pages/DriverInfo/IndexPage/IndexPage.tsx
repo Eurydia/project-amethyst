@@ -33,6 +33,7 @@ const TOC_ITEMS = [
 
 export const IndexPage: FC = () => {
 	const {
+		shouldDisableOperationalLogPost,
 		images,
 		driver,
 		logEntries,
@@ -64,6 +65,8 @@ export const IndexPage: FC = () => {
 				entries={logEntries}
 				slotProps={{
 					addButton: {
+						disabled:
+							shouldDisableOperationalLogPost,
 						onClick: () =>
 							submit(
 								{},

@@ -1,36 +1,54 @@
-import { AttendanceLogModel } from "$types/models/AttendanceLog";
 import {
-	DriverModel,
+	DriverFormData,
 	DriverReportModel,
 } from "$types/models/Driver";
-import { OperationalLogModel } from "$types/models/OperatonalLog";
+import { OperationalLogFormData } from "$types/models/OperatonalLog";
 import {
-	PickupRouteModel,
+	PickupRouteFormData,
 	PickupRouteReportModel,
 } from "$types/models/PickupRoute";
 import {
-	VehicleModel,
+	VehicleFormData,
 	VehicleReportGeneralModel,
 	VehicleReportInspectionModel,
 } from "$types/models/Vehicle";
 import { invoke } from "@tauri-apps/api/tauri";
 
 //#region Attendance log
-export const postAttendanceLog = async (
-	log: Omit<AttendanceLogModel, "id">,
-) => invoke("post_attendance_log", { log });
+export const postAttendanceLog = async ({
+	driverId,
+	vehicleId,
+	routeId,
+	expectedArrivalDatetime,
+	expectedDepartureDatetime,
+}: {
+	driverId: number;
+	vehicleId: number;
+	routeId: number;
+	expectedArrivalDatetime: string;
+	expectedDepartureDatetime: string;
+}) =>
+	invoke("post_attendance_log", {
+		driverId,
+		vehicleId,
+		routeId,
+
+		expectedArrivalDatetime,
+		expectedDepartureDatetime,
+	});
 //#endregion
 
 //#region Operational Log
 export const postOperationalLog = async (
-	log: Omit<OperationalLogModel, "id">,
-) => invoke("post_operational_log", { log });
+	log: OperationalLogFormData,
+): Promise<number> =>
+	invoke("post_operational_log", log);
 //#endregion
 
 //#region Driver
 export const postDriver = async (
-	driver: Omit<DriverModel, "id">,
-) => invoke("post_driver", { driver });
+	formData: DriverFormData,
+) => invoke("post_driver", formData);
 export const postDriverReportGeneral = async (
 	report: Omit<DriverReportModel, "id">,
 ) =>
@@ -47,8 +65,14 @@ export const postDriverReportMedical = async (
 
 //#region Pickup Route
 export const postPickupRoute = async (
-	route: Omit<PickupRouteModel, "id">,
-) => invoke("post_pickup_route", { route });
+	formData: PickupRouteFormData,
+) => {
+	const routeId: number = await invoke(
+		"post_pickup_route",
+		formData,
+	);
+	return routeId;
+};
 export const postPickupRouteReportGeneral =
 	async (
 		report: Omit<PickupRouteReportModel, "id">,
@@ -60,8 +84,8 @@ export const postPickupRouteReportGeneral =
 
 //#region Vehicle
 export const postVehicle = async (
-	vehicle: Omit<VehicleModel, "id">,
-) => invoke("post_vehicle", { vehicle });
+	formData: VehicleFormData,
+) => invoke("post_vehicle", formData);
 export const postVehicleReportGeneral = async (
 	report: Omit<VehicleReportGeneralModel, "id">,
 ) =>

@@ -29,12 +29,12 @@ export type OperationalLogEntry = {
 };
 
 export type OperationalLogFormData = {
-	driver: DriverModel | null;
-	vehicle: VehicleModel | null;
-	route: PickupRouteModel | null;
+	driver: DriverModel;
+	vehicle: VehicleModel;
+	route: PickupRouteModel;
 
-	startDate: string | null;
-	endDate: string | null;
+	startDate: string;
+	endDate: string;
 };
 
 export type OperationalLog = {

@@ -9,7 +9,7 @@ async fn prepare_db_connection_pool(
             Some(dir) => dir.join("database"),
             None => return Err("Cannot get app local data directory"),
         };
-        let file_path = dir_path.join("db.sqlite");
+        let file_path = dir_path.join("db.sqlite3");
         if !file_path.exists() {
             let _ = std::fs::create_dir_all(dir_path.clone());
             let _ = std::fs::File::create(file_path.clone());

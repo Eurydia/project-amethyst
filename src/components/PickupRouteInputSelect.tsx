@@ -53,12 +53,18 @@ const renderInput = ({
 );
 
 const renderOption = (
-	props: HTMLAttributes<HTMLLIElement> & {
+	{
+		key,
+		...props
+	}: HTMLAttributes<HTMLLIElement> & {
 		key: any;
 	},
 	option: PickupRouteModel,
 ) => (
-	<ListItem {...props}>
+	<ListItem
+		key={key}
+		{...props}
+	>
 		<ListItemText disableTypography>
 			<Typography>
 				{`${option.name} (นำเข้า ${dayjs(
@@ -76,7 +82,7 @@ const renderOption = (
 type PickupRouteInputSelectProps = {
 	isDisabled?: boolean;
 	options: PickupRouteModel[];
-	value: PickupRouteModel | null;
+	value: PickupRouteModel;
 	onChange: (value: PickupRouteModel) => void;
 };
 export const PickupRouteInputSelect: FC<
@@ -93,6 +99,9 @@ export const PickupRouteInputSelect: FC<
 
 	return (
 		<Autocomplete
+			disableClearable
+			disableListWrap
+			disablePortal
 			disabled={isDisabled}
 			onChange={(_, value) => {
 				if (value === null) {

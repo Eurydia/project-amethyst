@@ -1,9 +1,9 @@
 import { PickupRouteFormData } from "$types/models/PickupRoute";
-import { TextField } from "@mui/material";
 import { TimeField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
+import { BaseInputTextField } from "./BaseInputTextField";
 
 type PickupRouteFormProps = {
 	initFormData: PickupRouteFormData;
@@ -64,31 +64,37 @@ export const PickupRouteForm: FC<
 		});
 	};
 
-	const missingFieldName =
+	const isFieldArrivalTimeIncomplete =
+		Number.isNaN(fieldArrivalTime.hour()) ||
+		Number.isNaN(fieldArrivalTime.minute());
+	const isFieldDepartureTimeIncomplete =
+		Number.isNaN(fieldDepartureTime.hour()) ||
+		Number.isNaN(fieldDepartureTime.minute());
+	const isFieldNameIncomplete =
 		fieldName.trim().normalize() === "";
-	const isFormIncomplete = missingFieldName;
+	const isFormIncomplete =
+		isFieldNameIncomplete ||
+		isFieldArrivalTimeIncomplete ||
+		isFieldDepartureTimeIncomplete;
 
 	const formItems: {
 		label: string;
 		value: ReactNode;
 	}[] = [
 		{
-			label: "ชื่อสายรถ",
+			label: "ชื่อสาย",
 			value: (
-				<TextField
-					fullWidth
-					autoFocus
-					error={missingFieldName}
+				<BaseInputTextField
+					shouldAutoFocus
+					isError={isFieldNameIncomplete}
 					value={fieldName}
 					placeholder={name}
-					onChange={(e) =>
-						setFieldName(e.target.value)
-					}
+					onChange={setFieldName}
 				/>
 			),
 		},
 		{
-			label: "เวลานำเข้า",
+			label: "เวลารับเข้า",
 			value: (
 				<TimeField
 					fullWidth
@@ -105,7 +111,7 @@ export const PickupRouteForm: FC<
 			),
 		},
 		{
-			label: "เวลานำออก",
+			label: "เวลารับออก",
 			value: (
 				<TimeField
 					fullWidth

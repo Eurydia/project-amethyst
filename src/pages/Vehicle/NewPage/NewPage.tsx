@@ -19,12 +19,7 @@ export const NewPage: FC = () => {
 	const handleSubmit = (
 		formData: VehicleFormData,
 	) => {
-		postVehicle({
-			license_plate: formData.licensePlate,
-			vendor: formData.vendor,
-			registered_city: formData.registeredCity,
-			vehicle_class: formData.vehicleClass,
-		}).then(
+		postVehicle(formData).then(
 			(vehicleId) => {
 				toast.success("ลงทะเบียนสำเร็จ");
 				submit(

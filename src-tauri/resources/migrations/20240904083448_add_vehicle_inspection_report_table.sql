@@ -1,4 +1,4 @@
-CREATE TABLE vehicle_inspection_report (
+CREATE TABLE vehicle_inspection_reports (
   id INTEGER PRIMARY KEY,
   vehicle_id INTEGER NOT NULL,
 
@@ -18,5 +18,5 @@ CREATE TABLE vehicle_inspection_report (
   sideview_mirror TEXT,
   tires TEXT,
 
-  FOREIGN KEY (vehicle_id) REFERENCES vehicle(id) ON DELETE CASCADE
+  FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
 );

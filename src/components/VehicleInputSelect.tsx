@@ -52,12 +52,18 @@ const renderInput = ({
 );
 
 const renderOption = (
-	props: HTMLAttributes<HTMLLIElement> & {
+	{
+		key,
+		...props
+	}: HTMLAttributes<HTMLLIElement> & {
 		key: any;
 	},
 	option: VehicleModel,
 ) => (
-	<ListItem {...props}>
+	<ListItem
+		key={key}
+		{...props}
+	>
 		<ListItemText disableTypography>
 			<Typography>
 				{`${option.license_plate} (${option.vendor})`}
@@ -68,7 +74,7 @@ const renderOption = (
 type VehicleInputSelectProps = {
 	isDisabled?: boolean;
 	options: VehicleModel[];
-	value: VehicleModel | null;
+	value: VehicleModel;
 	onChange: (value: VehicleModel) => void;
 };
 export const VehicleInputSelect: FC<
@@ -93,6 +99,9 @@ export const VehicleInputSelect: FC<
 				}
 				onChange(value);
 			}}
+			disableClearable
+			disableListWrap
+			disablePortal
 			value={value}
 			options={options}
 			getOptionKey={(option) => option.id}

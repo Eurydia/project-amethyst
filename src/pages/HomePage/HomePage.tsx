@@ -90,37 +90,44 @@ const prepareAttendanceLog = async (
 	logs: OperationalLogModel[],
 	routes: PickupRouteModel[],
 ) => {
-	const postRequests = logs.map((log) => {
+	const reqs = [];
+	for (const log of logs) {
 		const route = routes.find(
 			({ id }) => id === log.route_id,
 		);
 
-		return postAttendanceLog({
+		if (route === undefined) {
+			continue;
+		}
+
+		const arrivalTime = dayjs(
+			route.arrival_time,
+			"HH:mm",
+		);
+		const departureTime = dayjs(
+			route.departure_time,
+			"HH:mm",
+		);
+
+		const today = dayjs();
+
+		const req = await postAttendanceLog({
 			driver_id: log.driver_id,
-			vehicle_id: log.vehicle_id,
 			route_id: log.route_id,
+			vehicle_id: log.vehicle_id,
 
-			actual_arrival_datetime: null,
-			actual_departure_datetime: null,
-
-			expected_arrival_datetime:
-				route === undefined
-					? dayjs().startOf("day").format()
-					: dayjs(
-							route.arrival_time,
-							"HH:mm",
-					  ).format(),
-			expected_departure_datetime:
-				route === undefined
-					? dayjs().endOf("day").format()
-					: dayjs(
-							route.departure_time,
-							"HH:mm",
-					  ).format(),
+			expected_arrival_datetime: today
+				.set("hour", arrivalTime.hour())
+				.set("minute", arrivalTime.minute())
+				.format(),
+			expected_departure_datetime: today
+				.set("hour", departureTime.hour())
+				.set("minute", departureTime.minute())
+				.format(),
 		});
-	});
-
-	await Promise.all(postRequests);
+		reqs.push(req);
+	}
+	await Promise.all(reqs);
 };
 
 export const HomePage: FC = () => {
@@ -132,9 +139,10 @@ export const HomePage: FC = () => {
 		vehicles,
 	} = useLoaderData() as HomePageLoaderData;
 	const { revalidate } = useRevalidator();
+
 	useEffect(() => {
 		if (
-			attendanceLogs.length ===
+			attendanceLogs.length >=
 			operationalLogs.length
 		) {
 			return;

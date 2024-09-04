@@ -159,6 +159,7 @@ type OperationalLogTableProps = {
 	entries: OperationalLogEntry[];
 	slotProps: {
 		addButton: {
+			disabled: boolean;
 			onClick: () => void;
 		};
 	};
@@ -206,7 +207,6 @@ export const OperationalLogTable: FC<
 			selectedRoutes,
 		],
 	);
-
 	const searchedEntries = useMemo(
 		() => searchEntries(filteredEntries, search),
 		[search, filteredEntries],
@@ -262,8 +262,9 @@ export const OperationalLogTable: FC<
 					onChange: setSearch,
 				},
 				addButton: {
-					onClick: slotProps.addButton.onClick,
 					label: "ลงบันทึก",
+					onClick: slotProps.addButton.onClick,
+					disabled: slotProps.addButton.disabled,
 				},
 			}}
 		>

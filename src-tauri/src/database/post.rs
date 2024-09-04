@@ -1,7 +1,12 @@
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn post_attendance_log(
+    _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    log: super::models::AttendanceLogModel,
+    driver_id: i64,
+    vehicle_id: i64,
+    route_id: i64,
+    expected_arrival_datetime: String,
+    expected_departure_datetime: String,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
@@ -10,35 +15,48 @@ pub async fn post_attendance_log(
                 driver_id, 
                 vehicle_id, 
                 route_id, 
+
                 expected_arrival_datetime, 
-                expected_departure_datetime
-            ) 
-            VALUES(?, ?, ?, ?, ?);
+                expected_departure_datetime,
+                actual_arrival_datetime,
+                actual_departure_datetime
+            )
+            VALUES(?, ?, ?, ?, ?, ?, ?);
         "#,
     )
-    .bind(log.driver_id)
-    .bind(log.vehicle_id)
-    .bind(log.route_id)
-    .bind(log.expected_arrival_datetime)
-    .bind(log.expected_departure_datetime)
+    .bind(driver_id)
+    .bind(vehicle_id)
+    .bind(route_id)
+    .bind(expected_arrival_datetime)
+    .bind(expected_departure_datetime)
+    .bind(String::default())
+    .bind(String::default())
     .execute(&state.db)
     .await;
 
     match query {
         Ok(result) => Ok(result.last_insert_rowid()),
-        Err(_) => Err("Failed to insert attendance log"),
+        Err(err) => {
+            dbg!(err);
+            Err("Failed to insert attendance log")
+        }
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn post_operational_log(
+    _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    log: super::models::OperationalLogModel,
+    driver: super::models::DriverModel,
+    vehicle: super::models::VehicleModel,
+    route: super::models::PickupRouteModel,
+    start_date: String,
+    end_date: String,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
             INSERT 
-            INTO operational_logs(
+            INTO operational_logs (
                 driver_id, 
                 vehicle_id, 
                 route_id, 
@@ -48,24 +66,31 @@ pub async fn post_operational_log(
             VALUES (?, ?, ?, ?, ?);
         "#,
     )
-    .bind(log.driver_id)
-    .bind(log.vehicle_id)
-    .bind(log.route_id)
-    .bind(log.start_date)
-    .bind(log.end_date)
+    .bind(driver.id)
+    .bind(vehicle.id)
+    .bind(route.id)
+    .bind(start_date)
+    .bind(end_date)
     .execute(&state.db)
     .await;
 
     match query {
         Ok(result) => Ok(result.last_insert_rowid()),
-        Err(_) => Err("Failed to insert operational log"),
+        Err(err) => {
+            dbg!(err);
+            Err("Failed to insert operational log")
+        }
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn post_driver(
+    _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    driver: super::models::DriverModel,
+    name: String,
+    surname: String,
+    contact: String,
+    license_type: String,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
@@ -79,10 +104,10 @@ pub async fn post_driver(
             VALUES (?, ?, ?, ?);
         "#,
     )
-    .bind(driver.name)
-    .bind(driver.surname)
-    .bind(driver.contact)
-    .bind(driver.license_type)
+    .bind(name)
+    .bind(surname)
+    .bind(contact)
+    .bind(license_type)
     .execute(&state.db)
     .await;
 
@@ -94,6 +119,7 @@ pub async fn post_driver(
 
 #[tauri::command]
 pub async fn post_driver_report_general(
+    _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
     report: super::models::DriverReportModel,
 ) -> Result<i64, &'static str> {
@@ -126,6 +152,7 @@ pub async fn post_driver_report_general(
 
 #[tauri::command]
 pub async fn post_driver_report_medical(
+    _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
     report: super::models::DriverReportModel,
 ) -> Result<i64, &'static str> {
@@ -156,10 +183,13 @@ pub async fn post_driver_report_medical(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn post_pickup_route(
+    _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    route: super::models::PickupRouteModel,
+    name: String,
+    arrival_time: String,
+    departure_time: String,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
@@ -172,9 +202,9 @@ pub async fn post_pickup_route(
             VALUES (?, ?, ?);
         "#,
     )
-    .bind(route.name)
-    .bind(route.arrival_time)
-    .bind(route.departure_time)
+    .bind(name)
+    .bind(arrival_time)
+    .bind(departure_time)
     .execute(&state.db)
     .await;
 
@@ -186,6 +216,7 @@ pub async fn post_pickup_route(
 
 #[tauri::command]
 pub async fn post_pickup_route_report_general(
+    _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
     report: super::models::PickupRouteReportModel,
 ) -> Result<i64, &'static str> {
@@ -216,10 +247,13 @@ pub async fn post_pickup_route_report_general(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn post_vehicle(
     state: tauri::State<'_, crate::AppState>,
-    vehicle: super::models::VehicleModel,
+    license_plate: String,
+    vendor: String,
+    vehicle_class: String,
+    registered_city: String,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
@@ -233,10 +267,10 @@ pub async fn post_vehicle(
             VALUES (?, ?, ?, ?);
         "#,
     )
-    .bind(vehicle.license_plate)
-    .bind(vehicle.vendor)
-    .bind(vehicle.vehicle_class)
-    .bind(vehicle.registered_city)
+    .bind(license_plate)
+    .bind(vendor)
+    .bind(vehicle_class)
+    .bind(registered_city)
     .execute(&state.db)
     .await;
 

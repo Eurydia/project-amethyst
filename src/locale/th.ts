@@ -1,4 +1,8 @@
 export const TRANSLATION = {
+	errorNoPickupRouteInDatabase: "",
+	errorNoVehicleInDatabase: "",
+	errorNoDriverInDatabase: "",
+
 	driverFormSubmit: "ลงทะเบียนคนขับรถ",
 
 	systemEditInfo: "แก้ไขข้อมูล",

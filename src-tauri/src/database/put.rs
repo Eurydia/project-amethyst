@@ -1,10 +1,12 @@
 use super::models::VehicleModel;
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn put_attendance_log(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    log: super::models::AttendanceLogModel,
+    id: i64,
+    actual_arrival_datetime: String,
+    actual_departure_datetime: String,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
@@ -15,9 +17,9 @@ pub async fn put_attendance_log(
             WHERE id = ?;
         "#,
     )
-    .bind(log.actual_arrival_datetime)
-    .bind(log.actual_departure_datetime)
-    .bind(log.id)
+    .bind(actual_arrival_datetime)
+    .bind(actual_departure_datetime)
+    .bind(id)
     .execute(&state.db)
     .await;
     match query {

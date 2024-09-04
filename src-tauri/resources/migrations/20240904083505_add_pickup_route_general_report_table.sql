@@ -1,4 +1,4 @@
-CREATE TABLE pickup_route_general_report (
+CREATE TABLE pickup_route_general_reports (
   id INTEGER PRIMARY KEY,
   route_id INTEGER NOT NULL,
 

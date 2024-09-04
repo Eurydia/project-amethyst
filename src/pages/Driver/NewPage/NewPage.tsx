@@ -19,12 +19,7 @@ export const NewPage: FC = () => {
 	const handleSubmit = (
 		formData: DriverFormData,
 	) => {
-		postDriver({
-			contact: formData.contact,
-			license_type: formData.licenseType,
-			name: formData.name,
-			surname: formData.surname,
-		}).then(
+		postDriver(formData).then(
 			(driverId) => {
 				toast.success("ลงทะเบียนสำเร็จ");
 				submit(

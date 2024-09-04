@@ -19,11 +19,7 @@ export const NewPage: FC = () => {
 	const handleSubmit = (
 		formData: PickupRouteFormData,
 	) => {
-		postPickupRoute({
-			arrival_time: formData.arrivalTime,
-			departure_time: formData.departureTime,
-			name: formData.name,
-		})
+		postPickupRoute(formData)
 			.then((routeId) => {
 				toast.success("ลงทะเบียนสำเร็จ");
 				submit(

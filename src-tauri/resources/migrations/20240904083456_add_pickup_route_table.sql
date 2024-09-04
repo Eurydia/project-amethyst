@@ -3,5 +3,5 @@ CREATE TABLE pickup_routes (
 
   name TEXT NOT NULL,
   arrival_time TEXT NOT NULL,
-  depature_time TEXT NOT NULL
+  departure_time TEXT NOT NULL
 );

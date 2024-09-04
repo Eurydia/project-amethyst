@@ -65,7 +65,6 @@ export const VehicleForm: FC<VehicleFormProps> = (
 		fieldRegisteredCity.trim().normalize() === "";
 	const missingFieldVendor =
 		fieldVendor.trim().normalize() === "";
-
 	const isFormIncomplete =
 		missingFieldLicensePlate ||
 		missingFieldRegisteredCity ||

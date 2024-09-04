@@ -119,10 +119,12 @@ const logToEntries = async (
 	return logEntries;
 };
 
-const getImages = async (driverId: string) => {
+const getImages = async (
+	driverId: string | number,
+) => {
 	const dirPath = await join(
 		"drivers",
-		driverId,
+		driverId.toString(),
 		"images",
 	);
 	const files = await readDir(dirPath, {
@@ -149,6 +151,7 @@ const getImages = async (driverId: string) => {
 };
 
 export type IndexPageLoaderData = {
+	shouldDisableOperationalLogPost: boolean;
 	driver: DriverModel;
 	images: {
 		src: string;
@@ -160,8 +163,7 @@ export type IndexPageLoaderData = {
 };
 export const indexPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { driverId } = params;
-		if (driverId === undefined) {
+		if (params.driverId === undefined) {
 			throw json(
 				{
 					message:
@@ -170,9 +172,10 @@ export const indexPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const driver = await getDriver(
-			Number.parseInt(driverId),
+		const driverId = Number.parseInt(
+			params.driverId,
 		);
+		const driver = await getDriver(driverId);
 		if (driver === null) {
 			throw json(
 				{
@@ -206,10 +209,14 @@ export const indexPageLoader: LoaderFunction =
 			vehicleAll,
 			routeAll,
 		);
+		const shouldDisableOperationalLogPost =
+			vehicleAll.length === 0 ||
+			routeAll.length === 0;
 
 		const images = await getImages(driverId);
 
 		const loaderData: IndexPageLoaderData = {
+			shouldDisableOperationalLogPost,
 			driver,
 			images,
 			logEntries,

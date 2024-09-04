@@ -1,4 +1,3 @@
-import { AttendanceLogModel } from "$types/models/AttendanceLog";
 import {
 	DriverModel,
 	DriverReportModel,
@@ -15,9 +14,21 @@ import {
 import { invoke } from "@tauri-apps/api/tauri";
 
 //#region Attendance log
-export const putAttendanceLog = async (
-	log: AttendanceLogModel,
-) => invoke("put_attendance_log", { log });
+export const putAttendanceLog = async ({
+	id,
+	actualArrivalDatetime,
+	actualDepartureDatetime,
+}: {
+	id: number;
+	actualArrivalDatetime: string;
+	actualDepartureDatetime: string;
+}) => {
+	invoke("put_attendance_log", {
+		id,
+		actualArrivalDatetime,
+		actualDepartureDatetime,
+	});
+};
 //#endregion
 
 //#region Driver

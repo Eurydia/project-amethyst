@@ -52,9 +52,7 @@ export const getDriver = async (
 ) => {
 	const entry: DriverModel | null = await invoke(
 		"get_driver",
-		{
-			driver_id: driverId,
-		},
+		{ driverId },
 	);
 
 	return entry;
@@ -109,12 +107,12 @@ export const getVehicleAll = async () => {
 	return entries;
 };
 export const getVehicle = async (
-	vehicleId: number,
+	vehicleId: number | string,
 ) => {
 	const entry: VehicleModel | null = await invoke(
 		"get_vehicle",
 		{
-			vehicle_id: vehicleId,
+			vehicleId,
 		},
 	);
 	return entry;
@@ -177,7 +175,7 @@ export const getPickupRoute = async (
 ) => {
 	const entry: PickupRouteModel | null =
 		await invoke("get_pickup_route", {
-			route_id: routeId,
+			routeId,
 		});
 	return entry;
 };
@@ -208,15 +206,12 @@ export const getPickupRouteReportGeneral = async (
 //#endregion
 
 //#region Attendance Log
-export const getAttendanceLogAll = async () => {
-	const entries: AttendanceLogModel[] =
-		await invoke("get_attendance_log_all");
-	return entries;
-};
+export const getAttendanceLogAll =
+	async (): Promise<AttendanceLogModel[]> =>
+		invoke("get_attendance_log_all");
 
-export const getAttendanceLogToday = async () => {
-	const entries: AttendanceLogModel[] =
-		await invoke("get_attendance_log_today");
-	return entries;
-};
+export const getAttendanceLogToday =
+	async (): Promise<AttendanceLogModel[]> =>
+		invoke("get_attendance_log_today");
+
 //#endregion

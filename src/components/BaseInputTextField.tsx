@@ -36,6 +36,12 @@ export const BaseInputTextField: FC<
 			disabled={isDisabled}
 			value={value}
 			onChange={(e) => onChange(e.target.value)}
+			slotProps={{
+				htmlInput: {
+					autoComplete: "off",
+					autoSave: "off",
+				},
+			}}
 		/>
 	);
 };

@@ -7,5 +7,5 @@ CREATE TABLE vehicle_general_reports (
     content TEXT NOT NULL,
     topics TEXT,
 
-    FOREIGN KEY (vehicle_id) REFERENCES vehicle(id) ON DELETE CASCADE
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
 );

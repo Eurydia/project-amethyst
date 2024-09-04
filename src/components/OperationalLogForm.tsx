@@ -12,6 +12,9 @@ import { PickupRouteInputSelect } from "./PickupRouteInputSelect";
 import { VehicleInputSelect } from "./VehicleInputSelect";
 
 type OperationalLogFormProps = {
+	shouldLockDriver?: boolean;
+	shouldLockRoute?: boolean;
+	shouldLockVehicle?: boolean;
 	initFormData: OperationalLogFormData;
 	onSubmit: (
 		formData: OperationalLogFormData,
@@ -25,6 +28,9 @@ export const OperationalLogForm: FC<
 	OperationalLogFormProps
 > = (props) => {
 	const {
+		shouldLockDriver,
+		shouldLockRoute,
+		shouldLockVehicle,
 		driverOptions,
 		routeOptions,
 		vehicleOptions,
@@ -34,17 +40,9 @@ export const OperationalLogForm: FC<
 	} = props;
 
 	const [fieldStartDate, setFieldStartDate] =
-		useState(
-			initFormData.startDate === null
-				? null
-				: dayjs(initFormData.startDate),
-		);
+		useState(dayjs(initFormData.startDate));
 	const [fieldEndDate, setFieldEndDate] =
-		useState(
-			initFormData.endDate === null
-				? null
-				: dayjs(initFormData.endDate),
-		);
+		useState(dayjs(initFormData.endDate));
 	const [fieldDriver, setFieldDriver] = useState(
 		initFormData.driver,
 	);
@@ -62,31 +60,31 @@ export const OperationalLogForm: FC<
 			driver: fieldDriver,
 			route: fieldRoute,
 			vehicle: fieldVehicle,
-			startDate:
-				fieldStartDate === null
-					? null
-					: fieldStartDate.format(),
-			endDate:
-				fieldEndDate === null
-					? null
-					: fieldEndDate.format(),
+			startDate: fieldStartDate.format(),
+			endDate: fieldEndDate.format(),
 		});
 	};
 
-	const shouldLockDriver =
-		initFormData.driver !== null;
-	const shouldLockRoute =
-		initFormData.route !== null;
-	const shouldLockVehicle =
-		initFormData.vehicle !== null;
-
+	const isFieldStartDateInvalidValid =
+		fieldStartDate === null ||
+		Number.isNaN(fieldStartDate.date()) ||
+		Number.isNaN(fieldStartDate.month()) ||
+		Number.isNaN(fieldStartDate.year());
+	const isFieldEndDateInvalidValid =
+		fieldEndDate === null ||
+		Number.isNaN(fieldEndDate.date()) ||
+		Number.isNaN(fieldEndDate.month()) ||
+		Number.isNaN(fieldEndDate.year());
 	const isDriverMissing = fieldDriver === null;
 	const isRouteMissing = fieldRoute === null;
 	const isVehicleMissing = fieldVehicle === null;
 	const isFormIncomplete =
 		isDriverMissing ||
 		isRouteMissing ||
-		isVehicleMissing;
+		isVehicleMissing ||
+		isFieldStartDateInvalidValid ||
+		isFieldEndDateInvalidValid ||
+		fieldEndDate.isBefore(fieldStartDate);
 
 	const formItems: {
 		label: string;
@@ -100,7 +98,12 @@ export const OperationalLogForm: FC<
 					format="DD/MM/YYYY"
 					formatDensity="spacious"
 					value={fieldStartDate}
-					onChange={setFieldStartDate}
+					onChange={(value) => {
+						if (value === null) {
+							return;
+						}
+						setFieldStartDate(value);
+					}}
 				/>
 			),
 		},
@@ -112,7 +115,12 @@ export const OperationalLogForm: FC<
 					format="DD/MM/YYYY"
 					formatDensity="spacious"
 					value={fieldEndDate}
-					onChange={setFieldEndDate}
+					onChange={(value) => {
+						if (value === null) {
+							return;
+						}
+						setFieldEndDate(value);
+					}}
 				/>
 			),
 		},

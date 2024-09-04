@@ -9,7 +9,10 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, ReactNode } from "react";
-import { Link } from "react-router-dom";
+import {
+	Link,
+	useRevalidator,
+} from "react-router-dom";
 import { BaseSortableTable } from "./BaseSortableTable";
 
 const TABLE_HEADERS: TableHeaderDefinition<AttendanceLogEntry>[] =
@@ -87,60 +90,58 @@ const CustomArrivalCheckbox: FC<
 > = (props) => {
 	const { item } = props;
 
-	const expected = dayjs(
-		item.expectedArrivalDatetime,
-	);
+	const {
+		id,
+		actualDepartureDatetime,
+		actualArrivalDatetime,
+		expectedArrivalDatetime,
+	} = item;
+	const { revalidate } = useRevalidator();
+	const expected = dayjs(expectedArrivalDatetime);
 
-	const handleCheckin = () => {
+	const handleCheckin = async () => {
 		if (isChecked) {
 			return;
 		}
 
-		putAttendanceLog({
-			id: item.id,
-			route_id: item.routeId,
-			vehicle_id: item.vehicleId,
-			driver_id: item.driverId,
-			expected_arrival_datetime:
-				item.expectedArrivalDatetime,
-			expected_departure_datetime:
-				item.expectedDepartureDatetime,
-			actual_departure_datetime:
-				item.actualDepartureDatetime,
-			actual_arrival_datetime: dayjs().format(),
+		await putAttendanceLog({
+			id,
+			actualDepartureDatetime,
+			actualArrivalDatetime: dayjs().format(),
 		});
+		revalidate();
 	};
 
-	const isChecked =
-		item.actualArrivalDatetime !== null;
+	const isChecked = actualArrivalDatetime !== "";
 
 	const isLate =
 		isChecked &&
-		dayjs(item.actualArrivalDatetime).isAfter(
-			dayjs(item.expectedArrivalDatetime),
+		dayjs(expectedArrivalDatetime).isAfter(
+			dayjs(actualArrivalDatetime),
 		);
 
 	let label = "";
 	let lateBy: ReactNode = null;
-	if (isLate) {
-		const actual = dayjs(
-			item.actualArrivalDatetime,
-		);
+	if (isChecked) {
+		const actual = dayjs(actualArrivalDatetime);
+
 		label = actual.isSame(expected, "day")
 			? actual.format("HH:mm น.")
 			: actual.format("HH:mm น., DD/MM/YYYY ");
 
-		const lateByLabel = expected
-			.locale("th")
-			.from(actual, true);
-		lateBy = (
-			<Typography
-				color="error"
-				fontWeight="bold"
-			>
-				{`สายไป ${lateByLabel}`}
-			</Typography>
-		);
+		if (isLate) {
+			const lateByLabel = expected
+				.locale("th")
+				.from(actual, true);
+			lateBy = (
+				<Typography
+					color="error"
+					fontWeight="bold"
+				>
+					{`สายไป ${lateByLabel}`}
+				</Typography>
+			);
+		}
 	}
 
 	return (
@@ -167,63 +168,61 @@ type CustomDepatureCheckboxProps = {
 const CustomDepatureCheckbox: FC<
 	CustomDepatureCheckboxProps
 > = (props) => {
+	const { revalidate } = useRevalidator();
 	const { item } = props;
-
+	const {
+		id,
+		expectedArrivalDatetime,
+		expectedDepartureDatetime,
+		actualDepartureDatetime,
+		actualArrivalDatetime,
+	} = item;
 	const expected = dayjs(
-		item.expectedDepartureDatetime,
+		expectedDepartureDatetime,
 	);
 
-	const handleCheckin = () => {
+	const handleCheckin = async () => {
 		if (isChecked) {
 			return;
 		}
 
-		putAttendanceLog({
-			id: item.id,
-			route_id: item.routeId,
-			vehicle_id: item.vehicleId,
-			driver_id: item.driverId,
-			expected_arrival_datetime:
-				item.expectedArrivalDatetime,
-			actual_arrival_datetime:
-				item.actualArrivalDatetime,
-
-			expected_departure_datetime:
-				item.expectedDepartureDatetime,
-			actual_departure_datetime: dayjs().format(),
+		await putAttendanceLog({
+			id,
+			actualDepartureDatetime: dayjs().format(),
+			actualArrivalDatetime,
 		});
+		revalidate();
 	};
 
 	const isChecked =
-		item.actualDepartureDatetime !== null;
+		actualDepartureDatetime !== "";
 
 	const isLate =
 		isChecked &&
-		dayjs(item.actualDepartureDatetime).isAfter(
-			dayjs(item.expectedArrivalDatetime),
+		dayjs(expectedArrivalDatetime).isAfter(
+			dayjs(actualDepartureDatetime),
 		);
 
 	let label = "";
 	let lateBy: ReactNode = null;
-	if (isLate) {
-		const actual = dayjs(
-			item.actualDepartureDatetime,
-		);
+	if (isChecked) {
+		const actual = dayjs(actualDepartureDatetime);
 		label = actual.isSame(expected, "day")
 			? actual.format("HH:mm น.")
 			: actual.format("HH:mm น., DD/MM/YYYY ");
-
-		const lateByLabel = expected
-			.locale("th")
-			.from(actual, true);
-		lateBy = (
-			<Typography
-				color="error"
-				fontWeight="bold"
-			>
-				{`สายไป ${lateByLabel}`}
-			</Typography>
-		);
+		if (isLate) {
+			const lateByLabel = expected
+				.locale("th")
+				.from(actual);
+			lateBy = (
+				<Typography
+					color="error"
+					fontWeight="bold"
+				>
+					{`สายไป ${lateByLabel}`}
+				</Typography>
+			);
+		}
 	}
 
 	return (
@@ -250,22 +249,6 @@ type AttendanceLogTableProps = {
 export const AttendanceLogTable: FC<
 	AttendanceLogTableProps
 > = (props) => {
-	/**
-	 * The attendance status should not have toggle behavior.
-	 * Once the status is set, it is locked to prevent misclicks.
-	 */
-	// const updateAttendance = (key: string) => {
-	// 	if (checked[key] !== undefined) {
-	// 		return;
-	// 	}
-
-	// 	setCheck((prev) => {
-	// 		const next = { ...prev };
-	// 		next[key] = true;
-	// 		return next;
-	// 	});
-	// };
-
 	const { entries } = props;
 	return (
 		<BaseSortableTable
@@ -277,10 +260,6 @@ export const AttendanceLogTable: FC<
 				addButton: {
 					onClick: () => {},
 					label: "",
-					sx: {
-						display: "none",
-						visibility: "hidden",
-					},
 				},
 				searchField: {
 					onChange: () => {},

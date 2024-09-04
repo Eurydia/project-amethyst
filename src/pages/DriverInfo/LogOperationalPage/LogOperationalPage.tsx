@@ -24,21 +24,7 @@ export const LogOperationalPage: FC = () => {
 	const handleSubmit = (
 		formData: OperationalLogFormData,
 	) => {
-		if (
-			formData.driver === null ||
-			formData.vehicle === null ||
-			formData.route === null
-		) {
-			return;
-		}
-
-		postOperationalLog({
-			driver_id: formData.driver.id,
-			vehicle_id: formData.vehicle.id,
-			route_id: formData.route.id,
-			end_date: formData.endDate,
-			start_date: formData.startDate,
-		})
+		postOperationalLog(formData)
 			.then(
 				() => toast.success("ลงบันทึกสำเร็จ"),
 				() => toast.error("ลงบันทึกล้มเหลว"),
@@ -57,6 +43,7 @@ export const LogOperationalPage: FC = () => {
 				ลงบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogForm
+				shouldLockDriver
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={() =>

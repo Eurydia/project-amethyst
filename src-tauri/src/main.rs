@@ -16,7 +16,9 @@ struct AppState {
 async fn main() -> Result<(), &'static str> {
     let builder = tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            open::open_path,
+            open::open_dir,
+            open::open_file,
+            //////////////////////////////////////////
             get_topic_all,
             get_driver_all,
             get_driver,

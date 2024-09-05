@@ -1,3 +1,4 @@
+import { getPickupRouteAll } from "$backend/database/get";
 import { filterItems } from "$core/filter";
 import { PickupRouteModel } from "$types/models/PickupRoute";
 import { LockRounded } from "@mui/icons-material";
@@ -5,7 +6,6 @@ import {
 	Autocomplete,
 	AutocompleteRenderInputParams,
 	FilterOptionsState,
-	InputAdornment,
 	ListItem,
 	ListItemText,
 	TextField,
@@ -16,6 +16,7 @@ import {
 	FC,
 	HTMLAttributes,
 	useEffect,
+	useState,
 } from "react";
 
 const filterOptions = (
@@ -26,75 +27,61 @@ const filterOptions = (
 		"name",
 	]);
 };
-const renderInput = ({
-	InputProps,
-	disabled,
-	...rest
-}: AutocompleteRenderInputParams) => (
+const renderInput = (
+	params: AutocompleteRenderInputParams,
+) => (
 	<TextField
-		{...rest}
+		{...params}
 		required
 		placeholder="ค้นหาสายรถ"
-		slotProps={{
-			input: {
-				...InputProps,
-				endAdornment: (
-					<InputAdornment position="end">
-						{disabled ? (
-							<LockRounded />
-						) : (
-							InputProps.endAdornment
-						)}
-					</InputAdornment>
-				),
-			},
-		}}
 	/>
 );
 
 const renderOption = (
-	{
-		key,
-		...props
-	}: HTMLAttributes<HTMLLIElement> & {
+	props: HTMLAttributes<HTMLLIElement> & {
 		key: any;
 	},
 	option: PickupRouteModel,
-) => (
-	<ListItem
-		key={key}
-		{...props}
-	>
-		<ListItemText disableTypography>
-			<Typography>
-				{`${option.name} (นำเข้า ${dayjs(
-					option.arrival_time,
-					"HH:mm",
-				).format("HH:mm น.")}, นำออก ${dayjs(
-					option.departure_time,
-					"HH:mm",
-				).format("HH:mm น.")})`}
-			</Typography>
-		</ListItemText>
-	</ListItem>
-);
+) => {
+	const { key, ...rest } = props;
+	return (
+		<ListItem
+			key={key}
+			{...rest}
+		>
+			<ListItemText disableTypography>
+				<Typography>
+					{`${option.name} (เข้า ${dayjs(
+						option.arrival_time,
+						"HH:mm",
+					).format("HH:mm น.")}, ออก ${dayjs(
+						option.departure_time,
+						"HH:mm",
+					).format("HH:mm น.")})`}
+				</Typography>
+			</ListItemText>
+		</ListItem>
+	);
+};
 
 type PickupRouteInputSelectProps = {
 	isDisabled?: boolean;
-	options: PickupRouteModel[];
 	value: PickupRouteModel;
 	onChange: (value: PickupRouteModel) => void;
 };
 export const PickupRouteInputSelect: FC<
 	PickupRouteInputSelectProps
 > = (props) => {
-	const { options, value, onChange, isDisabled } =
-		props;
+	const { value, onChange, isDisabled } = props;
+	const [options, setOptions] = useState<
+		PickupRouteModel[]
+	>([]);
 
 	useEffect(() => {
-		if (value === null && options.length > 0) {
-			onChange(options[0]);
-		}
+		(async () => {
+			const routes = await getPickupRouteAll();
+			setOptions(routes);
+		})();
 	}, []);
 
 	return (
@@ -103,6 +90,9 @@ export const PickupRouteInputSelect: FC<
 			disableListWrap
 			disablePortal
 			disabled={isDisabled}
+			popupIcon={
+				isDisabled ? <LockRounded /> : undefined
+			}
 			onChange={(_, value) => {
 				if (value === null) {
 					return;

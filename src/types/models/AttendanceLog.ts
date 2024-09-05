@@ -23,8 +23,8 @@ export type AttendanceLogFormData = {
 	actualArrivalDatetime: string | null;
 	actualDepartureDatetime: string | null;
 
-	expected_arrival_datetime: string;
-	expected_departure_datetime: string;
+	expectedArrivalDatetime: string;
+	expectedDepartureDatetime: string;
 };
 
 export type AttendanceLogEntry = {

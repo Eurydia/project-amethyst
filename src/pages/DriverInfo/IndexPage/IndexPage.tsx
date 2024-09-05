@@ -14,7 +14,7 @@ import { IndexPageLoaderData } from "./loader";
 
 const TOC_ITEMS = [
 	{
-		label: TRANSLATION.driverInfo,
+		label: TRANSLATION.driverInfoGroup,
 		href: "#info",
 	},
 	{
@@ -33,12 +33,12 @@ const TOC_ITEMS = [
 
 export const IndexPage: FC = () => {
 	const {
-		shouldDisableOperationalLogPost,
-		images,
+		// shouldDisableOperationalLogPost,
+		// images,
 		driver,
-		logEntries,
-		generalEntries,
-		medicalEntries,
+		// logEntries,
+		// generalEntries,
+		// medicalEntries,
 	} = useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
 
@@ -49,24 +49,19 @@ export const IndexPage: FC = () => {
 				variant="h1"
 				id="info"
 			>
-				ข้อมูลคนขับรถ
+				{TRANSLATION.driverInfoGroup}
 			</Typography>
-			<DriverInfoGroup
-				images={images}
-				driver={driver}
-			/>
+			<DriverInfoGroup driver={driver} />
 			<Typography
 				variant="h2"
 				id="operational-log"
 			>
-				ตารางบันทึกประวัติการเดินรถ
+				{TRANSLATION.operationalLogTable}
 			</Typography>
 			<OperationalLogTable
-				entries={logEntries}
+				driver={driver}
 				slotProps={{
 					addButton: {
-						disabled:
-							shouldDisableOperationalLogPost,
 						onClick: () =>
 							submit(
 								{},
@@ -79,10 +74,10 @@ export const IndexPage: FC = () => {
 				variant="h2"
 				id="general-report"
 			>
-				ตารางบันทึกเรื่องร้องเรียนคนขับ
+				{TRANSLATION.driverGeneralReportTable}
 			</Typography>
 			<DriverReportGeneralTable
-				entries={generalEntries}
+				entries={[]}
 				slotProps={{
 					addButton: {
 						onClick: () =>
@@ -97,10 +92,10 @@ export const IndexPage: FC = () => {
 				variant="h2"
 				id="medical-report"
 			>
-				ตารางบันทึกผลการตรวจสารเสพติด
+				{TRANSLATION.driverMedicalReportTable}
 			</Typography>
 			<DriverReportMedicalTable
-				entries={medicalEntries}
+				entries={[]}
 				slotProps={{
 					addButton: {
 						onClick: () =>

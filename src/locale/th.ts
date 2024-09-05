@@ -89,9 +89,9 @@ export const TRANSLATION = {
 
 	driver: "คนขับรถ",
 	driverGeneralReportTable:
-		"ตารางเรื่องร้องเรียนคนขับรถ",
+		"ตารางบันทึกเรื่องร้องเรียนคนขับรถ",
 	driverMedicalReportTable:
-		"ตารางผลการตรวจสารเสพติด",
+		"ตารางบันทึกผลการตรวจสารเสพติด",
 	postDriverGeneralReport:
 		"ลงบันทึกเรื่องร้องเรียนคนขับรถ",
 	postDriverMedicalReport:
@@ -102,7 +102,7 @@ export const TRANSLATION = {
 		"ค้นหาผลการตรวจสารเสพติด",
 	postDriver: "ลงทะเบียนคนขับรถ",
 	driverTable: "รายชื่อคนขับรถ",
-	driverInfo: `ข้อมูลของคนขับรถ`,
+	driverInfoGroup: `ข้อมูลของคนขับรถ`,
 	driverName: "ชื่อ",
 	driverSurname: "นามสกุล",
 	driverNameAndSurname: "ชื่อและนามสกุล",

@@ -4,10 +4,6 @@ import { FC, ReactNode } from "react";
 import { TypographyButton } from "./TypographyButton";
 
 type BaseFormProps = {
-	children: {
-		label: string;
-		value: ReactNode;
-	}[];
 	slotProps: {
 		submitButton: {
 			startIcon: ReactNode;
@@ -19,18 +15,18 @@ type BaseFormProps = {
 			onClick: () => void;
 		};
 	};
+
+	children: {
+		label: string;
+		value: ReactNode;
+	}[];
 };
 export const BaseForm: FC<BaseFormProps> = (
 	props,
 ) => {
 	const { children, slotProps } = props;
 	return (
-		<Grid2
-			container
-			sx={{
-				width: "100%",
-			}}
-		>
+		<Grid2 container>
 			<FormalLayout>{children}</FormalLayout>
 			<Grid2
 				size={{ xs: 12 }}

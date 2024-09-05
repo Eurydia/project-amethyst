@@ -1,10 +1,11 @@
+import { getVehicleAll } from "$backend/database/get";
+import { filterItems } from "$core/filter";
 import { VehicleModel } from "$types/models/Vehicle";
 import { LockRounded } from "@mui/icons-material";
 import {
 	Autocomplete,
 	AutocompleteRenderInputParams,
 	FilterOptionsState,
-	InputAdornment,
 	ListItem,
 	ListItemText,
 	TextField,
@@ -14,8 +15,8 @@ import {
 	FC,
 	HTMLAttributes,
 	useEffect,
+	useState,
 } from "react";
-import { filterItems } from "../core/filter";
 
 const filterOptions = (
 	options: VehicleModel[],
@@ -27,72 +28,63 @@ const filterOptions = (
 		"registered_city",
 	]);
 
-const renderInput = ({
-	InputProps,
-	disabled,
-	...params
-}: AutocompleteRenderInputParams) => (
-	<TextField
-		{...params}
-		placeholder="ค้นหาด้วยเลขทะเบียน, หจก., หรือจังหวัดที่จะทะเบียน"
-		required
-		slotProps={{
-			input: {
-				...InputProps,
-				endAdornment: disabled ? (
-					<InputAdornment position="end">
-						<LockRounded />
-					</InputAdornment>
-				) : (
-					InputProps.endAdornment
-				),
-			},
-		}}
-	/>
-);
+const renderInput = (
+	params: AutocompleteRenderInputParams,
+) => {
+	return (
+		<TextField
+			{...params}
+			required
+			placeholder="ค้นหาด้วยเลขทะเบียน, หจก., หรือจังหวัดที่จดทะเบียน"
+		/>
+	);
+};
 
 const renderOption = (
-	{
-		key,
-		...props
-	}: HTMLAttributes<HTMLLIElement> & {
+	props: HTMLAttributes<HTMLLIElement> & {
 		key: any;
 	},
 	option: VehicleModel,
-) => (
-	<ListItem
-		key={key}
-		{...props}
-	>
-		<ListItemText disableTypography>
-			<Typography>
-				{`${option.license_plate} (${option.vendor})`}
-			</Typography>
-		</ListItemText>
-	</ListItem>
-);
+) => {
+	const { key, ...rest } = props;
+	return (
+		<ListItem
+			key={key}
+			{...rest}
+		>
+			<ListItemText disableTypography>
+				<Typography>
+					{`${option.license_plate} (${option.vendor})`}
+				</Typography>
+			</ListItemText>
+		</ListItem>
+	);
+};
 type VehicleInputSelectProps = {
 	isDisabled?: boolean;
-	options: VehicleModel[];
 	value: VehicleModel;
 	onChange: (value: VehicleModel) => void;
 };
 export const VehicleInputSelect: FC<
 	VehicleInputSelectProps
 > = (props) => {
-	const { options, isDisabled, value, onChange } =
-		props;
-
+	const { isDisabled, value, onChange } = props;
+	const [options, setOptions] = useState<
+		VehicleModel[]
+	>([]);
 	useEffect(() => {
-		if (value === null && options.length > 0) {
-			onChange(options[0]);
-		}
-		return () => {};
+		(async () => {
+			const vehicles = await getVehicleAll();
+			setOptions(vehicles);
+		})();
 	}, []);
 
 	return (
 		<Autocomplete
 			disabled={isDisabled}
+			popupIcon={
+				isDisabled ? <LockRounded /> : undefined
+			}
 			onChange={(_, value) => {
 				if (value === null) {
 					return;
@@ -102,6 +94,7 @@ export const VehicleInputSelect: FC<
 			disableClearable
 			disableListWrap
 			disablePortal
+			noOptionsText="ไม่พบรถรับส่ง"
 			value={value}
 			options={options}
 			getOptionKey={(option) => option.id}

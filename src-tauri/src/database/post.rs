@@ -1,3 +1,5 @@
+use super::models::PickupRouteModel;
+
 #[tauri::command(rename_all = "camelCase")]
 pub async fn post_attendance_log(
     _: tauri::AppHandle,
@@ -7,6 +9,8 @@ pub async fn post_attendance_log(
     route_id: i64,
     expected_arrival_datetime: String,
     expected_departure_datetime: String,
+    actual_arrival_datetime: Option<String>,
+    actual_departure_datetime: Option<String>,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
@@ -18,10 +22,17 @@ pub async fn post_attendance_log(
 
                 expected_arrival_datetime, 
                 expected_departure_datetime,
+
                 actual_arrival_datetime,
                 actual_departure_datetime
             )
-            VALUES(?, ?, ?, ?, ?, ?, ?);
+            VALUES(
+                ?, ?, ?, 
+                
+                ?, ?, 
+
+                ?, ?
+            );
         "#,
     )
     .bind(driver_id)
@@ -29,8 +40,8 @@ pub async fn post_attendance_log(
     .bind(route_id)
     .bind(expected_arrival_datetime)
     .bind(expected_departure_datetime)
-    .bind(String::default())
-    .bind(String::default())
+    .bind(actual_arrival_datetime)
+    .bind(actual_departure_datetime)
     .execute(&state.db)
     .await;
 
@@ -60,10 +71,15 @@ pub async fn post_operational_log(
                 driver_id, 
                 vehicle_id, 
                 route_id, 
+
                 start_date,
                 end_date
             ) 
-            VALUES (?, ?, ?, ?, ?);
+            VALUES(
+                ?, ?, ?, 
+
+                ?, ?
+            );
         "#,
     )
     .bind(driver.id)
@@ -117,11 +133,15 @@ pub async fn post_driver(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn post_driver_report_general(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    report: super::models::DriverReportModel,
+    driver_id: i64,
+    datetime: i64,
+    title: String,
+    content: String,
+    topics: String,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
@@ -136,11 +156,11 @@ pub async fn post_driver_report_general(
             VALUES (?, ?, ?, ?, ?);
         "#,
     )
-    .bind(report.driver_id)
-    .bind(report.datetime)
-    .bind(report.title)
-    .bind(report.content)
-    .bind(report.topics)
+    .bind(driver_id)
+    .bind(datetime)
+    .bind(title)
+    .bind(content)
+    .bind(topics)
     .execute(&state.db)
     .await;
 
@@ -150,11 +170,15 @@ pub async fn post_driver_report_general(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn post_driver_report_medical(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    report: super::models::DriverReportModel,
+    driver_id: i64,
+    datetime: i64,
+    title: String,
+    content: String,
+    topics: String,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
@@ -169,11 +193,11 @@ pub async fn post_driver_report_medical(
             VALUES (?, ?, ?, ?, ?);
         "#,
     )
-    .bind(report.driver_id)
-    .bind(report.datetime)
-    .bind(report.title)
-    .bind(report.content)
-    .bind(report.topics)
+    .bind(driver_id)
+    .bind(datetime)
+    .bind(title)
+    .bind(content)
+    .bind(topics)
     .execute(&state.db)
     .await;
 
@@ -214,11 +238,15 @@ pub async fn post_pickup_route(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn post_pickup_route_report_general(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    report: super::models::PickupRouteReportModel,
+    route: PickupRouteModel,
+    datetime: String,
+    title: String,
+    content: String,
+    topics: Vec<String>,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
@@ -233,11 +261,11 @@ pub async fn post_pickup_route_report_general(
             VALUES (?, ?, ?, ?, ?);
         "#,
     )
-    .bind(report.route_id)
-    .bind(report.datetime)
-    .bind(report.title)
-    .bind(report.content)
-    .bind(report.topics)
+    .bind(route.id)
+    .bind(datetime)
+    .bind(title)
+    .bind(content)
+    .bind(topics.join(","))
     .execute(&state.db)
     .await;
 
@@ -249,6 +277,7 @@ pub async fn post_pickup_route_report_general(
 
 #[tauri::command(rename_all = "camelCase")]
 pub async fn post_vehicle(
+    _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
     license_plate: String,
     vendor: String,
@@ -280,10 +309,15 @@ pub async fn post_vehicle(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn post_vehicle_report_general(
+    _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    report: super::models::VehicleReportGeneralModel,
+    vehicle_id: i64,
+    datetime: String,
+    title: String,
+    content: String,
+    topics: String,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
@@ -298,11 +332,11 @@ pub async fn post_vehicle_report_general(
             VALUES (?, ?, ?, ?, ?);
         "#,
     )
-    .bind(report.vehicle_id)
-    .bind(report.datetime)
-    .bind(report.title)
-    .bind(report.content)
-    .bind(report.topics)
+    .bind(vehicle_id)
+    .bind(datetime)
+    .bind(title)
+    .bind(content)
+    .bind(topics)
     .execute(&state.db)
     .await;
 
@@ -312,71 +346,66 @@ pub async fn post_vehicle_report_general(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn post_vehicle_report_inspection(
+    _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    report: super::models::VehicleReportInspectionModel,
+    vehicle_id: i64,
+    datetime: String,
+    content: String,
+    topics: String,
+    front_camera: String,
+    overhead_fan: String,
+    windows: String,
+    seatbelts: String,
+    seats: String,
+    headlights: String,
+    turn_signals: String,
+    brake_light: String,
+    frame: String,
+    rearview_mirror: String,
+    sideview_mirror: String,
+    tires: String,
 ) -> Result<i64, &'static str> {
-    let super::models::VehicleReportInspectionModel {
-        brake_light,
-        content,
-        datetime,
-        frame,
-        front_camera,
-        headlights,
-        id,
-        overhead_fan,
-        windows,
-        vehicle_id,
-        seatbelts,
-        seats,
-        topics,
-        rearview_mirror,
-        turn_signals,
-        sideview_mirror,
-        tires,
-    } = report;
-
     let query = sqlx::query(
         r#"
-            INSERT
-            INTO vehicle_inspection_reports(
-                brake_light,
-                content,
-                datetime,
-                frame,
-                front_camera,
-                headlights,
-                id,
-                overhead_fan,
-                windows,
-                vehicle_id,
-                seatbelts,
-                seats,
-                topics,
-                rearview_mirror,
-                turn_signals,
-                sideview_mirror,
+            INSERT INTO vehicle_inspection_reports (
+                vehicle_id, 
+
+                datetime, 
+                content, 
+                topics, 
+
+                front_camera, 
+                overhead_fan, 
+                windows, 
+                seatbelts, 
+                seats, 
+                headlights, 
+                turn_signals, 
+                brake_light, 
+                frame, 
+                rearview_mirror, 
+                sideview_mirror, 
                 tires
-            )   
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+            )
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
         "#,
     )
-    .bind(brake_light)
-    .bind(content)
+    .bind(vehicle_id)
     .bind(datetime)
-    .bind(frame)
+    .bind(content)
+    .bind(topics)
     .bind(front_camera)
-    .bind(headlights)
-    .bind(id)
     .bind(overhead_fan)
     .bind(windows)
-    .bind(vehicle_id)
     .bind(seatbelts)
     .bind(seats)
-    .bind(topics)
-    .bind(rearview_mirror)
+    .bind(headlights)
     .bind(turn_signals)
+    .bind(brake_light)
+    .bind(frame)
+    .bind(rearview_mirror)
     .bind(sideview_mirror)
     .bind(tires)
     .execute(&state.db)

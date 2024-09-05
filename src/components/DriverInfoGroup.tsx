@@ -7,15 +7,11 @@ import { BaseInfoGroup } from "./BaseInfoGroup";
 
 type DriverInfoGroupProps = {
 	driver: DriverModel;
-	images: {
-		src: string;
-		fileName: string;
-	}[];
 };
 export const DriverInfoGroup: FC<
 	DriverInfoGroupProps
 > = (props) => {
-	const { images, driver } = props;
+	const { driver } = props;
 	const submit = useSubmit();
 
 	const infoItems: {
@@ -27,12 +23,12 @@ export const DriverInfoGroup: FC<
 			value: driver.id,
 		},
 		{
-			label: "ชื่อและนามสกุล",
+			label: "ชื่อสกุล",
 			value: `${driver.name} ${driver.surname}`,
 		},
 		{
 			label: "เบอร์ติดต่อ",
-			value: driver.contact,
+			value: driver.contact || "ไม่มี",
 		},
 		{
 			label: "ประเภทใบขับขี่",
@@ -47,8 +43,11 @@ export const DriverInfoGroup: FC<
 		label: "รูปภาพ",
 		value: (
 			<BaseGallery
-				images={images}
-				onOpenRoot={() => {}}
+				dirPath={[
+					"drivers",
+					driver.id.toString(),
+					"images",
+				]}
 			/>
 		),
 	});

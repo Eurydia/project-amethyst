@@ -1,14 +1,10 @@
 import {
 	getDriver,
-	getDriverAll,
-	getPickupRouteAll,
-	getVehicleAll,
+	getPickupRoute,
+	getVehicle,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { DriverModel } from "$types/models/Driver";
 import { OperationalLogFormData } from "$types/models/OperatonalLog";
-import { PickupRouteModel } from "$types/models/PickupRoute";
-import { VehicleModel } from "$types/models/Vehicle";
 import dayjs from "dayjs";
 import {
 	json,
@@ -18,9 +14,6 @@ import {
 export type LogOperationalPageLoaderData = {
 	driverId: number;
 	initFormData: OperationalLogFormData;
-	vehicleOptions: VehicleModel[];
-	driverOptions: DriverModel[];
-	routeOptions: PickupRouteModel[];
 };
 export const logOperationalPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -46,12 +39,8 @@ export const logOperationalPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-		const driverOptions = await getDriverAll();
-		const vehicleOptions = await getVehicleAll();
-		const routeOptions =
-			await getPickupRouteAll();
-
-		if (routeOptions.length === 0) {
+		const route = await getPickupRoute(1);
+		if (route === null) {
 			throw json(
 				{
 					message:
@@ -60,7 +49,8 @@ export const logOperationalPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-		if (vehicleOptions.length === 0) {
+		const vehicle = await getVehicle(1);
+		if (vehicle === null) {
 			throw json(
 				{
 					message:
@@ -74,16 +64,13 @@ export const logOperationalPageLoader: LoaderFunction =
 			endDate: dayjs().format(),
 
 			driver,
-			route: routeOptions[0],
-			vehicle: vehicleOptions[0],
+			route,
+			vehicle,
 		};
 		const loaderData: LogOperationalPageLoaderData =
 			{
 				driverId,
 				initFormData,
-				driverOptions,
-				vehicleOptions,
-				routeOptions,
 			};
 		return loaderData;
 	};

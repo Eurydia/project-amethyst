@@ -1,25 +1,20 @@
 import {
-	getDriverAll,
+	getDriver,
 	getPickupRoute,
-	getPickupRouteAll,
-	getVehicleAll,
+	getVehicle,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { DriverModel } from "$types/models/Driver";
 import { OperationalLogFormData } from "$types/models/OperatonalLog";
 import { PickupRouteModel } from "$types/models/PickupRoute";
-import { VehicleModel } from "$types/models/Vehicle";
+import dayjs from "dayjs";
 import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
 
 export type LogOperationalPageLoaderData = {
-	routeId: string;
 	initFormData: OperationalLogFormData;
-	vehicleOptions: VehicleModel[];
-	driverOptions: DriverModel[];
-	routeOptions: PickupRouteModel[];
+	route: PickupRouteModel;
 };
 export const logOperationalPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -46,25 +41,42 @@ export const logOperationalPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-		const routeOptions =
-			await getPickupRouteAll();
-		const driverOptions = await getDriverAll();
-		const vehicleOptions = await getVehicleAll();
-		const initFormData: OperationalLogFormData = {
-			startDate: "",
-			endDate: "",
 
-			driver: null,
-			vehicle: null,
+		const driver = await getDriver(1);
+		if (driver === null) {
+			throw json(
+				{
+					message:
+						TRANSLATION.errorNoDriverInDatabase,
+				},
+				{ status: 400 },
+			);
+		}
+		const vehicle = await getVehicle(1);
+		if (vehicle === null) {
+			throw json(
+				{
+					message:
+						TRANSLATION.errorNoVehicleInDatabase,
+				},
+				{ status: 400 },
+			);
+		}
+
+		const initFormData: OperationalLogFormData = {
+			startDate: dayjs()
+				.startOf("month")
+				.format(),
+			endDate: dayjs().endOf("month").format(),
+
+			driver,
+			vehicle,
 			route,
 		};
 		const loaderData: LogOperationalPageLoaderData =
 			{
-				routeId,
+				route,
 				initFormData,
-				driverOptions,
-				vehicleOptions,
-				routeOptions,
 			};
 		return loaderData;
 	};

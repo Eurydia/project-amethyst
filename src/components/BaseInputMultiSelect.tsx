@@ -12,14 +12,20 @@ import { FC } from "react";
 type CustomItemProps = {
 	isChecked?: boolean;
 	isBold?: boolean;
+	isDisabled?: boolean;
 	label: string;
 	onClick: () => void;
 };
 const CustomItem: FC<CustomItemProps> = (
 	props,
 ) => {
-	const { isBold, isChecked, onClick, label } =
-		props;
+	const {
+		isBold,
+		isChecked,
+		isDisabled,
+		onClick,
+		label,
+	} = props;
 
 	return (
 		<ListItem
@@ -33,11 +39,14 @@ const CustomItem: FC<CustomItemProps> = (
 		>
 			<ListItemButton
 				disableRipple
+				disabled={isDisabled}
 				onClick={onClick}
 			>
 				<ListItemIcon>
 					<Checkbox
 						disableRipple
+						disableFocusRipple
+						disableTouchRipple
 						checked={isChecked}
 					/>
 				</ListItemIcon>
@@ -58,6 +67,7 @@ const CustomItem: FC<CustomItemProps> = (
 };
 
 type BaseInputMultiSelectProps = {
+	isDisabled?: boolean;
 	options: { label: string; value: string }[];
 	selectedOptions: string[];
 	onChange: (option: string[]) => void;
@@ -65,8 +75,12 @@ type BaseInputMultiSelectProps = {
 export const BaseInputMultiSelect: FC<
 	BaseInputMultiSelectProps
 > = (props) => {
-	const { options, selectedOptions, onChange } =
-		props;
+	const {
+		options,
+		isDisabled,
+		selectedOptions,
+		onChange,
+	} = props;
 
 	const toggleHandler = (value: string) => () => {
 		if (!selectedOptions.includes(value)) {
@@ -92,6 +106,7 @@ export const BaseInputMultiSelect: FC<
 					onClick={handleClick}
 					label={label}
 					isChecked={isChecked}
+					isDisabled={isDisabled}
 				/>
 			);
 		},
@@ -124,6 +139,7 @@ export const BaseInputMultiSelect: FC<
 				onClick={handleToggleAll}
 				isChecked={isPartiallySelect}
 				isBold
+				isDisabled={isDisabled}
 			/>
 			{renderedOptions}
 		</List>

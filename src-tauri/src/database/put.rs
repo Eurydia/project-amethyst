@@ -1,5 +1,3 @@
-use super::models::VehicleModel;
-
 #[tauri::command(rename_all = "camelCase")]
 pub async fn put_attendance_log(
     _: tauri::AppHandle,
@@ -28,11 +26,15 @@ pub async fn put_attendance_log(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn put_driver(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    driver: super::models::DriverModel,
+    id: i64,
+    name: String,
+    surname: String,
+    contact: String,
+    license_type: String,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
@@ -45,11 +47,11 @@ pub async fn put_driver(
             WHERE id = ?;
         "#,
     )
-    .bind(driver.name)
-    .bind(driver.surname)
-    .bind(driver.contact)
-    .bind(driver.license_type)
-    .bind(driver.id)
+    .bind(name)
+    .bind(surname)
+    .bind(contact)
+    .bind(license_type)
+    .bind(id)
     .execute(&state.db)
     .await;
 
@@ -59,10 +61,14 @@ pub async fn put_driver(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn put_driver_report_general(
     state: tauri::State<'_, crate::AppState>,
-    report: super::models::DriverReportModel,
+    id: i64,
+    datetime: String,
+    title: String,
+    content: String,
+    topics: String,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
@@ -75,24 +81,28 @@ pub async fn put_driver_report_general(
             WHERE id = ?;
         "#,
     )
-    .bind(report.datetime)
-    .bind(report.title)
-    .bind(report.content)
-    .bind(report.topics)
-    .bind(report.id)
+    .bind(datetime)
+    .bind(title)
+    .bind(content)
+    .bind(topics)
+    .bind(id)
     .execute(&state.db)
     .await;
 
     match query {
         Ok(_) => Ok(()),
-        Err(_) => Err("Update faile"),
+        Err(_) => Err("Update fail"),
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn put_driver_report_medical(
     state: tauri::State<'_, crate::AppState>,
-    report: super::models::DriverReportModel,
+    id: i64,
+    datetime: String,
+    title: String,
+    content: String,
+    topics: String,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
@@ -105,11 +115,11 @@ pub async fn put_driver_report_medical(
             WHERE id = ?;
         "#,
     )
-    .bind(report.datetime)
-    .bind(report.title)
-    .bind(report.content)
-    .bind(report.topics)
-    .bind(report.id)
+    .bind(datetime)
+    .bind(title)
+    .bind(content)
+    .bind(topics)
+    .bind(id)
     .execute(&state.db)
     .await;
 
@@ -119,10 +129,15 @@ pub async fn put_driver_report_medical(
     }
 }
 
-#[tauri::command]
+// #[tauri::command(rename_all = "camelCase")] <- not needed
+#[tauri::command(rename_all = "snake_case")]
 pub async fn put_pickup_route(
+    _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    route: super::models::PickupRouteModel,
+    id: i64,
+    name: String,
+    arrival_time: String,
+    departure_time: String,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
@@ -134,10 +149,10 @@ pub async fn put_pickup_route(
             WHERE id = ?;
         "#,
     )
-    .bind(route.name)
-    .bind(route.arrival_time)
-    .bind(route.departure_time)
-    .bind(route.id)
+    .bind(name)
+    .bind(arrival_time)
+    .bind(departure_time)
+    .bind(id)
     .execute(&state.db)
     .await;
 
@@ -147,10 +162,14 @@ pub async fn put_pickup_route(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn put_pickup_route_report_general(
     state: tauri::State<'_, crate::AppState>,
-    report: super::models::PickupRouteReportModel,
+    id: i64,
+    datetime: String,
+    title: String,
+    content: String,
+    topics: String,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
@@ -163,11 +182,11 @@ pub async fn put_pickup_route_report_general(
             WHERE id = ?;
         "#,
     )
-    .bind(report.datetime)
-    .bind(report.title)
-    .bind(report.content)
-    .bind(report.topics)
-    .bind(report.id)
+    .bind(datetime)
+    .bind(title)
+    .bind(content)
+    .bind(topics)
+    .bind(id)
     .execute(&state.db)
     .await;
 
@@ -177,10 +196,14 @@ pub async fn put_pickup_route_report_general(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn put_vehicle(
     state: tauri::State<'_, crate::AppState>,
-    vehicle: VehicleModel,
+    id: i64,
+    license_plate: String,
+    vendor: String,
+    vehicle_class: String,
+    registered_city: String,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
@@ -193,11 +216,11 @@ pub async fn put_vehicle(
             WHERE id = ?;
         "#,
     )
-    .bind(vehicle.license_plate)
-    .bind(vehicle.vendor)
-    .bind(vehicle.vehicle_class)
-    .bind(vehicle.registered_city)
-    .bind(vehicle.id)
+    .bind(license_plate)
+    .bind(vendor)
+    .bind(vehicle_class)
+    .bind(registered_city)
+    .bind(id)
     .execute(&state.db)
     .await;
 
@@ -210,7 +233,11 @@ pub async fn put_vehicle(
 #[tauri::command]
 pub async fn put_vehicle_report_general(
     state: tauri::State<'_, crate::AppState>,
-    report: super::models::VehicleReportGeneralModel,
+    id: i64,
+    datetime: String,
+    title: String,
+    content: String,
+    topics: String,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
@@ -223,11 +250,11 @@ pub async fn put_vehicle_report_general(
             WHERE id = ?;
         "#,
     )
-    .bind(report.datetime)
-    .bind(report.title)
-    .bind(report.content)
-    .bind(report.topics)
-    .bind(report.id)
+    .bind(datetime)
+    .bind(title)
+    .bind(content)
+    .bind(topics)
+    .bind(id)
     .execute(&state.db)
     .await;
 
@@ -240,7 +267,23 @@ pub async fn put_vehicle_report_general(
 #[tauri::command]
 pub async fn put_vehicle_report_inspection(
     state: tauri::State<'_, crate::AppState>,
-    report: super::models::VehicleReportInspectionModel,
+    id: i64,
+    datetime: String,
+    topics: String,
+    content: String,
+
+    front_camera: String,
+    overhead_fan: String,
+    windows: String,
+    seatbelts: String,
+    seats: String,
+    headlights: String,
+    turn_signals: String,
+    brake_light: String,
+    frame: String,
+    rearview_mirror: String,
+    sideview_mirror: String,
+    tires: String,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
@@ -266,22 +309,22 @@ pub async fn put_vehicle_report_inspection(
 
         "#,
     )
-    .bind(report.datetime)
-    .bind(report.topics)
-    .bind(report.front_camera)
-    .bind(report.content)
-    .bind(report.overhead_fan)
-    .bind(report.windows)
-    .bind(report.seatbelts)
-    .bind(report.seats)
-    .bind(report.headlights)
-    .bind(report.turn_signals)
-    .bind(report.brake_light)
-    .bind(report.frame)
-    .bind(report.rearview_mirror)
-    .bind(report.sideview_mirror)
-    .bind(report.tires)
-    .bind(report.id)
+    .bind(datetime)
+    .bind(topics)
+    .bind(front_camera)
+    .bind(content)
+    .bind(overhead_fan)
+    .bind(windows)
+    .bind(seatbelts)
+    .bind(seats)
+    .bind(headlights)
+    .bind(turn_signals)
+    .bind(brake_light)
+    .bind(frame)
+    .bind(rearview_mirror)
+    .bind(sideview_mirror)
+    .bind(tires)
+    .bind(id)
     .execute(&state.db)
     .await;
 

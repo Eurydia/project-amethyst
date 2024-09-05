@@ -1,38 +1,52 @@
 import {
-	getDriverAll,
+	getDriver,
+	getPickupRoute,
 	getPickupRouteAll,
-	getVehicleAll,
+	getVehicle,
 } from "$backend/database/get";
-import { DriverModel } from "$types/models/Driver";
 import { OperationalLogFormData } from "$types/models/OperatonalLog";
-import { PickupRouteModel } from "$types/models/PickupRoute";
-import { VehicleModel } from "$types/models/Vehicle";
-import { LoaderFunction } from "react-router-dom";
+import dayjs from "dayjs";
+import {
+	json,
+	LoaderFunction,
+} from "react-router-dom";
 
 export type NewPageLoaderData = {
 	initFormData: OperationalLogFormData;
-	vehicleOptions: VehicleModel[];
-	driverOptions: DriverModel[];
-	routeOptions: PickupRouteModel[];
 };
 export const newPageLoader: LoaderFunction =
 	async () => {
-		const driverOptions = await getDriverAll();
-		const vehicleOptions = await getVehicleAll();
-		const routeOptions =
-			await getPickupRouteAll();
+		const driver = await getDriver(1);
+		const vehicle = await getVehicle(1);
+		const route = await getPickupRoute(1);
+
+		if (
+			driver === null ||
+			vehicle === null ||
+			route === null
+		) {
+			throw json(
+				{
+					message: "ไม่พบข้อมูล",
+				},
+				{
+					status: 400,
+				},
+			);
+		}
+
+		await getPickupRouteAll();
 		const initFormData: OperationalLogFormData = {
-			startDate: "",
-			endDate: "",
-			driver: null,
-			route: null,
-			vehicle: null,
+			startDate: dayjs()
+				.startOf("month")
+				.format(),
+			endDate: dayjs().endOf("month").format(),
+			driver,
+			route,
+			vehicle,
 		};
 		const loaderData: NewPageLoaderData = {
 			initFormData,
-			driverOptions,
-			vehicleOptions,
-			routeOptions,
 		};
 		return loaderData;
 	};

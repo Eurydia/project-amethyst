@@ -1,8 +1,16 @@
+import {
+	getPickupRoute,
+	getPickupRouteReportGeneralAll,
+} from "$backend/database/get";
 import { TableHeaderDefinition } from "$types/generics";
-import { PickupRouteReportEntry } from "$types/models/PickupRoute";
+import {
+	PickupRouteModel,
+	PickupRouteReportEntry,
+	PickupRouteReportModel,
+} from "$types/models/PickupRoute";
 import { Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PickupRouteReportTable } from "./PickupRouteReportTable";
 
@@ -40,7 +48,8 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<PickupRouteReportEntry>[] =
 		},
 		{
 			label: "เรื่อง",
-			compare: null,
+			compare: (a, b) =>
+				a.title.localeCompare(b.title),
 			render: (item) => (
 				<Typography>
 					<Link
@@ -65,8 +74,29 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<PickupRouteReportEntry>[] =
 		},
 	];
 
+const toEntry = async (
+	report: PickupRouteReportModel,
+) => {
+	const route = await getPickupRoute(
+		report.route_id,
+	);
+	if (route === null) {
+		return null;
+	}
+	const entry: PickupRouteReportEntry = {
+		datetime: report.datetime,
+		id: report.id,
+		title: report.title,
+		topics: report.topics.split(","),
+
+		routeId: route.id,
+		routeName: route.name,
+	};
+	return entry;
+};
+
 type PickupRouteReportGeneralTableProps = {
-	entries: PickupRouteReportEntry[];
+	route?: PickupRouteModel;
 	slotProps: {
 		addButton: {
 			onClick: () => void;
@@ -76,7 +106,33 @@ type PickupRouteReportGeneralTableProps = {
 export const PickupRouteReportGeneralTable: FC<
 	PickupRouteReportGeneralTableProps
 > = (props) => {
-	const { entries, slotProps } = props;
+	const { slotProps, route } = props;
+
+	const [entries, setEntries] = useState<
+		PickupRouteReportEntry[]
+	>([]);
+
+	useEffect(() => {
+		(async () => {
+			const reports =
+				await getPickupRouteReportGeneralAll();
+
+			const itemRequests = reports
+				.filter(
+					({ route_id }) =>
+						route === undefined ||
+						route_id === route.id,
+				)
+				.map(toEntry);
+			const requests = await Promise.all(
+				itemRequests,
+			);
+			const entries = requests.filter(
+				(entry) => entry !== null,
+			);
+			setEntries(entries);
+		})();
+	}, []);
 
 	return (
 		<PickupRouteReportTable

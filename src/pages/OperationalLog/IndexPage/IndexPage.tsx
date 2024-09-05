@@ -1,15 +1,9 @@
 import { OperationalLogTable } from "$components/OperationalLogTable";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
-import {
-	useLoaderData,
-	useSubmit,
-} from "react-router-dom";
-import { IndexPageLoaderData } from "./loader";
+import { useSubmit } from "react-router-dom";
 
 export const IndexPage: FC = () => {
-	const { entries } =
-		useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
 	return (
 		<Stack spacing={1}>
@@ -17,7 +11,6 @@ export const IndexPage: FC = () => {
 				ตารางบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogTable
-				entries={entries}
 				slotProps={{
 					addButton: {
 						onClick: () =>

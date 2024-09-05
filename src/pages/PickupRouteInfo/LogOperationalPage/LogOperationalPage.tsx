@@ -11,34 +11,14 @@ import { toast } from "react-toastify";
 import { LogOperationalPageLoaderData } from "./loader";
 
 export const LogOperationalPage: FC = () => {
-	const {
-		routeId,
-		initFormData,
-		driverOptions,
-		routeOptions,
-		vehicleOptions,
-	} =
+	const { initFormData, route } =
 		useLoaderData() as LogOperationalPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = (
 		formData: OperationalLogFormData,
 	) => {
-		if (
-			formData.driver === null ||
-			formData.vehicle === null ||
-			formData.route === null
-		) {
-			return;
-		}
-
-		postOperationalLog({
-			driver_id: formData.driver.id,
-			vehicle_id: formData.vehicle.id,
-			route_id: formData.route.id,
-			end_date: formData.endDate,
-			start_date: formData.startDate,
-		})
+		postOperationalLog(formData)
 			.then(
 				() => toast.success("ลงบันทึกสำเร็จ"),
 				() => toast.error("ลงบันทึกล้มเหลว"),
@@ -48,7 +28,7 @@ export const LogOperationalPage: FC = () => {
 					{},
 					{
 						action:
-							"/pickup-routes/info/" + routeId,
+							"/pickup-routes/info/" + route.id,
 					},
 				),
 			);
@@ -60,6 +40,7 @@ export const LogOperationalPage: FC = () => {
 				ลงบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogForm
+				lockRoute
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={() =>
@@ -67,13 +48,10 @@ export const LogOperationalPage: FC = () => {
 						{},
 						{
 							action:
-								"/pickup-routes/info/" + routeId,
+								"/pickup-routes/info/" + route.id,
 						},
 					)
 				}
-				driverOptions={driverOptions}
-				routeOptions={routeOptions}
-				vehicleOptions={vehicleOptions}
 			/>
 		</Stack>
 	);

@@ -13,7 +13,7 @@ import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 import { BaseInputTopicMatchMode } from "./BaseInputTopicMatchMode";
 import { BaseSortableTable } from "./BaseSortableTable";
 
-const toOptions = (
+const getOptions = (
 	entries: PickupRouteReportEntry[],
 ) => {
 	const routes: Record<string, string> = {};
@@ -24,16 +24,16 @@ const toOptions = (
 			topics.add(topic);
 		}
 	}
-	const routeOptions = Object.entries(routes).map(
-		([value, label]) => ({
-			value,
-			label,
-		}),
-	);
 	const topicOptions = [...topics].map(
 		(topic) => ({
 			value: topic,
 			label: topic,
+		}),
+	);
+	const routeOptions = Object.entries(routes).map(
+		([value, label]) => ({
+			value,
+			label,
 		}),
 	);
 	return {
@@ -49,6 +49,7 @@ const filterEntries = (
 	selectedRoutes: string[],
 	selectedTopics: string[],
 	topicMustHaveAll: boolean,
+	search: string,
 ) => {
 	const items = entries
 		.filter(
@@ -61,11 +62,12 @@ const filterEntries = (
 				beforeDate !== null ||
 				dayjs(datetime).isBefore(beforeDate),
 		);
-	const rotueSet = new Set(selectedRoutes);
 
-	return items
+	const routeSet = new Set(selectedRoutes);
+
+	const filtered = items
 		.filter((entry) =>
-			rotueSet.has(entry.routeId.toString()),
+			routeSet.has(entry.routeId.toString()),
 		)
 		.filter((entry) => {
 			const topicSet = new Set(entry.topics);
@@ -77,13 +79,7 @@ const filterEntries = (
 						topicSet.has(topic),
 				  );
 		});
-};
-
-const searchEntries = (
-	entries: PickupRouteReportEntry[],
-	search: string,
-) => {
-	return filterItems(entries, search, [
+	return filterItems(filtered, search, [
 		"title",
 		"topics",
 		"routeName",
@@ -105,7 +101,7 @@ export const PickupRouteReportTable: FC<
 	const { headers, entries, slotProps } = props;
 
 	const { routeOptions, topicOptions } = useMemo(
-		() => toOptions(entries),
+		() => getOptions(entries),
 		[entries],
 	);
 
@@ -116,14 +112,12 @@ export const PickupRouteReportTable: FC<
 		useState<Dayjs | null>(null);
 	const [topicMustHaveAll, setTopicMustHaveAll] =
 		useState(false);
-	const [selectedTopics, setSelectedTopics] =
-		useState(
-			topicOptions.map(({ value }) => value),
-		);
-	const [selectedRoutes, setSelectedRoutes] =
-		useState(
-			routeOptions.map(({ value }) => value),
-		);
+	const [topics, setSelectedTopics] = useState(
+		topicOptions.map(({ value }) => value),
+	);
+	const [routes, setSelectedRoutes] = useState(
+		routeOptions.map(({ value }) => value),
+	);
 
 	const filteredEntries = useMemo(
 		() =>
@@ -131,22 +125,20 @@ export const PickupRouteReportTable: FC<
 				entries,
 				afterDate,
 				beforeDate,
-				selectedRoutes,
-				selectedTopics,
+				routes,
+				topics,
 				topicMustHaveAll,
+				search,
 			),
 		[
 			afterDate,
 			beforeDate,
-			selectedRoutes,
-			selectedTopics,
+			routes,
+			topics,
 			entries,
 			topicMustHaveAll,
+			search,
 		],
-	);
-	const searchedEntries = useMemo(
-		() => searchEntries(filteredEntries, search),
-		[search, filteredEntries],
 	);
 
 	const formItems: {
@@ -182,7 +174,7 @@ export const PickupRouteReportTable: FC<
 			value: (
 				<BaseInputMultiSelect
 					options={routeOptions}
-					selectedOptions={selectedRoutes}
+					selectedOptions={routes}
 					onChange={setSelectedRoutes}
 				/>
 			),
@@ -201,7 +193,7 @@ export const PickupRouteReportTable: FC<
 			value: (
 				<BaseInputMultiSelect
 					options={topicOptions}
-					selectedOptions={selectedTopics}
+					selectedOptions={topics}
 					onChange={setSelectedTopics}
 				/>
 			),
@@ -212,7 +204,7 @@ export const PickupRouteReportTable: FC<
 		<BaseSortableTable
 			defaultSortByColumn={0}
 			defaultSortOrder="desc"
-			entries={searchedEntries}
+			entries={filteredEntries}
 			headers={headers}
 			slotProps={{
 				addButton: {

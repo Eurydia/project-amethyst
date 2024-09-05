@@ -43,7 +43,7 @@ export const LogOperationalPage: FC = () => {
 				ลงบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogForm
-				shouldLockDriver
+				lockDriver
 				initFormData={initFormData}
 				onSubmit={handleSubmit}
 				onCancel={() =>

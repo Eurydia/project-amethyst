@@ -76,7 +76,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 		},
 	];
 
-const toOptions = (
+const getOptions = (
 	entries: PickupRouteEntry[],
 ) => {
 	const options: Record<string, string> = {};
@@ -93,17 +93,13 @@ const toOptions = (
 export const filterEntries = (
 	entries: PickupRouteEntry[],
 	selected: string[],
-) => {
-	const selectedSet = new Set(selected);
-	return entries.filter((entry) =>
-		selectedSet.has(entry.id.toString()),
-	);
-};
-export const searchEntries = (
-	entries: PickupRouteEntry[],
 	search: string,
 ) => {
-	return filterItems(entries, search, [
+	const selectedSet = new Set(selected);
+	const filtered = entries.filter((entry) =>
+		selectedSet.has(entry.id.toString()),
+	);
+	return filterItems(filtered, search, [
 		"name",
 		"vehicles.*.licensePlate",
 		"drivers.*.name",
@@ -119,22 +115,17 @@ export const PickupRouteTable: FC<
 > = (props) => {
 	const { entries } = props;
 	const submit = useSubmit();
-	const routeOptions = useMemo(
-		() => toOptions(entries),
+	const options = useMemo(
+		() => getOptions(entries),
 		[entries],
 	);
 	const [search, setSearch] = useState("");
-	const [selectedRoutes, setSelectedRoutes] =
-		useState(
-			routeOptions.map(({ value }) => value),
-		);
-	const filteredEntries = useMemo(
-		() => filterEntries(entries, selectedRoutes),
-		[entries, selectedRoutes],
+	const [routes, setRoutes] = useState(
+		options.map(({ value }) => value),
 	);
-	const searchedEntries = useMemo(
-		() => searchEntries(filteredEntries, search),
-		[filteredEntries, search],
+	const filteredEntries = useMemo(
+		() => filterEntries(entries, routes, search),
+		[entries, routes, search],
 	);
 	const formItems: {
 		label: string;
@@ -144,9 +135,9 @@ export const PickupRouteTable: FC<
 			label: "สายรถ",
 			value: (
 				<BaseInputMultiSelect
-					onChange={setSelectedRoutes}
-					options={routeOptions}
-					selectedOptions={selectedRoutes}
+					onChange={setRoutes}
+					options={options}
+					selectedOptions={routes}
 				/>
 			),
 		},
@@ -156,7 +147,7 @@ export const PickupRouteTable: FC<
 			headers={HEADER_DEFINITION}
 			defaultSortOrder="asc"
 			defaultSortByColumn={0}
-			entries={searchedEntries}
+			entries={filteredEntries}
 			slotProps={{
 				searchField: {
 					placeholder:

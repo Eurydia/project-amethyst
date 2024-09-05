@@ -5,8 +5,8 @@ CREATE TABLE operational_logs (
     vehicle_id INTEGER NOT NULL,
     route_id INTEGER NOT NULL,
 
-    start_date TEXT,
-    end_date TEXT,
+    start_date TEXT NOT NULL,
+    end_date TEXT NOT NULL,
 
     FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE CASCADE,
     FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE,

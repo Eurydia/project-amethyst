@@ -1,6 +1,5 @@
 import {
 	AppBar,
-	Box,
 	Container,
 	Divider,
 	Stack,
@@ -167,15 +166,13 @@ export const MainView: FC = () => {
 					<KeyboardArrowUpRounded />
 				</Fab>
 			</TypographyTooltip> */}
-			<Container maxWidth="lg">
-				<Box
-					sx={{
-						marginTop: appBarHeight,
-						paddingY: 2,
-					}}
-				>
-					<Outlet />
-				</Box>
+			<Container
+				maxWidth="lg"
+				sx={{
+					marginTop: appBarHeight,
+				}}
+			>
+				<Outlet />
 			</Container>
 		</Fragment>
 	);

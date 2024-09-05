@@ -1,7 +1,4 @@
-import {
-	PickupRouteModel,
-	PickupRouteReportFormData,
-} from "$types/models/PickupRoute";
+import { PickupRouteReportFormData } from "$types/models/PickupRoute";
 import {
 	DateField,
 	TimeField,
@@ -14,31 +11,27 @@ import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { PickupRouteInputSelect } from "./PickupRouteInputSelect";
 
 type PickupRouteReportFormProps = {
-	routeOptions: PickupRouteModel[];
-	topicOptions: string[];
+	lockRoute?: boolean;
 	initFormData: PickupRouteReportFormData;
-	onSubmit: (
-		formData: PickupRouteReportFormData,
-	) => void;
-	onCancel: () => void;
+
 	slotProps: {
 		submitButton: {
 			startIcon: ReactNode;
 			label: string;
+			onClick: (
+				formData: PickupRouteReportFormData,
+			) => void;
+		};
+		cancelButton: {
+			onClick: () => void;
 		};
 	};
 };
 export const PickupRouteReportForm: FC<
 	PickupRouteReportFormProps
 > = (props) => {
-	const {
-		routeOptions,
-		topicOptions,
-		initFormData,
-		slotProps,
-		onSubmit,
-		onCancel,
-	} = props;
+	const { initFormData, slotProps, lockRoute } =
+		props;
 
 	const [fieldDate, setFieldDate] = useState(
 		dayjs(initFormData.datetime),
@@ -71,18 +64,17 @@ export const PickupRouteReportForm: FC<
 			.format();
 
 		const formData: PickupRouteReportFormData = {
-			content: fieldContent,
+			content: fieldContent.normalize().trim(),
 			datetime: datetime,
-			title: fieldTitle,
-			topics: fieldTopics,
+			title: fieldTitle.normalize().trim(),
+			topics: fieldTopics
+				.map((topic) => topic.trim().normalize())
+				.filter((topic) => topic.length > 0),
 			route: fieldRoute,
 		};
 
-		onSubmit(formData);
+		slotProps.submitButton.onClick(formData);
 	};
-
-	const shouldLockRoute =
-		initFormData.route !== null;
 
 	const isTimeInvalid =
 		Number.isNaN(fieldTime.hour()) ||
@@ -142,8 +134,7 @@ export const PickupRouteReportForm: FC<
 			label: "สายรถ",
 			value: (
 				<PickupRouteInputSelect
-					isDisabled={shouldLockRoute}
-					options={routeOptions}
+					isDisabled={lockRoute}
 					value={fieldRoute}
 					onChange={setFieldRoute}
 				/>
@@ -177,7 +168,6 @@ export const PickupRouteReportForm: FC<
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
 				<BaseInputTopicComboBox
-					options={topicOptions}
 					value={fieldTopics}
 					onChange={setFieldTopics}
 				/>
@@ -196,7 +186,7 @@ export const PickupRouteReportForm: FC<
 					label: slotProps.submitButton.label,
 				},
 				cancelButton: {
-					onClick: onCancel,
+					onClick: slotProps.cancelButton.onClick,
 				},
 			}}
 		>

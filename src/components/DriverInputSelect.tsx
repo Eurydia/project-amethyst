@@ -1,3 +1,4 @@
+import { getDriverAll } from "$backend/database/get";
 import { filterItems } from "$core/filter";
 import { DriverModel } from "$types/models/Driver";
 import { LockRounded } from "@mui/icons-material";
@@ -5,7 +6,6 @@ import {
 	Autocomplete,
 	AutocompleteRenderInputParams,
 	FilterOptionsState,
-	InputAdornment,
 	ListItem,
 	ListItemText,
 	TextField,
@@ -14,6 +14,7 @@ import {
 	FC,
 	HTMLAttributes,
 	useEffect,
+	useState,
 } from "react";
 
 const filterOptions = (
@@ -33,70 +34,72 @@ const renderOption = (
 	},
 	option: DriverModel,
 ) => {
+	const { key, ...rest } = props;
+	const contact =
+		option.contact.trim().length > 0
+			? `(${option.contact})`
+			: "";
 	return (
-		<ListItem {...props}>
+		<ListItem
+			key={key}
+			{...rest}
+		>
 			<ListItemText>
-				{`${option.name} ${option.surname} (${option.contact})`}
+				{`${option.name} ${option.surname} ${contact}`}
 			</ListItemText>
 		</ListItem>
 	);
 };
 
-const renderInput = ({
-	InputProps,
-	disabled,
-	...rest
-}: AutocompleteRenderInputParams) => (
+const renderInput = (
+	props: AutocompleteRenderInputParams,
+) => (
 	<TextField
-		{...rest}
+		{...props}
 		required
 		placeholder="ค้นหาด้วยชื่อ, นามสกุล, หรือเบอร์ติดต่อ"
-		slotProps={{
-			input: {
-				...InputProps,
-				endAdornment: (
-					<InputAdornment position="end">
-						{disabled ? (
-							<LockRounded />
-						) : (
-							InputProps.endAdornment
-						)}
-					</InputAdornment>
-				),
-			},
-		}}
 	/>
 );
 
 type DriverInputSelectProps = {
 	isDisabled?: boolean;
-	options: DriverModel[];
-	value: DriverModel | null;
+	value: DriverModel;
 	onChange: (value: DriverModel) => void;
 };
 export const DriverInputSelect: FC<
 	DriverInputSelectProps
 > = (props) => {
-	const { options, value, onChange, isDisabled } =
-		props;
+	const { value, onChange, isDisabled } = props;
+	const [options, setOptions] = useState<
+		readonly DriverModel[]
+	>([]);
 
 	useEffect(() => {
-		if (value === null && options.length > 0) {
-			onChange(options[0]);
-		}
+		(async () => {
+			const drivers = await getDriverAll();
+			setOptions(drivers);
+		})();
 	}, []);
 
 	return (
 		<Autocomplete
 			disabled={isDisabled}
+			popupIcon={
+				isDisabled ? <LockRounded /> : undefined
+			}
+			disableClearable
+			disableListWrap
+			disablePortal
+			noOptionsText="ไม่พบคนขับรถ"
+			value={value}
+			options={options}
 			onChange={(_, value) => {
 				if (value === null) {
 					return;
 				}
 				onChange(value);
 			}}
-			value={value}
-			options={options}
+			groupBy={(option) => option.license_type}
 			getOptionKey={(option) => option.id}
 			getOptionLabel={(option) =>
 				`${option.name} ${option.surname}`

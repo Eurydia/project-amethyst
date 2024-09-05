@@ -1,38 +1,44 @@
-import {
-	getPickupRouteAll,
-	getTopicAll,
-} from "$backend/database/get";
+import { getPickupRoute } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import {
 	PickupRouteModel,
 	PickupRouteReportFormData,
 } from "$types/models/PickupRoute";
 import dayjs from "dayjs";
-import { LoaderFunction } from "react-router-dom";
+import {
+	json,
+	LoaderFunction,
+} from "react-router-dom";
 
 export type NewPageLoaderData = {
-	routeOptions: PickupRouteModel[];
-	topicOptions: string[];
+	route: PickupRouteModel;
 	initFormData: PickupRouteReportFormData;
 };
 export const newPageLoader: LoaderFunction =
 	async () => {
-		const topicOptions = await getTopicAll();
-		const routeOptions =
-			await getPickupRouteAll();
+		const route = await getPickupRoute(1);
+		if (route === null) {
+			throw json(
+				{
+					message:
+						TRANSLATION.errorNoPickupRouteInDatabase,
+				},
+				{ status: 400 },
+			);
+		}
 
 		const initFormData: PickupRouteReportFormData =
 			{
 				datetime: dayjs().format(),
 				content: "",
 				title: "",
-				route: null,
+				route,
 				topics: [],
 			};
 
 		const loaderData: NewPageLoaderData = {
 			initFormData,
-			topicOptions,
-			routeOptions,
+			route,
 		};
 
 		return loaderData;

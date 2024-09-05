@@ -1,28 +1,21 @@
 import {
 	getPickupRoute,
 	getPickupRouteReportGeneral,
-	getTopicAll,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import {
-	PickupRouteModel,
-	PickupRouteReportFormData,
-} from "$types/models/PickupRoute";
+import { PickupRouteReportFormData } from "$types/models/PickupRoute";
 import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
 
 export type InfoEditPageLoaderData = {
-	reportId: string;
-	topicOptions: string[];
-	routeOptions: PickupRouteModel[];
+	reportId: number;
 	initFormData: PickupRouteReportFormData;
 };
 export const infoEditPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { reportId } = params;
-		if (reportId === undefined) {
+		if (params.reportId === undefined) {
 			throw json(
 				{
 					message:
@@ -31,10 +24,11 @@ export const infoEditPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
+		const reportId = Number.parseInt(
+			params.reportId,
+		);
 		const report =
-			await getPickupRouteReportGeneral(
-				Number.parseInt(reportId),
-			);
+			await getPickupRouteReportGeneral(reportId);
 		if (report === null) {
 			throw json(
 				{
@@ -56,8 +50,6 @@ export const infoEditPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-		const topicOptions = await getTopicAll();
-		const routeOptions = [route];
 		const initFormData: PickupRouteReportFormData =
 			{
 				content: report.content,
@@ -68,13 +60,12 @@ export const infoEditPageLoader: LoaderFunction =
 					.split(",")
 					.map((topic) => topic.trim())
 					.filter((topic) => topic.length > 0),
+
 				route,
 			};
 
 		const loaderData: InfoEditPageLoaderData = {
 			reportId,
-			routeOptions,
-			topicOptions,
 			initFormData,
 		};
 

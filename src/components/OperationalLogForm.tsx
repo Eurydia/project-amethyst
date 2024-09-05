@@ -1,7 +1,4 @@
-import { DriverModel } from "$types/models/Driver";
 import { OperationalLogFormData } from "$types/models/OperatonalLog";
-import { PickupRouteModel } from "$types/models/PickupRoute";
-import { VehicleModel } from "$types/models/Vehicle";
 import { AddRounded } from "@mui/icons-material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -12,28 +9,22 @@ import { PickupRouteInputSelect } from "./PickupRouteInputSelect";
 import { VehicleInputSelect } from "./VehicleInputSelect";
 
 type OperationalLogFormProps = {
-	shouldLockDriver?: boolean;
-	shouldLockRoute?: boolean;
-	shouldLockVehicle?: boolean;
+	lockDriver?: boolean;
+	lockRoute?: boolean;
+	lockVehicle?: boolean;
 	initFormData: OperationalLogFormData;
 	onSubmit: (
 		formData: OperationalLogFormData,
 	) => void;
 	onCancel: () => void;
-	vehicleOptions: VehicleModel[];
-	driverOptions: DriverModel[];
-	routeOptions: PickupRouteModel[];
 };
 export const OperationalLogForm: FC<
 	OperationalLogFormProps
 > = (props) => {
 	const {
-		shouldLockDriver,
-		shouldLockRoute,
-		shouldLockVehicle,
-		driverOptions,
-		routeOptions,
-		vehicleOptions,
+		lockDriver,
+		lockRoute,
+		lockVehicle,
 		initFormData,
 		onCancel,
 		onSubmit,
@@ -128,9 +119,8 @@ export const OperationalLogForm: FC<
 			label: "คนขับรถ",
 			value: (
 				<DriverInputSelect
-					options={driverOptions}
+					isDisabled={lockDriver}
 					value={fieldDriver}
-					isDisabled={shouldLockDriver}
 					onChange={setFieldDriver}
 				/>
 			),
@@ -139,8 +129,7 @@ export const OperationalLogForm: FC<
 			label: "รถรับส่ง",
 			value: (
 				<VehicleInputSelect
-					options={vehicleOptions}
-					isDisabled={shouldLockRoute}
+					isDisabled={lockVehicle}
 					onChange={setFieldVehicle}
 					value={fieldVehicle}
 				/>
@@ -151,9 +140,8 @@ export const OperationalLogForm: FC<
 			value: (
 				<PickupRouteInputSelect
 					onChange={setFieldRoute}
-					options={routeOptions}
 					value={fieldRoute}
-					isDisabled={shouldLockVehicle}
+					isDisabled={lockRoute}
 				/>
 			),
 		},
@@ -163,10 +151,10 @@ export const OperationalLogForm: FC<
 		<BaseForm
 			slotProps={{
 				submitButton: {
-					disabled: isFormIncomplete,
-					onClick: handleSubmit,
 					label: "ลงบันทึก",
 					startIcon: <AddRounded />,
+					disabled: isFormIncomplete,
+					onClick: handleSubmit,
 				},
 				cancelButton: {
 					onClick: onCancel,

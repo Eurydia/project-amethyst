@@ -23,6 +23,11 @@ let theme = createTheme(
 					},
 				},
 			},
+			MuiTextField: {
+				defaultProps: {
+					autoComplete: "off",
+				},
+			},
 		},
 	},
 	thTH,

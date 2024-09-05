@@ -1,3 +1,5 @@
+import { SnakeCaseToCamelCase } from "$types/generics";
+
 //#region Vehicle
 export type VehicleModel = {
 	id: number;
@@ -8,14 +10,8 @@ export type VehicleModel = {
 	registered_city: string;
 };
 
-export type Vehicle = {
-	id: number;
-
-	licensePlate: string;
-	registeredCity: string;
-	vehicleClass: string;
-	vendor: string;
-};
+export type VehicleFormData =
+	SnakeCaseToCamelCase<Omit<VehicleModel, "id">>;
 
 export type VehicleEntry = {
 	id: number;
@@ -33,12 +29,6 @@ export type VehicleEntry = {
 	}[];
 };
 
-export type VehicleFormData = {
-	licensePlate: string;
-	vendor: string;
-	vehicleClass: string;
-	registeredCity: string;
-};
 //#endregion
 
 //#region General Report
@@ -50,17 +40,6 @@ export type VehicleReportGeneralModel = {
 	topics: string;
 
 	vehicle_id: number;
-};
-
-export type VehicleReportGeneral = {
-	id: number;
-	datetime: string;
-	title: string;
-	content: string;
-	topics: string[];
-
-	vehicleId: number;
-	vehicleLicensePlate: string;
 };
 
 export type VehicleReportGeneralFormData = {
@@ -101,29 +80,6 @@ export type VehicleReportInspectionModel = {
 	frame: string;
 	rearview_mirror: string;
 	sideview_mirror: string;
-	tires: string;
-};
-
-export type VehicleReportInspection = {
-	id: number;
-	datetime: string;
-	content: string;
-	topics: string[];
-	vehicleId: number;
-	vehicleLicensePlate: string;
-	inspectionRoundNumber: string;
-
-	frontCamera: string;
-	overheadFan: string;
-	windows: string;
-	frame: string;
-	seatbelts: string;
-	seats: string;
-	headlights: string;
-	turnSignals: string;
-	brakeLights: string;
-	rearviewMirror: string;
-	sideviewMirror: string;
 	tires: string;
 };
 

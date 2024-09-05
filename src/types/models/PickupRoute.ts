@@ -60,7 +60,7 @@ export type PickupRouteFormData = {
 };
 
 export type PickupRouteReportFormData = {
-	route: PickupRouteModel | null;
+	route: PickupRouteModel;
 	datetime: string;
 	title: string;
 	content: string;

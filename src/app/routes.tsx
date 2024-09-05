@@ -16,13 +16,6 @@ import { MainView } from "$views/MainView";
 import { createBrowserRouter } from "react-router-dom";
 
 export const routes = createBrowserRouter([
-	// {
-	// 	path: "images/:image",
-	// 	element: <Image />,
-	// 	loader: ({ params }) => {
-	// 		return params;
-	// 	},
-	// },
 	{
 		path: "/",
 		element: <MainView />,

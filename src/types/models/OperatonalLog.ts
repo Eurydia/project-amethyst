@@ -8,8 +8,8 @@ export type OperationalLogModel = {
 	vehicle_id: number;
 	route_id: number;
 
-	start_date: string | null;
-	end_date: string | null;
+	start_date: string;
+	end_date: string;
 };
 
 export type OperationalLogEntry = {
@@ -24,8 +24,8 @@ export type OperationalLogEntry = {
 	routeId: number;
 	routeName: string;
 
-	startDate: string | null;
-	endDate: string | null;
+	startDate: string;
+	endDate: string;
 };
 
 export type OperationalLogFormData = {

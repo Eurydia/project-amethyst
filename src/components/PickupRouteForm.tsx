@@ -22,33 +22,24 @@ export const PickupRouteForm: FC<
 	PickupRouteFormProps
 > = (props) => {
 	const {
-		initFormData: {
-			arrivalTime,
-			departureTime,
-			name,
-		},
+		initFormData,
 		slotProps,
 		onCancel,
 		onSubmit,
 	} = props;
 
-	const [fieldName, setFieldName] =
-		useState(name);
+	const [fieldName, setFieldName] = useState(
+		initFormData.name,
+	);
 	const [fieldArrivalTime, setFieldArrivalTime] =
 		useState(
-			arrivalTime.length === 0
-				? dayjs().startOf("day")
-				: dayjs(arrivalTime, "HH:mm"),
+			dayjs(initFormData.arrivalTime, "HH:mm"),
 		);
 	const [
 		fieldDepartureTime,
 		setFieldDepartureTime,
 	] = useState(
-		dayjs(
-			departureTime.length === 0
-				? dayjs().startOf("day")
-				: dayjs(departureTime, "HH:mm"),
-		),
+		dayjs(initFormData.departureTime, "HH:mm"),
 	);
 
 	const handleSubmit = () => {
@@ -70,10 +61,10 @@ export const PickupRouteForm: FC<
 	const isFieldDepartureTimeIncomplete =
 		Number.isNaN(fieldDepartureTime.hour()) ||
 		Number.isNaN(fieldDepartureTime.minute());
-	const isFieldNameIncomplete =
+	const isMissingName =
 		fieldName.trim().normalize() === "";
 	const isFormIncomplete =
-		isFieldNameIncomplete ||
+		isMissingName ||
 		isFieldArrivalTimeIncomplete ||
 		isFieldDepartureTimeIncomplete;
 
@@ -86,9 +77,9 @@ export const PickupRouteForm: FC<
 			value: (
 				<BaseInputTextField
 					shouldAutoFocus
-					isError={isFieldNameIncomplete}
+					isError={isMissingName}
 					value={fieldName}
-					placeholder={name}
+					placeholder={initFormData.name}
 					onChange={setFieldName}
 				/>
 			),

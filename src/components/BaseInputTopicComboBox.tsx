@@ -1,3 +1,4 @@
+import { getTopicAll } from "$backend/database/get";
 import { filterItems } from "$core/filter";
 import {
 	Checkbox,
@@ -11,7 +12,12 @@ import {
 	Toolbar,
 	Typography,
 } from "@mui/material";
-import { FC, useMemo, useState } from "react";
+import {
+	FC,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 
 type CustomListItemProps = {
 	label: string;
@@ -41,6 +47,8 @@ const CustomListItem: FC<CustomListItemProps> = (
 				<ListItemIcon>
 					<Checkbox
 						disableRipple
+						disableFocusRipple
+						disableTouchRipple
 						checked={isChecked}
 					/>
 				</ListItemIcon>
@@ -175,16 +183,25 @@ const filterOptions = (
 };
 
 type BaseInputTopicComboBoxProps = {
-	options: string[];
 	value: string[];
 	onChange: (value: string[]) => void;
 };
 export const BaseInputTopicComboBox: FC<
 	BaseInputTopicComboBoxProps
 > = (props) => {
-	const { options, value, onChange } = props;
+	const { value, onChange } = props;
 
 	const [search, setSearch] = useState("");
+	const [options, setOptions] = useState<
+		string[]
+	>([]);
+
+	useEffect(() => {
+		(async () => {
+			const topics = await getTopicAll();
+			setOptions(topics);
+		})();
+	}, []);
 
 	const filteredOptions = useMemo(
 		() => filterOptions(options, value, search),

@@ -47,14 +47,15 @@ export const putDriverReportMedical = async (
 
 //#region Pickup Route
 export const putPickupRoute = async (
-	model: PickupRouteModel,
-) => invoke("put_pickup_route", { model });
+	route: PickupRouteModel,
+) => invoke("put_pickup_route", route);
 export const putPickupRouteReportGeneral = async (
 	report: PickupRouteReportModel,
 ) =>
-	invoke("put_pickup_route_report_general", {
+	invoke(
+		"put_pickup_route_report_general",
 		report,
-	});
+	);
 //#endregion
 
 //#region Vehicle

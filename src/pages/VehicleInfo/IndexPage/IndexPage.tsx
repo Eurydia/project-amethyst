@@ -32,7 +32,6 @@ const TOC_ITEMS: {
 
 export const IndexPage: FC = () => {
 	const {
-		logEntries,
 		generalEntries,
 		inspectionEntries,
 		vehicle,
@@ -61,7 +60,7 @@ export const IndexPage: FC = () => {
 				ตารางบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogTable
-				entries={logEntries}
+				vehicle={vehicle}
 				slotProps={{
 					addButton: {
 						onClick: () =>

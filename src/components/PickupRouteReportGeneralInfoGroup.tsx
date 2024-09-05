@@ -8,11 +8,11 @@ import {
 } from "react-router-dom";
 import { BaseInfoGroup } from "./BaseInfoGroup";
 
-type PickupRouteReportDetailsProps = {
+type PickupRouteReportGeneralInfoGroupProps = {
 	report: PickupRouteReport;
 };
-export const PickupRouteReportDetails: FC<
-	PickupRouteReportDetailsProps
+export const PickupRouteReportGeneralInfoGroup: FC<
+	PickupRouteReportGeneralInfoGroupProps
 > = (props) => {
 	const { report } = props;
 	const submit = useSubmit();

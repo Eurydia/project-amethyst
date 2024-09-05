@@ -1,4 +1,4 @@
-import { PickupRouteReportDetails } from "$components/PickupRouteReportDetails";
+import { PickupRouteReportGeneralInfoGroup } from "$components/PickupRouteReportGeneralInfoGroup";
 import { Stack, Typography } from "@mui/material";
 import "dayjs/locale/th";
 import { FC } from "react";
@@ -14,7 +14,9 @@ export const InfoPage: FC = () => {
 			<Typography variant="h1">
 				เรื่องร้องเรียนสายรถ
 			</Typography>
-			<PickupRouteReportDetails report={report} />
+			<PickupRouteReportGeneralInfoGroup
+				report={report}
+			/>
 		</Stack>
 	);
 };

@@ -13,23 +13,16 @@ import { toast } from "react-toastify";
 import { InfoEditPageLoaderData } from "./loader";
 
 export const InfoEditPage: FC = () => {
-	const {
-		reportId,
-		initFormData,
-		routeOptions,
-		topicOptions,
-	} = useLoaderData() as InfoEditPageLoaderData;
+	const { initFormData, reportId } =
+		useLoaderData() as InfoEditPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = (
 		formData: PickupRouteReportFormData,
 	) => {
-		if (formData.route === null) {
-			return;
-		}
 		putPickupRouteReportGeneral({
+			id: reportId,
 			content: formData.content,
-			id: Number.parseInt(reportId),
 			datetime: formData.datetime,
 			route_id: formData.route.id,
 			title: formData.title,
@@ -37,14 +30,16 @@ export const InfoEditPage: FC = () => {
 		})
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
-				() => toast.error("แก้ไขล้มเหลว"),
+				() => {
+					toast.error("แก้ไขล้มเหลว");
+				},
 			)
 			.finally(() =>
 				submit(
 					{},
 					{
 						action:
-							"/pickup-route/report/general/info/" +
+							"/pickup-routes/report/general/info/" +
 							reportId,
 					},
 				),
@@ -57,24 +52,25 @@ export const InfoEditPage: FC = () => {
 				แก้ไขเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportForm
-				routeOptions={routeOptions}
-				topicOptions={topicOptions}
+				lockRoute
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() => {
-					submit(
-						{},
-						{
-							action:
-								"/pickup-route/report/general/info/" +
-								reportId,
-						},
-					);
-				}}
 				slotProps={{
 					submitButton: {
+						onClick: handleSubmit,
 						startIcon: <SaveRounded />,
 						label: "บันทึก",
+					},
+					cancelButton: {
+						onClick: () => {
+							submit(
+								{},
+								{
+									action:
+										"/pickup-route/report/general/info/" +
+										reportId,
+								},
+							);
+						},
 					},
 				}}
 			/>

@@ -20,14 +20,17 @@ export const EditPage: FC = () => {
 		formData: PickupRouteFormData,
 	) => {
 		putPickupRoute({
+			id: routeId,
 			arrival_time: formData.arrivalTime,
 			departure_time: formData.departureTime,
 			name: formData.name,
-			id: Number.parseInt(routeId),
 		})
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
-				() => toast.error("แก้ไขล้มเหลว"),
+				(err) => {
+					console.log(err);
+					toast.error("แก้ไขล้มเหลว");
+				},
 			)
 			.finally(() =>
 				submit(

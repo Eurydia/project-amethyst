@@ -1,6 +1,6 @@
 macro_rules! get_one {
-    ($table_name:expr, $id:expr, $db:expr) => {
-        match sqlx::query_as(
+    ($table_name:expr, $id:expr, $db:expr) => {{
+        let query = sqlx::query_as(
             format!(
                 r#"
                 SELECT * FROM {}
@@ -12,17 +12,18 @@ macro_rules! get_one {
         )
         .bind($id)
         .fetch_optional(&$db)
-        .await
-        {
+        .await;
+
+        match query {
             Ok(entry) => Ok(entry),
             Err(_) => Ok(None),
         }
-    };
+    }};
 }
 
 macro_rules! get_all {
-    ($table_name:expr, $db:expr) => {
-        match sqlx::query_as(
+    ($table_name:expr, $db:expr) => {{
+        let query = sqlx::query_as(
             format!(
                 r#"
                 SELECT * FROM {}
@@ -34,47 +35,100 @@ macro_rules! get_all {
         )
         .bind($table_name)
         .fetch_all(&$db)
-        .await
-        {
+        .await;
+
+        match query {
             Ok(entries) => Ok(entries),
-            Err(err) => {
-                dbg!(err);
-                Ok(Vec::new())
-            }
+            Err(_) => Ok(Vec::new()),
         }
-    };
+    }};
 }
 
 #[tauri::command]
 pub async fn get_topic_all(
-    _: tauri::AppHandle,
+    handle: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
 ) -> Result<Vec<String>, &'static str> {
-    let topics: Vec<(String,)> = match sqlx::query_as(
-        r#"
-            SELECT topics FROM driver_general_reports
-            UNION ALL
-            SELECT topics FROM driever_medical_reports
-            UNION ALL
-            SELECT topics FROM vehicle_general_reports
-            UNION ALL
-            SELECT topics FROM vehicle_inspection_reports
-            UNION ALL
-            SELECT topics FROM pickup_route_general_reports;
-        "#,
-    )
-    .fetch_all(&state.db)
-    .await
-    {
-        Ok(topics) => topics,
-        Err(_) => return Ok(Vec::new()),
-    };
     let mut unique_topics = std::collections::HashSet::<String>::new();
-    for (topic,) in topics {
-        unique_topics.insert(topic);
-    }
+
+    match get_driver_report_general_all(handle.clone(), state.clone()).await {
+        Ok(entries) => {
+            for entry in entries {
+                let topics = entry.topics.split(",").filter(|x| !x.is_empty());
+                for topic in topics {
+                    unique_topics.insert(topic.to_string());
+                }
+            }
+        }
+        Err(_) => (),
+    };
+
+    match get_driver_report_medical_all(handle.clone(), state.clone()).await {
+        Ok(entries) => {
+            for entry in entries {
+                let topics = entry.topics.split(",").filter(|x| !x.is_empty());
+                for topic in topics {
+                    unique_topics.insert(topic.to_string());
+                }
+            }
+        }
+        Err(_) => (),
+    };
+
+    match get_vehicle_report_general_all(handle.clone(), state.clone()).await {
+        Ok(entries) => {
+            for entry in entries {
+                let topics = entry.topics.split(",").filter(|x| !x.is_empty());
+                for topic in topics {
+                    unique_topics.insert(topic.to_string());
+                }
+            }
+        }
+        Err(_) => (),
+    };
+
+    match get_vehicle_report_inspection_all(handle.clone(), state.clone()).await {
+        Ok(entries) => {
+            for entry in entries {
+                let topics = entry.topics.split(",").filter(|x| !x.is_empty());
+                for topic in topics {
+                    unique_topics.insert(topic.to_string());
+                }
+            }
+        }
+        Err(_) => (),
+    };
+
+    match get_pickup_route_report_general_all(handle.clone(), state.clone()).await {
+        Ok(entries) => {
+            for entry in entries {
+                let topics = entry.topics.split(",").filter(|x| !x.is_empty());
+                for topic in topics {
+                    unique_topics.insert(topic.to_string());
+                }
+            }
+        }
+        Err(_) => (),
+    };
 
     Ok(unique_topics.into_iter().collect())
+
+    // let query = sqlx::query(
+    //     r#"
+    //         SELECT topics FROM driver_general_reports
+    //         UNION ALL
+    //         SELECT topics FROM driver_medical_reports
+    //         UNION ALL
+    //         SELECT topics FROM vehicle_general_reports
+    //         UNION ALL
+    //         SELECT topics FROM vehicle_inspection_reports
+    //         UNION ALL
+    //         SELECT topics FROM pickup_route_general_reports;
+    //         UNION ALL
+    //     "#,
+    // )
+    // .fetch(&state.db)
+    // .await;
 }
 
 #[tauri::command]
@@ -90,22 +144,21 @@ pub async fn get_operational_log_today(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
 ) -> Result<Vec<super::models::OperationalLogModel>, &'static str> {
-    let entires = match sqlx::query_as(
+    let query = sqlx::query_as(
         r#"
             SELECT * FROM operational_logs
-            WHERE (start_date = '' OR DATE(start_date) <= DATE('now'))
-            AND (end_date = '' OR DATE(end_date) >= DATE('now'))
+            WHERE DATE(start_date, 'localtime') <= DATE('now', 'localtime')
+            AND DATE(end_date, 'localtime') >= DATE('now', 'localtime')
             ORDER BY id DESC;
         "#,
     )
     .fetch_all(&state.db)
-    .await
-    {
-        Ok(entries) => entries,
-        Err(_) => return Ok(Vec::new()),
-    };
+    .await;
 
-    Ok(entires)
+    match query {
+        Ok(entries) => Ok(entries),
+        Err(_) => Ok(Vec::new()),
+    }
 }
 
 #[tauri::command]
@@ -150,7 +203,7 @@ pub async fn get_driver_report_medical_all(
     get_all!("driver_medical_reports", state.db)
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn get_driver_report_medical(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -175,6 +228,7 @@ pub async fn get_vehicle(
 ) -> Result<Option<super::models::VehicleModel>, &'static str> {
     get_one!("vehicles", vehicle_id, state.db)
 }
+
 #[tauri::command]
 pub async fn get_vehicle_report_general_all(
     _: tauri::AppHandle,
@@ -182,7 +236,7 @@ pub async fn get_vehicle_report_general_all(
 ) -> Result<Vec<super::models::VehicleReportGeneralModel>, &'static str> {
     get_all!("vehicle_general_reports", state.db)
 }
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn get_vehicle_report_general(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -197,7 +251,7 @@ pub async fn get_vehicle_report_inspection_all(
 ) -> Result<Vec<super::models::VehicleReportInspectionModel>, &'static str> {
     get_all!("vehicle_inspection_reports", state.db)
 }
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn get_vehicle_report_inspection(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -228,7 +282,7 @@ pub async fn get_pickup_route_report_general_all(
 ) -> Result<Vec<super::models::PickupRouteReportModel>, &'static str> {
     get_all!("pickup_route_general_reports", state.db)
 }
-#[tauri::command]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn get_pickup_route_report_general(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -250,7 +304,7 @@ pub async fn get_attendance_log_today(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
 ) -> Result<Vec<super::models::AttendanceLogModel>, &'static str> {
-    match sqlx::query_as(
+    let query = sqlx::query_as(
         r#"
             SELECT * 
             FROM attendance_logs
@@ -259,12 +313,9 @@ pub async fn get_attendance_log_today(
         "#,
     )
     .fetch_all(&state.db)
-    .await
-    {
+    .await;
+    match query {
         Ok(entries) => Ok(entries),
-        Err(err) => {
-            dbg!(err);
-            Ok(Vec::new())
-        }
+        Err(_) => Ok(Vec::new()),
     }
 }

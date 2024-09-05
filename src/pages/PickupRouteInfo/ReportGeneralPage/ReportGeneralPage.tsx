@@ -12,12 +12,7 @@ import { toast } from "react-toastify";
 import { ReportGeneralPageLoaderData } from "./loader";
 
 export const ReportGeneralPage: FC = () => {
-	const {
-		topicOptions,
-		initFormData,
-		routeOptions,
-		routeId,
-	} =
+	const { initFormData } =
 		useLoaderData() as ReportGeneralPageLoaderData;
 
 	const submit = useSubmit();
@@ -25,31 +20,25 @@ export const ReportGeneralPage: FC = () => {
 	const handleSubmit = async (
 		formData: PickupRouteReportFormData,
 	) => {
-		postPickupRouteReportGeneral({
-			content: formData.content,
-			route_id: Number.parseInt(routeId),
-			datetime: formData.datetime,
-			title: formData.title,
-			topics: formData.topics.join(","),
-		}).then(
+		postPickupRouteReportGeneral(formData).then(
 			(reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(
 					{},
 					{
 						action:
-							"/pickup-route/report/general/info" +
+							"/pickup-routes/report/general/info/" +
 							reportId,
 					},
 				);
 			},
 			() => {
-				toast.error("ลงบันทึกล้มเหลว");
 				submit(
 					{},
 					{
 						action:
-							"/pickup-route/info/" + routeId,
+							"/pickup-routes/info/" +
+							initFormData.route.id,
 					},
 				);
 			},
@@ -62,23 +51,24 @@ export const ReportGeneralPage: FC = () => {
 				ลงบันทึกเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportForm
-				routeOptions={routeOptions}
-				topicOptions={topicOptions}
+				lockRoute
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action:
-								"/pickup-routes/info/" + routeId,
-						},
-					)
-				}
 				slotProps={{
 					submitButton: {
 						label: "ลงบันทึก",
 						startIcon: <AddRounded />,
+						onClick: handleSubmit,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/pickup-routes/info/" +
+										initFormData.route.id,
+								},
+							),
 					},
 				}}
 			/>

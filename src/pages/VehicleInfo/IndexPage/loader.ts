@@ -21,12 +21,6 @@ import {
 	VehicleReportInspectionModel,
 } from "$types/models/Vehicle";
 import {
-	BaseDirectory,
-	readDir,
-} from "@tauri-apps/api/fs";
-import { join } from "@tauri-apps/api/path";
-import { convertFileSrc } from "@tauri-apps/api/tauri";
-import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
@@ -166,35 +160,6 @@ const logToEntries = (
 		entries.push(entry);
 	}
 	return entries;
-};
-
-const getImages = async (vehicleId: number) => {
-	const dirPath = await join(
-		"vehicles",
-		vehicleId.toString(),
-		"images",
-	);
-	const files = await readDir(dirPath, {
-		dir: BaseDirectory.AppData,
-	}).then(
-		(files) => files,
-		() => [],
-	);
-
-	const images: {
-		src: string;
-		fileName: string;
-	}[] = [];
-	for (const file of files) {
-		if (file.name === undefined) {
-			continue;
-		}
-		images.push({
-			fileName: file.name,
-			src: convertFileSrc(file.path),
-		});
-	}
-	return images;
 };
 
 export type IndexPageLoaderData = {

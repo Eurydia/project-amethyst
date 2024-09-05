@@ -7,13 +7,12 @@ import {
 } from "react-router-dom";
 
 export type EditPageLoaderData = {
-	routeId: string;
+	routeId: number;
 	initFormData: PickupRouteFormData;
 };
 export const editPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { routeId } = params;
-		if (routeId === undefined) {
+		if (params.routeId === undefined) {
 			throw json(
 				{
 					message:
@@ -22,9 +21,10 @@ export const editPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const route = await getPickupRoute(
-			Number.parseInt(routeId),
+		const routeId = Number.parseInt(
+			params.routeId,
 		);
+		const route = await getPickupRoute(routeId);
 		if (route === null) {
 			throw json(
 				{

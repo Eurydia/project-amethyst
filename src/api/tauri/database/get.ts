@@ -16,12 +16,9 @@ import {
 import { invoke } from "@tauri-apps/api/tauri";
 
 //#region Topics
-export const getTopicAll = async () => {
-	const items: string[] = await invoke(
-		"get_topic_all",
-	);
-	return items;
-};
+export const getTopicAll =
+	async (): Promise<string> =>
+		invoke("get_topic_all");
 //#endregion
 
 //#region Operational Log
@@ -43,6 +40,12 @@ export const getOperationLogToday = async () => {
 export const getDriverAll = async () => {
 	const entries: DriverModel[] = await invoke(
 		"get_driver_all",
+	).then(
+		(ok) => ok as DriverModel[],
+		(err) => {
+			console.error(err);
+			return [];
+		},
 	);
 	return entries;
 };
@@ -50,9 +53,11 @@ export const getDriverAll = async () => {
 export const getDriver = async (
 	driverId: number,
 ) => {
-	const entry: DriverModel | null = await invoke(
-		"get_driver",
-		{ driverId },
+	const entry = await invoke("get_driver", {
+		driverId,
+	}).then(
+		(ok) => ok as DriverModel | null,
+		() => null,
 	);
 
 	return entry;
@@ -198,7 +203,7 @@ export const getPickupRouteReportGeneral = async (
 		await invoke(
 			"get_pickup_route_report_general",
 			{
-				report_id: reportId,
+				reportId,
 			},
 		);
 	return entry;

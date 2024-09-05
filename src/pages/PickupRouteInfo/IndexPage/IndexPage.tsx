@@ -2,6 +2,7 @@ import { BaseTOC } from "$components/BaseTOC";
 import { OperationalLogTable } from "$components/OperationalLogTable";
 import { PickupRouteDetails } from "$components/PickupRouteDetails";
 import { PickupRouteReportGeneralTable } from "$components/PickupRouteReportGeneralTable";
+import { TRANSLATION } from "$locale/th";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -19,7 +20,7 @@ const TOC_ITEMS: {
 		href: "#info",
 	},
 	{
-		label: "ตารางบันทึกประวัติการเดินรถ",
+		label: TRANSLATION.operationalLogTable,
 		href: "#operational-log",
 	},
 	{
@@ -29,7 +30,7 @@ const TOC_ITEMS: {
 ];
 
 export const IndexPage: FC = () => {
-	const { route, logEntries, generalEntries } =
+	const { route } =
 		useLoaderData() as IndexPageLoaderData;
 
 	const submit = useSubmit();
@@ -48,10 +49,10 @@ export const IndexPage: FC = () => {
 				variant="h2"
 				id="operational-log"
 			>
-				ตารางบันทึกประวัติการเดินรถ
+				{TRANSLATION.operationalLogTable}
 			</Typography>
 			<OperationalLogTable
-				entries={logEntries}
+				route={route}
 				slotProps={{
 					addButton: {
 						onClick: () =>
@@ -69,7 +70,7 @@ export const IndexPage: FC = () => {
 				ตารางบันทึกเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportGeneralTable
-				entries={generalEntries}
+				route={route}
 				slotProps={{
 					addButton: {
 						onClick: () =>

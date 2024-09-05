@@ -40,17 +40,6 @@ export type DriverReportModel = {
 	content: string;
 	topics: string;
 };
-export type DriverReport = {
-	id: number;
-	driverId: number;
-	driverName: string;
-	driverSurname: string;
-
-	datetime: string;
-	title: string;
-	content: string;
-	topics: string[];
-};
 export type DriverReportEntry = {
 	id: number;
 	datetime: string;

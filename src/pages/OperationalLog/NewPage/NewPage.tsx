@@ -11,32 +11,14 @@ import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
 
 export const NewPage: FC = () => {
-	const {
-		initFormData,
-		driverOptions,
-		routeOptions,
-		vehicleOptions,
-	} = useLoaderData() as NewPageLoaderData;
+	const { initFormData } =
+		useLoaderData() as NewPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = (
 		formData: OperationalLogFormData,
 	) => {
-		if (
-			formData.driver === null ||
-			formData.vehicle === null ||
-			formData.route === null
-		) {
-			return;
-		}
-
-		postOperationalLog({
-			driver_id: formData.driver.id,
-			vehicle_id: formData.vehicle.id,
-			route_id: formData.route.id,
-			end_date: formData.endDate,
-			start_date: formData.endDate,
-		})
+		postOperationalLog(formData)
 			.then(
 				() => toast.success("ลงบันทึกสำเร็จ"),
 				() => toast.error("ลงบันทึกล้มเหลว"),
@@ -63,9 +45,6 @@ export const NewPage: FC = () => {
 						{ action: "/operational-logs" },
 					)
 				}
-				driverOptions={driverOptions}
-				routeOptions={routeOptions}
-				vehicleOptions={vehicleOptions}
 			/>
 		</Stack>
 	);

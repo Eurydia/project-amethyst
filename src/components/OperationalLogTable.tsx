@@ -1,34 +1,35 @@
+import {
+	getDriver,
+	getDriverAll,
+	getOperationLogAll,
+	getPickupRoute,
+	getPickupRouteAll,
+	getVehicle,
+	getVehicleAll,
+} from "$backend/database/get";
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
-import { OperationalLogEntry } from "$types/models/OperatonalLog";
+import { DriverModel } from "$types/models/Driver";
+import {
+	OperationalLogEntry,
+	OperationalLogModel,
+} from "$types/models/OperatonalLog";
+import { PickupRouteModel } from "$types/models/PickupRoute";
+import { VehicleModel } from "$types/models/Vehicle";
 import { Typography } from "@mui/material";
 import dayjs from "dayjs";
-import {
-	FC,
-	ReactNode,
-	useMemo,
-	useState,
-} from "react";
+import { FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 import { BaseSortableTable } from "./BaseSortableTable";
 
-const compareDates = (
-	a: string | null,
-	b: string | null,
-) => {
-	if (a === null || b === null) {
-		return 0;
-	}
-	return dayjs(a).unix() - dayjs(b).unix();
-};
-
-const HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry>[] =
+const HEADER_DEFINITIONS: TableHeaderDefinition<OperationalLogEntry>[] =
 	[
 		{
-			label: "เริ่ม",
+			label: "เริ่มมีผล",
 			compare: (a, b) =>
-				compareDates(a.startDate, b.startDate),
+				dayjs(a.startDate).unix() -
+				dayjs(b.startDate).unix(),
 			render: (item) => (
 				<Typography>
 					{dayjs(item.startDate).format(
@@ -40,7 +41,8 @@ const HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry>[] =
 		{
 			label: "สิ้นสุด",
 			compare: (a, b) =>
-				compareDates(a.endDate, b.endDate),
+				dayjs(a.endDate).unix() -
+				dayjs(b.endDate).unix(),
 			render: (item) => (
 				<Typography>
 					{dayjs(item.endDate).format(
@@ -89,49 +91,60 @@ const HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry>[] =
 		},
 	];
 
-const toOptions = (
-	entries: OperationalLogEntry[],
+const getDriverOptions = async (
+	driver: DriverModel | undefined,
 ) => {
-	const drivers: Record<string, string> = {};
-	const vehicles: Record<string, string> = {};
-	const routes: Record<string, string> = {};
-
-	for (const entry of entries) {
-		drivers[
-			entry.driverId
-		] = `${entry.driverName} ${entry.driverSurname}`;
-		vehicles[entry.vehicleId] =
-			entry.vehicleLicensePlate;
-		routes[entry.routeId] = entry.routeName;
-	}
-
-	const driverOptions = Object.entries(
-		drivers,
-	).map(([value, label]) => ({ value, label }));
-	const vehicleOptions = Object.entries(
-		vehicles,
-	).map(([value, label]) => ({ value, label }));
-	const routeOptions = Object.entries(routes).map(
-		([value, label]) => ({ value, label }),
-	);
-	return {
-		driverOptions,
-		vehicleOptions,
-		routeOptions,
-	};
+	const drivers =
+		driver !== undefined
+			? [driver]
+			: await getDriverAll();
+	return drivers.map(({ name, surname, id }) => ({
+		label: `${name} ${surname}`,
+		value: id.toString(),
+	}));
 };
 
-const filterOptions = (
-	entries: OperationalLogEntry[],
-	selectedDrivers: string[],
-	selectedRoutes: string[],
-	selectedVehicles: string[],
+const getVehicleOptions = async (
+	vehicle: VehicleModel | undefined,
 ) => {
-	const routeSet = new Set(selectedRoutes);
-	const vehicleSet = new Set(selectedVehicles);
-	const driverSet = new Set(selectedDrivers);
+	const vehicles =
+		vehicle !== undefined
+			? [vehicle]
+			: await getVehicleAll();
+	return vehicles.map(
+		({ license_plate, id }) => ({
+			label: license_plate,
+			value: id.toString(),
+		}),
+	);
+};
 
-	return entries
+const getRouteOptions = async (
+	route: PickupRouteModel | undefined,
+) => {
+	const routes =
+		route !== undefined
+			? [route]
+			: await getPickupRouteAll();
+
+	return routes.map(({ id, name }) => ({
+		value: id.toString(),
+		label: name,
+	}));
+};
+
+const filterEntries = (
+	entries: OperationalLogEntry[],
+	drivers: string[],
+	routes: string[],
+	vehicles: string[],
+	search: string,
+) => {
+	const routeSet = new Set(routes);
+	const vehicleSet = new Set(vehicles);
+	const driverSet = new Set(drivers);
+
+	const filtered = entries
 		.filter((entry) =>
 			routeSet.has(entry.routeId.toString()),
 		)
@@ -141,13 +154,8 @@ const filterOptions = (
 		.filter((entry) =>
 			driverSet.has(entry.driverId.toString()),
 		);
-};
 
-const searchEntries = (
-	entries: OperationalLogEntry[],
-	search: string,
-) => {
-	return filterItems(entries, search, [
+	return filterItems(filtered, search, [
 		"driverName",
 		"driverSurname",
 		"vehicleLicensePlate",
@@ -155,11 +163,49 @@ const searchEntries = (
 	]);
 };
 
+const logToEntry = async (
+	log: OperationalLogModel,
+) => {
+	const vehicle = await getVehicle(
+		log.vehicle_id,
+	);
+	const driver = await getDriver(log.driver_id);
+	const route = await getPickupRoute(
+		log.route_id,
+	);
+
+	if (
+		vehicle === null ||
+		driver === null ||
+		route === null
+	) {
+		return null;
+	}
+
+	const entry: OperationalLogEntry = {
+		id: log.id,
+		startDate: log.start_date,
+		endDate: log.end_date,
+
+		vehicleId: vehicle.id,
+		vehicleLicensePlate: vehicle.license_plate,
+
+		driverId: driver.id,
+		driverName: driver.name,
+		driverSurname: driver.surname,
+
+		routeId: route.id,
+		routeName: route.name,
+	};
+	return entry;
+};
+
 type OperationalLogTableProps = {
-	entries: OperationalLogEntry[];
+	driver?: DriverModel;
+	vehicle?: VehicleModel;
+	route?: PickupRouteModel;
 	slotProps: {
 		addButton: {
-			disabled: boolean;
 			onClick: () => void;
 		};
 	};
@@ -167,62 +213,109 @@ type OperationalLogTableProps = {
 export const OperationalLogTable: FC<
 	OperationalLogTableProps
 > = (props) => {
-	const { entries, slotProps } = props;
+	const { slotProps, driver, route, vehicle } =
+		props;
 
-	const {
-		driverOptions,
-		vehicleOptions,
-		routeOptions,
-	} = useMemo(
-		() => toOptions(entries),
-		[entries],
-	);
+	const [entries, setEntries] = useState<
+		OperationalLogEntry[]
+	>([]);
+
+	const [driverOptions, setDriverOptions] =
+		useState<{ label: string; value: string }[]>(
+			[],
+		);
+	const [vehicleOptions, setVehicleOptions] =
+		useState<{ label: string; value: string }[]>(
+			[],
+		);
+	const [routeOptions, setRouteOptions] =
+		useState<{ label: string; value: string }[]>(
+			[],
+		);
 
 	const [search, setSearch] = useState("");
-	const [selectedRoutes, setSelectedRoutes] =
-		useState(
-			routeOptions.map(({ value }) => value),
-		);
-	const [selectedVehicles, setSelectedVehicles] =
-		useState(
-			vehicleOptions.map(({ value }) => value),
-		);
-	const [selectedDrivers, setSelectedDrivers] =
-		useState(
-			driverOptions.map(({ value }) => value),
-		);
-
-	const filteredEntries = useMemo(
-		() =>
-			filterOptions(
-				entries,
-				selectedDrivers,
-				selectedRoutes,
-				selectedVehicles,
-			),
-		[
-			entries,
-			selectedDrivers,
-			selectedVehicles,
-			selectedRoutes,
-		],
+	const [routes, setRoutes] = useState<string[]>(
+		[],
 	);
-	const searchedEntries = useMemo(
-		() => searchEntries(filteredEntries, search),
-		[search, filteredEntries],
+	const [vehicles, setVehicles] = useState<
+		string[]
+	>([]);
+	const [drivers, setDrivers] = useState<
+		string[]
+	>([]);
+
+	useEffect(() => {
+		(async () => {
+			const _driverOptions =
+				await getDriverOptions(driver);
+			const _vehicleOptions =
+				await getVehicleOptions(vehicle);
+			const _routeOptions = await getRouteOptions(
+				route,
+			);
+
+			setDriverOptions(_driverOptions);
+			setVehicleOptions(_vehicleOptions);
+			setRouteOptions(_routeOptions);
+
+			setDrivers(
+				_driverOptions.map(({ value }) => value),
+			);
+			setVehicles(
+				_vehicleOptions.map(({ value }) => value),
+			);
+			setRoutes(
+				_routeOptions.map(({ value }) => value),
+			);
+		})();
+	}, []);
+
+	useEffect(() => {
+		(async () => {
+			const logs = await getOperationLogAll();
+
+			const reqs = logs
+				.filter(
+					({ driver_id }) =>
+						driver === undefined ||
+						driver_id === driver.id,
+				)
+				.filter(
+					({ vehicle_id }) =>
+						vehicle === undefined ||
+						vehicle_id === vehicle.id,
+				)
+				.filter(
+					({ route_id }) =>
+						route === undefined ||
+						route_id === route.id,
+				)
+				.map(logToEntry);
+			const items = await Promise.all(reqs);
+			const entries = items.filter(
+				(item) => item !== null,
+			);
+			setEntries(entries);
+		})();
+	}, []);
+
+	const filteredEntries = filterEntries(
+		entries,
+		drivers,
+		routes,
+		vehicles,
+		search,
 	);
 
-	const fitlerFormItems: {
-		label: string;
-		value: ReactNode;
-	}[] = [
+	const fitlerFormItems = [
 		{
 			label: "สายรถ",
 			value: (
 				<BaseInputMultiSelect
+					isDisabled={route !== undefined}
 					options={routeOptions}
-					selectedOptions={selectedRoutes}
-					onChange={setSelectedRoutes}
+					selectedOptions={routes}
+					onChange={setRoutes}
 				/>
 			),
 		},
@@ -230,9 +323,10 @@ export const OperationalLogTable: FC<
 			label: "ทะเบียนรถ",
 			value: (
 				<BaseInputMultiSelect
+					isDisabled={vehicle !== undefined}
 					options={vehicleOptions}
-					selectedOptions={selectedVehicles}
-					onChange={setSelectedVehicles}
+					selectedOptions={vehicles}
+					onChange={setVehicles}
 				/>
 			),
 		},
@@ -240,9 +334,10 @@ export const OperationalLogTable: FC<
 			label: "คนขับรถ",
 			value: (
 				<BaseInputMultiSelect
+					isDisabled={driver !== undefined}
 					options={driverOptions}
-					selectedOptions={selectedDrivers}
-					onChange={setSelectedDrivers}
+					selectedOptions={drivers}
+					onChange={setDrivers}
 				/>
 			),
 		},
@@ -250,8 +345,8 @@ export const OperationalLogTable: FC<
 
 	return (
 		<BaseSortableTable
-			entries={searchedEntries}
-			headers={HEADER_DEFINITION}
+			entries={filteredEntries}
+			headers={HEADER_DEFINITIONS}
 			defaultSortByColumn={0}
 			defaultSortOrder="desc"
 			slotProps={{
@@ -264,7 +359,10 @@ export const OperationalLogTable: FC<
 				addButton: {
 					label: "ลงบันทึก",
 					onClick: slotProps.addButton.onClick,
-					disabled: slotProps.addButton.disabled,
+					disabled:
+						driverOptions.length === 0 ||
+						vehicleOptions.length === 0 ||
+						routeOptions.length === 0,
 				},
 			}}
 		>

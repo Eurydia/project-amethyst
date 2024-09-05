@@ -1,12 +1,6 @@
-import {
-	getPickupRoute,
-	getTopicAll,
-} from "$backend/database/get";
+import { getPickupRoute } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import {
-	PickupRouteModel,
-	PickupRouteReportFormData,
-} from "$types/models/PickupRoute";
+import { PickupRouteReportFormData } from "$types/models/PickupRoute";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import {
@@ -15,9 +9,6 @@ import {
 } from "react-router-dom";
 
 export type ReportGeneralPageLoaderData = {
-	routeId: string;
-	routeOptions: PickupRouteModel[];
-	topicOptions: string[];
 	initFormData: PickupRouteReportFormData;
 };
 export const reportGeneralPageLoader: LoaderFunction =
@@ -32,7 +23,6 @@ export const reportGeneralPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-
 		const route = await getPickupRoute(
 			Number.parseInt(routeId),
 		);
@@ -45,8 +35,6 @@ export const reportGeneralPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-		const topicOptions = await getTopicAll();
-		const routeOptions = [route];
 		const initFormData: PickupRouteReportFormData =
 			{
 				route,
@@ -57,10 +45,7 @@ export const reportGeneralPageLoader: LoaderFunction =
 			};
 		const loaderData: ReportGeneralPageLoaderData =
 			{
-				routeId,
-				routeOptions,
 				initFormData,
-				topicOptions,
 			};
 
 		return loaderData;

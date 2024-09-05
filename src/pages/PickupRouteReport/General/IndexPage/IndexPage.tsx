@@ -8,7 +8,7 @@ import {
 import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
-	const { entries } =
+	const {} =
 		useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
 
@@ -18,15 +18,13 @@ export const IndexPage: FC = () => {
 				ตารางบันทึกเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportGeneralTable
-				entries={entries}
 				slotProps={{
 					addButton: {
 						onClick: () =>
 							submit(
 								{},
 								{
-									action:
-										"/pickup-routes/reports/general/new",
+									action: "./new",
 								},
 							),
 					},

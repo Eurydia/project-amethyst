@@ -12,27 +12,20 @@ import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
 
 export const NewPage: FC = () => {
-	const {
-		routeOptions,
-		topicOptions,
-		initFormData,
-	} = useLoaderData() as NewPageLoaderData;
+	const { route, initFormData } =
+		useLoaderData() as NewPageLoaderData;
 
 	const submit = useSubmit();
 
 	const handleSubmit = async (
 		formData: PickupRouteReportFormData,
 	) => {
-		if (formData.route === null) {
-			return;
-		}
-
 		postPickupRouteReportGeneral({
 			content: formData.content,
 			datetime: formData.datetime,
 			title: formData.title,
-			topics: formData.topics.join(","),
-			route_id: formData.route.id,
+			topics: formData.topics,
+			route,
 		}).then(
 			(reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
@@ -63,22 +56,21 @@ export const NewPage: FC = () => {
 				ลงบันทึกเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportForm
-				routeOptions={routeOptions}
 				initFormData={initFormData}
-				topicOptions={topicOptions}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action: "/pickup-routes/report",
-						},
-					)
-				}
 				slotProps={{
 					submitButton: {
+						onClick: handleSubmit,
 						startIcon: <AddRounded />,
 						label: "ลงบันทึก",
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action: "/pickup-routes/report",
+								},
+							),
 					},
 				}}
 			/>

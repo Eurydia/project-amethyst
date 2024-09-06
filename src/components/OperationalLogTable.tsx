@@ -1,24 +1,12 @@
 import {
-	getDriver,
-	getDriverAll,
-	getOperationLogAll,
-	getPickupRoute,
-	getPickupRouteAll,
-	getVehicle,
-	getVehicleAll,
-} from "$backend/database/get";
-import { filterItems } from "$core/filter";
-import { TableHeaderDefinition } from "$types/generics";
-import { DriverModel } from "$types/models/Driver";
-import {
-	OperationalLogEntry,
-	OperationalLogModel,
-} from "$types/models/OperatonalLog";
-import { PickupRouteModel } from "$types/models/PickupRoute";
-import { VehicleModel } from "$types/models/Vehicle";
+	MultiSelectOption,
+	TableHeaderDefinition,
+} from "$types/generics";
+import { OperationalLogEntryImpl } from "$types/impl/OperationalLog";
+import { OperationalLogEntry } from "$types/models/OperatonalLog";
 import { Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { Link } from "react-router-dom";
 import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 import { BaseSortableTable } from "./BaseSortableTable";
@@ -83,7 +71,9 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<OperationalLogEntry>[] =
 			render: (item) => (
 				<Typography
 					component={Link}
-					to={"/routes/info/" + item.routeId}
+					to={
+						"/pickup-routes/info/" + item.routeId
+					}
 				>
 					{item.routeName}
 				</Typography>
@@ -91,229 +81,69 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<OperationalLogEntry>[] =
 		},
 	];
 
-const getDriverOptions = async (
-	driver: DriverModel | undefined,
-) => {
-	const drivers =
-		driver !== undefined
-			? [driver]
-			: await getDriverAll();
-	return drivers.map(({ name, surname, id }) => ({
-		label: `${name} ${surname}`,
-		value: id.toString(),
-	}));
-};
-
-const getVehicleOptions = async (
-	vehicle: VehicleModel | undefined,
-) => {
-	const vehicles =
-		vehicle !== undefined
-			? [vehicle]
-			: await getVehicleAll();
-	return vehicles.map(
-		({ license_plate, id }) => ({
-			label: license_plate,
-			value: id.toString(),
-		}),
-	);
-};
-
-const getRouteOptions = async (
-	route: PickupRouteModel | undefined,
-) => {
-	const routes =
-		route !== undefined
-			? [route]
-			: await getPickupRouteAll();
-
-	return routes.map(({ id, name }) => ({
-		value: id.toString(),
-		label: name,
-	}));
-};
-
-const filterEntries = (
-	entries: OperationalLogEntry[],
-	drivers: string[],
-	routes: string[],
-	vehicles: string[],
-	search: string,
-) => {
-	const routeSet = new Set(routes);
-	const vehicleSet = new Set(vehicles);
-	const driverSet = new Set(drivers);
-
-	const filtered = entries
-		.filter((entry) =>
-			routeSet.has(entry.routeId.toString()),
-		)
-		.filter((entry) =>
-			vehicleSet.has(entry.vehicleId.toString()),
-		)
-		.filter((entry) =>
-			driverSet.has(entry.driverId.toString()),
-		);
-
-	return filterItems(filtered, search, [
-		"driverName",
-		"driverSurname",
-		"vehicleLicensePlate",
-		"routeName",
-	]);
-};
-
-const logToEntry = async (
-	log: OperationalLogModel,
-) => {
-	const vehicle = await getVehicle(
-		log.vehicle_id,
-	);
-	const driver = await getDriver(log.driver_id);
-	const route = await getPickupRoute(
-		log.route_id,
-	);
-
-	if (
-		vehicle === null ||
-		driver === null ||
-		route === null
-	) {
-		return null;
-	}
-
-	const entry: OperationalLogEntry = {
-		id: log.id,
-		startDate: log.start_date,
-		endDate: log.end_date,
-
-		vehicleId: vehicle.id,
-		vehicleLicensePlate: vehicle.license_plate,
-
-		driverId: driver.id,
-		driverName: driver.name,
-		driverSurname: driver.surname,
-
-		routeId: route.id,
-		routeName: route.name,
-	};
-	return entry;
-};
-
 type OperationalLogTableProps = {
-	driver?: DriverModel;
-	vehicle?: VehicleModel;
-	route?: PickupRouteModel;
+	entries: OperationalLogEntry[];
 	slotProps: {
 		addButton: {
+			isDisabled?: boolean;
 			onClick: () => void;
+		};
+		vehicleMultiSelect: {
+			options: MultiSelectOption[];
+			disabled?: boolean;
+		};
+		driverMultiSelect: {
+			options: MultiSelectOption[];
+			disabled?: boolean;
+		};
+		routeMultiSelect: {
+			options: MultiSelectOption[];
+			disabled?: boolean;
 		};
 	};
 };
 export const OperationalLogTable: FC<
 	OperationalLogTableProps
 > = (props) => {
-	const { slotProps, driver, route, vehicle } =
-		props;
-
-	const [entries, setEntries] = useState<
-		OperationalLogEntry[]
-	>([]);
-
-	const [driverOptions, setDriverOptions] =
-		useState<{ label: string; value: string }[]>(
-			[],
-		);
-	const [vehicleOptions, setVehicleOptions] =
-		useState<{ label: string; value: string }[]>(
-			[],
-		);
-	const [routeOptions, setRouteOptions] =
-		useState<{ label: string; value: string }[]>(
-			[],
-		);
+	const { slotProps, entries } = props;
 
 	const [search, setSearch] = useState("");
-	const [routes, setRoutes] = useState<string[]>(
-		[],
+	const [routes, setRoutes] = useState(
+		slotProps.routeMultiSelect.options.map(
+			({ value }) => value,
+		),
 	);
-	const [vehicles, setVehicles] = useState<
-		string[]
-	>([]);
-	const [drivers, setDrivers] = useState<
-		string[]
-	>([]);
-
-	useEffect(() => {
-		(async () => {
-			const _driverOptions =
-				await getDriverOptions(driver);
-			const _vehicleOptions =
-				await getVehicleOptions(vehicle);
-			const _routeOptions = await getRouteOptions(
-				route,
-			);
-
-			setDriverOptions(_driverOptions);
-			setVehicleOptions(_vehicleOptions);
-			setRouteOptions(_routeOptions);
-
-			setDrivers(
-				_driverOptions.map(({ value }) => value),
-			);
-			setVehicles(
-				_vehicleOptions.map(({ value }) => value),
-			);
-			setRoutes(
-				_routeOptions.map(({ value }) => value),
-			);
-		})();
-	}, []);
-
-	useEffect(() => {
-		(async () => {
-			const logs = await getOperationLogAll();
-
-			const reqs = logs
-				.filter(
-					({ driver_id }) =>
-						driver === undefined ||
-						driver_id === driver.id,
-				)
-				.filter(
-					({ vehicle_id }) =>
-						vehicle === undefined ||
-						vehicle_id === vehicle.id,
-				)
-				.filter(
-					({ route_id }) =>
-						route === undefined ||
-						route_id === route.id,
-				)
-				.map(logToEntry);
-			const items = await Promise.all(reqs);
-			const entries = items.filter(
-				(item) => item !== null,
-			);
-			setEntries(entries);
-		})();
-	}, []);
-
-	const filteredEntries = filterEntries(
-		entries,
-		drivers,
-		routes,
-		vehicles,
-		search,
+	const [vehicles, setVehicles] = useState(
+		slotProps.vehicleMultiSelect.options.map(
+			({ value }) => value,
+		),
 	);
+	const [drivers, setDrivers] = useState(
+		slotProps.driverMultiSelect.options.map(
+			({ value }) => value,
+		),
+	);
+
+	const filteredEntries =
+		OperationalLogEntryImpl.filter(
+			entries,
+			new Set(drivers),
+			new Set(routes),
+			new Set(vehicles),
+			search,
+		);
 
 	const fitlerFormItems = [
 		{
 			label: "สายรถ",
 			value: (
 				<BaseInputMultiSelect
-					isDisabled={route !== undefined}
-					options={routeOptions}
+					disabled={
+						slotProps.routeMultiSelect.disabled
+					}
+					options={
+						slotProps.routeMultiSelect.options
+					}
 					selectedOptions={routes}
 					onChange={setRoutes}
 				/>
@@ -323,8 +153,12 @@ export const OperationalLogTable: FC<
 			label: "ทะเบียนรถ",
 			value: (
 				<BaseInputMultiSelect
-					isDisabled={vehicle !== undefined}
-					options={vehicleOptions}
+					disabled={
+						slotProps.vehicleMultiSelect.disabled
+					}
+					options={
+						slotProps.vehicleMultiSelect.options
+					}
 					selectedOptions={vehicles}
 					onChange={setVehicles}
 				/>
@@ -334,8 +168,12 @@ export const OperationalLogTable: FC<
 			label: "คนขับรถ",
 			value: (
 				<BaseInputMultiSelect
-					isDisabled={driver !== undefined}
-					options={driverOptions}
+					disabled={
+						slotProps.driverMultiSelect.disabled
+					}
+					options={
+						slotProps.driverMultiSelect.options
+					}
 					selectedOptions={drivers}
 					onChange={setDrivers}
 				/>
@@ -360,9 +198,7 @@ export const OperationalLogTable: FC<
 					label: "ลงบันทึก",
 					onClick: slotProps.addButton.onClick,
 					disabled:
-						driverOptions.length === 0 ||
-						vehicleOptions.length === 0 ||
-						routeOptions.length === 0,
+						slotProps.addButton.isDisabled,
 				},
 			}}
 		>

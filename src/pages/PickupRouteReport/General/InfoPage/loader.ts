@@ -3,14 +3,18 @@ import {
 	getPickupRouteReportGeneral,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { PickupRouteReport } from "$types/models/PickupRoute";
+import {
+	PickupRouteModel,
+	PickupRouteReportModel,
+} from "$types/models/PickupRoute";
 import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
 
 export type InfoPageLoaderData = {
-	report: PickupRouteReport;
+	report: PickupRouteReportModel;
+	route: PickupRouteModel;
 };
 export const infoPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -24,11 +28,11 @@ export const infoPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const _report =
+		const report =
 			await getPickupRouteReportGeneral(
 				Number.parseInt(reportId),
 			);
-		if (_report === null) {
+		if (report === null) {
 			throw json(
 				{
 					message:
@@ -38,9 +42,8 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 		const route = await getPickupRoute(
-			_report.route_id,
+			report.route_id,
 		);
-
 		if (route === null) {
 			throw json(
 				{
@@ -51,22 +54,9 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 
-		const report: PickupRouteReport = {
-			content: _report.content,
-			datetime: _report.datetime,
-			id: _report.id,
-			title: _report.title,
-			routeId: _report.route_id,
-			routeName: route.name,
-			topics: _report.topics
-				.normalize()
-				.split(",")
-				.map((topic) => topic.trim())
-				.filter((topic) => topic.length > 0),
-		};
-
 		const loaderData: InfoPageLoaderData = {
 			report,
+			route,
 		};
 
 		return loaderData;

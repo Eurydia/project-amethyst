@@ -13,9 +13,8 @@ import { ReportInspectionPageLoaderData } from "./loader";
 
 export const ReportInspectionPage: FC = () => {
 	const {
-		vehicleId,
-		topicOptions,
-		vehicleOptions,
+		topicComboBoxOptions,
+		vehicleSelectOptions,
 		initFormData,
 	} =
 		useLoaderData() as ReportInspectionPageLoaderData;
@@ -25,28 +24,7 @@ export const ReportInspectionPage: FC = () => {
 	const handleSubmit = async (
 		formData: VehicleReportInspectionFormData,
 	) => {
-		if (formData.vehicle === null) {
-			return;
-		}
-
-		postVehicleReportInspection({
-			brake_light: formData.brakeLights,
-			content: formData.content,
-			datetime: formData.datetime,
-			frame: formData.frame,
-			rearview_mirror: formData.rearviewMirror,
-			front_camera: formData.frontCamera,
-			headlights: formData.headlights,
-			overhead_fan: formData.overheadFan,
-			turn_signals: formData.turnSignals,
-			vehicle_id: formData.vehicle.id,
-			seatbelts: formData.seatbelts,
-			seats: formData.seats,
-			sideview_mirror: formData.sideviewMirror,
-			tires: formData.tires,
-			windows: formData.windows,
-			topics: formData.topics.join(","),
-		}).then(
+		postVehicleReportInspection(formData).then(
 			(reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(
@@ -76,23 +54,29 @@ export const ReportInspectionPage: FC = () => {
 				ลงบันทึกผลการตรวจสภาพรถ
 			</Typography>
 			<VehicleReportInspectionForm
-				vehicleOptions={vehicleOptions}
-				topicOptions={topicOptions}
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action:
-								"/vehicle/report/inspection",
-						},
-					)
-				}
 				slotProps={{
 					submitButton: {
 						startIcon: <AddRounded />,
 						label: "ลงบันทึก",
+						onClick: handleSubmit,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/vehicles/info" + vehicleId,
+								},
+							),
+					},
+					vehicleSelect: {
+						options: vehicleSelectOptions,
+						disabled: true,
+					},
+					topicComboBox: {
+						options: topicComboBoxOptions,
 					},
 				}}
 			/>

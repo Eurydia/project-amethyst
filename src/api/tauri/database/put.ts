@@ -2,10 +2,7 @@ import {
 	DriverModel,
 	DriverReportModel,
 } from "$types/models/Driver";
-import {
-	PickupRouteModel,
-	PickupRouteReportModel,
-} from "$types/models/PickupRoute";
+import { PickupRouteReportModel } from "$types/models/PickupRoute";
 import {
 	VehicleModel,
 	VehicleReportGeneralModel,
@@ -20,8 +17,8 @@ export const putAttendanceLog = async ({
 	actualDepartureDatetime,
 }: {
 	id: number;
-	actualArrivalDatetime: string;
-	actualDepartureDatetime: string;
+	actualArrivalDatetime: string | null;
+	actualDepartureDatetime: string | null;
 }) => {
 	invoke("put_attendance_log", {
 		id,

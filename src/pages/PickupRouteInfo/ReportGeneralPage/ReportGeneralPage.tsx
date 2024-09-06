@@ -12,7 +12,11 @@ import { toast } from "react-toastify";
 import { ReportGeneralPageLoaderData } from "./loader";
 
 export const ReportGeneralPage: FC = () => {
-	const { initFormData } =
+	const {
+		initFormData,
+		route,
+		topicComboBoxOptions,
+	} =
 		useLoaderData() as ReportGeneralPageLoaderData;
 
 	const submit = useSubmit();
@@ -37,8 +41,7 @@ export const ReportGeneralPage: FC = () => {
 					{},
 					{
 						action:
-							"/pickup-routes/info/" +
-							initFormData.route.id,
+							"/pickup-routes/info/" + route.id,
 					},
 				);
 			},
@@ -51,7 +54,6 @@ export const ReportGeneralPage: FC = () => {
 				ลงบันทึกเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportForm
-				lockRoute
 				initFormData={initFormData}
 				slotProps={{
 					submitButton: {
@@ -69,6 +71,13 @@ export const ReportGeneralPage: FC = () => {
 										initFormData.route.id,
 								},
 							),
+					},
+					routeSelect: {
+						disabled: true,
+						options: [route],
+					},
+					topicComboBox: {
+						options: topicComboBoxOptions,
 					},
 				}}
 			/>

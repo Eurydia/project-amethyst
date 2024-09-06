@@ -7,26 +7,24 @@ import { BaseInputTextField } from "./BaseInputTextField";
 
 type PickupRouteFormProps = {
 	initFormData: PickupRouteFormData;
-	onSubmit: (
-		formData: PickupRouteFormData,
-	) => void;
-	onCancel: () => void;
+
 	slotProps: {
 		submitButton: {
+			onClick: (
+				formData: PickupRouteFormData,
+			) => void;
 			label: string;
 			startIcon: ReactNode;
+		};
+		cancelButton: {
+			onClick: () => void;
 		};
 	};
 };
 export const PickupRouteForm: FC<
 	PickupRouteFormProps
 > = (props) => {
-	const {
-		initFormData,
-		slotProps,
-		onCancel,
-		onSubmit,
-	} = props;
+	const { initFormData, slotProps } = props;
 
 	const [fieldName, setFieldName] = useState(
 		initFormData.name,
@@ -46,7 +44,7 @@ export const PickupRouteForm: FC<
 		if (isFormIncomplete) {
 			return;
 		}
-		onSubmit({
+		slotProps.submitButton.onClick({
 			name: fieldName.trim().normalize(),
 			arrivalTime:
 				fieldArrivalTime.format("HH:mm"),
@@ -131,7 +129,7 @@ export const PickupRouteForm: FC<
 					onClick: handleSubmit,
 				},
 				cancelButton: {
-					onClick: onCancel,
+					onClick: slotProps.cancelButton.onClick,
 				},
 			}}
 		>

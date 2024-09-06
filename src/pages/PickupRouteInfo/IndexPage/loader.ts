@@ -1,6 +1,25 @@
-import { getPickupRoute } from "$backend/database/get";
+import {
+	getDriverAll,
+	getOperationLogAll,
+	getPickupRoute,
+	getPickupRouteAll,
+	getTopicAll,
+	getVehicleAll,
+} from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { PickupRouteModel } from "$types/models/PickupRoute";
+import { MultiSelectOption } from "$types/generics";
+import { DriverModelImpl } from "$types/impl/Driver";
+import { OperationalLogModelImpl } from "$types/impl/OperationalLog";
+import {
+	PickupRouteModelImpl,
+	PickupRouteReportModelImpl,
+} from "$types/impl/PickupRoute";
+import { VehicleModelImpl } from "$types/impl/Vehicle";
+import { OperationalLogEntry } from "$types/models/OperatonalLog";
+import {
+	PickupRouteModel,
+	PickupRouteReportEntry,
+} from "$types/models/PickupRoute";
 import {
 	json,
 	LoaderFunction,
@@ -8,6 +27,14 @@ import {
 
 export type IndexPageLoaderData = {
 	route: PickupRouteModel;
+
+	logEntries: OperationalLogEntry[];
+	reportEntries: PickupRouteReportEntry[];
+
+	routeMultiSelectOptions: MultiSelectOption[];
+	vehicleMultiSelectOptions: MultiSelectOption[];
+	driverMultiSelectOptions: MultiSelectOption[];
+	topicMultiSelectOptions: MultiSelectOption[];
 };
 export const indexPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -33,8 +60,54 @@ export const indexPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
+
+		const topicMultiSelectOptions: MultiSelectOption[] =
+			(await getTopicAll()).map((topic) => ({
+				label: topic,
+				value: topic,
+			}));
+
+		const logs = (await getOperationLogAll())
+			.filter(
+				({ route_id }) => route_id === route.id,
+			)
+			.map(OperationalLogModelImpl.toEntry);
+
+		const reports = (await getPickupRouteAll())
+			.filter(
+				({ route_id }) => route_id === route.id,
+			)
+			.map(PickupRouteReportModelImpl.toEntry);
+
+		const reportEntries = (
+			await Promise.all(reports)
+		).filter((report) => report !== null);
+		const logEntries = (
+			await Promise.all(logs)
+		).filter((entry) => entry !== null);
+
+		const vehicleMultiSelectOptions = (
+			await getVehicleAll()
+		).map(VehicleModelImpl.toMultiSelectOption);
+		const driverMultiSelectOptions = (
+			await getDriverAll()
+		).map(DriverModelImpl.toMultiSelectOption);
+		const routeMultiSelectOptions = [
+			PickupRouteModelImpl.toMultiSelectOption(
+				route,
+			),
+		];
+
 		const loaderData: IndexPageLoaderData = {
 			route,
+
+			logEntries,
+			reportEntries,
+
+			driverMultiSelectOptions,
+			vehicleMultiSelectOptions,
+			routeMultiSelectOptions,
+			topicMultiSelectOptions,
 		};
 
 		return loaderData;

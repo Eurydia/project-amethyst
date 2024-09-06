@@ -1,4 +1,3 @@
-import { getVehicleAll } from "$backend/database/get";
 import { filterItems } from "$core/filter";
 import { VehicleModel } from "$types/models/Vehicle";
 import { LockRounded } from "@mui/icons-material";
@@ -11,12 +10,7 @@ import {
 	TextField,
 	Typography,
 } from "@mui/material";
-import {
-	FC,
-	HTMLAttributes,
-	useEffect,
-	useState,
-} from "react";
+import { FC, HTMLAttributes } from "react";
 
 const filterOptions = (
 	options: VehicleModel[],
@@ -61,29 +55,22 @@ const renderOption = (
 	);
 };
 type VehicleInputSelectProps = {
-	isDisabled?: boolean;
+	disabled?: boolean;
 	value: VehicleModel;
 	onChange: (value: VehicleModel) => void;
+	options: VehicleModel[];
 };
 export const VehicleInputSelect: FC<
 	VehicleInputSelectProps
 > = (props) => {
-	const { isDisabled, value, onChange } = props;
-	const [options, setOptions] = useState<
-		VehicleModel[]
-	>([]);
-	useEffect(() => {
-		(async () => {
-			const vehicles = await getVehicleAll();
-			setOptions(vehicles);
-		})();
-	}, []);
+	const { options, disabled, value, onChange } =
+		props;
 
 	return (
 		<Autocomplete
-			disabled={isDisabled}
+			disabled={disabled}
 			popupIcon={
-				isDisabled ? <LockRounded /> : undefined
+				disabled ? <LockRounded /> : undefined
 			}
 			onChange={(_, value) => {
 				if (value === null) {

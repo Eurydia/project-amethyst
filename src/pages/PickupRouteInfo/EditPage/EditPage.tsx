@@ -50,20 +50,22 @@ export const EditPage: FC = () => {
 			</Typography>
 			<PickupRouteForm
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action:
-								"/pickup-routes/info/" + routeId,
-						},
-					)
-				}
 				slotProps={{
 					submitButton: {
 						label: "บันทึก",
 						startIcon: <SaveRounded />,
+						onClick: handleSubmit,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/pickup-routes/info/" +
+										routeId,
+								},
+							),
 					},
 				}}
 			/>

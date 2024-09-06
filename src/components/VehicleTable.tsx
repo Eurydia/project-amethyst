@@ -1,13 +1,11 @@
-import { filterItems } from "$core/filter";
-import { TableHeaderDefinition } from "$types/generics";
+import {
+	MultiSelectOption,
+	TableHeaderDefinition,
+} from "$types/generics";
+import { VehicleEntryImpl } from "$types/impl/Vehicle";
 import { VehicleEntry } from "$types/models/Vehicle";
 import { Stack, Typography } from "@mui/material";
-import {
-	FC,
-	ReactNode,
-	useMemo,
-	useState,
-} from "react";
+import { FC, ReactNode, useState } from "react";
 import {
 	Link,
 	useSubmit,
@@ -75,68 +73,31 @@ const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
 		},
 	];
 
-const toOptions = (entries: VehicleEntry[]) => {
-	const vehicles: Record<string, string> = {};
-	for (const entry of entries) {
-		vehicles[entry.id] = entry.licensePlate;
-	}
-
-	return Object.entries(vehicles).map(
-		([value, label]) => ({
-			value,
-			label,
-		}),
-	);
-};
-
-const filterEntries = (
-	entries: VehicleEntry[],
-	selectedVehicles: string[],
-) => {
-	const vehicleSet = new Set(selectedVehicles);
-	return entries.filter((entry) =>
-		vehicleSet.has(entry.id.toString()),
-	);
-};
-
-const searchEntries = (
-	entries: VehicleEntry[],
-	search: string,
-) => {
-	return filterItems(entries, search, [
-		"licensePlate",
-		"routes.*.name",
-		"drivers.*.name",
-		"drivers.*.surname",
-	]);
-};
-
 type VehicleTableProps = {
 	entries: VehicleEntry[];
+	slotProps: {
+		vehicleMultiSelect: {
+			options: MultiSelectOption[];
+		};
+	};
 };
 export const VehicleTable: FC<
 	VehicleTableProps
 > = (props) => {
-	const { entries } = props;
+	const { entries, slotProps } = props;
 	const submit = useSubmit();
-
-	const vehicleOptions = useMemo(
-		() => toOptions(entries),
-		[entries],
-	);
 
 	const [search, setSearch] = useState("");
 	const [selected, setSelected] = useState(
-		vehicleOptions.map(({ value }) => value),
+		slotProps.vehicleMultiSelect.options.map(
+			({ value }) => value,
+		),
 	);
 
-	const filteredEntries = useMemo(
-		() => filterEntries(entries, selected),
-		[entries, selected],
-	);
-	const searchedEntries = useMemo(
-		() => searchEntries(filteredEntries, search),
-		[filteredEntries, search],
+	const filteredEntries = VehicleEntryImpl.filter(
+		entries,
+		selected,
+		search,
 	);
 
 	const formItems: {
@@ -147,9 +108,11 @@ export const VehicleTable: FC<
 			label: "ทะเบียนรถ",
 			value: (
 				<BaseInputMultiSelect
-					onChange={setSelected}
-					options={vehicleOptions}
+					options={
+						slotProps.vehicleMultiSelect.options
+					}
 					selectedOptions={selected}
+					onChange={setSelected}
 				/>
 			),
 		},
@@ -160,7 +123,7 @@ export const VehicleTable: FC<
 			headers={HEADER_DEFINITION}
 			defaultSortOrder="asc"
 			defaultSortByColumn={0}
-			entries={searchedEntries}
+			entries={filteredEntries}
 			slotProps={{
 				searchField: {
 					placeholder:

@@ -1,6 +1,9 @@
 import { getPickupRoute } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { PickupRouteReportFormData } from "$types/models/PickupRoute";
+import {
+	PickupRouteModel,
+	PickupRouteReportFormData,
+} from "$types/models/PickupRoute";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import {
@@ -9,7 +12,9 @@ import {
 } from "react-router-dom";
 
 export type ReportGeneralPageLoaderData = {
+	route: PickupRouteModel;
 	initFormData: PickupRouteReportFormData;
+	topicComboBoxOptions: string[];
 };
 export const reportGeneralPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -35,6 +40,8 @@ export const reportGeneralPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
+		const topicComboBoxOptions =
+			await getTopicAll();
 		const initFormData: PickupRouteReportFormData =
 			{
 				route,
@@ -45,8 +52,13 @@ export const reportGeneralPageLoader: LoaderFunction =
 			};
 		const loaderData: ReportGeneralPageLoaderData =
 			{
+				route,
 				initFormData,
+				topicComboBoxOptions,
 			};
 
 		return loaderData;
 	};
+function getTopicAll() {
+	throw new Error("Function not implemented.");
+}

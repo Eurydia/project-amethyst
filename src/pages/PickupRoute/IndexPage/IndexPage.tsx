@@ -5,14 +5,23 @@ import { useLoaderData } from "react-router-dom";
 import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
-	const { entries } =
-		useLoaderData() as IndexPageLoaderData;
+	const {
+		routeEntries,
+		routeMultiSelectOptions,
+	} = useLoaderData() as IndexPageLoaderData;
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
 				ตารางสายรถ
 			</Typography>
-			<PickupRouteTable entries={entries} />
+			<PickupRouteTable
+				entries={routeEntries}
+				slotProps={{
+					routeMultiSelect: {
+						options: routeMultiSelectOptions,
+					},
+				}}
+			/>
 		</Stack>
 	);
 };

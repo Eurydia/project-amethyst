@@ -16,3 +16,8 @@ export type SnakeCaseToCamelCase<T> = {
 		K & string
 	>]: T[K];
 };
+
+export type MultiSelectOption = {
+	label: string;
+	value: string;
+};

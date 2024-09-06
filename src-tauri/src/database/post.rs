@@ -1,6 +1,6 @@
 use super::models::PickupRouteModel;
 
-#[tauri::command(rename_all = "camelCase")]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn post_attendance_log(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -9,8 +9,6 @@ pub async fn post_attendance_log(
     route_id: i64,
     expected_arrival_datetime: String,
     expected_departure_datetime: String,
-    actual_arrival_datetime: Option<String>,
-    actual_departure_datetime: Option<String>,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
@@ -21,17 +19,13 @@ pub async fn post_attendance_log(
                 route_id, 
 
                 expected_arrival_datetime, 
-                expected_departure_datetime,
-
-                actual_arrival_datetime,
-                actual_departure_datetime
+                expected_departure_datetime
             )
             VALUES(
                 ?, ?, ?, 
                 
-                ?, ?, 
-
                 ?, ?
+
             );
         "#,
     )
@@ -40,8 +34,6 @@ pub async fn post_attendance_log(
     .bind(route_id)
     .bind(expected_arrival_datetime)
     .bind(expected_departure_datetime)
-    .bind(actual_arrival_datetime)
-    .bind(actual_departure_datetime)
     .execute(&state.db)
     .await;
 

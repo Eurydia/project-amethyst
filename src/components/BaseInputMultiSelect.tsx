@@ -67,7 +67,7 @@ const CustomItem: FC<CustomItemProps> = (
 };
 
 type BaseInputMultiSelectProps = {
-	isDisabled?: boolean;
+	disabled?: boolean;
 	options: { label: string; value: string }[];
 	selectedOptions: string[];
 	onChange: (option: string[]) => void;
@@ -77,7 +77,7 @@ export const BaseInputMultiSelect: FC<
 > = (props) => {
 	const {
 		options,
-		isDisabled,
+		disabled,
 		selectedOptions,
 		onChange,
 	} = props;
@@ -106,7 +106,7 @@ export const BaseInputMultiSelect: FC<
 					onClick={handleClick}
 					label={label}
 					isChecked={isChecked}
-					isDisabled={isDisabled}
+					isDisabled={disabled}
 				/>
 			);
 		},
@@ -139,7 +139,7 @@ export const BaseInputMultiSelect: FC<
 				onClick={handleToggleAll}
 				isChecked={isPartiallySelect}
 				isBold
-				isDisabled={isDisabled}
+				isDisabled={disabled}
 			/>
 			{renderedOptions}
 		</List>

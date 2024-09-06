@@ -16,8 +16,8 @@ import {
 
 export type ReportGeneralPageLoaderData = {
 	vehicleId: string;
-	vehicleOptions: VehicleModel[];
-	topicOptions: string[];
+	topicComboBoxOptions: string[];
+	vehicleSelectOptions: VehicleModel[];
 	initFormData: VehicleReportGeneralFormData;
 };
 export const reportGeneralPageLoader: LoaderFunction =
@@ -44,8 +44,9 @@ export const reportGeneralPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-		const topicOptions = await getTopicAll();
-		const vehicleOptions = [vehicle];
+		const topicComboBoxOptions =
+			await getTopicAll();
+		const vehicleSelectOptions = [vehicle];
 		const initFormData: VehicleReportGeneralFormData =
 			{
 				vehicle,
@@ -57,9 +58,9 @@ export const reportGeneralPageLoader: LoaderFunction =
 		const loaderData: ReportGeneralPageLoaderData =
 			{
 				vehicleId,
-				vehicleOptions,
+				vehicleSelectOptions,
 				initFormData,
-				topicOptions,
+				topicComboBoxOptions,
 			};
 
 		return loaderData;

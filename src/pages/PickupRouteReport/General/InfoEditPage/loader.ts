@@ -1,17 +1,24 @@
 import {
 	getPickupRoute,
+	getPickupRouteAll,
 	getPickupRouteReportGeneral,
+	getTopicAll,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { PickupRouteReportFormData } from "$types/models/PickupRoute";
+import {
+	PickupRouteModel,
+	PickupRouteReportFormData,
+} from "$types/models/PickupRoute";
 import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
 
 export type InfoEditPageLoaderData = {
+	routeSelectOptions: PickupRouteModel[];
 	reportId: number;
 	initFormData: PickupRouteReportFormData;
+	topicComboBoxOptions: string[];
 };
 export const infoEditPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -50,6 +57,12 @@ export const infoEditPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
+
+		const topicComboBoxOptions =
+			await getTopicAll();
+		const routeSelectOptions =
+			await getPickupRouteAll();
+
 		const initFormData: PickupRouteReportFormData =
 			{
 				content: report.content,
@@ -67,6 +80,8 @@ export const infoEditPageLoader: LoaderFunction =
 		const loaderData: InfoEditPageLoaderData = {
 			reportId,
 			initFormData,
+			routeSelectOptions,
+			topicComboBoxOptions,
 		};
 
 		return loaderData;

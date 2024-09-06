@@ -7,7 +7,6 @@ import {
 import { TRANSLATION } from "$locale/th";
 import { DriverModel } from "$types/models/Driver";
 import { OperationalLogFormData } from "$types/models/OperatonalLog";
-import { PickupRouteModel } from "$types/models/PickupRoute";
 import { VehicleModel } from "$types/models/Vehicle";
 import {
 	json,

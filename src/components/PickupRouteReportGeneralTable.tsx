@@ -1,18 +1,17 @@
 import {
-	getPickupRoute,
-	getPickupRouteReportGeneralAll,
-} from "$backend/database/get";
-import { TableHeaderDefinition } from "$types/generics";
-import {
-	PickupRouteModel,
-	PickupRouteReportEntry,
-	PickupRouteReportModel,
-} from "$types/models/PickupRoute";
+	MultiSelectOption,
+	TableHeaderDefinition,
+} from "$types/generics";
+import { PickupRouteReportEntryImpl } from "$types/impl/PickupRoute";
+import { PickupRouteReportEntry } from "$types/models/PickupRoute";
 import { Typography } from "@mui/material";
-import dayjs from "dayjs";
-import { FC, useEffect, useState } from "react";
+import { DateField } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+import { FC, ReactNode, useState } from "react";
 import { Link } from "react-router-dom";
-import { PickupRouteReportTable } from "./PickupRouteReportTable";
+import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
+import { BaseInputTopicMatchMode } from "./BaseInputTopicMatchMode";
+import { BaseSortableTable } from "./BaseSortableTable";
 
 const HEADER_DEFINITIONS: TableHeaderDefinition<PickupRouteReportEntry>[] =
 	[
@@ -74,75 +73,142 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<PickupRouteReportEntry>[] =
 		},
 	];
 
-const toEntry = async (
-	report: PickupRouteReportModel,
-) => {
-	const route = await getPickupRoute(
-		report.route_id,
-	);
-	if (route === null) {
-		return null;
-	}
-	const entry: PickupRouteReportEntry = {
-		datetime: report.datetime,
-		id: report.id,
-		title: report.title,
-		topics: report.topics.split(","),
-
-		routeId: route.id,
-		routeName: route.name,
-	};
-	return entry;
-};
-
 type PickupRouteReportGeneralTableProps = {
-	route?: PickupRouteModel;
+	entries: PickupRouteReportEntry[];
 	slotProps: {
 		addButton: {
 			onClick: () => void;
+		};
+		routeMultiSelect: {
+			disabled?: boolean;
+			options: MultiSelectOption[];
+		};
+		topicMultiSelect: {
+			disabled?: boolean;
+			options: MultiSelectOption[];
 		};
 	};
 };
 export const PickupRouteReportGeneralTable: FC<
 	PickupRouteReportGeneralTableProps
 > = (props) => {
-	const { slotProps, route } = props;
+	const { entries, slotProps } = props;
 
-	const [entries, setEntries] = useState<
-		PickupRouteReportEntry[]
-	>([]);
+	const [search, setSearch] = useState("");
+	const [afterDate, setAfterDate] =
+		useState<Dayjs | null>(null);
+	const [beforeDate, setBeforeDate] =
+		useState<Dayjs | null>(null);
+	const [topicMustHaveAll, setTopicMustHaveAll] =
+		useState(false);
+	const [topics, setTopics] = useState<string[]>(
+		slotProps.topicMultiSelect.options.map(
+			({ value }) => value,
+		),
+	);
+	const [routes, setRoutes] = useState<string[]>(
+		slotProps.routeMultiSelect.options.map(
+			({ value }) => value,
+		),
+	);
 
-	useEffect(() => {
-		(async () => {
-			const reports =
-				await getPickupRouteReportGeneralAll();
+	const filteredEntries =
+		PickupRouteReportEntryImpl.filter(
+			entries,
+			afterDate,
+			beforeDate,
+			routes,
+			topics,
+			topicMustHaveAll,
+			search,
+		);
 
-			const itemRequests = reports
-				.filter(
-					({ route_id }) =>
-						route === undefined ||
-						route_id === route.id,
-				)
-				.map(toEntry);
-			const requests = await Promise.all(
-				itemRequests,
-			);
-			const entries = requests.filter(
-				(entry) => entry !== null,
-			);
-			setEntries(entries);
-		})();
-	}, []);
+	const formItems: {
+		label: string;
+		value: ReactNode;
+	}[] = [
+		{
+			label: "ลงบันทึกหลัง",
+			value: (
+				<DateField
+					fullWidth
+					format="DD/MM/YYYY"
+					formatDensity="spacious"
+					value={afterDate}
+					onChange={setAfterDate}
+				/>
+			),
+		},
+		{
+			label: "ลงบันทึกก่อน",
+			value: (
+				<DateField
+					fullWidth
+					format="DD/MM/YYYY"
+					formatDensity="spacious"
+					value={beforeDate}
+					onChange={setBeforeDate}
+				/>
+			),
+		},
+		{
+			label: "สายรถ",
+			value: (
+				<BaseInputMultiSelect
+					disabled={
+						slotProps.routeMultiSelect.disabled
+					}
+					options={
+						slotProps.routeMultiSelect.options
+					}
+					selectedOptions={routes}
+					onChange={setRoutes}
+				/>
+			),
+		},
+		{
+			label: "ประเภทการกรองหัวข้อ",
+			value: (
+				<BaseInputTopicMatchMode
+					onChange={setTopicMustHaveAll}
+					value={topicMustHaveAll}
+				/>
+			),
+		},
+		{
+			label: "หัวข้อที่เกี่ยวข้อง",
+			value: (
+				<BaseInputMultiSelect
+					options={
+						slotProps.topicMultiSelect.options
+					}
+					selectedOptions={topics}
+					onChange={setTopics}
+				/>
+			),
+		},
+	];
 
 	return (
-		<PickupRouteReportTable
+		<BaseSortableTable
+			defaultSortByColumn={0}
+			defaultSortOrder="desc"
+			entries={filteredEntries}
 			headers={HEADER_DEFINITIONS}
-			entries={entries}
 			slotProps={{
 				addButton: {
 					onClick: slotProps.addButton.onClick,
+					label: "ลงบันทึก",
+				},
+				searchField: {
+					placeholder:
+						"ค้นหาด้วยสายรถ, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง",
+					value: search,
+					onChange: setSearch,
 				},
 			}}
-		/>
+		>
+			{formItems}
+		</BaseSortableTable>
 	);
 };

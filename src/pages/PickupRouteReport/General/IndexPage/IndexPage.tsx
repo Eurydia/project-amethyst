@@ -8,8 +8,11 @@ import {
 import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
-	const {} =
-		useLoaderData() as IndexPageLoaderData;
+	const {
+		entries,
+		routeMultiSelectOptions,
+		topicMultiSelectOptions,
+	} = useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
 
 	return (
@@ -18,6 +21,7 @@ export const IndexPage: FC = () => {
 				ตารางบันทึกเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportGeneralTable
+				entries={entries}
 				slotProps={{
 					addButton: {
 						onClick: () =>
@@ -27,6 +31,12 @@ export const IndexPage: FC = () => {
 									action: "./new",
 								},
 							),
+					},
+					routeMultiSelect: {
+						options: routeMultiSelectOptions,
+					},
+					topicMultiSelect: {
+						options: topicMultiSelectOptions,
 					},
 				}}
 			/>

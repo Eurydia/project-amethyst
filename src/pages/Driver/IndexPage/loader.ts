@@ -9,7 +9,6 @@ import {
 	DriverModel,
 } from "$types/models/Driver";
 import { OperationalLogModel } from "$types/models/OperatonalLog";
-import { PickupRouteModel } from "$types/models/PickupRoute";
 import { VehicleModel } from "$types/models/Vehicle";
 import { LoaderFunction } from "react-router-dom";
 

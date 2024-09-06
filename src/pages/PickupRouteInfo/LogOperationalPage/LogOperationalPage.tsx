@@ -11,7 +11,12 @@ import { toast } from "react-toastify";
 import { LogOperationalPageLoaderData } from "./loader";
 
 export const LogOperationalPage: FC = () => {
-	const { initFormData, route } =
+	const {
+		route,
+		initFormData,
+		driverSelectOptions,
+		vehicleSelectOptions,
+	} =
 		useLoaderData() as LogOperationalPageLoaderData;
 	const submit = useSubmit();
 
@@ -40,18 +45,33 @@ export const LogOperationalPage: FC = () => {
 				ลงบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogForm
-				lockRoute
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action:
-								"/pickup-routes/info/" + route.id,
-						},
-					)
-				}
+				slotProps={{
+					submitButton: {
+						onClick: handleSubmit,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/pickup-routes/info/" +
+										route.id,
+								},
+							),
+					},
+					routeSelect: {
+						disabled: true,
+						options: [route],
+					},
+					driverSelect: {
+						options: driverSelectOptions,
+					},
+					vehicleSelect: {
+						options: vehicleSelectOptions,
+					},
+				}}
 			/>
 		</Stack>
 	);

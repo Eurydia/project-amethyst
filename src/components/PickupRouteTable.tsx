@@ -1,19 +1,17 @@
-import { BaseSortableTable } from "$components/BaseSortableTable";
-import { filterItems } from "$core/filter";
-import { TableHeaderDefinition } from "$types/generics";
+import {
+	MultiSelectOption,
+	TableHeaderDefinition,
+} from "$types/generics";
+import { PickupRouteEntryImpl } from "$types/impl/PickupRoute";
 import { PickupRouteEntry } from "$types/models/PickupRoute";
 import { Stack, Typography } from "@mui/material";
-import {
-	FC,
-	ReactNode,
-	useMemo,
-	useState,
-} from "react";
+import { FC, ReactNode, useState } from "react";
 import {
 	Link,
 	useSubmit,
 } from "react-router-dom";
 import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
+import { BaseSortableTable } from "./BaseSortableTable";
 
 const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 	[
@@ -76,57 +74,34 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 		},
 	];
 
-const getOptions = (
-	entries: PickupRouteEntry[],
-) => {
-	const options: Record<string, string> = {};
-	for (const entry of entries) {
-		options[entry.id] = entry.name;
-	}
-	return Object.entries(options).map(
-		([value, label]) => ({
-			value,
-			label,
-		}),
-	);
-};
-export const filterEntries = (
-	entries: PickupRouteEntry[],
-	selected: string[],
-	search: string,
-) => {
-	const selectedSet = new Set(selected);
-	const filtered = entries.filter((entry) =>
-		selectedSet.has(entry.id.toString()),
-	);
-	return filterItems(filtered, search, [
-		"name",
-		"vehicles.*.licensePlate",
-		"drivers.*.name",
-		"drivers.*.surname",
-	]);
-};
-
 type PickupRouteTableProps = {
 	entries: PickupRouteEntry[];
+	slotProps: {
+		routeMultiSelect: {
+			options: MultiSelectOption[];
+		};
+	};
 };
 export const PickupRouteTable: FC<
 	PickupRouteTableProps
 > = (props) => {
-	const { entries } = props;
+	const { entries, slotProps } = props;
 	const submit = useSubmit();
-	const options = useMemo(
-		() => getOptions(entries),
-		[entries],
-	);
+
 	const [search, setSearch] = useState("");
 	const [routes, setRoutes] = useState(
-		options.map(({ value }) => value),
+		slotProps.routeMultiSelect.options.map(
+			({ value }) => value,
+		),
 	);
-	const filteredEntries = useMemo(
-		() => filterEntries(entries, routes, search),
-		[entries, routes, search],
-	);
+
+	const filteredEntries =
+		PickupRouteEntryImpl.filter(
+			entries,
+			routes,
+			search,
+		);
+
 	const formItems: {
 		label: string;
 		value: ReactNode;
@@ -136,7 +111,9 @@ export const PickupRouteTable: FC<
 			value: (
 				<BaseInputMultiSelect
 					onChange={setRoutes}
-					options={options}
+					options={
+						slotProps.routeMultiSelect.options
+					}
 					selectedOptions={routes}
 				/>
 			),
@@ -144,9 +121,9 @@ export const PickupRouteTable: FC<
 	];
 	return (
 		<BaseSortableTable
-			headers={HEADER_DEFINITION}
 			defaultSortOrder="asc"
 			defaultSortByColumn={0}
+			headers={HEADER_DEFINITION}
 			entries={filteredEntries}
 			slotProps={{
 				searchField: {

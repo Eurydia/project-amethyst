@@ -13,8 +13,12 @@ import { toast } from "react-toastify";
 import { InfoEditPageLoaderData } from "./loader";
 
 export const InfoEditPage: FC = () => {
-	const { initFormData, reportId } =
-		useLoaderData() as InfoEditPageLoaderData;
+	const {
+		initFormData,
+		reportId,
+		routeSelectOptions,
+		topicComboBoxOptions,
+	} = useLoaderData() as InfoEditPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = (
@@ -52,9 +56,14 @@ export const InfoEditPage: FC = () => {
 				แก้ไขเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportForm
-				lockRoute
 				initFormData={initFormData}
 				slotProps={{
+					topicComboBox: {
+						options: topicComboBoxOptions,
+					},
+					routeSelect: {
+						options: routeSelectOptions,
+					},
 					submitButton: {
 						onClick: handleSubmit,
 						startIcon: <SaveRounded />,

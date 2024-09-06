@@ -1,4 +1,7 @@
-import { PickupRouteReportFormData } from "$types/models/PickupRoute";
+import {
+	PickupRouteModel,
+	PickupRouteReportFormData,
+} from "$types/models/PickupRoute";
 import {
 	DateField,
 	TimeField,
@@ -11,7 +14,6 @@ import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { PickupRouteInputSelect } from "./PickupRouteInputSelect";
 
 type PickupRouteReportFormProps = {
-	lockRoute?: boolean;
 	initFormData: PickupRouteReportFormData;
 
 	slotProps: {
@@ -25,13 +27,19 @@ type PickupRouteReportFormProps = {
 		cancelButton: {
 			onClick: () => void;
 		};
+		topicComboBox: {
+			options: string[];
+		};
+		routeSelect: {
+			options: PickupRouteModel[];
+			disabled?: boolean;
+		};
 	};
 };
 export const PickupRouteReportForm: FC<
 	PickupRouteReportFormProps
 > = (props) => {
-	const { initFormData, slotProps, lockRoute } =
-		props;
+	const { initFormData, slotProps } = props;
 
 	const [fieldDate, setFieldDate] = useState(
 		dayjs(initFormData.datetime),
@@ -134,7 +142,10 @@ export const PickupRouteReportForm: FC<
 			label: "สายรถ",
 			value: (
 				<PickupRouteInputSelect
-					isDisabled={lockRoute}
+					options={slotProps.routeSelect.options}
+					isDisabled={
+						slotProps.routeSelect.disabled
+					}
 					value={fieldRoute}
 					onChange={setFieldRoute}
 				/>
@@ -168,6 +179,9 @@ export const PickupRouteReportForm: FC<
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
 				<BaseInputTopicComboBox
+					options={
+						slotProps.topicComboBox.options
+					}
 					value={fieldTopics}
 					onChange={setFieldTopics}
 				/>

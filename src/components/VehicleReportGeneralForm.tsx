@@ -14,31 +14,32 @@ import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { VehicleInputSelect } from "./VehicleInputSelect";
 
 type VehicleReportGeneralFormProps = {
-	vehicleOptions: VehicleModel[];
-	topicOptions: string[];
 	initFormData: VehicleReportGeneralFormData;
-	onSubmit: (
-		formData: VehicleReportGeneralFormData,
-	) => void;
-	onCancel: () => void;
+
 	slotProps: {
 		submitButton: {
 			startIcon: ReactNode;
 			label: string;
+			onClick: (
+				formData: VehicleReportGeneralFormData,
+			) => void;
+		};
+		topicComboBox: {
+			options: string[];
+		};
+		vehcleSelect: {
+			options: VehicleModel[];
+			disabled?: boolean;
+		};
+		cancelButton: {
+			onClick: () => void;
 		};
 	};
 };
 export const VehicleReportGeneralForm: FC<
 	VehicleReportGeneralFormProps
 > = (props) => {
-	const {
-		vehicleOptions,
-		topicOptions,
-		initFormData,
-		slotProps,
-		onSubmit,
-		onCancel,
-	} = props;
+	const { initFormData, slotProps } = props;
 
 	const [fieldDate, setFieldDate] = useState(
 		dayjs(initFormData.datetime),
@@ -57,7 +58,7 @@ export const VehicleReportGeneralForm: FC<
 	const [fieldVehicle, setFieldVehicle] =
 		useState(initFormData.vehicle);
 
-	const handleSubmit = async () => {
+	const handleSubmit = () => {
 		if (isFormIncomplete) {
 			return;
 		}
@@ -69,7 +70,7 @@ export const VehicleReportGeneralForm: FC<
 			.set("millisecond", fieldTime.millisecond())
 			.format();
 
-		onSubmit({
+		slotProps.submitButton.onClick({
 			content: fieldContent.normalize().trim(),
 			datetime: datetime,
 			title: fieldTitle.normalize().trim(),
@@ -80,11 +81,9 @@ export const VehicleReportGeneralForm: FC<
 		});
 	};
 
-	const shouldLockVehicleField =
-		initFormData.vehicle !== null;
-
 	const isVehicleEmpty = fieldVehicle === null;
-	const isTitleEmpty = fieldTitle.trim() === "";
+	const isTitleEmpty =
+		fieldTitle.trim().length === 0;
 	const isFormIncomplete =
 		isVehicleEmpty || isTitleEmpty;
 
@@ -130,8 +129,10 @@ export const VehicleReportGeneralForm: FC<
 			label: "รถรับส่ง",
 			value: (
 				<VehicleInputSelect
-					isDisabled={shouldLockVehicleField}
-					options={vehicleOptions}
+					disabled={
+						slotProps.vehcleSelect.disabled
+					}
+					options={slotProps.vehcleSelect.options}
 					value={fieldVehicle}
 					onChange={setFieldVehicle}
 				/>
@@ -165,7 +166,9 @@ export const VehicleReportGeneralForm: FC<
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
 				<BaseInputTopicComboBox
-					options={topicOptions}
+					options={
+						slotProps.topicComboBox.options
+					}
 					value={fieldTopics}
 					onChange={setFieldTopics}
 				/>
@@ -184,7 +187,7 @@ export const VehicleReportGeneralForm: FC<
 					onClick: handleSubmit,
 				},
 				cancelButton: {
-					onClick: onCancel,
+					onClick: slotProps.cancelButton.onClick,
 				},
 			}}
 		>

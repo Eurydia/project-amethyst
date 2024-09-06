@@ -1,4 +1,3 @@
-import { getPickupRouteAll } from "$backend/database/get";
 import { filterItems } from "$core/filter";
 import { PickupRouteModel } from "$types/models/PickupRoute";
 import { LockRounded } from "@mui/icons-material";
@@ -12,12 +11,7 @@ import {
 	Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
-import {
-	FC,
-	HTMLAttributes,
-	useEffect,
-	useState,
-} from "react";
+import { FC, HTMLAttributes } from "react";
 
 const filterOptions = (
 	options: PickupRouteModel[],
@@ -66,23 +60,15 @@ const renderOption = (
 
 type PickupRouteInputSelectProps = {
 	isDisabled?: boolean;
+	options: PickupRouteModel[];
 	value: PickupRouteModel;
 	onChange: (value: PickupRouteModel) => void;
 };
 export const PickupRouteInputSelect: FC<
 	PickupRouteInputSelectProps
 > = (props) => {
-	const { value, onChange, isDisabled } = props;
-	const [options, setOptions] = useState<
-		PickupRouteModel[]
-	>([]);
-
-	useEffect(() => {
-		(async () => {
-			const routes = await getPickupRouteAll();
-			setOptions(routes);
-		})();
-	}, []);
+	const { value, onChange, isDisabled, options } =
+		props;
 
 	return (
 		<Autocomplete

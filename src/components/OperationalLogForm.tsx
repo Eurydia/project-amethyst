@@ -1,4 +1,7 @@
+import { DriverModel } from "$types/models/Driver";
 import { OperationalLogFormData } from "$types/models/OperatonalLog";
+import { PickupRouteModel } from "$types/models/PickupRoute";
+import { VehicleModel } from "$types/models/Vehicle";
 import { AddRounded } from "@mui/icons-material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -9,26 +12,34 @@ import { PickupRouteInputSelect } from "./PickupRouteInputSelect";
 import { VehicleInputSelect } from "./VehicleInputSelect";
 
 type OperationalLogFormProps = {
-	lockDriver?: boolean;
-	lockRoute?: boolean;
-	lockVehicle?: boolean;
 	initFormData: OperationalLogFormData;
-	onSubmit: (
-		formData: OperationalLogFormData,
-	) => void;
-	onCancel: () => void;
+	slotProps: {
+		submitButton: {
+			onClick: (
+				formData: OperationalLogFormData,
+			) => void;
+		};
+		cancelButton: {
+			onClick: () => void;
+		};
+		routeSelect: {
+			disabled?: boolean;
+			options: PickupRouteModel[];
+		};
+		driverSelect: {
+			disabled?: boolean;
+			options: DriverModel[];
+		};
+		vehicleSelect: {
+			disabled?: boolean;
+			options: VehicleModel[];
+		};
+	};
 };
 export const OperationalLogForm: FC<
 	OperationalLogFormProps
 > = (props) => {
-	const {
-		lockDriver,
-		lockRoute,
-		lockVehicle,
-		initFormData,
-		onCancel,
-		onSubmit,
-	} = props;
+	const { initFormData, slotProps } = props;
 
 	const [fieldStartDate, setFieldStartDate] =
 		useState(dayjs(initFormData.startDate));
@@ -47,7 +58,7 @@ export const OperationalLogForm: FC<
 		if (isFormIncomplete) {
 			return;
 		}
-		onSubmit({
+		slotProps.submitButton.onClick({
 			driver: fieldDriver,
 			route: fieldRoute,
 			vehicle: fieldVehicle,
@@ -119,7 +130,10 @@ export const OperationalLogForm: FC<
 			label: "คนขับรถ",
 			value: (
 				<DriverInputSelect
-					isDisabled={lockDriver}
+					isDisabled={
+						slotProps.driverSelect.disabled
+					}
+					options={slotProps.driverSelect.options}
 					value={fieldDriver}
 					onChange={setFieldDriver}
 				/>
@@ -129,9 +143,14 @@ export const OperationalLogForm: FC<
 			label: "รถรับส่ง",
 			value: (
 				<VehicleInputSelect
-					isDisabled={lockVehicle}
-					onChange={setFieldVehicle}
+					disabled={
+						slotProps.vehicleSelect.disabled
+					}
+					options={
+						slotProps.vehicleSelect.options
+					}
 					value={fieldVehicle}
+					onChange={setFieldVehicle}
 				/>
 			),
 		},
@@ -139,9 +158,12 @@ export const OperationalLogForm: FC<
 			label: "สายรถ",
 			value: (
 				<PickupRouteInputSelect
-					onChange={setFieldRoute}
+					isDisabled={
+						slotProps.routeSelect.disabled
+					}
+					options={slotProps.routeSelect.options}
 					value={fieldRoute}
-					isDisabled={lockRoute}
+					onChange={setFieldRoute}
 				/>
 			),
 		},
@@ -157,7 +179,7 @@ export const OperationalLogForm: FC<
 					onClick: handleSubmit,
 				},
 				cancelButton: {
-					onClick: onCancel,
+					onClick: slotProps.cancelButton.onClick,
 				},
 			}}
 		>

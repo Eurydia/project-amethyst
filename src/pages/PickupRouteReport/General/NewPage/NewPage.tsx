@@ -12,21 +12,18 @@ import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
 
 export const NewPage: FC = () => {
-	const { route, initFormData } =
-		useLoaderData() as NewPageLoaderData;
+	const {
+		routeSelectOptions,
+		initFormData,
+		topicComboBoxOptions,
+	} = useLoaderData() as NewPageLoaderData;
 
 	const submit = useSubmit();
 
 	const handleSubmit = async (
 		formData: PickupRouteReportFormData,
 	) => {
-		postPickupRouteReportGeneral({
-			content: formData.content,
-			datetime: formData.datetime,
-			title: formData.title,
-			topics: formData.topics,
-			route,
-		}).then(
+		postPickupRouteReportGeneral(formData).then(
 			(reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(
@@ -58,6 +55,12 @@ export const NewPage: FC = () => {
 			<PickupRouteReportForm
 				initFormData={initFormData}
 				slotProps={{
+					topicComboBox: {
+						options: topicComboBoxOptions,
+					},
+					routeSelect: {
+						options: routeSelectOptions,
+					},
 					submitButton: {
 						onClick: handleSubmit,
 						startIcon: <AddRounded />,

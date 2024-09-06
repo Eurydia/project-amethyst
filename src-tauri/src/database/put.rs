@@ -3,8 +3,8 @@ pub async fn put_attendance_log(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
     id: i64,
-    actual_arrival_datetime: String,
-    actual_departure_datetime: String,
+    actual_arrival_datetime: Option<String>,
+    actual_departure_datetime: Option<String>,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"

@@ -16,9 +16,9 @@ import {
 import { invoke } from "@tauri-apps/api/tauri";
 
 //#region Topics
-export const getTopicAll =
-	async (): Promise<string> =>
-		invoke("get_topic_all");
+export const getTopicAll = async (): Promise<
+	string[]
+> => invoke("get_topic_all");
 //#endregion
 
 //#region Operational Log
@@ -112,7 +112,7 @@ export const getVehicleAll = async () => {
 	return entries;
 };
 export const getVehicle = async (
-	vehicleId: number | string,
+	vehicleId: number,
 ) => {
 	const entry: VehicleModel | null = await invoke(
 		"get_vehicle",
@@ -177,24 +177,16 @@ export const getPickupRouteAll = async () => {
 };
 export const getPickupRoute = async (
 	routeId: number,
-) => {
-	const entry: PickupRouteModel | null =
-		await invoke("get_pickup_route", {
-			routeId,
-		});
-	return entry;
-};
+): Promise<PickupRouteModel | null> =>
+	invoke("get_pickup_route", { routeId });
 //#endregion
 
 //#region Pickup Route Report General
 export const getPickupRouteReportGeneralAll =
-	async () => {
-		const entries: PickupRouteReportModel[] =
-			await invoke(
-				"get_pickup_route_report_general_all",
-			);
-		return entries;
-	};
+	async (): Promise<PickupRouteReportModel[]> =>
+		await invoke(
+			"get_pickup_route_report_general_all",
+		);
 
 export const getPickupRouteReportGeneral = async (
 	reportId: number,

@@ -106,18 +106,19 @@ const CustomArrivalCheckbox: FC<
 
 		await putAttendanceLog({
 			id,
-			actualDepartureDatetime,
 			actualArrivalDatetime: dayjs().format(),
+			actualDepartureDatetime,
 		});
 		revalidate();
 	};
 
-	const isChecked = actualArrivalDatetime !== "";
+	const isChecked =
+		actualArrivalDatetime !== null;
 
 	const isLate =
 		isChecked &&
-		dayjs(expectedArrivalDatetime).isAfter(
-			dayjs(actualArrivalDatetime),
+		dayjs(actualArrivalDatetime).isAfter(
+			dayjs(expectedArrivalDatetime),
 		);
 
 	let label = "";
@@ -172,7 +173,6 @@ const CustomDepatureCheckbox: FC<
 	const { item } = props;
 	const {
 		id,
-		expectedArrivalDatetime,
 		expectedDepartureDatetime,
 		actualDepartureDatetime,
 		actualArrivalDatetime,
@@ -195,11 +195,11 @@ const CustomDepatureCheckbox: FC<
 	};
 
 	const isChecked =
-		actualDepartureDatetime !== "";
+		actualDepartureDatetime !== null;
 
 	const isLate =
 		isChecked &&
-		dayjs(expectedArrivalDatetime).isAfter(
+		dayjs(actualDepartureDatetime).isAfter(
 			dayjs(actualDepartureDatetime),
 		);
 
@@ -213,7 +213,7 @@ const CustomDepatureCheckbox: FC<
 		if (isLate) {
 			const lateByLabel = expected
 				.locale("th")
-				.from(actual);
+				.from(actual, true);
 			lateBy = (
 				<Typography
 					color="error"

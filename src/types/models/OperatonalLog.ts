@@ -1,5 +1,4 @@
 import { DriverModel } from "./Driver";
-import { PickupRouteModel } from "./PickupRoute";
 import { VehicleModel } from "./Vehicle";
 
 export type OperationalLogModel = {

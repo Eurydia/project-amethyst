@@ -1,4 +1,4 @@
-import { PickupRouteReportGeneralInfoGroup } from "$components/PickupRouteReportGeneralInfoGroup";
+import { PickupRouteReportInfoGroup } from "$components/PickupRouteReportInfoGroup";
 import { Stack, Typography } from "@mui/material";
 import "dayjs/locale/th";
 import { FC } from "react";
@@ -6,7 +6,7 @@ import { useLoaderData } from "react-router-dom";
 import { InfoPageLoaderData } from "./loader";
 
 export const InfoPage: FC = () => {
-	const { report } =
+	const { report, route } =
 		useLoaderData() as InfoPageLoaderData;
 
 	return (
@@ -14,8 +14,9 @@ export const InfoPage: FC = () => {
 			<Typography variant="h1">
 				เรื่องร้องเรียนสายรถ
 			</Typography>
-			<PickupRouteReportGeneralInfoGroup
+			<PickupRouteReportInfoGroup
 				report={report}
+				route={route}
 			/>
 		</Stack>
 	);

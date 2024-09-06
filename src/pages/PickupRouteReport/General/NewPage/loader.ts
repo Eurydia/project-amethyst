@@ -1,4 +1,7 @@
-import { getPickupRoute } from "$backend/database/get";
+import {
+	getPickupRouteAll,
+	getTopicAll,
+} from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
 import {
 	PickupRouteModel,
@@ -11,13 +14,15 @@ import {
 } from "react-router-dom";
 
 export type NewPageLoaderData = {
-	route: PickupRouteModel;
 	initFormData: PickupRouteReportFormData;
+	routeSelectOptions: PickupRouteModel[];
+	topicComboBoxOptions: string[];
 };
 export const newPageLoader: LoaderFunction =
 	async () => {
-		const route = await getPickupRoute(1);
-		if (route === null) {
+		const routeSelectOptions =
+			await getPickupRouteAll();
+		if (routeSelectOptions.length === 0) {
 			throw json(
 				{
 					message:
@@ -26,7 +31,9 @@ export const newPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-
+		const route = routeSelectOptions[0];
+		const topicComboBoxOptions =
+			await getTopicAll();
 		const initFormData: PickupRouteReportFormData =
 			{
 				datetime: dayjs().format(),
@@ -38,7 +45,8 @@ export const newPageLoader: LoaderFunction =
 
 		const loaderData: NewPageLoaderData = {
 			initFormData,
-			route,
+			routeSelectOptions,
+			topicComboBoxOptions,
 		};
 
 		return loaderData;

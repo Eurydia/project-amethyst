@@ -47,7 +47,7 @@ export type VehicleReportGeneralFormData = {
 	title: string;
 	content: string;
 	topics: string[];
-	vehicle: VehicleModel | null;
+	vehicle: VehicleModel;
 };
 
 export type VehicleReportGeneralEntry = {
@@ -87,7 +87,7 @@ export type VehicleReportInspectionFormData = {
 	datetime: string;
 	content: string;
 	topics: string[];
-	vehicle: VehicleModel | null;
+	vehicle: VehicleModel;
 
 	frontCamera: string;
 	overheadFan: string;

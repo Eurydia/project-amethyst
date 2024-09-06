@@ -1,6 +1,6 @@
 import { BaseTOC } from "$components/BaseTOC";
 import { OperationalLogTable } from "$components/OperationalLogTable";
-import { VehicleDetails } from "$components/VehicleDetails";
+import { VehicleInfoGroup } from "$components/VehicleInfoGroup";
 import { VehicleReportGeneralTable } from "$components/VehicleReportGeneralTable";
 import { VehicleReportInspectionTable } from "$components/VehicleReportInspectionTable";
 import { Stack, Typography } from "@mui/material";
@@ -32,10 +32,18 @@ const TOC_ITEMS: {
 
 export const IndexPage: FC = () => {
 	const {
+		vehicle,
+
+		galleryDirPath,
+		galleryFileEntries,
+
+		logEntries,
 		generalEntries,
 		inspectionEntries,
-		vehicle,
-		images,
+		topicMultiSelectOptions,
+		driverMultiSelectOptions,
+		routeMultiSelectOptions,
+		vehicleMultiSelectOptions,
 	} = useLoaderData() as IndexPageLoaderData;
 
 	const submit = useSubmit();
@@ -49,9 +57,14 @@ export const IndexPage: FC = () => {
 			>
 				ข้อมูลรถรับส่ง
 			</Typography>
-			<VehicleDetails
-				images={images}
+			<VehicleInfoGroup
 				vehicle={vehicle}
+				slotProps={{
+					gallery: {
+						dirPath: galleryDirPath,
+						fileEntries: galleryFileEntries,
+					},
+				}}
 			/>
 			<Typography
 				variant="h2"
@@ -60,9 +73,24 @@ export const IndexPage: FC = () => {
 				ตารางบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogTable
-				vehicle={vehicle}
+				entries={logEntries}
 				slotProps={{
+					driverMultiSelect: {
+						options: driverMultiSelectOptions,
+					},
+					routeMultiSelect: {
+						options: routeMultiSelectOptions,
+					},
+					vehicleMultiSelect: {
+						disabled: true,
+						options: vehicleMultiSelectOptions,
+					},
 					addButton: {
+						isDisabled:
+							driverMultiSelectOptions.length ===
+								0 ||
+							routeMultiSelectOptions.length ===
+								0,
 						onClick: () =>
 							submit(
 								{},
@@ -87,6 +115,13 @@ export const IndexPage: FC = () => {
 								{ action: "./report/general" },
 							),
 					},
+					topicMultiSelect: {
+						options: topicMultiSelectOptions,
+					},
+					vehicleMultiSelect: {
+						disabled: true,
+						options: vehicleMultiSelectOptions,
+					},
 				}}
 			/>
 			<Typography
@@ -104,6 +139,13 @@ export const IndexPage: FC = () => {
 								{},
 								{ action: "./report/inspection" },
 							),
+					},
+					topicMultiSelect: {
+						options: topicMultiSelectOptions,
+					},
+					vehicleMultiSelect: {
+						disabled: true,
+						options: vehicleMultiSelectOptions,
 					},
 				}}
 			/>

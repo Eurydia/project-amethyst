@@ -1,6 +1,6 @@
 import { BaseTOC } from "$components/BaseTOC";
 import { OperationalLogTable } from "$components/OperationalLogTable";
-import { PickupRouteDetails } from "$components/PickupRouteDetails";
+import { PickupRouteInfoGroup } from "$components/PickupRouteInfoGroup";
 import { PickupRouteReportGeneralTable } from "$components/PickupRouteReportGeneralTable";
 import { TRANSLATION } from "$locale/th";
 import { Stack, Typography } from "@mui/material";
@@ -30,8 +30,17 @@ const TOC_ITEMS: {
 ];
 
 export const IndexPage: FC = () => {
-	const { route } =
-		useLoaderData() as IndexPageLoaderData;
+	const {
+		route,
+
+		logEntries,
+		reportEntries,
+
+		driverMultiSelectOptions,
+		vehicleMultiSelectOptions,
+		routeMultiSelectOptions,
+		topicMultiSelectOptions,
+	} = useLoaderData() as IndexPageLoaderData;
 
 	const submit = useSubmit();
 
@@ -44,7 +53,7 @@ export const IndexPage: FC = () => {
 			>
 				ข้อมูลสายรถ
 			</Typography>
-			<PickupRouteDetails route={route} />
+			<PickupRouteInfoGroup route={route} />
 			<Typography
 				variant="h2"
 				id="operational-log"
@@ -52,7 +61,7 @@ export const IndexPage: FC = () => {
 				{TRANSLATION.operationalLogTable}
 			</Typography>
 			<OperationalLogTable
-				route={route}
+				entries={logEntries}
 				slotProps={{
 					addButton: {
 						onClick: () =>
@@ -60,6 +69,16 @@ export const IndexPage: FC = () => {
 								{},
 								{ action: "./log/operational" },
 							),
+					},
+					routeMultiSelect: {
+						disabled: true,
+						options: routeMultiSelectOptions,
+					},
+					driverMultiSelect: {
+						options: driverMultiSelectOptions,
+					},
+					vehicleMultiSelect: {
+						options: vehicleMultiSelectOptions,
 					},
 				}}
 			/>
@@ -70,7 +89,7 @@ export const IndexPage: FC = () => {
 				ตารางบันทึกเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportGeneralTable
-				route={route}
+				entries={reportEntries}
 				slotProps={{
 					addButton: {
 						onClick: () =>
@@ -78,6 +97,13 @@ export const IndexPage: FC = () => {
 								{},
 								{ action: "./report/general" },
 							),
+					},
+					routeMultiSelect: {
+						disabled: true,
+						options: routeMultiSelectOptions,
+					},
+					topicMultiSelect: {
+						options: topicMultiSelectOptions,
 					},
 				}}
 			/>

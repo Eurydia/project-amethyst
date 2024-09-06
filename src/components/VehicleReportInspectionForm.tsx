@@ -32,30 +32,32 @@ const CustomTextField: FC<TextFieldProps> = (
 };
 
 type VehicleReportInspectionFormProps = {
-	vehicleOptions: VehicleModel[];
-	topicOptions: string[];
 	initFormData: VehicleReportInspectionFormData;
-	onSubmit: (
-		formData: VehicleReportInspectionFormData,
-	) => void;
-	onCancel: () => void;
+
 	slotProps: {
 		submitButton: {
 			label: string;
 			startIcon: ReactNode;
+			onClick: (
+				formData: VehicleReportInspectionFormData,
+			) => void;
+		};
+		cancelButton: {
+			onClick: () => void;
+		};
+		vehicleSelect: {
+			disabled?: boolean;
+			options: VehicleModel[];
+		};
+		topicComboBox: {
+			options: string[];
 		};
 	};
 };
 export const VehicleReportInspectionForm: FC<
 	VehicleReportInspectionFormProps
 > = (props) => {
-	const {
-		vehicleOptions,
-		topicOptions,
-		initFormData,
-		onSubmit,
-		onCancel,
-	} = props;
+	const { initFormData, slotProps } = props;
 
 	const [fieldDate, setFieldDate] = useState(
 		dayjs(initFormData.datetime),
@@ -161,13 +163,8 @@ export const VehicleReportInspectionForm: FC<
 					fieldTires.normalize().trim() || "ปกติ",
 			};
 
-		onSubmit(formData);
+		slotProps.submitButton.onClick(formData);
 	};
-
-	const handleCancel = () => onCancel();
-
-	const shouldLockVehicleField =
-		initFormData.vehicle !== null;
 
 	const isVehicleEmpty = fieldVehicle === null;
 	const isFormIncomplete = isVehicleEmpty;
@@ -214,8 +211,12 @@ export const VehicleReportInspectionForm: FC<
 			label: "เลขทะเบียน",
 			value: (
 				<VehicleInputSelect
-					isDisabled={shouldLockVehicleField}
-					options={vehicleOptions}
+					disabled={
+						slotProps.vehicleSelect.disabled
+					}
+					options={
+						slotProps.vehicleSelect.options
+					}
 					value={fieldVehicle}
 					onChange={setFieldVehicle}
 				/>
@@ -372,7 +373,9 @@ export const VehicleReportInspectionForm: FC<
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
 				<BaseInputTopicComboBox
-					options={topicOptions}
+					options={
+						slotProps.topicComboBox.options
+					}
 					value={fieldTopics}
 					onChange={setFieldTopics}
 				/>
@@ -394,7 +397,7 @@ export const VehicleReportInspectionForm: FC<
 							.startIcon,
 				},
 				cancelButton: {
-					onClick: handleCancel,
+					onClick: slotProps.cancelButton.onClick,
 				},
 			}}
 		>

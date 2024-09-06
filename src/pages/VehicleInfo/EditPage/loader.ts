@@ -3,34 +3,20 @@ import {
 	getVehicleAll,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import {
-	VehicleFormData,
-	VehicleModel,
-} from "$types/models/Vehicle";
+import { VehicleFormData } from "$types/models/Vehicle";
 import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
 
-const toVendorOptions = (
-	vehicleAll: VehicleModel[],
-) => {
-	const vendors = new Set<string>();
-	for (const { vendor } of vehicleAll) {
-		vendors.add(vendor);
-	}
-	return [...vendors];
-};
-
 export type EditPageLoaderData = {
-	vehicleId: string;
+	vehicleId: number;
 	initFormData: VehicleFormData;
-	vendorOptions: string[];
+	vendorSelectOptions: string[];
 };
 export const editPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { vehicleId } = params;
-		if (vehicleId === undefined) {
+		if (params.vehicleId === undefined) {
 			throw json(
 				{
 					message:
@@ -39,9 +25,10 @@ export const editPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const vehicle = await getVehicle(
-			Number.parseInt(vehicleId),
+		const vehicleId = Number.parseInt(
+			params.vehicleId,
 		);
+		const vehicle = await getVehicle(vehicleId);
 		if (vehicle === null) {
 			throw json(
 				{
@@ -52,8 +39,12 @@ export const editPageLoader: LoaderFunction =
 			);
 		}
 		const vehicleAll = await getVehicleAll();
-		const vendorOptions =
-			toVendorOptions(vehicleAll);
+
+		const vendors = new Set<string>();
+		for (const { vendor } of vehicleAll) {
+			vendors.add(vendor);
+		}
+		const vendorSelectOptions = [...vendors];
 
 		const initFormData: VehicleFormData = {
 			licensePlate: vehicle.license_plate,
@@ -64,7 +55,7 @@ export const editPageLoader: LoaderFunction =
 		const loaderData: EditPageLoaderData = {
 			vehicleId,
 			initFormData,
-			vendorOptions,
+			vendorSelectOptions,
 		};
 		return loaderData;
 	};

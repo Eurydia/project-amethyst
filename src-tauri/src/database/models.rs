@@ -1,4 +1,4 @@
-#[derive(sqlx::FromRow, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, sqlx::FromRow, serde::Serialize, serde::Deserialize)]
 pub struct OperationalLogModel {
     pub id: i64,
     pub driver_id: i64,
@@ -9,7 +9,7 @@ pub struct OperationalLogModel {
     pub end_date: Option<String>,
 }
 
-#[derive(sqlx::FromRow, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, sqlx::FromRow, serde::Serialize, serde::Deserialize)]
 pub struct AttendanceLogModel {
     pub id: i64,
     pub driver_id: i64,
@@ -23,7 +23,7 @@ pub struct AttendanceLogModel {
     pub actual_departure_datetime: Option<String>,
 }
 
-#[derive(sqlx::FromRow, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, sqlx::FromRow, serde::Serialize, serde::Deserialize)]
 pub struct VehicleModel {
     pub id: i64,
 
@@ -32,7 +32,7 @@ pub struct VehicleModel {
     pub vehicle_class: String,
     pub registered_city: String,
 }
-#[derive(sqlx::FromRow, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, sqlx::FromRow, serde::Serialize, serde::Deserialize)]
 pub struct VehicleReportGeneralModel {
     pub id: i64,
     pub vehicle_id: i64,
@@ -43,7 +43,7 @@ pub struct VehicleReportGeneralModel {
     pub topics: String,
 }
 
-#[derive(sqlx::FromRow, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, sqlx::FromRow, serde::Serialize, serde::Deserialize)]
 pub struct VehicleReportInspectionModel {
     pub id: i64,
     pub vehicle_id: i64,
@@ -66,7 +66,7 @@ pub struct VehicleReportInspectionModel {
     pub tires: String,
 }
 
-#[derive(sqlx::FromRow, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, sqlx::FromRow, serde::Serialize, serde::Deserialize)]
 pub struct DriverModel {
     pub id: i64,
 
@@ -76,7 +76,7 @@ pub struct DriverModel {
     pub license_type: String,
 }
 
-#[derive(sqlx::FromRow, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, sqlx::FromRow, serde::Serialize, serde::Deserialize)]
 pub struct DriverReportModel {
     pub id: i64,
     pub driver_id: i64,
@@ -87,7 +87,7 @@ pub struct DriverReportModel {
     pub topics: String,
 }
 
-#[derive(sqlx::FromRow, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, sqlx::FromRow, serde::Serialize, serde::Deserialize)]
 pub struct PickupRouteModel {
     pub id: i64,
 
@@ -96,7 +96,7 @@ pub struct PickupRouteModel {
     pub departure_time: String,
 }
 
-#[derive(sqlx::FromRow, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, sqlx::FromRow, serde::Serialize, serde::Deserialize)]
 pub struct PickupRouteReportModel {
     pub id: i64,
     pub route_id: i64,

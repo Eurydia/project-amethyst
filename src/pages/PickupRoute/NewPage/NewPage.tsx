@@ -48,19 +48,21 @@ export const NewPage: FC = () => {
 			</Typography>
 			<PickupRouteForm
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() => {
-					submit(
-						{},
-						{
-							action: "/pickup-routes",
-						},
-					);
-				}}
 				slotProps={{
 					submitButton: {
+						onClick: handleSubmit,
 						label: "ลงทะเบียน",
 						startIcon: <AddRounded />,
+					},
+					cancelButton: {
+						onClick: () => {
+							submit(
+								{},
+								{
+									action: "/pickup-routes",
+								},
+							);
+						},
 					},
 				}}
 			/>

@@ -7,7 +7,7 @@ import {
 	TextField,
 	Typography,
 } from "@mui/material";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 
 const filterOptions = (
 	options: string[],
@@ -43,12 +43,6 @@ export const VehicleInputVendorAutocomplete: FC<
 		value,
 		placeholder,
 	} = props;
-
-	useEffect(() => {
-		if (value === "" && options.length > 0) {
-			onChange(options[0]);
-		}
-	}, []);
 
 	const optionSet = new Set(options);
 

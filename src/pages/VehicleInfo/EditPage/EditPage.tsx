@@ -13,9 +13,9 @@ import { EditPageLoaderData } from "./loader";
 
 export const EditPage: FC = () => {
 	const {
-		initFormData,
 		vehicleId,
-		vendorOptions,
+		initFormData,
+		vendorSelectOptions,
 	} = useLoaderData() as EditPageLoaderData;
 	const submit = useSubmit();
 
@@ -23,7 +23,7 @@ export const EditPage: FC = () => {
 		formData: VehicleFormData,
 	) => {
 		putVehicle({
-			id: Number.parseInt(vehicleId),
+			id: vehicleId,
 			license_plate: formData.licensePlate,
 			registered_city: formData.registeredCity,
 			vendor: formData.vendor,
@@ -49,22 +49,25 @@ export const EditPage: FC = () => {
 				แก้ไขข้อมูลรถรับส่ง
 			</Typography>
 			<VehicleForm
-				vendorOptions={vendorOptions}
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action:
-								"/vehicles/info/" + vehicleId,
-						},
-					)
-				}
 				slotProps={{
 					submitButton: {
 						label: "บันทึก",
 						startIcon: <SaveRounded />,
+						onClick: handleSubmit,
+					},
+					vendorSelect: {
+						options: vendorSelectOptions,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/vehicles/info/" + vehicleId,
+								},
+							),
 					},
 				}}
 			/>

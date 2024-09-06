@@ -1,18 +1,24 @@
 import { VehicleModel } from "$types/models/Vehicle";
 import { Typography } from "@mui/material";
+import { FileEntry } from "@tauri-apps/api/fs";
 import { FC } from "react";
 import { useSubmit } from "react-router-dom";
 import { BaseGallery } from "./BaseGallery";
 import { BaseInfoGroup } from "./BaseInfoGroup";
 
-type VehicleDetailsProps = {
+type VehicleInfoGroupProps = {
 	vehicle: VehicleModel;
-	images: { fileName: string; src: string }[];
+	slotProps: {
+		gallery: {
+			fileEntries: FileEntry[];
+			dirPath: string;
+		};
+	};
 };
-export const VehicleDetails: FC<
-	VehicleDetailsProps
+export const VehicleInfoGroup: FC<
+	VehicleInfoGroupProps
 > = (props) => {
-	const { vehicle, images } = props;
+	const { vehicle, slotProps } = props;
 	const submit = useSubmit();
 
 	const detailItems = [
@@ -45,8 +51,10 @@ export const VehicleDetails: FC<
 		label: "คลังภาพ",
 		value: (
 			<BaseGallery
-				images={images}
-				onOpenRoot={() => {}}
+				dirPath={slotProps.gallery.dirPath}
+				fileEntries={
+					slotProps.gallery.fileEntries
+				}
 			/>
 		),
 	});

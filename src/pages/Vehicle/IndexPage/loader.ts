@@ -1,87 +1,27 @@
-import {
-	getDriverAll,
-	getOperationLogToday,
-	getPickupRouteAll,
-	getVehicleAll,
-} from "$backend/database/get";
-import { DriverModel } from "$types/models/Driver";
-import { OperationalLogModel } from "$types/models/OperatonalLog";
-import { PickupRouteModel } from "$types/models/PickupRoute";
-import {
-	VehicleEntry,
-	VehicleModel,
-} from "$types/models/Vehicle";
+import { getVehicleAll } from "$backend/database/get";
+import { MultiSelectOption } from "$types/generics";
+import { VehicleModelImpl } from "$types/impl/Vehicle";
+import { VehicleEntry } from "$types/models/Vehicle";
 import { LoaderFunction } from "react-router-dom";
-
-const toEntry = (
-	logAll: OperationalLogModel[],
-	vehicle: VehicleModel,
-	driverAll: DriverModel[],
-	routeAll: PickupRouteModel[],
-) => {
-	const driverIds = new Set<number>();
-	const routeIds = new Set<number>();
-	for (const { driver_id, route_id } of logAll) {
-		driverIds.add(driver_id);
-		routeIds.add(route_id);
-	}
-
-	const entry: VehicleEntry = {
-		id: vehicle.id,
-		licensePlate: vehicle.license_plate,
-		routes: routeAll
-			.filter(({ id }) => routeIds.has(id))
-			.map(({ id, name }) => ({
-				id,
-				name,
-			})),
-		drivers: driverAll
-			.filter(({ id }) => driverIds.has(id))
-			.map(({ id, name, surname }) => ({
-				id,
-				name,
-				surname,
-			})),
-	};
-	return entry;
-};
-
-const toEntries = (
-	logAll: OperationalLogModel[],
-	vehicleAll: VehicleModel[],
-	driverAll: DriverModel[],
-	routeAll: PickupRouteModel[],
-) => {
-	const entries = [];
-	for (const vehicle of vehicleAll) {
-		const entry = toEntry(
-			logAll,
-			vehicle,
-			driverAll,
-			routeAll,
-		);
-		entries.push(entry);
-	}
-	return entries;
-};
 
 export type IndexPageLoaderData = {
 	entries: VehicleEntry[];
+	vehicleMultiSelectOptions: MultiSelectOption[];
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		const logAll = await getOperationLogToday();
-		const vehicleAll = await getVehicleAll();
-		const driverAll = await getDriverAll();
-		const routeAll = await getPickupRouteAll();
-		const entries = toEntries(
-			logAll,
-			vehicleAll,
-			driverAll,
-			routeAll,
+		const vehicles = await getVehicleAll();
+		const entries = await Promise.all(
+			vehicles.map(VehicleModelImpl.toEntry),
 		);
+		const vehicleMultiSelectOptions =
+			vehicles.map(
+				VehicleModelImpl.toMultiSelectOption,
+			);
+
 		const loaderData: IndexPageLoaderData = {
 			entries,
+			vehicleMultiSelectOptions,
 		};
 		return loaderData;
 	};

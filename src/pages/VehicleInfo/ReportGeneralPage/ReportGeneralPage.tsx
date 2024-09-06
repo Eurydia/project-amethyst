@@ -13,9 +13,9 @@ import { ReportGeneralPageLoaderData } from "./loader";
 
 export const ReportGeneralPage: FC = () => {
 	const {
-		topicOptions,
 		initFormData,
-		vehicleOptions,
+		topicComboBoxOptions,
+		vehicleSelectOptions,
 		vehicleId,
 	} =
 		useLoaderData() as ReportGeneralPageLoaderData;
@@ -25,13 +25,7 @@ export const ReportGeneralPage: FC = () => {
 	const handleSubmit = async (
 		formData: VehicleReportGeneralFormData,
 	) => {
-		postVehicleReportGeneral({
-			content: formData.content,
-			datetime: formData.datetime,
-			title: formData.title,
-			topics: formData.topics.join(","),
-			vehicle_id: Number.parseInt(vehicleId),
-		}).then(
+		postVehicleReportGeneral(formData).then(
 			(reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(
@@ -61,23 +55,28 @@ export const ReportGeneralPage: FC = () => {
 				ลงบันทึกเรื่องร้องเรียนรถรับส่ง
 			</Typography>
 			<VehicleReportGeneralForm
-				vehicleOptions={vehicleOptions}
-				topicOptions={topicOptions}
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action:
-								"/vehicles/info/" + vehicleId,
-						},
-					)
-				}
 				slotProps={{
 					submitButton: {
 						label: "ลงบันทึก",
 						startIcon: <AddRounded />,
+						onClick: handleSubmit,
+					},
+					topicComboBox: {
+						options: topicComboBoxOptions,
+					},
+					vehcleSelect: {
+						options: vehicleSelectOptions,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/vehicles/info/" + vehicleId,
+								},
+							),
 					},
 				}}
 			/>

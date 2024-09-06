@@ -1,15 +1,13 @@
-import { filterItems } from "$core/filter";
-import { TableHeaderDefinition } from "$types/generics";
+import {
+	MultiSelectOption,
+	TableHeaderDefinition,
+} from "$types/generics";
+import { VehicleReportInspectionEntryImpl } from "$types/impl/Vehicle";
 import { VehicleReportInspectionEntry } from "$types/models/Vehicle";
 import { Typography } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import {
-	FC,
-	ReactNode,
-	useMemo,
-	useState,
-} from "react";
+import { FC, ReactNode, useState } from "react";
 import { Link } from "react-router-dom";
 import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 import { BaseInputTopicMatchMode } from "./BaseInputTopicMatchMode";
@@ -71,90 +69,18 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<VehicleReportInspectionEntry>[] 
 		},
 	];
 
-const getOptions = (
-	entries: VehicleReportInspectionEntry[],
-) => {
-	const uniqVehicles: Record<string, string> = {};
-	const uniqTopics = new Set<string>();
-	for (const entry of entries) {
-		uniqVehicles[entry.vehicleId] =
-			entry.vehicleLicensePlate;
-
-		for (const topic of entry.topics) {
-			uniqTopics.add(topic);
-		}
-	}
-	const vehicleOptions = Object.entries(
-		uniqVehicles,
-	).map(([value, label]) => ({
-		value,
-		label,
-	}));
-	const topicOptions = [...uniqTopics].map(
-		(topic) => ({
-			value: topic,
-			label: topic,
-		}),
-	);
-	return {
-		vehicleOptions,
-		topicOptions,
-	};
-};
-
-const filterEntries = (
-	entries: VehicleReportInspectionEntry[],
-	afterDate: Dayjs | null,
-	beforeDate: Dayjs | null,
-	selectedVehicles: string[],
-	selectedTopics: string[],
-	topicMustHaveAll: boolean,
-) => {
-	let items = entries;
-	if (afterDate !== null) {
-		items = items.filter((entry) =>
-			dayjs(entry.datetime).isAfter(afterDate),
-		);
-	}
-	if (beforeDate !== null) {
-		items = items.filter((entry) =>
-			dayjs(entry.datetime).isBefore(beforeDate),
-		);
-	}
-	const vehicleSet = new Set(selectedVehicles);
-	return items
-		.filter((entry) =>
-			vehicleSet.has(entry.vehicleId.toString()),
-		)
-		.filter((entry) => {
-			const topicSet = new Set(entry.topics);
-			return topicMustHaveAll
-				? selectedTopics.every((topic) =>
-						topicSet.has(topic),
-				  )
-				: selectedTopics.some((topic) =>
-						topicSet.has(topic),
-				  );
-		});
-};
-
-const searchEntries = (
-	entries: VehicleReportInspectionEntry[],
-	search: string,
-) => {
-	return filterItems(entries, search, [
-		"title",
-		"topics",
-		"vehicleLicensePlate",
-		"inspectionRoundNumber",
-	]);
-};
-
 type VehicleReportInspectionTableProps = {
 	entries: VehicleReportInspectionEntry[];
 	slotProps: {
 		addButton: {
 			onClick: () => void;
+		};
+		vehicleMultiSelect: {
+			disabled?: boolean;
+			options: MultiSelectOption[];
+		};
+		topicMultiSelect: {
+			options: MultiSelectOption[];
 		};
 	};
 };
@@ -163,9 +89,6 @@ export const VehicleReportInspectionTable: FC<
 > = (props) => {
 	const { slotProps, entries } = props;
 
-	const { vehicleOptions, topicOptions } =
-		useMemo(() => getOptions(entries), [entries]);
-
 	const [search, setSearch] = useState("");
 	const [afterDate, setAfterDate] =
 		useState<Dayjs | null>(null);
@@ -173,38 +96,27 @@ export const VehicleReportInspectionTable: FC<
 		useState<Dayjs | null>(null);
 	const [topicMustHaveAll, setTopicMustHaveAll] =
 		useState(false);
-	const [selectedTopics, setSelectedTopics] =
-		useState(
-			topicOptions.map(({ value }) => value),
-		);
-	const [selectedVehicles, setSelectedVehicles] =
-		useState(
-			vehicleOptions.map(({ value }) => value),
-		);
+	const [topics, setTopics] = useState(
+		slotProps.topicMultiSelect.options.map(
+			({ value }) => value,
+		),
+	);
+	const [vehicles, setVehicles] = useState(
+		slotProps.vehicleMultiSelect.options.map(
+			({ value }) => value,
+		),
+	);
 
-	const filteredEntries = useMemo(
-		() =>
-			filterEntries(
-				entries,
-				afterDate,
-				beforeDate,
-				selectedVehicles,
-				selectedTopics,
-				topicMustHaveAll,
-			),
-		[
+	const filteredEntries =
+		VehicleReportInspectionEntryImpl.filter(
+			entries,
 			afterDate,
 			beforeDate,
-			selectedVehicles,
-			selectedTopics,
-			entries,
+			vehicles,
+			topics,
 			topicMustHaveAll,
-		],
-	);
-	const searchedEntries = useMemo(
-		() => searchEntries(filteredEntries, search),
-		[search, filteredEntries],
-	);
+			search,
+		);
 
 	const formItems: {
 		label: string;
@@ -238,9 +150,14 @@ export const VehicleReportInspectionTable: FC<
 			label: "เลขทะเบียน",
 			value: (
 				<BaseInputMultiSelect
-					options={vehicleOptions}
-					selectedOptions={selectedVehicles}
-					onChange={setSelectedVehicles}
+					disabled={
+						slotProps.vehicleMultiSelect.disabled
+					}
+					options={
+						slotProps.vehicleMultiSelect.options
+					}
+					selectedOptions={vehicles}
+					onChange={setVehicles}
 				/>
 			),
 		},
@@ -248,8 +165,8 @@ export const VehicleReportInspectionTable: FC<
 			label: "ประเภทการกรองหัวข้อ",
 			value: (
 				<BaseInputTopicMatchMode
-					onChange={setTopicMustHaveAll}
 					value={topicMustHaveAll}
+					onChange={setTopicMustHaveAll}
 				/>
 			),
 		},
@@ -257,9 +174,11 @@ export const VehicleReportInspectionTable: FC<
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
 				<BaseInputMultiSelect
-					options={topicOptions}
-					selectedOptions={selectedTopics}
-					onChange={setSelectedTopics}
+					options={
+						slotProps.topicMultiSelect.options
+					}
+					selectedOptions={topics}
+					onChange={setTopics}
 				/>
 			),
 		},
@@ -269,7 +188,7 @@ export const VehicleReportInspectionTable: FC<
 		<BaseSortableTable
 			defaultSortByColumn={0}
 			defaultSortOrder="desc"
-			entries={searchedEntries}
+			entries={filteredEntries}
 			headers={HEADER_DEFINITIONS}
 			slotProps={{
 				addButton: {

@@ -2,30 +2,34 @@ import { getVehicleAll } from "$backend/database/get";
 import { VehicleFormData } from "$types/models/Vehicle";
 import { LoaderFunction } from "react-router-dom";
 
-const toOptions = async () => {
-	const vehicles = await getVehicleAll();
-	const vendors = new Set(
-		vehicles.map(({ vendor }) => vendor),
-	);
-	return [...vendors];
-};
-
 export type NewPageLoaderData = {
 	initFormData: VehicleFormData;
-	vendorOptions: string[];
+	vendorSelectOptions: string[];
 };
 export const newPageLoader: LoaderFunction =
 	async () => {
-		const vendorOptions = await toOptions();
+		const vehicles = await getVehicleAll();
+		const vendors = new Set<string>();
+
+		for (const vehicle of vehicles) {
+			vendors.add(vehicle.vendor);
+		}
+		const vendorSelectOptions = [...vendors];
+
+		let vendor = "";
+		if (vendorSelectOptions.length > 0) {
+			vendor = vendorSelectOptions[0];
+		}
+
 		const initFormData: VehicleFormData = {
 			licensePlate: "",
-			vendor: "",
+			vendor,
 			vehicleClass: "",
 			registeredCity: "",
 		};
 		const loaderData: NewPageLoaderData = {
 			initFormData,
-			vendorOptions,
+			vendorSelectOptions,
 		};
 		return loaderData;
 	};

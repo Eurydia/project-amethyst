@@ -1,20 +1,7 @@
-import { postAttendanceLog } from "$backend/database/post";
 import { AttendanceLogTable } from "$components/AttendanceLogTable";
-import {
-	AttendanceLogEntry,
-	AttendanceLogModel,
-} from "$types/models/AttendanceLog";
-import { DriverModel } from "$types/models/Driver";
-import { OperationalLogModel } from "$types/models/OperatonalLog";
-import { PickupRouteModel } from "$types/models/PickupRoute";
-import { VehicleModel } from "$types/models/Vehicle";
 import { Stack, Typography } from "@mui/material";
-import dayjs from "dayjs";
-import { FC, useEffect } from "react";
-import {
-	useLoaderData,
-	useRevalidator,
-} from "react-router-dom";
+import { FC } from "react";
+import { useLoaderData } from "react-router-dom";
 import { HomePageLoaderData } from "./loader";
 
 const toEntry = (
@@ -30,6 +17,7 @@ const toEntry = (
 			log.expected_arrival_datetime,
 		expectedDepartureDatetime:
 			log.expected_departure_datetime,
+
 		actualArrivalDatetime:
 			log.actual_arrival_datetime,
 		actualDepartureDatetime:
@@ -86,84 +74,16 @@ const toEntries = (
 	return entries;
 };
 
-const prepareAttendanceLog = async (
-	logs: OperationalLogModel[],
-	routes: PickupRouteModel[],
-) => {
-	const reqs = [];
-	for (const log of logs) {
-		const route = routes.find(
-			({ id }) => id === log.route_id,
-		);
-
-		if (route === undefined) {
-			continue;
-		}
-
-		const arrivalTime = dayjs(
-			route.arrival_time,
-			"HH:mm",
-		);
-		const departureTime = dayjs(
-			route.departure_time,
-			"HH:mm",
-		);
-
-		const today = dayjs();
-
-		const req = await postAttendanceLog({
-			driver_id: log.driver_id,
-			route_id: log.route_id,
-			vehicle_id: log.vehicle_id,
-
-			expected_arrival_datetime: today
-				.set("hour", arrivalTime.hour())
-				.set("minute", arrivalTime.minute())
-				.format(),
-			expected_departure_datetime: today
-				.set("hour", departureTime.hour())
-				.set("minute", departureTime.minute())
-				.format(),
-		});
-		reqs.push(req);
-	}
-	await Promise.all(reqs);
-};
-
 export const HomePage: FC = () => {
-	const {
-		attendanceLogs,
-		operationalLogs,
-		drivers,
-		routes,
-		vehicles,
-	} = useLoaderData() as HomePageLoaderData;
-	const { revalidate } = useRevalidator();
-
-	useEffect(() => {
-		if (
-			attendanceLogs.length >=
-			operationalLogs.length
-		) {
-			return;
-		}
-		prepareAttendanceLog(operationalLogs, routes);
-		revalidate();
-	}, []);
-
-	const entries = toEntries(
-		attendanceLogs,
-		drivers,
-		vehicles,
-		routes,
-	);
+	const {} =
+		useLoaderData() as HomePageLoaderData;
 
 	return (
-		<Stack spacing={4}>
+		<Stack spacing={1}>
 			<Typography variant="h1">
 				หน้าแรก
 			</Typography>
-			<AttendanceLogTable entries={entries} />
+			<AttendanceLogTable entries={[]} />
 		</Stack>
 	);
 };

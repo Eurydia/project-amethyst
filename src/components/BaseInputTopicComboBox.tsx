@@ -1,4 +1,3 @@
-import { getTopicAll } from "$backend/database/get";
 import { filterItems } from "$core/filter";
 import {
 	Checkbox,
@@ -12,12 +11,7 @@ import {
 	Toolbar,
 	Typography,
 } from "@mui/material";
-import {
-	FC,
-	useEffect,
-	useMemo,
-	useState,
-} from "react";
+import { FC, useState } from "react";
 
 type CustomListItemProps = {
 	label: string;
@@ -183,29 +177,21 @@ const filterOptions = (
 };
 
 type BaseInputTopicComboBoxProps = {
+	options: string[];
 	value: string[];
 	onChange: (value: string[]) => void;
 };
 export const BaseInputTopicComboBox: FC<
 	BaseInputTopicComboBoxProps
 > = (props) => {
-	const { value, onChange } = props;
+	const { value, options, onChange } = props;
 
 	const [search, setSearch] = useState("");
-	const [options, setOptions] = useState<
-		string[]
-	>([]);
 
-	useEffect(() => {
-		(async () => {
-			const topics = await getTopicAll();
-			setOptions(topics);
-		})();
-	}, []);
-
-	const filteredOptions = useMemo(
-		() => filterOptions(options, value, search),
-		[search, options, value],
+	const filteredOptions = filterOptions(
+		options,
+		value,
+		search,
 	);
 
 	return (

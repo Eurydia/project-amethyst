@@ -1,4 +1,3 @@
-import { getDriverAll } from "$backend/database/get";
 import { filterItems } from "$core/filter";
 import { DriverModel } from "$types/models/Driver";
 import { LockRounded } from "@mui/icons-material";
@@ -10,12 +9,7 @@ import {
 	ListItemText,
 	TextField,
 } from "@mui/material";
-import {
-	FC,
-	HTMLAttributes,
-	useEffect,
-	useState,
-} from "react";
+import { FC, HTMLAttributes } from "react";
 
 const filterOptions = (
 	options: DriverModel[],
@@ -64,22 +58,14 @@ const renderInput = (
 type DriverInputSelectProps = {
 	isDisabled?: boolean;
 	value: DriverModel;
+	options: DriverModel[];
 	onChange: (value: DriverModel) => void;
 };
 export const DriverInputSelect: FC<
 	DriverInputSelectProps
 > = (props) => {
-	const { value, onChange, isDisabled } = props;
-	const [options, setOptions] = useState<
-		readonly DriverModel[]
-	>([]);
-
-	useEffect(() => {
-		(async () => {
-			const drivers = await getDriverAll();
-			setOptions(drivers);
-		})();
-	}, []);
+	const { value, onChange, isDisabled, options } =
+		props;
 
 	return (
 		<Autocomplete

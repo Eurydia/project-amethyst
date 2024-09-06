@@ -1,5 +1,4 @@
 import { DriverModel } from "./Driver";
-import { PickupRouteModel } from "./PickupRoute";
 import { VehicleModel } from "./Vehicle";
 
 export type AttendanceLogModel = {
@@ -40,8 +39,8 @@ export type AttendanceLogEntry = {
 	routeName: string;
 
 	expectedArrivalDatetime: string;
-	actualArrivalDatetime: string;
+	actualArrivalDatetime: string | null;
 
 	expectedDepartureDatetime: string;
-	actualDepartureDatetime: string;
+	actualDepartureDatetime: string | null;
 };

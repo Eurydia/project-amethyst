@@ -5,7 +5,6 @@ export type PickupRouteModel = {
 	arrival_time: string;
 	departure_time: string;
 };
-
 export type PickupRouteEntry = {
 	id: number;
 	name: string;

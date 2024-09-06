@@ -7,27 +7,27 @@ import { VehicleCitySelect } from "./VehicleInputCitySelect";
 import { VehicleInputVendorAutocomplete } from "./VehicleInputVendorAutocomplete";
 
 type VehicleFormProps = {
-	vendorOptions: string[];
 	initFormData: VehicleFormData;
-	onSubmit: (formData: VehicleFormData) => void;
-	onCancel: () => void;
 	slotProps: {
 		submitButton: {
 			label: string;
 			startIcon: ReactNode;
+			onClick: (
+				formData: VehicleFormData,
+			) => void;
+		};
+		cancelButton: {
+			onClick: () => void;
+		};
+		vendorSelect: {
+			options: string[];
 		};
 	};
 };
 export const VehicleForm: FC<VehicleFormProps> = (
 	props,
 ) => {
-	const {
-		initFormData,
-		onCancel,
-		onSubmit,
-		vendorOptions,
-		slotProps,
-	} = props;
+	const { initFormData, slotProps } = props;
 
 	const [
 		fieldLicensePlate,
@@ -49,7 +49,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
 		if (isFormIncomplete) {
 			return;
 		}
-		onSubmit({
+		slotProps.submitButton.onClick({
 			licensePlate: fieldLicensePlate
 				.normalize()
 				.trim(),
@@ -108,8 +108,8 @@ export const VehicleForm: FC<VehicleFormProps> = (
 			label: "หจก.",
 			value: (
 				<VehicleInputVendorAutocomplete
+					options={slotProps.vendorSelect.options}
 					placeholder={initFormData.vendor}
-					options={vendorOptions}
 					value={fieldVendor}
 					onChange={setFieldVendor}
 				/>
@@ -128,7 +128,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
 					onClick: handleSubmit,
 				},
 				cancelButton: {
-					onClick: onCancel,
+					onClick: slotProps.cancelButton.onClick,
 				},
 			}}
 		>

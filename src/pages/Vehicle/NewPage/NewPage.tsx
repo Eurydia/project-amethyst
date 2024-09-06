@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
 
 export const NewPage: FC = () => {
-	const { initFormData, vendorOptions } =
+	const { initFormData, vendorSelectOptions } =
 		useLoaderData() as NewPageLoaderData;
 	const submit = useSubmit();
 
@@ -47,21 +47,25 @@ export const NewPage: FC = () => {
 				ลงทะเบียนรถรับส่ง
 			</Typography>
 			<VehicleForm
-				vendorOptions={vendorOptions}
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() => {
-					submit(
-						{},
-						{
-							action: "/vehicles",
-						},
-					);
-				}}
 				slotProps={{
+					vendorSelect: {
+						options: vendorSelectOptions,
+					},
 					submitButton: {
 						startIcon: <AddRounded />,
 						label: "ลงทะเบียน",
+						onClick: handleSubmit,
+					},
+					cancelButton: {
+						onClick: () => {
+							submit(
+								{},
+								{
+									action: "/vehicles",
+								},
+							);
+						},
 					},
 				}}
 			/>

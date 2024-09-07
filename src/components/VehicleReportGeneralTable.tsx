@@ -72,7 +72,7 @@ type VehicleReportGeneralTableProps = {
 	entries: VehicleReportGeneralEntry[];
 	slotProps: {
 		vehicleMultiSelect: {
-			disabled: boolean;
+			disabled?: boolean;
 			options: MultiSelectOption[];
 		};
 		topicMultiSelect: {
@@ -80,6 +80,7 @@ type VehicleReportGeneralTableProps = {
 		};
 		addButton: {
 			onClick: () => void;
+			disabled?: boolean;
 		};
 	};
 };
@@ -192,6 +193,7 @@ export const VehicleReportGeneralTable: FC<
 			slotProps={{
 				addButton: {
 					onClick: slotProps.addButton.onClick,
+					disabled: slotProps.addButton.disabled,
 					label: "ลงบันทึก",
 				},
 				searchField: {

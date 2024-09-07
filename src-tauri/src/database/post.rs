@@ -1,6 +1,3 @@
-use super::models::PickupRouteModel;
-
-#[tauri::command(rename_all = "snake_case")]
 pub async fn post_attendance_log(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -12,18 +9,18 @@ pub async fn post_attendance_log(
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
-            INSERT 
+            INSERT
             INTO attendance_logs(
-                driver_id, 
-                vehicle_id, 
-                route_id, 
+                driver_id,
+                vehicle_id,
+                route_id,
 
-                expected_arrival_datetime, 
+                expected_arrival_datetime,
                 expected_departure_datetime
             )
             VALUES(
-                ?, ?, ?, 
-                
+                ?, ?, ?,
+
                 ?, ?
 
             );
@@ -234,7 +231,7 @@ pub async fn post_pickup_route(
 pub async fn post_pickup_route_report_general(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    route: PickupRouteModel,
+    route: super::models::PickupRouteModel,
     datetime: String,
     title: String,
     content: String,

@@ -2,6 +2,7 @@ import { DRIVER_ROUTES } from "$pages/Driver";
 import { DRIVER_INFO_ROUTES } from "$pages/DriverInfo";
 import { DRIVER_REPORT_GENERAL_ROUTES } from "$pages/DriverReport/General";
 import { DRIVER_REPORT_MEDICAL_ROUTES } from "$pages/DriverReport/Medical";
+import { ErrorPage } from "$pages/ErrorPage";
 import { HomePage } from "$pages/HomePage/HomePage";
 import { homePageLoader } from "$pages/HomePage/loader";
 import { OPERATIONAL_LOG_ROUTES } from "$pages/OperationalLog";
@@ -19,6 +20,7 @@ export const routes = createBrowserRouter([
 	{
 		path: "/",
 		element: <MainView />,
+		errorElement: <ErrorPage />,
 		children: [
 			{
 				index: true,

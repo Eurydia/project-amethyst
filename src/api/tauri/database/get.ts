@@ -22,86 +22,50 @@ export const getTopicAll = async (): Promise<
 //#endregion
 
 //#region Operational Log
-export const getOperationLogAll = async () => {
-	const entries: OperationalLogModel[] =
-		await invoke("get_operational_log_all");
-	return entries;
-};
+export const getOperationLogAll =
+	async (): Promise<OperationalLogModel[]> =>
+		invoke("get_operational_log_all");
 
-export const getOperationLogToday = async () => {
-	const entries: OperationalLogModel[] =
-		await invoke("get_operational_log_today");
-	return entries;
-};
-
+export const getOperationLogToday =
+	async (): Promise<OperationalLogModel[]> =>
+		invoke("get_operational_log_today");
 //#endregion
 
 //#region drivers
-export const getDriverAll = async () => {
-	const entries: DriverModel[] = await invoke(
-		"get_driver_all",
-	).then(
-		(ok) => ok as DriverModel[],
-		(err) => {
-			console.error(err);
-			return [];
-		},
-	);
-	return entries;
-};
+export const getDriverAll = async (): Promise<
+	DriverModel[]
+> => invoke("get_driver_all");
 
 export const getDriver = async (
 	driverId: number,
-) => {
-	const entry = await invoke("get_driver", {
+): Promise<DriverModel | null> =>
+	invoke("get_driver", {
 		driverId,
-	}).then(
-		(ok) => ok as DriverModel | null,
-		() => null,
-	);
-
-	return entry;
-};
+	});
 
 //#region Driver general report
 export const getDriverReportGeneralAll =
-	async () => {
-		const entry: DriverReportModel[] =
-			await invoke(
-				"get_driver_report_general_all",
-			);
-		return entry;
-	};
+	async (): Promise<DriverReportModel[]> =>
+		invoke("get_driver_report_general_all");
 
 export const getDriverReportGeneral = async (
 	reportId: number,
-) => {
-	const entry: DriverReportModel | null =
-		await invoke("get_driver_report_general", {
-			report_id: reportId,
-		});
-	return entry;
-};
+): Promise<DriverReportModel | null> =>
+	invoke("get_driver_report_general", {
+		reportId,
+	});
 //#endregion
 
 //#region Driver Report Medical
 export const getDriverReportMedicalAll =
-	async () => {
-		const entries: DriverReportModel[] =
-			await invoke(
-				"get_driver_report_medical_all",
-			);
-		return entries;
-	};
+	async (): Promise<DriverReportModel[]> =>
+		invoke("get_driver_report_medical_all");
 export const getDriverReportMedical = async (
 	reportId: number,
-) => {
-	const entry: DriverReportModel | null =
-		await invoke("get_driver_report_medical", {
-			report_id: reportId,
-		});
-	return entry;
-};
+): Promise<DriverReportModel | null> =>
+	invoke("get_driver_report_medical", {
+		reportId,
+	});
 //#endregion
 
 //#region Vehicle
@@ -113,60 +77,41 @@ export const getVehicleAll = async () => {
 };
 export const getVehicle = async (
 	vehicleId: number,
-) => {
-	const entry: VehicleModel | null = await invoke(
-		"get_vehicle",
-		{
-			vehicleId,
-		},
-	);
-	return entry;
-};
+): Promise<VehicleModel | null> =>
+	invoke("get_vehicle", {
+		vehicleId,
+	});
 //#endregion
 
 //#region Vehicle Report General
 export const getVehicleReportGeneralAll =
-	async () => {
-		const entries: VehicleReportGeneralModel[] =
-			await invoke(
-				"get_vehicle_report_general_all",
-			);
-		return entries;
-	};
+	async (): Promise<
+		VehicleReportGeneralModel[]
+	> =>
+		await invoke(
+			"get_vehicle_report_general_all",
+		);
 
 export const getVehicleReportGeneral = async (
 	reportId: number,
-) => {
-	const entry: VehicleReportGeneralModel | null =
-		await invoke("get_vehicle_report_general", {
-			report_id: reportId,
-		});
-
-	return entry;
-};
+): Promise<VehicleReportGeneralModel | null> =>
+	invoke("get_vehicle_report_general", {
+		reportId,
+	});
 //#endregion
 
 //#region Vehicle Report Inspection
 export const getVehicleReportInspectionAll =
-	async () => {
-		const entries: VehicleReportInspectionModel[] =
-			await invoke(
-				"get_vehicle_report_inspection_all",
-			);
-		return entries;
-	};
+	async (): Promise<
+		VehicleReportInspectionModel[]
+	> =>
+		invoke("get_vehicle_report_inspection_all");
 export const getVehicleReportInspection = async (
 	reportId: number,
-) => {
-	const entry: VehicleReportInspectionModel | null =
-		await invoke(
-			"get_vehicle_report_inspection",
-			{
-				report_id: reportId,
-			},
-		);
-	return entry;
-};
+): Promise<VehicleReportInspectionModel | null> =>
+	invoke("get_vehicle_report_inspection", {
+		reportId,
+	});
 //#endregion
 
 //#region Pickup Route
@@ -190,16 +135,10 @@ export const getPickupRouteReportGeneralAll =
 
 export const getPickupRouteReportGeneral = async (
 	reportId: number,
-) => {
-	const entry: PickupRouteReportModel | null =
-		await invoke(
-			"get_pickup_route_report_general",
-			{
-				reportId,
-			},
-		);
-	return entry;
-};
+): Promise<PickupRouteReportModel | null> =>
+	invoke("get_pickup_route_report_general", {
+		reportId,
+	});
 //#endregion
 
 //#region Attendance Log

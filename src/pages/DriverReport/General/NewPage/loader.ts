@@ -2,12 +2,16 @@ import {
 	getDriverAll,
 	getTopicAll,
 } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import {
 	DriverModel,
 	DriverReportFormData,
 } from "$types/models/Driver";
 import dayjs from "dayjs";
-import { LoaderFunction } from "react-router-dom";
+import {
+	json,
+	LoaderFunction,
+} from "react-router-dom";
 
 export type NewPageLoaderData = {
 	driverOptions: DriverModel[];
@@ -16,14 +20,25 @@ export type NewPageLoaderData = {
 };
 export const newPageLoader: LoaderFunction =
 	async () => {
-		const topicOptions = await getTopicAll();
 		const driverOptions = await getDriverAll();
+		if (driverOptions.length === 0) {
+			throw json(
+				{
+					message:
+						TRANSLATION.errorNoDriverInDatabase,
+				},
+				{ status: 400 },
+			);
+		}
+		const driver = driverOptions[0];
+
+		const topicOptions = await getTopicAll();
 
 		const initFormData: DriverReportFormData = {
 			datetime: dayjs().format(),
 			content: "",
 			title: "",
-			driver: null,
+			driver,
 			topics: [],
 		};
 		const loaderData: NewPageLoaderData = {

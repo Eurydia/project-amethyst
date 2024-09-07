@@ -16,6 +16,7 @@ export const ReportInspectionPage: FC = () => {
 		topicComboBoxOptions,
 		vehicleSelectOptions,
 		initFormData,
+		vehicleId,
 	} =
 		useLoaderData() as ReportInspectionPageLoaderData;
 

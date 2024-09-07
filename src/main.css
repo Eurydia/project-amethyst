@@ -1,6 +1,6 @@
-body {
+html {
+	scroll-behavior: smooth;
 	font-feature-settings: liga;
-	scrollbar-gutter: stable both-edges;
 }
 
 a {
@@ -9,4 +9,9 @@ a {
 
 a:hover {
 	color: var(--mui-palette-secondary-dark);
+}
+
+tbody {
+	word-wrap: break-word;
+	word-break: break-all;
 }

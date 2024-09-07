@@ -4,19 +4,23 @@ import {
 	getVehicleReportInspectionAll,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { VehicleReportInspection } from "$types/models/Vehicle";
+import {
+	VehicleModel,
+	VehicleReportInspectionModel,
+} from "$types/models/Vehicle";
 import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
 
 export type InfoPageLoaderData = {
-	report: VehicleReportInspection;
+	report: VehicleReportInspectionModel;
+	vehicle: VehicleModel;
+	inspectionRoundNumber: number;
 };
 export const infoPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { reportId } = params;
-		if (reportId === undefined) {
+		if (params.reportId === undefined) {
 			throw json(
 				{
 					message:
@@ -25,11 +29,10 @@ export const infoPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const _report =
-			await getVehicleReportInspection(
-				Number.parseInt(reportId),
-			);
-		if (_report === null) {
+		const reportId = parseInt(params.reportId);
+		const report =
+			await getVehicleReportInspection(reportId);
+		if (report === null) {
 			throw json(
 				{
 					message:
@@ -39,7 +42,7 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 		const vehicle = await getVehicle(
-			_report.vehicle_id,
+			report.vehicle_id,
 		);
 		if (vehicle === null) {
 			throw json(
@@ -51,47 +54,26 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 
-		const reportAll =
-			await getVehicleReportInspectionAll();
-		let count = 0;
-		for (const { vehicle_id, id } of reportAll) {
-			if (vehicle_id === vehicle.id) {
-				count++;
-			}
-			if (id === _report.id) {
+		const reports = (
+			await getVehicleReportInspectionAll()
+		)
+			.filter(
+				({ vehicle_id }) =>
+					vehicle_id === vehicle.id,
+			)
+			.toReversed();
+		let inspectionRoundNumber = 0;
+		for (const { id } of reports) {
+			inspectionRoundNumber++;
+			if (id === report.id) {
 				break;
 			}
 		}
 
-		const report: VehicleReportInspection = {
-			frame: _report.frame,
-			windows: _report.windows,
-			frontCamera: _report.front_camera,
-			content: _report.content,
-			datetime: _report.datetime,
-			overheadFan: _report.overhead_fan,
-			id: _report.id,
-			brakeLights: _report.brake_light,
-			headlights: _report.headlights,
-			turnSignals: _report.turn_signals,
-			rearviewMirror: _report.rearview_mirror,
-			sideviewMirror: _report.sideview_mirror,
-			seatbelts: _report.seatbelts,
-			seats: _report.seats,
-			tires: _report.tires,
-			vehicleId: _report.vehicle_id,
-			vehicleLicensePlate: vehicle.license_plate,
-			topics: _report.topics
-				.normalize()
-				.split(",")
-				.map((topic) => topic.trim())
-				.filter((topic) => topic.length > 0),
-
-			inspectionRoundNumber: count.toString(),
-		};
-
 		const loaderData: InfoPageLoaderData = {
 			report,
+			inspectionRoundNumber,
+			vehicle,
 		};
 
 		return loaderData;

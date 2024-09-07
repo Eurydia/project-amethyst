@@ -62,8 +62,10 @@ export const OperationalLogForm: FC<
 			driver: fieldDriver,
 			route: fieldRoute,
 			vehicle: fieldVehicle,
-			startDate: fieldStartDate.format(),
-			endDate: fieldEndDate.format(),
+			startDate: fieldStartDate
+				.startOf("day")
+				.format(),
+			endDate: fieldEndDate.endOf("day").format(),
 		});
 	};
 

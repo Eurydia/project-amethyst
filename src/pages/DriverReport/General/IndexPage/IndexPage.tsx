@@ -8,8 +8,11 @@ import {
 import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
-	const { entries } =
-		useLoaderData() as IndexPageLoaderData;
+	const {
+		entries,
+		driverMultiSelectOptions,
+		topicMultiSelectOptions,
+	} = useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
 
 	return (
@@ -20,13 +23,18 @@ export const IndexPage: FC = () => {
 			<DriverReportGeneralTable
 				entries={entries}
 				slotProps={{
+					driverMultiSelect: {
+						options: driverMultiSelectOptions,
+					},
+					topicMultiSelect: {
+						options: topicMultiSelectOptions,
+					},
 					addButton: {
 						onClick: () =>
 							submit(
 								{},
 								{
-									action:
-										"/drivers/report/general/new",
+									action: "./new",
 								},
 							),
 					},

@@ -23,8 +23,8 @@ export const FormalLayout: FC<
 					backgroundColor: ({ palette }) =>
 						alpha(
 							index % 2 === 0
-								? palette.primary.light
-								: palette.common.white,
+								? palette.primary.main
+								: palette.background.default,
 							0.05,
 						),
 				}}

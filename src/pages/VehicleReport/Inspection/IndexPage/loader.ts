@@ -1,80 +1,45 @@
 import {
+	getTopicAll,
 	getVehicleAll,
 	getVehicleReportInspectionAll,
 } from "$backend/database/get";
+import { MultiSelectOption } from "$types/generics";
 import {
-	VehicleModel,
-	VehicleReportInspectionEntry,
-	VehicleReportInspectionModel,
-} from "$types/models/Vehicle";
+	VehicleModelImpl,
+	VehicleReportInspectionModelImpl,
+} from "$types/impl/Vehicle";
+import { VehicleReportInspectionEntry } from "$types/models/Vehicle";
 import { LoaderFunction } from "react-router-dom";
-
-const toEntry = (
-	reportAll: VehicleReportInspectionModel[],
-	report: VehicleReportInspectionModel,
-	vehicle: VehicleModel,
-) => {
-	let count = 0;
-	for (const { vehicle_id, id } of reportAll) {
-		if (vehicle_id === vehicle.id) {
-			count++;
-		}
-		if (id === report.id) {
-			break;
-		}
-	}
-
-	const entry: VehicleReportInspectionEntry = {
-		inspectionRoundNumber: count,
-		id: report.id,
-		datetime: report.datetime,
-		topics: report.topics
-			.normalize()
-			.split(",")
-			.map((topic) => topic.trim())
-			.filter((topic) => topic.length > 0),
-
-		vehicleId: vehicle.id,
-		vehicleLicensePlate: vehicle.license_plate,
-	};
-	return entry;
-};
-
-const toEntries = (
-	reportAll: VehicleReportInspectionModel[],
-	vehicleAll: VehicleModel[],
-) => {
-	const entries = [];
-	for (const report of reportAll) {
-		const vehicle = vehicleAll.find(
-			({ id }) => id === report.vehicle_id,
-		);
-		if (vehicle === undefined) {
-			continue;
-		}
-		const entry = toEntry(
-			reportAll,
-			report,
-			vehicle,
-		);
-		entries.push(entry);
-	}
-	return entries;
-};
 
 export type IndexPageLoaderData = {
 	entries: VehicleReportInspectionEntry[];
+	topicMultiSelectOptions: MultiSelectOption[];
+	vehicleMultiSelectOptions: MultiSelectOption[];
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		const reportAll =
-			await getVehicleReportInspectionAll();
-		const vehicleAll = await getVehicleAll();
-		const entries = toEntries(
-			reportAll,
-			vehicleAll,
+		const vehicleMultiSelectOptions = (
+			await getVehicleAll()
+		).map(VehicleModelImpl.toMultiSelectOption);
+		const topicMultiSelectOptions: MultiSelectOption[] =
+			(await getTopicAll()).map((topic) => ({
+				label: topic,
+				value: topic,
+			}));
+
+		const reports = (
+			await getVehicleReportInspectionAll()
+		).map(
+			VehicleReportInspectionModelImpl.toEntry,
 		);
+
+		const entries = (
+			await Promise.all(reports)
+		).filter((entry) => entry !== null);
+
 		const loaderData: IndexPageLoaderData = {
+			vehicleMultiSelectOptions,
+			topicMultiSelectOptions,
 			entries,
 		};
 		return loaderData;

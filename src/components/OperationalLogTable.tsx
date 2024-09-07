@@ -20,9 +20,9 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<OperationalLogEntry>[] =
 				dayjs(b.startDate).unix(),
 			render: (item) => (
 				<Typography>
-					{dayjs(item.startDate).format(
-						"DD/MM/YYYY",
-					)}
+					{dayjs(item.startDate)
+						.locale("th")
+						.format("DD MMMM YYYY")}
 				</Typography>
 			),
 		},
@@ -33,9 +33,9 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<OperationalLogEntry>[] =
 				dayjs(b.endDate).unix(),
 			render: (item) => (
 				<Typography>
-					{dayjs(item.endDate).format(
-						"DD/MM/YYYY",
-					)}
+					{dayjs(item.endDate)
+						.locale("th")
+						.format("DD MMMM YYYY")}
 				</Typography>
 			),
 		},
@@ -53,7 +53,7 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<OperationalLogEntry>[] =
 			),
 		},
 		{
-			label: "ทะเบียนรถ",
+			label: "เลขทะเบียน",
 			compare: null,
 			render: (item) => (
 				<Typography
@@ -150,7 +150,7 @@ export const OperationalLogTable: FC<
 			),
 		},
 		{
-			label: "ทะเบียนรถ",
+			label: "เลขทะเบียน",
 			value: (
 				<BaseInputMultiSelect
 					disabled={
@@ -190,7 +190,7 @@ export const OperationalLogTable: FC<
 			slotProps={{
 				searchField: {
 					placeholder:
-						"ค้นหาด้วยชื่อนามสกุล, ทะเบียนรถ, สายรถ",
+						"ค้นหาด้วยชื่อนามสกุลคนขับรถ, เลขทะเบียน, สายรถ",
 					value: search,
 					onChange: setSearch,
 				},

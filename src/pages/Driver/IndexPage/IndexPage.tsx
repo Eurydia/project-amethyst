@@ -5,7 +5,7 @@ import { useLoaderData } from "react-router-dom";
 import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
-	const { entries } =
+	const { entries, driverMultiSelectOptions } =
 		useLoaderData() as IndexPageLoaderData;
 
 	return (
@@ -13,7 +13,14 @@ export const IndexPage: FC = () => {
 			<Typography variant="h1">
 				ตารางคนขับรถ
 			</Typography>
-			<DriverTable entries={entries} />
+			<DriverTable
+				entries={entries}
+				slotProps={{
+					driverMultiSelect: {
+						options: driverMultiSelectOptions,
+					},
+				}}
+			/>
 		</Stack>
 	);
 };

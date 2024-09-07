@@ -2,26 +2,43 @@ import {
 	getTopicAll,
 	getVehicleAll,
 } from "$backend/database/get";
+import { TRANSLATION } from "$locale/th";
 import {
 	VehicleModel,
 	VehicleReportGeneralFormData,
 } from "$types/models/Vehicle";
 import dayjs from "dayjs";
-import { LoaderFunction } from "react-router-dom";
+import {
+	json,
+	LoaderFunction,
+} from "react-router-dom";
 
 export type NewPageLoaderData = {
-	vehicleOptions: VehicleModel[];
-	topicOptions: string[];
+	vehicleSelectOptions: VehicleModel[];
+	topicComboBoxOptions: string[];
 	initFormData: VehicleReportGeneralFormData;
 };
 export const newPageLoader: LoaderFunction =
 	async () => {
-		const topicOptions = await getTopicAll();
-		const vehicleOptions = await getVehicleAll();
-
+		const vehicleSelectOptions =
+			await getVehicleAll();
+		if (vehicleSelectOptions.length === 0) {
+			throw json(
+				{
+					status:
+						TRANSLATION.errorNoVehicleInDatabase,
+				},
+				{
+					status: 400,
+				},
+			);
+		}
+		const vehicle = vehicleSelectOptions[0];
+		const topicComboBoxOptions =
+			await getTopicAll();
 		const initFormData: VehicleReportGeneralFormData =
 			{
-				vehicle: null,
+				vehicle,
 				datetime: dayjs().format(),
 				content: "",
 				title: "",
@@ -30,8 +47,8 @@ export const newPageLoader: LoaderFunction =
 
 		const loaderData: NewPageLoaderData = {
 			initFormData,
-			topicOptions,
-			vehicleOptions,
+			topicComboBoxOptions,
+			vehicleSelectOptions,
 		};
 
 		return loaderData;

@@ -1,10 +1,13 @@
 import {
 	getDriver,
-	getPickupRoute,
-	getVehicle,
+	getPickupRouteAll,
+	getVehicleAll,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
+import { DriverModel } from "$types/models/Driver";
 import { OperationalLogFormData } from "$types/models/OperatonalLog";
+import { PickupRouteModel } from "$types/models/PickupRoute";
+import { VehicleModel } from "$types/models/Vehicle";
 import dayjs from "dayjs";
 import {
 	json,
@@ -12,8 +15,10 @@ import {
 } from "react-router-dom";
 
 export type LogOperationalPageLoaderData = {
-	driverId: number;
+	driver: DriverModel;
 	initFormData: OperationalLogFormData;
+	vehicleSelectOptions: VehicleModel[];
+	routeSelectOptions: PickupRouteModel[];
 };
 export const logOperationalPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -39,8 +44,9 @@ export const logOperationalPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-		const route = await getPickupRoute(1);
-		if (route === null) {
+		const routeSelectOptions =
+			await getPickupRouteAll();
+		if (routeSelectOptions.length === 0) {
 			throw json(
 				{
 					message:
@@ -49,8 +55,9 @@ export const logOperationalPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-		const vehicle = await getVehicle(1);
-		if (vehicle === null) {
+		const vehicleSelectOptions =
+			await getVehicleAll();
+		if (vehicleSelectOptions.length === 0) {
 			throw json(
 				{
 					message:
@@ -59,6 +66,10 @@ export const logOperationalPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
+
+		const vehicle = vehicleSelectOptions[0];
+		const route = routeSelectOptions[0];
+
 		const initFormData: OperationalLogFormData = {
 			startDate: dayjs().format(),
 			endDate: dayjs().format(),
@@ -69,8 +80,10 @@ export const logOperationalPageLoader: LoaderFunction =
 		};
 		const loaderData: LogOperationalPageLoaderData =
 			{
-				driverId,
+				driver,
 				initFormData,
+				routeSelectOptions,
+				vehicleSelectOptions,
 			};
 		return loaderData;
 	};

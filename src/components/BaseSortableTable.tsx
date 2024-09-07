@@ -18,12 +18,7 @@ import {
 	Toolbar,
 	Typography,
 } from "@mui/material";
-import {
-	FC,
-	ReactNode,
-	useMemo,
-	useState,
-} from "react";
+import { FC, ReactNode, useState } from "react";
 import { TableHeaderDefinition } from "../types/generics";
 import { TypographyButton } from "./TypographyButton";
 import { TypographyTooltip } from "./TypographyTooltip";
@@ -228,6 +223,7 @@ type BaseSortableTableProps<T> = {
 			onChange: (value: string) => void;
 		};
 		addButton: {
+			hidden?: boolean;
 			disabled?: boolean;
 			onClick: () => void;
 			label: string;
@@ -269,15 +265,11 @@ export const BaseSortableTable = <T,>(
 		setOrderColumn(colNumber);
 	};
 
-	const sortedEntries = useMemo(
-		() =>
-			sortEntries(
-				entries,
-				headers,
-				sortByColumn,
-				sortOrder,
-			),
-		[entries, sortByColumn, sortOrder, headers],
+	const sortedEntries = sortEntries(
+		entries,
+		headers,
+		sortByColumn,
+		sortOrder,
 	);
 
 	return (
@@ -293,6 +285,11 @@ export const BaseSortableTable = <T,>(
 				variant="contained"
 				onClick={slotProps.addButton.onClick}
 				disabled={slotProps.addButton.disabled}
+				sx={{
+					display: slotProps.addButton.hidden
+						? "none"
+						: undefined,
+				}}
 			>
 				{slotProps.addButton.label}
 			</TypographyButton>
@@ -300,6 +297,12 @@ export const BaseSortableTable = <T,>(
 				fullWidth
 				placeholder={
 					slotProps.searchField.placeholder
+				}
+				value={slotProps.searchField.value}
+				onChange={(e) =>
+					slotProps.searchField.onChange(
+						e.target.value,
+					)
 				}
 				slotProps={{
 					input: {
@@ -320,7 +323,11 @@ export const BaseSortableTable = <T,>(
 			<Collapse in={filterOpen}>
 				<FormalLayout>{children}</FormalLayout>
 			</Collapse>
-			<Table>
+			<Table
+				sx={{
+					overflow: "auto",
+				}}
+			>
 				<CustomTableHead
 					headerDefinitions={headers}
 					order={sortOrder}

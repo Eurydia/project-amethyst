@@ -1,5 +1,6 @@
 import { DriverModel } from "$types/models/Driver";
 import { Typography } from "@mui/material";
+import { FileEntry } from "@tauri-apps/api/fs";
 import { FC, ReactNode } from "react";
 import { useSubmit } from "react-router-dom";
 import { BaseGallery } from "./BaseGallery";
@@ -7,11 +8,17 @@ import { BaseInfoGroup } from "./BaseInfoGroup";
 
 type DriverInfoGroupProps = {
 	driver: DriverModel;
+	slotProps: {
+		gallery: {
+			dirPath: string;
+			fileEntries: FileEntry[];
+		};
+	};
 };
 export const DriverInfoGroup: FC<
 	DriverInfoGroupProps
 > = (props) => {
-	const { driver } = props;
+	const { driver, slotProps } = props;
 	const submit = useSubmit();
 
 	const infoItems: {
@@ -34,20 +41,19 @@ export const DriverInfoGroup: FC<
 			label: "ประเภทใบขับขี่",
 			value: driver.license_type,
 		},
-	].map((item) => ({
-		label: item.label,
-		value: <Typography>{item.value}</Typography>,
+	].map(({ label, value }) => ({
+		label,
+		value: <Typography>{value}</Typography>,
 	}));
 
 	infoItems.push({
 		label: "รูปภาพ",
 		value: (
 			<BaseGallery
-				dirPath={[
-					"drivers",
-					driver.id.toString(),
-					"images",
-				]}
+				dirPath={slotProps.gallery.dirPath}
+				fileEntries={
+					slotProps.gallery.fileEntries
+				}
 			/>
 		),
 	});
@@ -60,7 +66,7 @@ export const DriverInfoGroup: FC<
 						submit(
 							{},
 							{
-								action: `/drivers/info/${driver.id}/edit`,
+								action: `./edit`,
 							},
 						),
 				},

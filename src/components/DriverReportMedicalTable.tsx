@@ -1,4 +1,7 @@
-import { TableHeaderDefinition } from "$types/generics";
+import {
+	MultiSelectOption,
+	TableHeaderDefinition,
+} from "$types/generics";
 import { DriverReportEntry } from "$types/models/Driver";
 import { Typography } from "@mui/material";
 import dayjs from "dayjs";
@@ -65,7 +68,15 @@ type DriverReportMedicalTableProps = {
 	entries: DriverReportEntry[];
 	slotProps: {
 		addButton: {
+			disabled?: boolean;
 			onClick: () => void;
+		};
+		driverMultiSelect: {
+			disabled?: boolean;
+			options: MultiSelectOption[];
+		};
+		topicMultiSelect: {
+			options: MultiSelectOption[];
 		};
 	};
 };
@@ -78,11 +89,7 @@ export const DriverReportMedicalTable: FC<
 		<DriverReportTable
 			headers={HEADER_DEFINITIONS}
 			entries={entries}
-			slotProps={{
-				addButton: {
-					onClick: slotProps.addButton.onClick,
-				},
-			}}
+			slotProps={slotProps}
 		/>
 	);
 };

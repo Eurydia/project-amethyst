@@ -48,14 +48,15 @@ export const NewPage: FC = () => {
 			</Typography>
 			<DriverForm
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit({}, { action: "/drivers" })
-				}
 				slotProps={{
 					submitButton: {
 						startIcon: <AddRounded />,
+						onClick: handleSubmit,
 						label: "ลงทะเบียน",
+					},
+					cancelButton: {
+						onClick: () =>
+							submit({}, { action: "/drivers" }),
 					},
 				}}
 			/>

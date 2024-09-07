@@ -2,11 +2,11 @@ import {
 	getDriverAll,
 	getPickupRouteAll,
 	getVehicle,
-	getVehicleAll,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
 import { DriverModel } from "$types/models/Driver";
 import { OperationalLogFormData } from "$types/models/OperatonalLog";
+import { PickupRouteModel } from "$types/models/PickupRoute";
 import { VehicleModel } from "$types/models/Vehicle";
 import {
 	json,
@@ -14,16 +14,14 @@ import {
 } from "react-router-dom";
 
 export type LogOperationalPageLoaderData = {
-	vehicleId: string;
+	vehicle: VehicleModel;
 	initFormData: OperationalLogFormData;
-	vehicleOptions: VehicleModel[];
-	driverOptions: DriverModel[];
-	routeOptions: PickupRouteModel[];
+	driverSelectOptions: DriverModel[];
+	routeSelectOptions: PickupRouteModel[];
 };
 export const logOperationalPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { vehicleId } = params;
-		if (vehicleId === undefined) {
+		if (params.vehicleId === undefined) {
 			throw json(
 				{
 					message:
@@ -33,9 +31,10 @@ export const logOperationalPageLoader: LoaderFunction =
 			);
 		}
 
-		const vehicle = await getVehicle(
-			Number.parseInt(vehicleId),
+		const vehicleId = Number.parseInt(
+			params.vehicleId,
 		);
+		const vehicle = await getVehicle(vehicleId);
 		if (vehicle === null) {
 			throw json(
 				{
@@ -45,25 +44,45 @@ export const logOperationalPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-		const vehicleOptions = await getVehicleAll();
-		const driverOptions = await getDriverAll();
-		const routeOptions =
+		const driverSelectOptions =
+			await getDriverAll();
+		if (driverSelectOptions.length === 0) {
+			throw json(
+				{
+					message:
+						TRANSLATION.errorNoDriverInDatabase,
+				},
+				{ status: 400 },
+			);
+		}
+		const routeSelectOptions =
 			await getPickupRouteAll();
+		if (routeSelectOptions.length === 0) {
+			throw json(
+				{
+					message:
+						TRANSLATION.errorNoPickupRouteInDatabase,
+				},
+				{ status: 400 },
+			);
+		}
+		const driver = driverSelectOptions[0];
+		const route = routeSelectOptions[0];
+
 		const initFormData: OperationalLogFormData = {
 			startDate: "",
 			endDate: "",
 
-			driver: null,
-			route: null,
+			driver,
+			route,
 			vehicle,
 		};
 		const loaderData: LogOperationalPageLoaderData =
 			{
-				vehicleId,
+				vehicle,
 				initFormData,
-				driverOptions,
-				vehicleOptions,
-				routeOptions,
+				driverSelectOptions,
+				routeSelectOptions,
 			};
 		return loaderData;
 	};

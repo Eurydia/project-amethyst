@@ -12,11 +12,10 @@ import { LogOperationalPageLoaderData } from "./loader";
 
 export const LogOperationalPage: FC = () => {
 	const {
-		vehicleId,
+		vehicle,
 		initFormData,
-		driverOptions,
-		routeOptions,
-		vehicleOptions,
+		driverSelectOptions,
+		routeSelectOptions,
 	} =
 		useLoaderData() as LogOperationalPageLoaderData;
 	const submit = useSubmit();
@@ -24,21 +23,7 @@ export const LogOperationalPage: FC = () => {
 	const handleSubmit = (
 		formData: OperationalLogFormData,
 	) => {
-		if (
-			formData.driver === null ||
-			formData.vehicle === null ||
-			formData.route === null
-		) {
-			return;
-		}
-
-		postOperationalLog({
-			driver_id: formData.driver.id,
-			end_date: formData.endDate,
-			route_id: formData.route.id,
-			start_date: formData.startDate,
-			vehicle_id: formData.vehicle.id,
-		})
+		postOperationalLog(formData)
 			.then(
 				() => toast.success("ลงบันทึกสำเร็จ"),
 				() => toast.error("ลงบันทึกล้มเหลว"),
@@ -47,7 +32,8 @@ export const LogOperationalPage: FC = () => {
 				submit(
 					{},
 					{
-						action: "/vehicles/info/" + vehicleId,
+						action:
+							"/vehicles/info/" + vehicle.id,
 					},
 				),
 			);
@@ -60,19 +46,33 @@ export const LogOperationalPage: FC = () => {
 			</Typography>
 			<OperationalLogForm
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action:
-								"/vehicles/info/" + vehicleId,
+				slotProps={{
+					cancelButton: {
+						onClick: () => {
+							submit(
+								{},
+								{
+									action:
+										"/vehicles/info/" +
+										vehicle.id,
+								},
+							);
 						},
-					)
-				}
-				driverOptions={driverOptions}
-				routeOptions={routeOptions}
-				vehicleOptions={vehicleOptions}
+					},
+					driverSelect: {
+						options: driverSelectOptions,
+					},
+					routeSelect: {
+						options: routeSelectOptions,
+					},
+					vehicleSelect: {
+						options: [vehicle],
+						disabled: true,
+					},
+					submitButton: {
+						onClick: handleSubmit,
+					},
+				}}
 			/>
 		</Stack>
 	);

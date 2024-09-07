@@ -14,15 +14,14 @@ import {
 } from "react-router-dom";
 
 export type InfoPageLoaderData = {
-	topicOptions: string[];
-	driverOptions: DriverModel[];
-	reportId: string;
+	driverSelectOptions: DriverModel[];
+	topicComboBoxOptions: string[];
+	reportId: number;
 	initFormData: DriverReportFormData;
 };
 export const infoEditPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { reportId } = params;
-		if (reportId === undefined) {
+		if (params.reportId === undefined) {
 			throw json(
 				{
 					message:
@@ -31,8 +30,11 @@ export const infoEditPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
+		const reportId = Number.parseInt(
+			params.reportId,
+		);
 		const report = await getDriverReportMedical(
-			Number.parseInt(reportId),
+			reportId,
 		);
 		if (report === null) {
 			throw json(
@@ -55,8 +57,10 @@ export const infoEditPageLoader: LoaderFunction =
 				{ status: 404 },
 			);
 		}
-		const topicOptions = await getTopicAll();
-		const driverOptions = [driver];
+		const topicComboBoxOptions =
+			await getTopicAll();
+		const driverSelectOptions = [driver];
+
 		const initFormData: DriverReportFormData = {
 			content: report.content,
 			datetime: report.datetime,
@@ -70,8 +74,8 @@ export const infoEditPageLoader: LoaderFunction =
 			driver,
 		};
 		const loaderData: InfoPageLoaderData = {
-			driverOptions,
-			topicOptions,
+			driverSelectOptions,
+			topicComboBoxOptions,
 			initFormData,
 			reportId,
 		};

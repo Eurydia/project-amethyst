@@ -12,11 +12,10 @@ import { LogOperationalPageLoaderData } from "./loader";
 
 export const LogOperationalPage: FC = () => {
 	const {
-		driverId,
+		driver,
 		initFormData,
-		driverOptions,
-		routeOptions,
-		vehicleOptions,
+		routeSelectOptions,
+		vehicleSelectOptions,
 	} =
 		useLoaderData() as LogOperationalPageLoaderData;
 	const submit = useSubmit();
@@ -32,7 +31,9 @@ export const LogOperationalPage: FC = () => {
 			.finally(() =>
 				submit(
 					{},
-					{ action: "/drivers/info/" + driverId },
+					{
+						action: "/drivers/info/" + driver.id,
+					},
 				),
 			);
 	};
@@ -43,20 +44,33 @@ export const LogOperationalPage: FC = () => {
 				ลงบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogForm
-				lockDriver
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action: "/drivers/info/" + driverId,
+				slotProps={{
+					cancelButton: {
+						onClick: () => {
+							submit(
+								{},
+								{
+									action:
+										"/vehicles/info/" + driver.id,
+								},
+							);
 						},
-					)
-				}
-				driverOptions={driverOptions}
-				routeOptions={routeOptions}
-				vehicleOptions={vehicleOptions}
+					},
+					driverSelect: {
+						disabled: true,
+						options: [driver],
+					},
+					routeSelect: {
+						options: routeSelectOptions,
+					},
+					vehicleSelect: {
+						options: vehicleSelectOptions,
+					},
+					submitButton: {
+						onClick: handleSubmit,
+					},
+				}}
 			/>
 		</Stack>
 	);

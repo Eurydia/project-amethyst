@@ -2,7 +2,10 @@ import {
 	DriverModel,
 	DriverReportModel,
 } from "$types/models/Driver";
-import { PickupRouteReportModel } from "$types/models/PickupRoute";
+import {
+	PickupRouteModel,
+	PickupRouteReportModel,
+} from "$types/models/PickupRoute";
 import {
 	VehicleModel,
 	VehicleReportGeneralModel,
@@ -34,12 +37,10 @@ export const putDriver = async (
 ) => invoke("put_driver", { model });
 export const putDriverReportGeneral = async (
 	report: DriverReportModel,
-) =>
-	invoke("put_driver_report_general", { report });
+) => invoke("put_driver_report_general", report);
 export const putDriverReportMedical = async (
 	report: DriverReportModel,
-) =>
-	invoke("put_driver_report_medical", { report });
+) => invoke("put_driver_report_medical", report);
 //#endregion
 
 //#region Pickup Route
@@ -57,18 +58,13 @@ export const putPickupRouteReportGeneral = async (
 
 //#region Vehicle
 export const putVehicle = async (
-	model: VehicleModel,
-) => invoke("put_vehicle", { model });
+	vehicle: VehicleModel,
+) => invoke("put_vehicle", vehicle);
 export const putVehicleReportGeneral = async (
 	report: VehicleReportGeneralModel,
-) =>
-	invoke("put_vehicle_report_general", {
-		report,
-	});
+) => invoke("put_vehicle_report_general", report);
 export const putVehicleReportInspection = async (
 	report: VehicleReportInspectionModel,
 ) =>
-	invoke("put_vehicle_report_inspection", {
-		report,
-	});
+	invoke("put_vehicle_report_inspection", report);
 //#endregion

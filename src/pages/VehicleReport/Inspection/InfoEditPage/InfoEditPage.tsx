@@ -16,17 +16,14 @@ export const InfoEditPage: FC = () => {
 	const {
 		reportId,
 		initFormData,
-		topicOptions,
-		vehicleOptions,
+		topicComboBoxOptions,
+		vehicleSelectOptions,
 	} = useLoaderData() as InfoPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = (
 		formData: VehicleReportInspectionFormData,
 	) => {
-		if (formData.vehicle === null) {
-			return;
-		}
 		putVehicleReportInspection({
 			content: formData.content,
 			datetime: formData.datetime,
@@ -44,7 +41,7 @@ export const InfoEditPage: FC = () => {
 			vehicle_id: formData.vehicle.id,
 			front_camera: formData.frontCamera,
 			topics: formData.topics.join(","),
-			id: Number.parseInt(reportId),
+			id: reportId,
 		})
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
@@ -68,24 +65,31 @@ export const InfoEditPage: FC = () => {
 				แก้ไขผลการตรวจสภาพรถ{" "}
 			</Typography>
 			<VehicleReportInspectionForm
-				vehicleOptions={vehicleOptions}
-				topicOptions={topicOptions}
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action:
-								"/vehicles/report/inspection/info/" +
-								reportId,
-						},
-					)
-				}
 				slotProps={{
 					submitButton: {
 						label: "บันทึก",
 						startIcon: <SaveRounded />,
+						onClick: handleSubmit,
+					},
+					cancelButton: {
+						onClick: () => {
+							submit(
+								{},
+								{
+									action:
+										"/vehicles/report/inspection/info/" +
+										reportId,
+								},
+							);
+						},
+					},
+					vehicleSelect: {
+						options: vehicleSelectOptions,
+						disabled: true,
+					},
+					topicComboBox: {
+						options: topicComboBoxOptions,
 					},
 				}}
 			/>

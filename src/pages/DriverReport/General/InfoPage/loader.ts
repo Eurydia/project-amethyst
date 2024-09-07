@@ -3,14 +3,18 @@ import {
 	getDriverReportGeneral,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { DriverReport } from "$types/models/Driver";
+import {
+	DriverModel,
+	DriverReportModel,
+} from "$types/models/Driver";
 import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
 
 export type InfoPageLoaderData = {
-	report: DriverReport;
+	report: DriverReportModel;
+	driver: DriverModel;
 };
 export const infoPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -24,10 +28,10 @@ export const infoPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const _report = await getDriverReportGeneral(
+		const report = await getDriverReportGeneral(
 			Number.parseInt(reportId),
 		);
-		if (_report === null) {
+		if (report === null) {
 			throw json(
 				{
 					message:
@@ -37,7 +41,7 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 		const driver = await getDriver(
-			_report.driver_id,
+			report.driver_id,
 		);
 		if (driver === null) {
 			throw json(
@@ -49,24 +53,9 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 
-		const report: DriverReport = {
-			id: _report.id,
-			content: _report.content,
-			datetime: _report.datetime,
-			driverId: _report.driver_id,
-			title: _report.title,
-			topics: _report.topics
-				.normalize()
-				.split(",")
-				.map((topic) => topic.trim())
-				.filter((topic) => topic.length > 0),
-
-			driverName: driver.name,
-			driverSurname: driver.surname,
-		};
-
 		const loaderData: InfoPageLoaderData = {
 			report,
+			driver,
 		};
 
 		return loaderData;

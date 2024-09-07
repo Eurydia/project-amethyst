@@ -14,31 +14,32 @@ import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { DriverInputSelect } from "./DriverInputSelect";
 
 type DriverReportFormProps = {
-	driverOptions: DriverModel[];
-	topicOptions: string[];
 	initFormData: DriverReportFormData;
-	onSubmit: (
-		formData: DriverReportFormData,
-	) => void;
-	onCancel: () => void;
+
 	slotProps: {
 		submitButton: {
 			startIcon: ReactNode;
 			label: string;
+			onClick: (
+				formData: DriverReportFormData,
+			) => void;
+		};
+		cancelButton: {
+			onClick: () => void;
+		};
+		driverSelect: {
+			options: DriverModel[];
+			disabled?: boolean;
+		};
+		topicComboBox: {
+			options: string[];
 		};
 	};
 };
 export const DriverReportForm: FC<
 	DriverReportFormProps
 > = (props) => {
-	const {
-		driverOptions,
-		topicOptions,
-		initFormData,
-		slotProps,
-		onSubmit,
-		onCancel,
-	} = props;
+	const { initFormData, slotProps } = props;
 
 	const [fieldDate, setFieldDate] = useState(
 		dayjs(initFormData.datetime),
@@ -70,9 +71,9 @@ export const DriverReportForm: FC<
 			.set("millisecond", fieldTime.millisecond())
 			.format();
 
-		onSubmit({
-			content: fieldContent.normalize().trim(),
+		slotProps.submitButton.onClick({
 			driver: fieldDriver,
+			content: fieldContent.normalize().trim(),
 			title: fieldTitle.normalize().trim(),
 			topics: fieldTopics
 				.map((topic) => topic.trim().normalize())
@@ -81,9 +82,6 @@ export const DriverReportForm: FC<
 			datetime,
 		});
 	};
-
-	const shouldLockDriver =
-		initFormData.driver !== null;
 
 	const isFieldTimeInvalid =
 		Number.isNaN(fieldTime.hour()) ||
@@ -142,10 +140,12 @@ export const DriverReportForm: FC<
 			label: "คนขับรถ",
 			value: (
 				<DriverInputSelect
-					options={driverOptions}
+					isDisabled={
+						slotProps.driverSelect.disabled
+					}
+					options={slotProps.driverSelect.options}
 					value={fieldDriver}
 					onChange={setFieldDriver}
-					isDisabled={shouldLockDriver}
 				/>
 			),
 		},
@@ -177,7 +177,9 @@ export const DriverReportForm: FC<
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
 				<BaseInputTopicComboBox
-					options={topicOptions}
+					options={
+						slotProps.topicComboBox.options
+					}
 					value={fieldTopics}
 					onChange={setFieldTopics}
 				/>
@@ -196,7 +198,7 @@ export const DriverReportForm: FC<
 						slotProps.submitButton.startIcon,
 				},
 				cancelButton: {
-					onClick: onCancel,
+					onClick: slotProps.cancelButton.onClick,
 				},
 			}}
 		>

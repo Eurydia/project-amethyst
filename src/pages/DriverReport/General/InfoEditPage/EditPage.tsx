@@ -57,24 +57,29 @@ export const InfoEditPage: FC = () => {
 				แก้ไขเรื่องร้องเรียนคนขับรถ
 			</Typography>
 			<DriverReportForm
-				driverOptions={driverOptions}
-				topicOptions={topicOptions}
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() => {
-					submit(
-						{},
-						{
-							action:
-								"/drivers/report/general/info/" +
-								reportId,
-						},
-					);
-				}}
 				slotProps={{
 					submitButton: {
 						label: "บันทึก",
 						startIcon: <SaveRounded />,
+						onClick: handleSubmit,
+					},
+					driverSelect: {
+						options: driverOptions,
+					},
+					topicComboBox: {
+						options: topicOptions,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/drivers/report/general/info/" +
+										reportId,
+								},
+							),
 					},
 				}}
 			/>

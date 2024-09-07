@@ -11,8 +11,12 @@ import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
 
 export const NewPage: FC = () => {
-	const { initFormData } =
-		useLoaderData() as NewPageLoaderData;
+	const {
+		initFormData,
+		driverSelectOptions,
+		vehicleSelectOptions,
+		routeSelectOptions,
+	} = useLoaderData() as NewPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = (
@@ -38,13 +42,27 @@ export const NewPage: FC = () => {
 			</Typography>
 			<OperationalLogForm
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{ action: "/operational-logs" },
-					)
-				}
+				slotProps={{
+					driverSelect: {
+						options: driverSelectOptions,
+					},
+					vehicleSelect: {
+						options: vehicleSelectOptions,
+					},
+					routeSelect: {
+						options: routeSelectOptions,
+					},
+					submitButton: {
+						onClick: handleSubmit,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{ action: "/operational-logs" },
+							),
+					},
+				}}
 			/>
 		</Stack>
 	);

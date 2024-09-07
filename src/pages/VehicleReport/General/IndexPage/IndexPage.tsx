@@ -8,8 +8,11 @@ import {
 import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
-	const { entries } =
-		useLoaderData() as IndexPageLoaderData;
+	const {
+		entries,
+		topicMultiSelectOptions,
+		vehicleMultiSelectOptions,
+	} = useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
 	return (
 		<Stack spacing={1}>
@@ -20,6 +23,9 @@ export const IndexPage: FC = () => {
 				entries={entries}
 				slotProps={{
 					addButton: {
+						disabled:
+							vehicleMultiSelectOptions.length ===
+							0,
 						onClick: () =>
 							submit(
 								{},
@@ -28,6 +34,12 @@ export const IndexPage: FC = () => {
 										"/vehicles/report/general/new",
 								},
 							),
+					},
+					topicMultiSelect: {
+						options: topicMultiSelectOptions,
+					},
+					vehicleMultiSelect: {
+						options: vehicleMultiSelectOptions,
 					},
 				}}
 			/>

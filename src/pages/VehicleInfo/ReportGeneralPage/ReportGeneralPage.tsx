@@ -14,9 +14,9 @@ import { ReportGeneralPageLoaderData } from "./loader";
 export const ReportGeneralPage: FC = () => {
 	const {
 		initFormData,
+		vehicleId,
 		topicComboBoxOptions,
 		vehicleSelectOptions,
-		vehicleId,
 	} =
 		useLoaderData() as ReportGeneralPageLoaderData;
 

@@ -13,8 +13,8 @@ import { NewPageLoaderData } from "./loader";
 
 export const NewPage: FC = () => {
 	const {
-		driverOptions,
-		topicOptions,
+		driverSelectOptions,
+		topicComboBoxOptions,
 		initFormData,
 	} = useLoaderData() as NewPageLoaderData;
 
@@ -23,17 +23,7 @@ export const NewPage: FC = () => {
 	const handleSubmit = async (
 		formData: DriverReportFormData,
 	) => {
-		if (formData.driver === null) {
-			return;
-		}
-
-		postDriverReportGeneral({
-			content: formData.content,
-			datetime: formData.datetime,
-			title: formData.title,
-			driver_id: formData.driver.id,
-			topics: formData.topics.join(","),
-		}).then(
+		postDriverReportGeneral(formData).then(
 			(reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(
@@ -61,20 +51,28 @@ export const NewPage: FC = () => {
 				ลงบันทึกผลการตรวจสารเสพติด
 			</Typography>
 			<DriverReportForm
-				driverOptions={driverOptions}
 				initFormData={initFormData}
-				topicOptions={topicOptions}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{ action: "/drivers/report/medical" },
-					)
-				}
 				slotProps={{
+					driverSelect: {
+						options: driverSelectOptions,
+					},
+					topicComboBox: {
+						options: topicComboBoxOptions,
+					},
 					submitButton: {
 						startIcon: <AddRounded />,
 						label: `ลงบันทึก`,
+						onClick: handleSubmit,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/drivers/report/medical",
+								},
+							),
 					},
 				}}
 			/>

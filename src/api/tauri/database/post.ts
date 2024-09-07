@@ -14,31 +14,10 @@ import {
 } from "$types/models/Vehicle";
 import { invoke } from "@tauri-apps/api/tauri";
 
-//#region Attendance log
-export const postAttendanceLog = async (log: {
-	driver_id: number;
-	vehicle_id: number;
-	route_id: number;
-	expected_arrival_datetime: string;
-	expected_departure_datetime: string;
-}) => invoke("post_attendance_log", log);
-//#endregion
-
 //#region Operational Log
 export const postOperationalLog = async (
 	log: OperationalLogFormData,
-) => {
-	if (
-		log.driver === null ||
-		log.vehicle === null ||
-		log.route === null
-	) {
-		throw new Error(
-			"Missing driver, vehicle, or route",
-		);
-	}
-	invoke("post_operational_log", log);
-};
+) => invoke("post_operational_log", log);
 //#endregion
 
 //#region Driver
@@ -49,28 +28,13 @@ export const postDriver = async (
 
 export const postDriverReportGeneral = async (
 	report: DriverReportFormData,
-): Promise<number> => {
-	if (report.driver === null) {
-		throw new Error("Missing driver");
-	}
-
-	return invoke("post_driver_report_general", {
-		report,
-	});
-};
+): Promise<number> =>
+	invoke("post_driver_report_general", report);
 
 export const postDriverReportMedical = async (
 	report: DriverReportFormData,
-): Promise<number> => {
-	if (report.driver === null) {
-		throw new Error("Missing driver");
-	}
-
-	return invoke(
-		"post_driver_report_medical",
-		report,
-	);
-};
+): Promise<number> =>
+	invoke("post_driver_report_medical", report);
 //#endregion
 
 //#region Pickup Route
@@ -97,24 +61,13 @@ export const postVehicle = async (
 
 export const postVehicleReportGeneral = async (
 	report: VehicleReportGeneralFormData,
-): Promise<number> => {
-	if (report.vehicle === null) {
-		throw new Error("Missing vehicle");
-	}
-	return invoke(
-		"post_vehicle_report_general",
-		report,
-	);
-};
+): Promise<number> =>
+	invoke("post_vehicle_report_general", report);
 export const postVehicleReportInspection = async (
 	report: VehicleReportInspectionFormData,
-): Promise<number> => {
-	if (report.vehicle === null) {
-		throw new Error("Missing vehicle");
-	}
-	return invoke(
+): Promise<number> =>
+	invoke(
 		"post_vehicle_report_inspection",
 		report,
 	);
-};
 //#endregion

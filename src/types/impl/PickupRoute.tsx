@@ -87,35 +87,33 @@ export const PickupRouteModelImpl = {
 			vehicleIds.add(log.vehicle_id);
 		}
 
-		const driverRequests = [...driverIds].map(
-			(id) => getDriver(id),
-		);
-		const vehicleRequests = [...vehicleIds].map(
-			(id) => getVehicle(id),
-		);
-		const drivers = await Promise.all(
-			driverRequests,
-		);
-		const vehicles = await Promise.all(
-			vehicleRequests,
-		);
+		const drivers = (
+			await Promise.all(
+				[...driverIds].map(getDriver),
+			)
+		)
+			.filter((driver) => driver !== null)
+			.map(({ id, name, surname }) => ({
+				id,
+				name,
+				surname,
+			}));
+		const vehicles = (
+			await Promise.all(
+				[...vehicleIds].map(getVehicle),
+			)
+		)
+			.filter((vehicle) => vehicle !== null)
+			.map(({ id, license_plate }) => ({
+				id,
+				licensePlate: license_plate,
+			}));
 
 		const entry: PickupRouteEntry = {
 			id: route.id,
 			name: route.name,
-			drivers: drivers
-				.filter((driver) => driver !== null)
-				.map(({ id, name, surname }) => ({
-					id,
-					name,
-					surname,
-				})),
-			vehicles: vehicles
-				.filter((vehicle) => vehicle !== null)
-				.map(({ id, license_plate }) => ({
-					id,
-					licensePlate: license_plate,
-				})),
+			drivers,
+			vehicles,
 		};
 		return entry;
 	},

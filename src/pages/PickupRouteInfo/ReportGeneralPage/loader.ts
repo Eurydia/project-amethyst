@@ -1,4 +1,7 @@
-import { getPickupRoute } from "$backend/database/get";
+import {
+	getPickupRoute,
+	getTopicAll,
+} from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
 import {
 	PickupRouteModel,
@@ -59,6 +62,3 @@ export const reportGeneralPageLoader: LoaderFunction =
 
 		return loaderData;
 	};
-function getTopicAll() {
-	throw new Error("Function not implemented.");
-}

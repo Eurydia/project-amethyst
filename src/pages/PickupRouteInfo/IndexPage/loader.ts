@@ -2,7 +2,7 @@ import {
 	getDriverAll,
 	getOperationLogAll,
 	getPickupRoute,
-	getPickupRouteAll,
+	getPickupRouteReportGeneralAll,
 	getTopicAll,
 	getVehicleAll,
 } from "$backend/database/get";
@@ -73,7 +73,9 @@ export const indexPageLoader: LoaderFunction =
 			)
 			.map(OperationalLogModelImpl.toEntry);
 
-		const reports = (await getPickupRouteAll())
+		const reports = (
+			await getPickupRouteReportGeneralAll()
+		)
 			.filter(
 				({ route_id }) => route_id === route.id,
 			)

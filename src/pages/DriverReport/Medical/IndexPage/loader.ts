@@ -1,67 +1,46 @@
 import {
 	getDriverAll,
 	getDriverReportMedicalAll,
+	getTopicAll,
 } from "$backend/database/get";
+import { MultiSelectOption } from "$types/generics";
 import {
-	DriverModel,
-	DriverReportEntry,
-	DriverReportModel,
-} from "$types/models/Driver";
+	DriverModelImpl,
+	DriverReportModelImpl,
+} from "$types/impl/Driver";
+import { DriverReportEntry } from "$types/models/Driver";
 import { LoaderFunction } from "react-router-dom";
-
-const toEntry = (
-	report: DriverReportModel,
-	driver: DriverModel,
-) => {
-	const entry: DriverReportEntry = {
-		datetime: report.datetime,
-		id: report.id,
-		title: report.title,
-		topics: report.topics
-			.normalize()
-			.split(",")
-			.map((topic) => topic.trim())
-			.filter((topic) => topic.length > 0),
-
-		driverId: driver.id,
-		driverName: driver.name,
-		driverSurname: driver.surname,
-	};
-	return entry;
-};
-
-const toEntries = (
-	reportAll: DriverReportModel[],
-	driverAll: DriverModel[],
-) => {
-	const entries: DriverReportEntry[] = [];
-	for (const report of reportAll) {
-		const driver = driverAll.find(
-			({ id }) => id === report.driver_id,
-		);
-		if (driver === undefined) {
-			continue;
-		}
-		const entry = toEntry(report, driver);
-		entries.push(entry);
-	}
-	return entries;
-};
 
 export type IndexPageLoaderData = {
 	entries: DriverReportEntry[];
+	driverMultiSelectOptions: MultiSelectOption[];
+	topicMultiSelectOptions: MultiSelectOption[];
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		const reportAll =
-			await getDriverReportMedicalAll();
-		const driverAll = await getDriverAll();
-		const entries = toEntries(
-			reportAll,
-			driverAll,
-		);
+		const reports = (
+			await getDriverReportMedicalAll()
+		).map(DriverReportModelImpl.toEntry);
+
+		const entries = (
+			await Promise.all(reports)
+		).filter((entry) => entry !== null);
+
+		const driverMultiSelectOptions = (
+			await getDriverAll()
+		).map(DriverModelImpl.toMultiSelectOption);
+
+		const topicMultiSelectOptions = (
+			await getTopicAll()
+		).map((topic) => ({
+			value: topic,
+			label: topic,
+		}));
+
 		const loaderData: IndexPageLoaderData = {
 			entries,
+			driverMultiSelectOptions,
+			topicMultiSelectOptions,
 		};
 		return loaderData;
 	};

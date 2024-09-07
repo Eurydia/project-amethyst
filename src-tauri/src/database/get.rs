@@ -112,23 +112,6 @@ pub async fn get_topic_all(
     };
 
     Ok(unique_topics.into_iter().collect())
-
-    // let query = sqlx::query(
-    //     r#"
-    //         SELECT topics FROM driver_general_reports
-    //         UNION ALL
-    //         SELECT topics FROM driver_medical_reports
-    //         UNION ALL
-    //         SELECT topics FROM vehicle_general_reports
-    //         UNION ALL
-    //         SELECT topics FROM vehicle_inspection_reports
-    //         UNION ALL
-    //         SELECT topics FROM pickup_route_general_reports;
-    //         UNION ALL
-    //     "#,
-    // )
-    // .fetch(&state.db)
-    // .await;
 }
 
 #[tauri::command]
@@ -147,8 +130,8 @@ pub async fn get_operational_log_today(
     let query = sqlx::query_as(
         r#"
             SELECT * FROM operational_logs
-            WHERE DATE(start_date, 'localtime') <= DATE('now', 'localtime')
-            AND DATE(end_date, 'localtime') >= DATE('now', 'localtime')
+            WHERE SUBSTR(start_date, 1, 10) <= DATE('now')
+            AND SUBSTR(end_date, 1, 10) >= DATE('now')
             ORDER BY id DESC;
         "#,
     )
@@ -308,7 +291,8 @@ pub async fn get_attendance_log_today(
         r#"
             SELECT * 
             FROM attendance_logs
-            WHERE DATE(expected_arrival_datetime, 'localtime') = DATE('now', 'localtime')
+            WHERE SUBSTR(expected_arrival_datetime, 1, 10) = DATE('now')
+            AND SUBSTR(expected_departure_datetime, 1, 10) = DATE('now')
             ORDER BY id DESC;
         "#,
     )

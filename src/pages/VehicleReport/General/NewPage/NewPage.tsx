@@ -13,8 +13,8 @@ import { NewPageLoaderData } from "./loader";
 
 export const NewPage: FC = () => {
 	const {
-		vehicleOptions,
-		topicOptions,
+		vehicleSelectOptions,
+		topicComboBoxOptions,
 		initFormData,
 	} = useLoaderData() as NewPageLoaderData;
 
@@ -23,23 +23,15 @@ export const NewPage: FC = () => {
 	const handleSubmit = async (
 		formData: VehicleReportGeneralFormData,
 	) => {
-		if (formData.vehicle === null) {
-			return;
-		}
-		postVehicleReportGeneral({
-			content: formData.content,
-			datetime: formData.datetime,
-			title: formData.title,
-			topics: formData.topics.join(","),
-			vehicle_id: formData.vehicle.id,
-		})
+		postVehicleReportGeneral(formData)
 			.then((reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(
 					{},
 					{
 						action:
-							"/vehicles/general/info" + reportId,
+							"/vehicles/report/general/info" +
+							reportId,
 					},
 				);
 			})
@@ -48,7 +40,7 @@ export const NewPage: FC = () => {
 				submit(
 					{},
 					{
-						action: "/vehicles/general",
+						action: "/vehicles/report/general",
 					},
 				);
 			});
@@ -60,17 +52,29 @@ export const NewPage: FC = () => {
 				ลงบันทึกเรื่องร้องเรียนรถรับส่ง
 			</Typography>
 			<VehicleReportGeneralForm
-				vehicleOptions={vehicleOptions}
 				initFormData={initFormData}
-				topicOptions={topicOptions}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit({}, { action: "/" })
-				}
 				slotProps={{
 					submitButton: {
 						label: "ลงบันทึก",
 						startIcon: <AddRounded />,
+						onClick: handleSubmit,
+					},
+					topicComboBox: {
+						options: topicComboBoxOptions,
+					},
+					vehcleSelect: {
+						options: vehicleSelectOptions,
+						disabled: true,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/vehicles/report/general",
+								},
+							),
 					},
 				}}
 			/>

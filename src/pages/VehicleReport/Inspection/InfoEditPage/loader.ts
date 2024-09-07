@@ -14,15 +14,14 @@ import {
 } from "react-router-dom";
 
 export type InfoPageLoaderData = {
-	reportId: string;
-	topicOptions: string[];
-	vehicleOptions: VehicleModel[];
+	reportId: number;
+	topicComboBoxOptions: string[];
+	vehicleSelectOptions: VehicleModel[];
 	initFormData: VehicleReportInspectionFormData;
 };
 export const infoEditPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { reportId } = params;
-		if (reportId === undefined) {
+		if (params.reportId === undefined) {
 			throw json(
 				{
 					message:
@@ -31,10 +30,9 @@ export const infoEditPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
+		const reportId = parseInt(params.reportId);
 		const report =
-			await getVehicleReportInspection(
-				Number.parseInt(reportId),
-			);
+			await getVehicleReportInspection(reportId);
 		if (report === null) {
 			throw json(
 				{
@@ -57,8 +55,10 @@ export const infoEditPageLoader: LoaderFunction =
 			);
 		}
 
-		const topicOptions = await getTopicAll();
-		const vehicleOptions = [vehicle];
+		const topicComboBoxOptions =
+			await getTopicAll();
+		const vehicleSelectOptions = [vehicle];
+
 		const initFormData: VehicleReportInspectionFormData =
 			{
 				datetime: report.datetime,
@@ -84,8 +84,8 @@ export const infoEditPageLoader: LoaderFunction =
 			};
 
 		const loaderData: InfoPageLoaderData = {
-			vehicleOptions,
-			topicOptions,
+			vehicleSelectOptions,
+			topicComboBoxOptions,
 			initFormData,
 			reportId,
 		};

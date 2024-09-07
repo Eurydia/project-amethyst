@@ -7,13 +7,12 @@ import {
 } from "react-router-dom";
 
 export type EditPageLoaderData = {
-	driverId: string;
+	driverId: number;
 	initFormData: DriverFormData;
 };
 export const editPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { driverId } = params;
-		if (driverId === undefined) {
+		if (params.driverId === undefined) {
 			throw json(
 				{
 					message:
@@ -22,9 +21,10 @@ export const editPageLoader: LoaderFunction =
 				{ status: 400 },
 			);
 		}
-		const driver = await getDriver(
-			Number.parseInt(driverId),
+		const driverId = Number.parseInt(
+			params.driverId,
 		);
+		const driver = await getDriver(driverId);
 		if (driver === null) {
 			throw json(
 				{

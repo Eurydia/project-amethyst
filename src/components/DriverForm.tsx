@@ -6,24 +6,22 @@ import { DriverLicenseSelect } from "./DriverInputLicenseSelect";
 
 type DriverFormProps = {
 	initFormData: DriverFormData;
-	onSubmit: (formData: DriverFormData) => void;
-	onCancel: () => void;
+
 	slotProps: {
 		submitButton: {
 			startIcon: ReactNode;
 			label: string;
+			onClick: (formData: DriverFormData) => void;
+		};
+		cancelButton: {
+			onClick: () => void;
 		};
 	};
 };
 export const DriverForm: FC<DriverFormProps> = (
 	props,
 ) => {
-	const {
-		initFormData,
-		onCancel,
-		slotProps,
-		onSubmit,
-	} = props;
+	const { initFormData, slotProps } = props;
 
 	const [fieldName, setFieldName] = useState(
 		initFormData.name,
@@ -44,11 +42,9 @@ export const DriverForm: FC<DriverFormProps> = (
 			name: fieldName.trim().normalize(),
 			surname: fieldSurname.trim().normalize(),
 			contact: fieldContact.trim().normalize(),
-			licenseType: fieldLicenseType
-				.trim()
-				.normalize(),
+			licenseType: fieldLicenseType,
 		};
-		onSubmit(formData);
+		slotProps.submitButton.onClick(formData);
 	};
 
 	const missingFieldName =
@@ -111,11 +107,13 @@ export const DriverForm: FC<DriverFormProps> = (
 			slotProps={{
 				submitButton: {
 					disabled: isFormIncomplete,
+					startIcon:
+						slotProps.submitButton.startIcon,
+					label: slotProps.submitButton.label,
 					onClick: handleSubmit,
-					...slotProps.submitButton,
 				},
 				cancelButton: {
-					onClick: onCancel,
+					onClick: slotProps.cancelButton.onClick,
 				},
 			}}
 		>

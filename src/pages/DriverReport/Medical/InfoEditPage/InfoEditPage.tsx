@@ -16,19 +16,16 @@ export const InfoEditPage: FC = () => {
 	const {
 		reportId,
 		initFormData,
-		driverOptions,
-		topicOptions,
+		driverSelectOptions,
+		topicComboBoxOptions,
 	} = useLoaderData() as InfoPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = (
 		formData: DriverReportFormData,
 	) => {
-		if (formData.driver === null) {
-			return;
-		}
 		putDriverReportMedical({
-			id: Number.parseInt(reportId),
+			id: reportId,
 			content: formData.content,
 			datetime: formData.datetime,
 			driver_id: formData.driver.id,
@@ -57,24 +54,30 @@ export const InfoEditPage: FC = () => {
 				แก้ไขผลการตรวจสารเสพติด
 			</Typography>
 			<DriverReportForm
-				driverOptions={driverOptions}
-				topicOptions={topicOptions}
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action:
-								"/drivers/report/medical/info/" +
-								reportId,
-						},
-					)
-				}
 				slotProps={{
+					driverSelect: {
+						options: driverSelectOptions,
+						disabled: true,
+					},
+					topicComboBox: {
+						options: topicComboBoxOptions,
+					},
 					submitButton: {
 						startIcon: <SaveRounded />,
 						label: "บันทึก",
+						onClick: handleSubmit,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/drivers/reprot/medical/info/" +
+										reportId,
+								},
+							),
 					},
 				}}
 			/>

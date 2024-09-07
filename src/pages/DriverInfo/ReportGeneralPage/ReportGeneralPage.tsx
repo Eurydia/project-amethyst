@@ -24,13 +24,7 @@ export const ReportGeneralPage: FC = () => {
 	const handleSubmit = (
 		formData: DriverReportFormData,
 	) => {
-		postDriverReportGeneral({
-			content: formData.content,
-			datetime: formData.datetime,
-			title: formData.title,
-			topics: formData.topics.join(","),
-			driver_id: Number.parseInt(driverId),
-		}).then(
+		postDriverReportGeneral(formData).then(
 			(reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(
@@ -60,22 +54,28 @@ export const ReportGeneralPage: FC = () => {
 				ลงบันทึกเรื่องร้องเรียนคนขับรถ
 			</Typography>
 			<DriverReportForm
-				driverOptions={driverOptions}
-				topicOptions={topicOptions}
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action: "/drivers/info" + driverId,
-						},
-					)
-				}
 				slotProps={{
+					driverSelect: {
+						options: driverOptions,
+					},
+					topicComboBox: {
+						options: topicOptions,
+					},
 					submitButton: {
 						startIcon: <AddRounded />,
 						label: "บันทึก",
+						onClick: handleSubmit,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/drivers/info" + driverId,
+								},
+							),
 					},
 				}}
 			/>

@@ -55,6 +55,6 @@ export type DriverReportFormData = {
 	title: string;
 	content: string;
 	topics: string[];
-	driver: DriverModel | null;
+	driver: DriverModel;
 };
 //#endregion

@@ -1,9 +1,19 @@
 import { OperationalLogTable } from "$components/OperationalLogTable";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
-import { useSubmit } from "react-router-dom";
+import {
+	useLoaderData,
+	useSubmit,
+} from "react-router-dom";
+import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
+	const {
+		driverMultiSelectOptions,
+		vehicleMultiSelectOptions,
+		routeMultiSelectOptions,
+		entries,
+	} = useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
 	return (
 		<Stack spacing={1}>
@@ -11,10 +21,20 @@ export const IndexPage: FC = () => {
 				ตารางบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogTable
+				entries={entries}
 				slotProps={{
 					addButton: {
 						onClick: () =>
 							submit({}, { action: "./new" }),
+					},
+					driverMultiSelect: {
+						options: driverMultiSelectOptions,
+					},
+					vehicleMultiSelect: {
+						options: vehicleMultiSelectOptions,
+					},
+					routeMultiSelect: {
+						options: routeMultiSelectOptions,
 					},
 				}}
 			/>

@@ -20,7 +20,7 @@ export const EditPage: FC = () => {
 		formData: DriverFormData,
 	) => {
 		putDriver({
-			id: Number.parseInt(driverId),
+			id: driverId,
 			contact: formData.contact,
 			license_type: formData.contact,
 			name: formData.name,
@@ -44,22 +44,24 @@ export const EditPage: FC = () => {
 				แก้ไขข้อมูลคนขับรถ
 			</Typography>
 			<DriverForm
+				initFormData={initFormData}
 				slotProps={{
 					submitButton: {
 						startIcon: <SaveRounded />,
 						label: "บันทึก",
+						onClick: handleSubmit,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/drivers/info" + driverId,
+								},
+							),
 					},
 				}}
-				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action: "/drivers/info" + driverId,
-						},
-					)
-				}
 			/>
 		</Stack>
 	);

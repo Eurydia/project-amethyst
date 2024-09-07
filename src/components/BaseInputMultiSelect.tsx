@@ -113,15 +113,15 @@ export const BaseInputMultiSelect: FC<
 	);
 
 	const handleToggleAll = () => {
-		if (isPartiallySelect) {
+		if (isAllSelect) {
 			onChange([]);
 			return;
 		}
 		onChange(options.map(({ value }) => value));
 	};
 
-	const isPartiallySelect =
-		selectedOptions.length > 0;
+	const isAllSelect =
+		selectedOptions.length === options.length;
 
 	return (
 		<List
@@ -137,8 +137,8 @@ export const BaseInputMultiSelect: FC<
 			<CustomItem
 				label="เลือกทั้งหมด"
 				onClick={handleToggleAll}
-				isChecked={isPartiallySelect}
 				isBold
+				isChecked={isAllSelect}
 				isDisabled={disabled}
 			/>
 			{renderedOptions}

@@ -2,6 +2,11 @@ import {
 	createTheme,
 	responsiveFontSizes,
 } from "@mui/material";
+import {
+	amber,
+	indigo,
+	purple,
+} from "@mui/material/colors";
 import { thTH } from "@mui/material/locale";
 
 let theme = createTheme(
@@ -9,9 +14,24 @@ let theme = createTheme(
 		cssVariables: true,
 		typography: {
 			fontSize: 18,
-			fontFamily: "'Sarabun',sans-serif",
+			fontFamily: "'Sarabun', sans-serif",
+		},
+		palette: {
+			background: {
+				default: amber[50],
+			},
+			primary: indigo,
+			secondary: purple,
 		},
 		components: {
+			MuiAppBar: {
+				styleOverrides: {
+					root: ({ theme }) => ({
+						backgroundColor:
+							theme.palette.background.default,
+					}),
+				},
+			},
 			MuiTypography: {
 				defaultProps: {
 					sx: {

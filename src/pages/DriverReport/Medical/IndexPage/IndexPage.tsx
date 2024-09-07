@@ -8,8 +8,11 @@ import {
 import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
-	const { entries } =
-		useLoaderData() as IndexPageLoaderData;
+	const {
+		entries,
+		driverMultiSelectOptions,
+		topicMultiSelectOptions,
+	} = useLoaderData() as IndexPageLoaderData;
 
 	const submit = useSubmit();
 
@@ -22,13 +25,17 @@ export const IndexPage: FC = () => {
 				entries={entries}
 				slotProps={{
 					addButton: {
+						disabled:
+							driverMultiSelectOptions.length ===
+							0,
 						onClick: () =>
-							submit(
-								{},
-								{
-									action: "./new",
-								},
-							),
+							submit({}, { action: "./new" }),
+					},
+					driverMultiSelect: {
+						options: driverMultiSelectOptions,
+					},
+					topicMultiSelect: {
+						options: topicMultiSelectOptions,
 					},
 				}}
 			/>

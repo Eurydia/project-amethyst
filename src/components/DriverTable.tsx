@@ -1,15 +1,13 @@
 import { BaseSortableTable } from "$components/BaseSortableTable";
-import { filterItems } from "$core/filter";
 import { TRANSLATION } from "$locale/th";
-import { TableHeaderDefinition } from "$types/generics";
+import {
+	MultiSelectOption,
+	TableHeaderDefinition,
+} from "$types/generics";
+import { DriverEntryImpl } from "$types/impl/Driver";
 import { DriverEntry } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
-import {
-	FC,
-	ReactNode,
-	useMemo,
-	useState,
-} from "react";
+import { FC, ReactNode, useState } from "react";
 import {
 	Link,
 	useSubmit,
@@ -82,64 +80,31 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 		},
 	];
 
-const toOptions = (entries: DriverEntry[]) => {
-	const options: Record<string, string> = {};
-	for (const entry of entries) {
-		const value = `${entry.name} ${entry.surname}`;
-		options[entry.id] = value;
-	}
-	return Object.entries(options).map(
-		([value, label]) => ({
-			value,
-			label,
-		}),
-	);
-};
-export const filterEntries = (
-	entries: DriverEntry[],
-	selected: string[],
-) => {
-	const selectedSet = new Set(selected);
-	return entries.filter((entry) =>
-		selectedSet.has(entry.id.toString()),
-	);
-};
-export const searchEntries = (
-	entries: DriverEntry[],
-	search: string,
-) => {
-	return filterItems(entries, search, [
-		"name",
-		"surname",
-		"vehicles.*.licensePlate",
-		"routes.*.name",
-	]);
-};
-
 type DriverTableProps = {
 	entries: DriverEntry[];
+	slotProps: {
+		driverMultiSelect: {
+			options: MultiSelectOption[];
+		};
+	};
 };
 export const DriverTable: FC<DriverTableProps> = (
 	props,
 ) => {
-	const { entries } = props;
+	const { entries, slotProps } = props;
 	const submit = useSubmit();
-	const driverOptions = useMemo(
-		() => toOptions(entries),
-		[entries],
-	);
 	const [search, setSearch] = useState("");
 	const [selected, setSelected] = useState(
-		driverOptions.map(({ value }) => value),
+		slotProps.driverMultiSelect.options.map(
+			({ value }) => value,
+		),
 	);
-	const filteredEntries = useMemo(
-		() => filterEntries(entries, selected),
-		[entries, selected],
+	const filteredEntries = DriverEntryImpl.filter(
+		entries,
+		selected,
+		search,
 	);
-	const searchedEntries = useMemo(
-		() => searchEntries(filteredEntries, search),
-		[filteredEntries, search],
-	);
+
 	const formItems: {
 		label: string;
 		value: ReactNode;
@@ -149,7 +114,9 @@ export const DriverTable: FC<DriverTableProps> = (
 			value: (
 				<BaseInputMultiSelect
 					onChange={setSelected}
-					options={driverOptions}
+					options={
+						slotProps.driverMultiSelect.options
+					}
 					selectedOptions={selected}
 				/>
 			),
@@ -160,7 +127,7 @@ export const DriverTable: FC<DriverTableProps> = (
 			headers={HEADER_DEFINITION}
 			defaultSortOrder="asc"
 			defaultSortByColumn={0}
-			entries={searchedEntries}
+			entries={filteredEntries}
 			slotProps={{
 				searchField: {
 					placeholder:

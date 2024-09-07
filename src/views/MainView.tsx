@@ -1,8 +1,19 @@
+import { TypographyTooltip } from "$components/TypographyTooltip";
+import {
+	AirportShuttleRounded,
+	HistoryRounded,
+	HomeRounded,
+	KeyboardArrowUpRounded,
+	PersonRounded,
+	SignpostRounded,
+} from "@mui/icons-material";
 import {
 	AppBar,
 	Container,
-	Divider,
-	Stack,
+	Fab,
+	List,
+	ListItem,
+	ListItemText,
 	Toolbar,
 	Typography,
 } from "@mui/material";
@@ -20,41 +31,30 @@ const CLOCK_FORMAT =
 	"HH:mm น., วันddddที่ D MMMM YYYY ";
 
 const PRIMARY_ROUTES = [
-	{ path: "/", label: "หน้าแรก" },
 	{
-		path: "pickup-routes",
-		label: "สมุดบันสายรถ",
+		path: "/",
+		label: "หน้าแรก",
+		icon: <HomeRounded />,
 	},
 	{
-		path: "vehicles",
-		label: "สมุดบันทึกทะเบียนรถ",
+		path: "/pickup-routes",
+		label: "รายชื่อสายรถ",
+		icon: <SignpostRounded />,
 	},
 	{
-		path: "drivers",
+		path: "/vehicles",
+		label: "ทะเบียนรถรับส่ง",
+		icon: <AirportShuttleRounded />,
+	},
+	{
+		path: "/drivers",
 		label: "รายชื่อคนขับรถ",
-	},
-];
-
-const SECONDARY_ROUTES = [
-	{
-		path: "/pickup-routes/report/general",
-		label: "สมุดบันทึกเรื่องร้องเรียนสายรถ",
+		icon: <PersonRounded />,
 	},
 	{
-		path: "/vehicles/report/general",
-		label: "สมุดบันทึกเรื่องร้องเรียนรถ",
-	},
-	{
-		path: "/vehicles/report/inspection",
-		label: "สมุดบันทึกผลการตรวจสภาพรถ",
-	},
-	{
-		path: "/drivers/report/general",
-		label: "สมุดบันทึกเรื่องร้องเรียนคนขับรถ",
-	},
-	{
-		path: "/drivers/report/medical",
-		label: "สมุดบันทึกผลการตรวจสารเสพติด",
+		path: "/operational-logs",
+		label: "ประวัติการเดินรถ",
+		icon: <HistoryRounded />,
 	},
 ];
 
@@ -64,7 +64,6 @@ export const MainView: FC = () => {
 	);
 	const [appBarHeight, setAppBarHeight] =
 		useState("0px");
-
 	const [clock, setClock] = useState(
 		dayjs().locale("th").format(CLOCK_FORMAT),
 	);
@@ -101,71 +100,79 @@ export const MainView: FC = () => {
 				<Toolbar
 					variant="dense"
 					sx={{
-						flexDirection: "row",
+						gap: 2,
+						flexDirection: {
+							xs: "column",
+							sm: "row",
+						},
 						justifyContent: "space-between",
+						alignItems: {
+							xs: "flex-start",
+							sm: "center",
+						},
 					}}
 				>
-					<Stack
+					<List
+						disablePadding
+						dense
 						sx={{
-							gap: 1,
+							display: "flex",
 							flexDirection: "row",
 							flexWrap: "wrap",
+							gap: 2,
 						}}
 					>
 						{PRIMARY_ROUTES.map(
 							(route, index) => (
-								<Typography
+								<ListItem
 									key={"route" + index}
 									component={Link}
 									to={route.path}
+									dense
+									disableGutters
+									disablePadding
+									sx={{
+										width: "auto",
+									}}
 								>
-									{route.label}
-								</Typography>
+									<ListItemText disableTypography>
+										<Typography
+											sx={{
+												display: "flex",
+												alignItems: "center",
+												gap: 1,
+											}}
+										>
+											{route.icon} {route.label}
+										</Typography>
+									</ListItemText>
+								</ListItem>
 							),
 						)}
-					</Stack>
+					</List>
 					<Typography>{clock}</Typography>
 				</Toolbar>
-				<Divider flexItem />
-				<Toolbar
-					variant="dense"
-					sx={{
-						flexWrap: "wrap",
-						flexDirection: "row",
-						gap: 1,
-					}}
-				>
-					{SECONDARY_ROUTES.map(
-						(route, index) => (
-							<Typography
-								key={"route" + index}
-								component={Link}
-								to={route.path}
-							>
-								{route.label}
-							</Typography>
-						),
-					)}
-				</Toolbar>
 			</AppBar>
-			{/* <TypographyTooltip
+			<TypographyTooltip
 				arrow
 				placement="left"
 				title="กลับขึ้นด้านบน"
 			>
 				<Fab
+					disableFocusRipple
+					disableRipple
+					disableTouchRipple
+					size="medium"
+					href="#"
 					sx={{
 						position: "fixed",
 						bottom: 16,
 						right: 16,
 					}}
-					size="medium"
-					color="primary"
-					href="#"
 				>
 					<KeyboardArrowUpRounded />
 				</Fab>
-			</TypographyTooltip> */}
+			</TypographyTooltip>
 			<Container
 				maxWidth="lg"
 				sx={{

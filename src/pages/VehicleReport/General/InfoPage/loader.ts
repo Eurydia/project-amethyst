@@ -3,14 +3,18 @@ import {
 	getVehicleReportGeneral,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { VehicleReportGeneral } from "$types/models/Vehicle";
+import {
+	VehicleModel,
+	VehicleReportGeneralModel,
+} from "$types/models/Vehicle";
 import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
 
 export type InfoPageLoaderData = {
-	report: VehicleReportGeneral;
+	report: VehicleReportGeneralModel;
+	vehicle: VehicleModel;
 };
 export const infoPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -25,10 +29,10 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 
-		const _report = await getVehicleReportGeneral(
+		const report = await getVehicleReportGeneral(
 			Number.parseInt(reportId),
 		);
-		if (_report === null) {
+		if (report === null) {
 			throw json(
 				{
 					message:
@@ -38,7 +42,7 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 		const vehicle = await getVehicle(
-			_report.vehicle_id,
+			report.vehicle_id,
 		);
 		if (vehicle === null) {
 			throw json(
@@ -50,23 +54,9 @@ export const infoPageLoader: LoaderFunction =
 			);
 		}
 
-		const report: VehicleReportGeneral = {
-			id: _report.id,
-			datetime: _report.datetime,
-			title: _report.title,
-			content: _report.content,
-			topics: _report.topics
-				.normalize()
-				.split(",")
-				.map((topic) => topic.trim())
-				.filter((topic) => topic.length > 0),
-
-			vehicleId: vehicle.id,
-			vehicleLicensePlate: vehicle.license_plate,
-		};
-
 		const loaderData: InfoPageLoaderData = {
 			report,
+			vehicle,
 		};
 
 		return loaderData;

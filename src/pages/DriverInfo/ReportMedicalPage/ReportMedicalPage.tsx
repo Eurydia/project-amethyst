@@ -25,13 +25,7 @@ export const ReportMedicalPage: FC = () => {
 	const handleSubmit = async (
 		formData: DriverReportFormData,
 	) => {
-		postDriverReportMedical({
-			content: formData.content,
-			datetime: formData.datetime,
-			title: formData.title,
-			topics: formData.topics.join(","),
-			driver_id: Number.parseInt(driverId),
-		}).then(
+		postDriverReportMedical(formData).then(
 			(reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(
@@ -61,22 +55,29 @@ export const ReportMedicalPage: FC = () => {
 				ลงบันทึกผลการตรวจสารเสพติด
 			</Typography>
 			<DriverReportForm
-				driverOptions={driverOptions}
-				topicOptions={topicOptions}
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action: "/drivers/info/" + driverId,
-						},
-					)
-				}
 				slotProps={{
 					submitButton: {
-						label: "บันทึกข้อมูล",
+						label: "ลงบันทึก",
 						startIcon: <AddRounded />,
+						onClick: handleSubmit,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/drivers/info/" + driverId,
+								},
+							),
+					},
+					driverSelect: {
+						options: driverOptions,
+						disabled: true,
+					},
+					topicComboBox: {
+						options: topicOptions,
 					},
 				}}
 			/>

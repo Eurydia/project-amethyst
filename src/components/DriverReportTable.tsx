@@ -1,106 +1,30 @@
-import { filterItems } from "$core/filter";
-import { TableHeaderDefinition } from "$types/generics";
+import {
+	MultiSelectOption,
+	TableHeaderDefinition,
+} from "$types/generics";
+import { DriverReportEntryImpl } from "$types/impl/Driver";
 import { DriverReportEntry } from "$types/models/Driver";
 import { DateField } from "@mui/x-date-pickers";
-import dayjs, { Dayjs } from "dayjs";
-import {
-	FC,
-	ReactNode,
-	useMemo,
-	useState,
-} from "react";
+import { Dayjs } from "dayjs";
+import { FC, ReactNode, useState } from "react";
 import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 import { BaseInputTopicMatchMode } from "./BaseInputTopicMatchMode";
 import { BaseSortableTable } from "./BaseSortableTable";
-
-const toOptions = (
-	entries: DriverReportEntry[],
-) => {
-	const drivers: Record<number, string> = {};
-	const topics = new Set<string>();
-	for (const entry of entries) {
-		drivers[
-			entry.driverId
-		] = `${entry.driverName} ${entry.driverSurname}`;
-
-		for (const topic of entry.topics) {
-			topics.add(topic);
-		}
-	}
-	const driverOptions = Object.entries(
-		drivers,
-	).map(([value, label]) => ({
-		value,
-		label,
-	}));
-
-	const topicOptions = [...topics].map(
-		(topic) => ({
-			value: topic,
-			label: topic,
-		}),
-	);
-	return {
-		driverOptions,
-		topicOptions,
-	};
-};
-
-const filterEntries = (
-	entries: DriverReportEntry[],
-	selectedDrivers: string[],
-	afterDate: Dayjs | null,
-	beforeDate: Dayjs | null,
-	selectedTopics: string[],
-	topicMustHaveAll: boolean,
-) => {
-	const driverSet = new Set(selectedDrivers);
-	return entries
-		.filter(
-			(entry) =>
-				afterDate === null ||
-				dayjs(entry.datetime).isAfter(afterDate),
-		)
-		.filter(
-			(entry) =>
-				beforeDate === null ||
-				dayjs(entry.datetime).isBefore(
-					beforeDate,
-				),
-		)
-		.filter((entry) =>
-			driverSet.has(entry.driverId.toString()),
-		)
-		.filter((entry) => {
-			const topicSet = new Set(entry.topics);
-			return topicMustHaveAll
-				? selectedTopics.every((topic) =>
-						topicSet.has(topic),
-				  )
-				: selectedTopics.some((topic) =>
-						topicSet.has(topic),
-				  );
-		});
-};
-
-const searchEntries = (
-	entries: DriverReportEntry[],
-	search: string,
-) => {
-	return filterItems(entries, search, [
-		"title",
-		"topics",
-		"driver_name",
-		"driver_surname",
-	]);
-};
 
 type DriverReportTableProps = {
 	headers: TableHeaderDefinition<DriverReportEntry>[];
 	entries: DriverReportEntry[];
 	slotProps: {
 		addButton: {
+			disabled?: boolean;
 			onClick: () => void;
+		};
+		driverMultiSelect: {
+			disabled?: boolean;
+			options: MultiSelectOption[];
+		};
+		topicMultiSelect: {
+			options: MultiSelectOption[];
 		};
 	};
 };
@@ -109,11 +33,6 @@ export const DriverReportTable: FC<
 > = (props) => {
 	const { headers, entries, slotProps } = props;
 
-	const { driverOptions, topicOptions } = useMemo(
-		() => toOptions(entries),
-		[entries],
-	);
-
 	const [search, setSearch] = useState("");
 	const [afterDate, setAfterDate] =
 		useState<Dayjs | null>(null);
@@ -121,38 +40,27 @@ export const DriverReportTable: FC<
 		useState<Dayjs | null>(null);
 	const [topicMustHaveAll, setTopicMustHaveAll] =
 		useState(false);
-	const [selectedTopics, setSelectedTopics] =
-		useState(
-			topicOptions.map(({ value }) => value),
-		);
-	const [selectedDrivers, setSelectedDrivers] =
-		useState(
-			driverOptions.map(({ value }) => value),
-		);
+	const [topics, setTopics] = useState(
+		slotProps.topicMultiSelect.options.map(
+			({ value }) => value,
+		),
+	);
+	const [drivers, setDrivers] = useState(
+		slotProps.driverMultiSelect.options.map(
+			({ value }) => value,
+		),
+	);
 
-	const filteredEntries = useMemo(
-		() =>
-			filterEntries(
-				entries,
-				selectedDrivers,
-				afterDate,
-				beforeDate,
-				selectedTopics,
-				topicMustHaveAll,
-			),
-		[
+	const filteredEntries =
+		DriverReportEntryImpl.filter(
+			entries,
+			drivers,
 			afterDate,
 			beforeDate,
-			selectedDrivers,
-			selectedTopics,
-			entries,
+			topics,
 			topicMustHaveAll,
-		],
-	);
-	const searchedEntries = useMemo(
-		() => searchEntries(filteredEntries, search),
-		[search, filteredEntries],
-	);
+			search,
+		);
 
 	const formItems: {
 		label: string;
@@ -186,9 +94,14 @@ export const DriverReportTable: FC<
 			label: "คนขับรถ",
 			value: (
 				<BaseInputMultiSelect
-					options={driverOptions}
-					selectedOptions={selectedDrivers}
-					onChange={setSelectedDrivers}
+					disabled={
+						slotProps.driverMultiSelect.disabled
+					}
+					options={
+						slotProps.driverMultiSelect.options
+					}
+					selectedOptions={drivers}
+					onChange={setDrivers}
 				/>
 			),
 		},
@@ -205,9 +118,11 @@ export const DriverReportTable: FC<
 			label: "หัวข้อที่เกี่ยวข้อง",
 			value: (
 				<BaseInputMultiSelect
-					options={topicOptions}
-					selectedOptions={selectedTopics}
-					onChange={setSelectedTopics}
+					options={
+						slotProps.topicMultiSelect.options
+					}
+					selectedOptions={topics}
+					onChange={setTopics}
 				/>
 			),
 		},
@@ -217,7 +132,7 @@ export const DriverReportTable: FC<
 		<BaseSortableTable
 			defaultSortByColumn={0}
 			defaultSortOrder="desc"
-			entries={searchedEntries}
+			entries={filteredEntries}
 			headers={headers}
 			slotProps={{
 				addButton: {

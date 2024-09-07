@@ -33,12 +33,16 @@ const TOC_ITEMS = [
 
 export const IndexPage: FC = () => {
 	const {
-		// shouldDisableOperationalLogPost,
-		// images,
 		driver,
-		// logEntries,
-		// generalEntries,
-		// medicalEntries,
+		galleryDirPath,
+		galleryFileEntries,
+		logEntries,
+		generalEntries,
+		medicalEntries,
+		driverMultiSelectOptions,
+		vehicleMultiSelectOptions,
+		routeMultiSelectOptions,
+		topicMultiSelectOptions,
 	} = useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
 
@@ -51,7 +55,15 @@ export const IndexPage: FC = () => {
 			>
 				{TRANSLATION.driverInfoGroup}
 			</Typography>
-			<DriverInfoGroup driver={driver} />
+			<DriverInfoGroup
+				driver={driver}
+				slotProps={{
+					gallery: {
+						dirPath: galleryDirPath,
+						fileEntries: galleryFileEntries,
+					},
+				}}
+			/>
 			<Typography
 				variant="h2"
 				id="operational-log"
@@ -59,9 +71,24 @@ export const IndexPage: FC = () => {
 				{TRANSLATION.operationalLogTable}
 			</Typography>
 			<OperationalLogTable
-				driver={driver}
+				entries={logEntries}
 				slotProps={{
+					driverMultiSelect: {
+						disabled: true,
+						options: driverMultiSelectOptions,
+					},
+					routeMultiSelect: {
+						options: routeMultiSelectOptions,
+					},
+					vehicleMultiSelect: {
+						options: vehicleMultiSelectOptions,
+					},
 					addButton: {
+						isDisabled:
+							vehicleMultiSelectOptions.length ===
+								0 ||
+							routeMultiSelectOptions.length ===
+								0,
 						onClick: () =>
 							submit(
 								{},
@@ -77,7 +104,7 @@ export const IndexPage: FC = () => {
 				{TRANSLATION.driverGeneralReportTable}
 			</Typography>
 			<DriverReportGeneralTable
-				entries={[]}
+				entries={generalEntries}
 				slotProps={{
 					addButton: {
 						onClick: () =>
@@ -85,6 +112,13 @@ export const IndexPage: FC = () => {
 								{},
 								{ action: "./report/general" },
 							),
+					},
+					driverMultiSelect: {
+						disabled: true,
+						options: driverMultiSelectOptions,
+					},
+					topicMultiSelect: {
+						options: topicMultiSelectOptions,
 					},
 				}}
 			/>
@@ -95,7 +129,7 @@ export const IndexPage: FC = () => {
 				{TRANSLATION.driverMedicalReportTable}
 			</Typography>
 			<DriverReportMedicalTable
-				entries={[]}
+				entries={medicalEntries}
 				slotProps={{
 					addButton: {
 						onClick: () =>
@@ -103,6 +137,13 @@ export const IndexPage: FC = () => {
 								{},
 								{ action: "./report/medical" },
 							),
+					},
+					driverMultiSelect: {
+						disabled: true,
+						options: driverMultiSelectOptions,
+					},
+					topicMultiSelect: {
+						options: topicMultiSelectOptions,
 					},
 				}}
 			/>

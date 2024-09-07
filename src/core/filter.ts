@@ -13,7 +13,6 @@ export const filterItems = <T extends Object>(
 		.split(" ")
 		.map((token) => token.trim())
 		.filter((token) => token.length > 0);
-
 	return searchTokens.reduceRight(
 		(leftover, token) =>
 			matchSorter(leftover, token, {

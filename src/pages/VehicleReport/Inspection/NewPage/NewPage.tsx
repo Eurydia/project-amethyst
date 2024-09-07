@@ -13,8 +13,8 @@ import { NewPageLoaderData } from "./loader";
 
 export const NewPage: FC = () => {
 	const {
-		vehicleOptions,
-		topicOptions,
+		vehicleSelectOptions,
+		topicComboBoxOptions,
 		initFormData,
 	} = useLoaderData() as NewPageLoaderData;
 
@@ -23,28 +23,7 @@ export const NewPage: FC = () => {
 	const handleSubmit = async (
 		formData: VehicleReportInspectionFormData,
 	) => {
-		if (formData.vehicle === null) {
-			return;
-		}
-
-		postVehicleReportInspection({
-			brake_light: formData.brakeLights,
-			content: formData.content,
-			datetime: formData.datetime,
-			frame: formData.frame,
-			rearview_mirror: formData.rearviewMirror,
-			front_camera: formData.frontCamera,
-			headlights: formData.headlights,
-			overhead_fan: formData.overheadFan,
-			turn_signals: formData.turnSignals,
-			seatbelts: formData.seatbelts,
-			seats: formData.seats,
-			sideview_mirror: formData.sideviewMirror,
-			tires: formData.tires,
-			windows: formData.windows,
-			topics: formData.topics.join(","),
-			vehicle_id: formData.vehicle.id,
-		})
+		postVehicleReportInspection(formData)
 			.then((reportId) => {
 				toast.success("ลงบันทึกสำเร็จ");
 				submit(
@@ -73,23 +52,29 @@ export const NewPage: FC = () => {
 				ลงบันทึกผลการตรวจสภาพรถ
 			</Typography>
 			<VehicleReportInspectionForm
-				vehicleOptions={vehicleOptions}
 				initFormData={initFormData}
-				topicOptions={topicOptions}
-				onSubmit={handleSubmit}
-				onCancel={() => {
-					submit(
-						{},
-						{
-							action:
-								"/vehicles/report/inspection",
-						},
-					);
-				}}
 				slotProps={{
 					submitButton: {
-						label: "ลงบันทึก",
 						startIcon: <AddRounded />,
+						label: "ลงบันทึก",
+						onClick: handleSubmit,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/vehicles/report/inspection",
+								},
+							),
+					},
+					vehicleSelect: {
+						options: vehicleSelectOptions,
+						disabled: true,
+					},
+					topicComboBox: {
+						options: topicComboBoxOptions,
 					},
 				}}
 			/>

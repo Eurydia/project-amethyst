@@ -73,6 +73,7 @@ type VehicleReportInspectionTableProps = {
 	entries: VehicleReportInspectionEntry[];
 	slotProps: {
 		addButton: {
+			disabled?: boolean;
 			onClick: () => void;
 		};
 		vehicleMultiSelect: {
@@ -193,6 +194,7 @@ export const VehicleReportInspectionTable: FC<
 			slotProps={{
 				addButton: {
 					onClick: slotProps.addButton.onClick,
+					disabled: slotProps.addButton.disabled,
 					label: "ลงบันทึก",
 				},
 				searchField: {

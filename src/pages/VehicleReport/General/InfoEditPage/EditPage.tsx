@@ -15,20 +15,16 @@ export const InfoEditPage: FC = () => {
 	const {
 		reportId,
 		initFormData,
-		topicOptions,
-		vehicleOptions,
+		topicComboBoxOptions,
+		vehicleSelectOptions,
 	} = useLoaderData() as InfoEditPageLoaderData;
 	const submit = useSubmit();
 
 	const handleSubmit = (
 		formData: VehicleReportGeneralFormData,
 	) => {
-		if (formData.vehicle === null) {
-			return;
-		}
-
 		putVehicleReportGeneral({
-			id: Number.parseInt(reportId),
+			id: reportId,
 			content: formData.content,
 			vehicle_id: formData.vehicle.id,
 			datetime: formData.datetime,
@@ -57,24 +53,30 @@ export const InfoEditPage: FC = () => {
 				แก้ไขเรื่องร้องเรียนรถรับส่ง
 			</Typography>
 			<VehicleReportGeneralForm
-				vehicleOptions={vehicleOptions}
-				topicOptions={topicOptions}
 				initFormData={initFormData}
-				onSubmit={handleSubmit}
-				onCancel={() =>
-					submit(
-						{},
-						{
-							action:
-								"/vehicle/reports/general/info/" +
-								reportId,
-						},
-					)
-				}
 				slotProps={{
 					submitButton: {
 						label: "บันทึก",
 						startIcon: <SaveRounded />,
+						onClick: handleSubmit,
+					},
+					topicComboBox: {
+						options: topicComboBoxOptions,
+					},
+					vehcleSelect: {
+						options: vehicleSelectOptions,
+						disabled: true,
+					},
+					cancelButton: {
+						onClick: () =>
+							submit(
+								{},
+								{
+									action:
+										"/vehicles/report/general/" +
+										reportId,
+								},
+							),
 					},
 				}}
 			/>

@@ -25,6 +25,7 @@ export const NewPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action: "/vehicles/info/" + vehicleId,
 					},
 				);
@@ -34,6 +35,7 @@ export const NewPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action: "/vehicles",
 					},
 				);
@@ -62,6 +64,7 @@ export const NewPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action: "/vehicles",
 								},
 							);

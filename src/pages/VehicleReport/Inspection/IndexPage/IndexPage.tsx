@@ -9,7 +9,7 @@ import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
 	const {
-		entries,
+		reportEntries,
 		topicMultiSelectOptions,
 		vehicleMultiSelectOptions,
 	} = useLoaderData() as IndexPageLoaderData;
@@ -22,7 +22,7 @@ export const IndexPage: FC = () => {
 				ตารางบันทึกผลการตรวจสภาพรถ
 			</Typography>
 			<VehicleReportInspectionTable
-				entries={entries}
+				entries={reportEntries}
 				slotProps={{
 					addButton: {
 						disabled:

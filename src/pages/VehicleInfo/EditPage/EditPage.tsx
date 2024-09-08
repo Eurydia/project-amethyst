@@ -37,6 +37,7 @@ export const EditPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action: "/vehicles/info/" + vehicleId,
 					},
 				),

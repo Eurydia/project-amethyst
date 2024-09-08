@@ -13,7 +13,7 @@ import { AttendanceLogEntry } from "$types/models/AttendanceLog";
 import { LoaderFunction } from "react-router-dom";
 
 export type HomePageLoaderData = {
-	entries: AttendanceLogEntry[];
+	logEntries: AttendanceLogEntry[];
 	driverMultiSelectOptions: MultiSelectOption[];
 	vehicleMultiSelectOptions: MultiSelectOption[];
 	routeMultiSelectOptions: MultiSelectOption[];
@@ -37,12 +37,12 @@ export const homePageLoader: LoaderFunction =
 			await getAttendanceLogToday()
 		).map(AttendanceLogModelImpl.toEntry);
 
-		const entries = (
+		const logEntries = (
 			await Promise.all(logs)
 		).filter((entry) => entry !== null);
 
 		const loaderData: HomePageLoaderData = {
-			entries,
+			logEntries,
 			driverMultiSelectOptions,
 			routeMultiSelectOptions,
 			vehicleMultiSelectOptions,

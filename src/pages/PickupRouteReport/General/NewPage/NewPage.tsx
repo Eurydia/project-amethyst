@@ -29,6 +29,7 @@ export const NewPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/pickup-routes/report/general/info/" +
 							reportId,
@@ -40,6 +41,7 @@ export const NewPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action: "/pickup-routes/report",
 					},
 				);
@@ -71,6 +73,7 @@ export const NewPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action: "/pickup-routes/report",
 								},
 							),

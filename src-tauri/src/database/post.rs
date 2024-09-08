@@ -1,3 +1,5 @@
+use super::models::DriverModel;
+
 pub async fn post_attendance_log(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -126,11 +128,11 @@ pub async fn post_driver(
 pub async fn post_driver_report_general(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    driver_id: i64,
-    datetime: i64,
+    driver: DriverModel,
+    datetime: String,
     title: String,
     content: String,
-    topics: String,
+    topics: Vec<String>,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
@@ -145,11 +147,11 @@ pub async fn post_driver_report_general(
             VALUES (?, ?, ?, ?, ?);
         "#,
     )
-    .bind(driver_id)
+    .bind(driver.id)
     .bind(datetime)
     .bind(title)
     .bind(content)
-    .bind(topics)
+    .bind(topics.join(","))
     .execute(&state.db)
     .await;
 
@@ -163,11 +165,11 @@ pub async fn post_driver_report_general(
 pub async fn post_driver_report_medical(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    driver_id: i64,
-    datetime: i64,
+    driver: DriverModel,
+    datetime: String,
     title: String,
     content: String,
-    topics: String,
+    topics: Vec<String>,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
@@ -182,11 +184,11 @@ pub async fn post_driver_report_medical(
             VALUES (?, ?, ?, ?, ?);
         "#,
     )
-    .bind(driver_id)
+    .bind(driver.id)
     .bind(datetime)
     .bind(title)
     .bind(content)
-    .bind(topics)
+    .bind(topics.join(","))
     .execute(&state.db)
     .await;
 

@@ -94,6 +94,14 @@ export const BaseInputMultiSelect: FC<
 		);
 	};
 
+	const handleToggleAll = () => {
+		if (isAllSelect) {
+			onChange([]);
+			return;
+		}
+		onChange(options.map(({ value }) => value));
+	};
+
 	const renderedOptions = options.map(
 		({ label, value }, index) => {
 			const handleClick = toggleHandler(value);
@@ -112,14 +120,6 @@ export const BaseInputMultiSelect: FC<
 		},
 	);
 
-	const handleToggleAll = () => {
-		if (isAllSelect) {
-			onChange([]);
-			return;
-		}
-		onChange(options.map(({ value }) => value));
-	};
-
 	const isAllSelect =
 		selectedOptions.length === options.length;
 
@@ -132,6 +132,9 @@ export const BaseInputMultiSelect: FC<
 				display: "flex",
 				flexWrap: "wrap",
 				flexDirection: "row",
+				width: "100%",
+				wordWrap: "break-word",
+				wordBreak: "break-word",
 			}}
 		>
 			<CustomItem

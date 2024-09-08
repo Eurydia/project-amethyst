@@ -25,6 +25,7 @@ export const NewPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/pickup-routes/info/" + routeId,
 					},
@@ -35,6 +36,7 @@ export const NewPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action: "/pickup-routes",
 					},
 				);
@@ -51,7 +53,7 @@ export const NewPage: FC = () => {
 				slotProps={{
 					submitButton: {
 						onClick: handleSubmit,
-						label: "ลงทะเบียน",
+						label: "ลงทะเบียนสายรถ",
 						startIcon: <AddRounded />,
 					},
 					cancelButton: {
@@ -59,6 +61,7 @@ export const NewPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action: "/pickup-routes",
 								},
 							);

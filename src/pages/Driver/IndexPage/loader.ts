@@ -5,14 +5,14 @@ import { DriverEntry } from "$types/models/Driver";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
-	entries: DriverEntry[];
+	driverEntries: DriverEntry[];
 	driverMultiSelectOptions: MultiSelectOption[];
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
 		const drivers = await getDriverAll();
 
-		const entries = (
+		const driverEntries = (
 			await Promise.all(
 				drivers.map(DriverModelImpl.toEntry),
 			)
@@ -23,7 +23,7 @@ export const indexPageLoader: LoaderFunction =
 		);
 
 		const loaderData: IndexPageLoaderData = {
-			entries,
+			driverEntries,
 			driverMultiSelectOptions,
 		};
 		return loaderData;

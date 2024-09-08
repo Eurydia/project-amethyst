@@ -32,6 +32,7 @@ export const LogOperationalPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/vehicles/info/" + vehicle.id,
 					},
@@ -52,6 +53,7 @@ export const LogOperationalPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action:
 										"/vehicles/info/" +
 										vehicle.id,

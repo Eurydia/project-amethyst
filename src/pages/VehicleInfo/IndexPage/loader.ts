@@ -23,8 +23,8 @@ import {
 	VehicleReportGeneralEntry,
 	VehicleReportInspectionEntry,
 } from "$types/models/Vehicle";
+import { fs } from "@tauri-apps/api";
 import {
-	BaseDirectory,
 	FileEntry,
 	readDir,
 } from "@tauri-apps/api/fs";
@@ -55,11 +55,12 @@ export const indexPageLoader: LoaderFunction =
 	async ({ params }) => {
 		if (params.vehicleId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.vehicleIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
 		const vehicleId = Number.parseInt(
@@ -68,11 +69,12 @@ export const indexPageLoader: LoaderFunction =
 		const vehicle = await getVehicle(vehicleId);
 		if (vehicle === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.vehicleIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 
@@ -134,18 +136,17 @@ export const indexPageLoader: LoaderFunction =
 
 		const galleryDirPath = await join(
 			await appLocalDataDir(),
+			"assets",
 			"vehicles",
 			vehicleId.toString(),
 			"images",
 		);
+		await fs.createDir(galleryDirPath, {
+			recursive: true,
+		});
 		const galleryFileEntries = await readDir(
-			await join(
-				"vehicles",
-				vehicleId.toString(),
-				"images",
-			),
+			galleryDirPath,
 			{
-				dir: BaseDirectory.AppLocalData,
 				recursive: false,
 			},
 		);

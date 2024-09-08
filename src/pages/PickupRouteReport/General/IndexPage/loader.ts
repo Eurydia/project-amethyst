@@ -12,7 +12,7 @@ import { PickupRouteReportEntry } from "$types/models/PickupRoute";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
-	entries: PickupRouteReportEntry[];
+	reportEntries: PickupRouteReportEntry[];
 	routeMultiSelectOptions: MultiSelectOption[];
 	topicMultiSelectOptions: MultiSelectOption[];
 };
@@ -35,12 +35,12 @@ export const indexPageLoader: LoaderFunction =
 			await getPickupRouteReportGeneralAll()
 		).map(PickupRouteReportModelImpl.toEntry);
 
-		const entries = (
+		const reportEntries = (
 			await Promise.all(reports)
 		).filter((entry) => entry !== null);
 
 		const loaderData: IndexPageLoaderData = {
-			entries,
+			reportEntries,
 			routeMultiSelectOptions,
 			topicMultiSelectOptions,
 		};

@@ -16,11 +16,21 @@ export const ReportInspectionPage: FC = () => {
 		topicComboBoxOptions,
 		vehicleSelectOptions,
 		initFormData,
-		vehicleId,
 	} =
 		useLoaderData() as ReportInspectionPageLoaderData;
 
 	const submit = useSubmit();
+
+	const handleCancel = () => {
+		submit(
+			{},
+			{
+				action:
+					"/vehicles/info" +
+					initFormData.vehicle.id,
+			},
+		);
+	};
 
 	const handleSubmit = async (
 		formData: VehicleReportInspectionFormData,
@@ -31,20 +41,16 @@ export const ReportInspectionPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
-							"/vehicles/report/inspection/info" +
+							"/vehicles/report/inspection/info/" +
 							reportId,
 					},
 				);
 			},
 			() => {
 				toast.error("ลงบันทึกล้มเหลว");
-				submit(
-					{},
-					{
-						action: "/vehicles/info" + vehicleId,
-					},
-				);
+				handleCancel();
 			},
 		);
 	};
@@ -63,14 +69,7 @@ export const ReportInspectionPage: FC = () => {
 						onClick: handleSubmit,
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									action:
-										"/vehicles/info" + vehicleId,
-								},
-							),
+						onClick: handleCancel,
 					},
 					vehicleSelect: {
 						options: vehicleSelectOptions,

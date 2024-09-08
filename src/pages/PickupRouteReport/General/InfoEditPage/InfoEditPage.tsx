@@ -34,14 +34,13 @@ export const InfoEditPage: FC = () => {
 		})
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
-				() => {
-					toast.error("แก้ไขล้มเหลว");
-				},
+				() => toast.error("แก้ไขล้มเหลว"),
 			)
 			.finally(() =>
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/pickup-routes/report/general/info/" +
 							reportId,
@@ -62,6 +61,7 @@ export const InfoEditPage: FC = () => {
 						options: topicComboBoxOptions,
 					},
 					routeSelect: {
+						disabled: true,
 						options: routeSelectOptions,
 					},
 					submitButton: {
@@ -74,6 +74,7 @@ export const InfoEditPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action:
 										"/pickup-route/report/general/info/" +
 										reportId,

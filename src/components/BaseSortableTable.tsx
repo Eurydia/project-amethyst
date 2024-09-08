@@ -7,6 +7,7 @@ import {
 import {
 	Collapse,
 	InputAdornment,
+	Stack,
 	Table,
 	TableBody,
 	TableCell,
@@ -273,13 +274,7 @@ export const BaseSortableTable = <T,>(
 	);
 
 	return (
-		<TableContainer
-			sx={{
-				display: "flex",
-				flexDirection: "column",
-				gap: 1,
-			}}
-		>
+		<Stack spacing={1}>
 			<TypographyButton
 				startIcon={<AddRounded />}
 				variant="contained"
@@ -323,22 +318,20 @@ export const BaseSortableTable = <T,>(
 			<Collapse in={filterOpen}>
 				<FormalLayout>{children}</FormalLayout>
 			</Collapse>
-			<Table
-				sx={{
-					overflow: "auto",
-				}}
-			>
-				<CustomTableHead
-					headerDefinitions={headers}
-					order={sortOrder}
-					orderByColumn={sortByColumn}
-					onRequestSort={handleRequestSort}
-				/>
-				<CustomTableBody
-					entries={sortedEntries}
-					headers={headers}
-				/>
-			</Table>
-		</TableContainer>
+			<TableContainer>
+				<Table sx={{ tableLayout: "fixed" }}>
+					<CustomTableHead
+						headerDefinitions={headers}
+						order={sortOrder}
+						orderByColumn={sortByColumn}
+						onRequestSort={handleRequestSort}
+					/>
+					<CustomTableBody
+						entries={sortedEntries}
+						headers={headers}
+					/>
+				</Table>
+			</TableContainer>
+		</Stack>
 	);
 };

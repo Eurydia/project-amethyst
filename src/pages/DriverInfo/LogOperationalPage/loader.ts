@@ -24,11 +24,12 @@ export const logOperationalPageLoader: LoaderFunction =
 	async ({ params }) => {
 		if (params.driverId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.driverIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
 		const driverId = Number.parseInt(
@@ -37,22 +38,24 @@ export const logOperationalPageLoader: LoaderFunction =
 		const driver = await getDriver(driverId);
 		if (driver === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.driverIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 		const routeSelectOptions =
 			await getPickupRouteAll();
 		if (routeSelectOptions.length === 0) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.errorNoPickupRouteInDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 		const vehicleSelectOptions =

@@ -18,27 +18,29 @@ export type InfoPageLoaderData = {
 };
 export const infoPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { reportId } = params;
-		if (reportId === undefined) {
+		if (params.reportId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.pickupRouteGeneralReportIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
+		const reportId = Number.parseInt(
+			params.reportId,
+		);
 		const report =
-			await getPickupRouteReportGeneral(
-				Number.parseInt(reportId),
-			);
+			await getPickupRouteReportGeneral(reportId);
 		if (report === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.pickupRouteGeneralReportIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 		const route = await getPickupRoute(
@@ -46,11 +48,12 @@ export const infoPageLoader: LoaderFunction =
 		);
 		if (route === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.pickupRouteIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 

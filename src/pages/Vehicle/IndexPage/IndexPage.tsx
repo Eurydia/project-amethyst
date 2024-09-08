@@ -10,7 +10,7 @@ export const IndexPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				ตารางรถรับส่ง
+				ทะเบียนรถรับส่ง
 			</Typography>
 			<VehicleTable
 				entries={entries}

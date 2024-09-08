@@ -1,6 +1,9 @@
 html {
 	scroll-behavior: smooth;
 	font-feature-settings: liga;
+	scrollbar-gutter: stable;
+	scrollbar-color: var(--mui-palette-primary-main)
+		var(--mui-palette-background-default);
 }
 
 a {
@@ -11,7 +14,7 @@ a:hover {
 	color: var(--mui-palette-secondary-dark);
 }
 
-tbody {
-	word-wrap: break-word;
+table {
+	overflow-wrap: break-word;
 	word-break: break-all;
 }

@@ -18,26 +18,30 @@ export type InfoPageLoaderData = {
 };
 export const infoPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { reportId } = params;
-		if (reportId === undefined) {
+		if (params.reportId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.driverReportIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
+		const reportId = Number.parseInt(
+			params.reportId,
+		);
 		const report = await getDriverReportGeneral(
-			Number.parseInt(reportId),
+			reportId,
 		);
 		if (report === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.driverGeneralReportIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 		const driver = await getDriver(

@@ -51,6 +51,7 @@ export const InfoEditPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/vehicles/report/inspection/info/" +
 							reportId,
@@ -77,6 +78,7 @@ export const InfoEditPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action:
 										"/vehicles/report/inspection/info/" +
 										reportId,

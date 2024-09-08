@@ -22,9 +22,9 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<PickupRouteReportEntry>[] =
 				dayjs(b.datetime).unix(),
 			render: (item) => (
 				<Typography>
-					{dayjs(item.datetime)
-						.locale("th")
-						.format("HH:mm น. DD/MM/YYYY")}
+					{dayjs(item.datetime).format(
+						"HH:mm น. DD MMMM BBBB",
+					)}
 				</Typography>
 			),
 		},

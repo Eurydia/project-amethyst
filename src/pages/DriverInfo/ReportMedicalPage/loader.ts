@@ -14,40 +14,42 @@ import {
 } from "react-router-dom";
 
 export type ReportMedicalPageLoaderData = {
-	driverId: string;
+	driverId: number;
 	driverOptions: DriverModel[];
 	topicOptions: string[];
 	initFormData: DriverReportFormData;
 };
 export const reportMedicalPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { driverId } = params;
-		if (driverId === undefined) {
+		if (params.driverId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.driverIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
-		const driver = await getDriver(
-			Number.parseInt(driverId),
+		const driverId = Number.parseInt(
+			params.driverId,
 		);
+		const driver = await getDriver(driverId);
 		if (driver === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.driverIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 		const topicOptions = await getTopicAll();
 		const driverOptions = [driver];
 		const initFormData: DriverReportFormData = {
-			content: "",
 			datetime: dayjs().format(),
+			content: "",
 			driver,
 			title: "",
 			topics: [],

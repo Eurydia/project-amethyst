@@ -25,6 +25,7 @@ export const NewPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action: "/drivers/info/" + driverId,
 					},
 				);
@@ -34,6 +35,7 @@ export const NewPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action: "/drivers",
 					},
 				);
@@ -56,7 +58,13 @@ export const NewPage: FC = () => {
 					},
 					cancelButton: {
 						onClick: () =>
-							submit({}, { action: "/drivers" }),
+							submit(
+								{},
+								{
+									replace: true,
+									action: "/drivers",
+								},
+							),
 					},
 				}}
 			/>

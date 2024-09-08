@@ -208,7 +208,7 @@ export const BaseInputTopicComboBox: FC<
 			>
 				<TextField
 					fullWidth
-					placeholder="ค้นหา หรือเพิ่มหัว"
+					placeholder="ค้นหา หรือเพิ่มหัวข้อ"
 					value={search}
 					onChange={(e) =>
 						setSearch(e.target.value)

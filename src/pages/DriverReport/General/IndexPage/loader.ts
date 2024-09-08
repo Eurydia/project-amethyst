@@ -12,7 +12,7 @@ import { DriverReportEntry } from "$types/models/Driver";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
-	entries: DriverReportEntry[];
+	reportEntries: DriverReportEntry[];
 	driverMultiSelectOptions: MultiSelectOption[];
 	topicMultiSelectOptions: MultiSelectOption[];
 };
@@ -22,7 +22,7 @@ export const indexPageLoader: LoaderFunction =
 			await getDriverReportGeneralAll()
 		).map(DriverReportModelImpl.toEntry);
 
-		const entries = (
+		const reportEntries = (
 			await Promise.all(reports)
 		).filter((entry) => entry !== null);
 
@@ -38,7 +38,7 @@ export const indexPageLoader: LoaderFunction =
 		}));
 
 		const loaderData: IndexPageLoaderData = {
-			entries,
+			reportEntries,
 			driverMultiSelectOptions,
 			topicMultiSelectOptions,
 		};

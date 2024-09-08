@@ -31,6 +31,7 @@ export const ReportMedicalPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/drivers/report/medical/info/" +
 							reportId,
@@ -42,6 +43,7 @@ export const ReportMedicalPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action: "/drivers/info/" + driverId,
 					},
 				);

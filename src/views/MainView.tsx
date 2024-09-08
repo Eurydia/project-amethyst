@@ -75,7 +75,7 @@ export const MainView: FC = () => {
 		const height =
 			appBarRef.current.getBoundingClientRect()
 				.height;
-		const roundedHeight = Math.ceil(height) + 20;
+		const roundedHeight = Math.ceil(height) + 30;
 		const heightInPx = `${roundedHeight}px`;
 		setAppBarHeight(heightInPx);
 	}, [appBarRef]);
@@ -100,7 +100,6 @@ export const MainView: FC = () => {
 				<Toolbar
 					variant="dense"
 					sx={{
-						gap: 2,
 						flexDirection: {
 							xs: "column",
 							sm: "row",
@@ -119,7 +118,8 @@ export const MainView: FC = () => {
 							display: "flex",
 							flexDirection: "row",
 							flexWrap: "wrap",
-							gap: 2,
+							columnGap: 2,
+							rowGap: 0,
 						}}
 					>
 						{PRIMARY_ROUTES.map(

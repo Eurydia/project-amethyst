@@ -6,7 +6,7 @@ import { HomePageLoaderData } from "./loader";
 
 export const HomePage: FC = () => {
 	const {
-		entries,
+		logEntries,
 		driverMultiSelectOptions,
 		vehicleMultiSelectOptions,
 		routeMultiSelectOptions,
@@ -18,7 +18,7 @@ export const HomePage: FC = () => {
 				หน้าแรก
 			</Typography>
 			<AttendanceLogTable
-				entries={entries}
+				entries={logEntries}
 				slotProps={{
 					driverMultiSelect: {
 						options: driverMultiSelectOptions,

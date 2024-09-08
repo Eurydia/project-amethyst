@@ -25,11 +25,12 @@ export const reportGeneralPageLoader: LoaderFunction =
 		const { driverId } = params;
 		if (driverId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.driverIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
 		const driver = await getDriver(
@@ -37,11 +38,12 @@ export const reportGeneralPageLoader: LoaderFunction =
 		);
 		if (driver === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.driverIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 

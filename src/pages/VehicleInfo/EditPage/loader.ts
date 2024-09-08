@@ -18,11 +18,12 @@ export const editPageLoader: LoaderFunction =
 	async ({ params }) => {
 		if (params.vehicleId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.vehicleIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
 		const vehicleId = Number.parseInt(
@@ -31,11 +32,12 @@ export const editPageLoader: LoaderFunction =
 		const vehicle = await getVehicle(vehicleId);
 		if (vehicle === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.vehicleIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 		const vehicleAll = await getVehicleAll();

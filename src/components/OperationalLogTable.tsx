@@ -20,9 +20,9 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<OperationalLogEntry>[] =
 				dayjs(b.startDate).unix(),
 			render: (item) => (
 				<Typography>
-					{dayjs(item.startDate)
-						.locale("th")
-						.format("DD MMMM YYYY")}
+					{dayjs(item.startDate).format(
+						"DD MMMM YYYY",
+					)}
 				</Typography>
 			),
 		},
@@ -190,7 +190,7 @@ export const OperationalLogTable: FC<
 			slotProps={{
 				searchField: {
 					placeholder:
-						"ค้นหาด้วยชื่อนามสกุลคนขับรถ, เลขทะเบียน, สายรถ",
+						"ค้นหาด้วยคนขับรถ, เลขทะเบียน, หรือสายรถ",
 					value: search,
 					onChange: setSearch,
 				},

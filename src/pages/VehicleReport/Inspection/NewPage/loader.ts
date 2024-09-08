@@ -24,12 +24,11 @@ export const newPageLoader: LoaderFunction =
 			await getVehicleAll();
 		if (vehicleSelectOptions.length === 0) {
 			throw json(
-				{
-					message:
-						TRANSLATION.errorNoVehicleInDatabase,
-				},
+				{},
 				{
 					status: 400,
+					statusText:
+						TRANSLATION.errorNoVehicleInDatabase,
 				},
 			);
 		}

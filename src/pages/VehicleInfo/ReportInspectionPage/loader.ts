@@ -14,7 +14,6 @@ import {
 } from "react-router-dom";
 
 export type ReportInspectionPageLoaderData = {
-	vehicleId: number;
 	vehicleSelectOptions: VehicleModel[];
 	topicComboBoxOptions: string[];
 	initFormData: VehicleReportInspectionFormData;
@@ -23,11 +22,12 @@ export const reportInspectionPageLoader: LoaderFunction =
 	async ({ params }) => {
 		if (params.vehicleId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.vehicleIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
 		const vehicleId = Number.parseInt(
@@ -36,11 +36,12 @@ export const reportInspectionPageLoader: LoaderFunction =
 		const vehicle = await getVehicle(vehicleId);
 		if (vehicle === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.vehicleIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 
@@ -71,7 +72,6 @@ export const reportInspectionPageLoader: LoaderFunction =
 
 		const loaderData: ReportInspectionPageLoaderData =
 			{
-				vehicleId,
 				vehicleSelectOptions,
 				initFormData,
 				topicComboBoxOptions,

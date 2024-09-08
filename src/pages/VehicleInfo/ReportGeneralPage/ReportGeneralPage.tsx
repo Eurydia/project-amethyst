@@ -14,7 +14,6 @@ import { ReportGeneralPageLoaderData } from "./loader";
 export const ReportGeneralPage: FC = () => {
 	const {
 		initFormData,
-		vehicleId,
 		topicComboBoxOptions,
 		vehicleSelectOptions,
 	} =
@@ -31,6 +30,7 @@ export const ReportGeneralPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/vehicles/report/general/info" +
 							reportId,
@@ -42,7 +42,10 @@ export const ReportGeneralPage: FC = () => {
 				submit(
 					{},
 					{
-						action: "/vehicles/info/" + vehicleId,
+						replace: true,
+						action:
+							"/vehicles/info/" +
+							initFormData.vehicle.id,
 					},
 				);
 			},
@@ -66,6 +69,7 @@ export const ReportGeneralPage: FC = () => {
 						options: topicComboBoxOptions,
 					},
 					vehcleSelect: {
+						disabled: true,
 						options: vehicleSelectOptions,
 					},
 					cancelButton: {
@@ -73,8 +77,10 @@ export const ReportGeneralPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action:
-										"/vehicles/info/" + vehicleId,
+										"/vehicles/info/" +
+										initFormData.vehicle.id,
 								},
 							),
 					},

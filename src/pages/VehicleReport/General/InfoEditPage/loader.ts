@@ -23,11 +23,12 @@ export const infoEditPageLoader: LoaderFunction =
 	async ({ params }) => {
 		if (params.reportId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.vehicleReportIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
 		const reportId = parseInt(params.reportId);
@@ -36,11 +37,12 @@ export const infoEditPageLoader: LoaderFunction =
 		);
 		if (report === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.vehicleGeneralReportIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 		const vehicle = await getVehicle(
@@ -48,11 +50,12 @@ export const infoEditPageLoader: LoaderFunction =
 		);
 		if (vehicle === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.vehicleIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 		const topicComboBoxOptions =

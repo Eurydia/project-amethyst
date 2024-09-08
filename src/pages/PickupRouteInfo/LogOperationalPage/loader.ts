@@ -22,27 +22,28 @@ export type LogOperationalPageLoaderData = {
 };
 export const logOperationalPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { routeId } = params;
-		if (routeId === undefined) {
+		if (params.routeId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.pickupRouteIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
-
-		const route = await getPickupRoute(
-			Number.parseInt(routeId),
+		const routeId = Number.parseInt(
+			params.routeId,
 		);
+		const route = await getPickupRoute(routeId);
 		if (route === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.pickupRouteIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 
@@ -50,11 +51,12 @@ export const logOperationalPageLoader: LoaderFunction =
 			await getDriverAll();
 		if (driverSelectOptions.length === 0) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.errorNoDriverInDatabase,
 				},
-				{ status: 400 },
 			);
 		}
 		const vehicleSelectOptions =
@@ -62,13 +64,16 @@ export const logOperationalPageLoader: LoaderFunction =
 
 		if (vehicleSelectOptions.length === 0) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.errorNoVehicleInDatabase,
 				},
-				{ status: 400 },
 			);
 		}
+		const driver = driverSelectOptions[0];
+		const vehicle = vehicleSelectOptions[0];
 
 		const initFormData: OperationalLogFormData = {
 			startDate: dayjs()
@@ -76,8 +81,8 @@ export const logOperationalPageLoader: LoaderFunction =
 				.format(),
 			endDate: dayjs().endOf("month").format(),
 
-			driver: driverSelectOptions[0],
-			vehicle: vehicleSelectOptions[0],
+			driver,
+			vehicle,
 			route,
 		};
 		const loaderData: LogOperationalPageLoaderData =

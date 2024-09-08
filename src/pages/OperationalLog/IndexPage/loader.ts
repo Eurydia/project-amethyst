@@ -16,7 +16,7 @@ export type IndexPageLoaderData = {
 	driverMultiSelectOptions: MultiSelectOption[];
 	vehicleMultiSelectOptions: MultiSelectOption[];
 	routeMultiSelectOptions: MultiSelectOption[];
-	entries: OperationalLogEntry[];
+	logEntries: OperationalLogEntry[];
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
@@ -36,12 +36,12 @@ export const indexPageLoader: LoaderFunction =
 		const logs = (await getOperationLogAll()).map(
 			OperationalLogModelImpl.toEntry,
 		);
-		const entries = (
+		const logEntries = (
 			await Promise.all(logs)
 		).filter((log) => log !== null);
 
 		const loaderData: IndexPageLoaderData = {
-			entries,
+			logEntries,
 			driverMultiSelectOptions,
 			routeMultiSelectOptions,
 			vehicleMultiSelectOptions,

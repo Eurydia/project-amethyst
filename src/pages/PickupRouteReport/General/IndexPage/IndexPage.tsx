@@ -9,7 +9,7 @@ import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
 	const {
-		entries,
+		reportEntries,
 		routeMultiSelectOptions,
 		topicMultiSelectOptions,
 	} = useLoaderData() as IndexPageLoaderData;
@@ -21,7 +21,7 @@ export const IndexPage: FC = () => {
 				ตารางบันทึกเรื่องร้องเรียนสายรถ
 			</Typography>
 			<PickupRouteReportGeneralTable
-				entries={entries}
+				entries={reportEntries}
 				slotProps={{
 					addButton: {
 						onClick: () =>

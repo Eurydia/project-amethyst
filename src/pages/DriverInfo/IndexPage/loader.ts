@@ -23,7 +23,6 @@ import {
 import { OperationalLogEntry } from "$types/models/OperatonalLog";
 import { fs } from "@tauri-apps/api";
 import {
-	BaseDirectory,
 	FileEntry,
 	readDir,
 } from "@tauri-apps/api/fs";
@@ -52,11 +51,12 @@ export const indexPageLoader: LoaderFunction =
 	async ({ params }) => {
 		if (params.driverId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.driverIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
 		const driverId = Number.parseInt(
@@ -65,11 +65,12 @@ export const indexPageLoader: LoaderFunction =
 		const driver = await getDriver(driverId);
 		if (driver === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.driverIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 
@@ -116,29 +117,21 @@ export const indexPageLoader: LoaderFunction =
 			DriverModelImpl.toMultiSelectOption(driver),
 		];
 
-		const dirPath = await join(
+		const galleryDirPath = await join(
+			await appLocalDataDir(),
+			"assets",
 			"drivers",
 			driverId.toString(),
 			"images",
 		);
-		await fs.createDir(dirPath, {
-			dir: BaseDirectory.AppLocalData,
+		await fs.createDir(galleryDirPath, {
 			recursive: true,
 		});
 		const galleryFileEntries = await readDir(
-			await join(
-				"drivers",
-				driverId.toString(),
-				"images",
-			),
+			galleryDirPath,
 			{
-				dir: BaseDirectory.AppLocalData,
 				recursive: false,
 			},
-		);
-		const galleryDirPath = await join(
-			await appLocalDataDir(),
-			dirPath,
 		);
 
 		const logs = (await getOperationLogAll())

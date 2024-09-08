@@ -38,26 +38,28 @@ export type IndexPageLoaderData = {
 };
 export const indexPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { routeId } = params;
-		if (routeId === undefined) {
+		if (params.routeId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.pickupRouteIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
-		const route = await getPickupRoute(
-			Number.parseInt(routeId),
+		const routeId = Number.parseInt(
+			params.routeId,
 		);
+		const route = await getPickupRoute(routeId);
 		if (route === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.pickupRouteIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 
@@ -72,7 +74,6 @@ export const indexPageLoader: LoaderFunction =
 				({ route_id }) => route_id === route.id,
 			)
 			.map(OperationalLogModelImpl.toEntry);
-
 		const reports = (
 			await getPickupRouteReportGeneralAll()
 		)

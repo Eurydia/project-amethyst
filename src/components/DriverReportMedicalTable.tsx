@@ -19,7 +19,7 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReportEntry>[] =
 			render: (item) => (
 				<Typography>
 					{dayjs(item.datetime).format(
-						"HH:mm น. DD/MM/YYYY",
+						"HH:mm น. DD MMMM BBBB",
 					)}
 				</Typography>
 			),

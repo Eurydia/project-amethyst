@@ -27,8 +27,7 @@ export const EditPage: FC = () => {
 		})
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
-				(err) => {
-					console.log(err);
+				() => {
 					toast.error("แก้ไขล้มเหลว");
 				},
 			)
@@ -36,6 +35,7 @@ export const EditPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/pickup-routes/info/" + routeId,
 					},
@@ -61,6 +61,7 @@ export const EditPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action:
 										"/pickup-routes/info/" +
 										routeId,

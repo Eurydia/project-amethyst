@@ -19,6 +19,17 @@ export const InfoEditPage: FC = () => {
 		vehicleSelectOptions,
 	} = useLoaderData() as InfoEditPageLoaderData;
 	const submit = useSubmit();
+	const handleCancel = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action:
+					"/vehicles/report/general/info/" +
+					reportId,
+			},
+		);
+	};
 
 	const handleSubmit = (
 		formData: VehicleReportGeneralFormData,
@@ -39,6 +50,7 @@ export const InfoEditPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/vehicle/reports/general/info/" +
 							reportId,
@@ -64,19 +76,11 @@ export const InfoEditPage: FC = () => {
 						options: topicComboBoxOptions,
 					},
 					vehcleSelect: {
-						options: vehicleSelectOptions,
 						disabled: true,
+						options: vehicleSelectOptions,
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									action:
-										"/vehicles/report/general/" +
-										reportId,
-								},
-							),
+						onClick: handleCancel,
 					},
 				}}
 			/>

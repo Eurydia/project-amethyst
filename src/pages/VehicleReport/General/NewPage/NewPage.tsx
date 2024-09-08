@@ -19,6 +19,15 @@ export const NewPage: FC = () => {
 	} = useLoaderData() as NewPageLoaderData;
 
 	const submit = useSubmit();
+	const handleCancel = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action: "/vehicles/report/general",
+			},
+		);
+	};
 
 	const handleSubmit = async (
 		formData: VehicleReportGeneralFormData,
@@ -29,6 +38,7 @@ export const NewPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/vehicles/report/general/info" +
 							reportId,
@@ -37,12 +47,7 @@ export const NewPage: FC = () => {
 			})
 			.catch(() => {
 				toast.error("ลงบันทึกล้มเหลว");
-				submit(
-					{},
-					{
-						action: "/vehicles/report/general",
-					},
-				);
+				handleCancel();
 			});
 	};
 
@@ -67,14 +72,7 @@ export const NewPage: FC = () => {
 						disabled: true,
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									action:
-										"/vehicles/report/general",
-								},
-							),
+						onClick: handleCancel,
 					},
 				}}
 			/>

@@ -30,6 +30,7 @@ export const ReportGeneralPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/drivers/report/general/info/" +
 							reportId,
@@ -41,6 +42,7 @@ export const ReportGeneralPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action: "/drivers/info/" + driverId,
 					},
 				);
@@ -72,8 +74,9 @@ export const ReportGeneralPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action:
-										"/drivers/info" + driverId,
+										"/drivers/info/" + driverId,
 								},
 							),
 					},

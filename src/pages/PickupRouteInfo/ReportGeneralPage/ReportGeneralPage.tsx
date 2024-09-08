@@ -30,6 +30,7 @@ export const ReportGeneralPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/pickup-routes/report/general/info/" +
 							reportId,
@@ -40,6 +41,7 @@ export const ReportGeneralPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/pickup-routes/info/" + route.id,
 					},
@@ -66,6 +68,7 @@ export const ReportGeneralPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action:
 										"/pickup-routes/info/" +
 										initFormData.route.id,

@@ -30,7 +30,10 @@ export const NewPage: FC = () => {
 			.finally(() =>
 				submit(
 					{},
-					{ action: "/operational-logs" },
+					{
+						replace: true,
+						action: "/operational-logs",
+					},
 				),
 			);
 	};

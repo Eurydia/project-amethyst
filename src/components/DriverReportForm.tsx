@@ -132,7 +132,7 @@ export const DriverReportForm: FC<
 						}
 						setFieldDate(value);
 					}}
-					format="DD/MM/YYYY"
+					format="DD/MM/BBBB"
 				/>
 			),
 		},

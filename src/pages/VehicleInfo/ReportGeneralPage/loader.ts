@@ -15,33 +15,34 @@ import {
 } from "react-router-dom";
 
 export type ReportGeneralPageLoaderData = {
-	vehicleId: string;
 	topicComboBoxOptions: string[];
 	vehicleSelectOptions: VehicleModel[];
 	initFormData: VehicleReportGeneralFormData;
 };
 export const reportGeneralPageLoader: LoaderFunction =
 	async ({ params }) => {
-		const { vehicleId } = params;
-		if (vehicleId === undefined) {
+		if (params.vehicleId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.vehicleIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
-		const vehicle = await getVehicle(
-			Number.parseInt(vehicleId),
+		const vehicleId = Number.parseInt(
+			params.vehicleId,
 		);
+		const vehicle = await getVehicle(vehicleId);
 		if (vehicle === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.vehicleIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 		const topicComboBoxOptions =
@@ -57,7 +58,6 @@ export const reportGeneralPageLoader: LoaderFunction =
 			};
 		const loaderData: ReportGeneralPageLoaderData =
 			{
-				vehicleId,
 				vehicleSelectOptions,
 				initFormData,
 				topicComboBoxOptions,

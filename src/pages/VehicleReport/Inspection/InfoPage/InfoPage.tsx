@@ -8,8 +8,8 @@ import { InfoPageLoaderData } from "./loader";
 export const InfoPage: FC = () => {
 	const {
 		report,
-		inspectionRoundNumber,
 		vehicle,
+		inspectionRoundNumber,
 	} = useLoaderData() as InfoPageLoaderData;
 
 	return (

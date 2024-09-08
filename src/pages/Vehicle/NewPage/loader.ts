@@ -9,13 +9,13 @@ export type NewPageLoaderData = {
 export const newPageLoader: LoaderFunction =
 	async () => {
 		const vehicles = await getVehicleAll();
-		const vendors = new Set<string>();
 
+		const vendors = new Set<string>();
 		for (const vehicle of vehicles) {
 			vendors.add(vehicle.vendor);
 		}
-		const vendorSelectOptions = [...vendors];
 
+		const vendorSelectOptions = [...vendors];
 		let vendor = "";
 		if (vendorSelectOptions.length > 0) {
 			vendor = vendorSelectOptions[0];

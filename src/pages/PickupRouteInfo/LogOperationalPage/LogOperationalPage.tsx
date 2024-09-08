@@ -32,6 +32,7 @@ export const LogOperationalPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/pickup-routes/info/" + route.id,
 					},
@@ -55,6 +56,7 @@ export const LogOperationalPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action:
 										"/pickup-routes/info/" +
 										route.id,

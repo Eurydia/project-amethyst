@@ -11,6 +11,7 @@ import "@fontsource/sarabun/600.css";
 import "@fontsource/sarabun/700.css";
 import "@fontsource/sarabun/800.css";
 import dayjs from "dayjs";
+import dayjsBuddistEra from "dayjs/plugin/buddhistEra";
 import dayjsRelativeTime from "dayjs/plugin/relativeTime";
 import "main.css";
 import React from "react";
@@ -19,6 +20,7 @@ import { injectStyle } from "react-toastify/dist/inject-style";
 import { App } from "./app/App";
 
 dayjs.extend(dayjsRelativeTime);
+dayjs.extend(dayjsBuddistEra);
 
 // Inject style, otherwise toast styling will break
 injectStyle();

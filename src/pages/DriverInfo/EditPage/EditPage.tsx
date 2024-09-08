@@ -33,7 +33,10 @@ export const EditPage: FC = () => {
 			.finally(() =>
 				submit(
 					{},
-					{ action: "/drivers/info/" + driverId },
+					{
+						replace: true,
+						action: "/drivers/info/" + driverId,
+					},
 				),
 			);
 	};
@@ -56,8 +59,9 @@ export const EditPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action:
-										"/drivers/info" + driverId,
+										"/drivers/info/" + driverId,
 								},
 							),
 					},

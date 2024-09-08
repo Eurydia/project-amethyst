@@ -1,4 +1,4 @@
-import { HomeRounded } from "@mui/icons-material";
+import { KeyboardArrowLeftRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -29,7 +29,7 @@ export const ErrorPage: FC = () => {
 					display: "flex",
 				}}
 			>
-				<HomeRounded />
+				<KeyboardArrowLeftRounded />
 				กลับหน้าแรก
 			</Typography>
 			<Typography variant="h1">

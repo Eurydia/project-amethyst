@@ -72,71 +72,84 @@ const TABLE_HEADERS: TableHeaderDefinition<AttendanceLogEntry>[] =
 			),
 		},
 		{
-			label: "เวลานำเข้า",
+			label: "เวลารับข้า",
 			compare: null,
 			render: (item) => (
-				<CustomArrivalCheckbox item={item} />
+				<CustomCheckbox
+					label="รับเข้า"
+					actual={item.actualArrivalDatetime}
+					expected={item.expectedArrivalDatetime}
+					onClick={async () =>
+						putAttendanceLog({
+							id: item.id,
+							actualArrivalDatetime:
+								dayjs().format(),
+							actualDepartureDatetime:
+								item.actualDepartureDatetime,
+						})
+					}
+				/>
 			),
 		},
 		{
-			label: "เวลานำออก",
+			label: "เวลารับออก",
 			compare: null,
 			render: (item) => (
-				<CustomDepatureCheckbox item={item} />
+				<CustomCheckbox
+					label="รับออก"
+					actual={item.actualDepartureDatetime}
+					expected={
+						item.expectedDepartureDatetime
+					}
+					onClick={async () =>
+						putAttendanceLog({
+							id: item.id,
+							actualArrivalDatetime:
+								item.actualArrivalDatetime,
+							actualDepartureDatetime:
+								dayjs().format(),
+						})
+					}
+				/>
 			),
 		},
 	];
 
-type CustomArrivalCheckboxProps = {
-	item: AttendanceLogEntry;
+type CustomCheckboxProps = {
+	onClick: () => Promise<void>;
+	label: string;
+	actual: string | null;
+	expected: string;
 };
-const CustomArrivalCheckbox: FC<
-	CustomArrivalCheckboxProps
-> = (props) => {
-	const { item } = props;
+const CustomCheckbox: FC<CustomCheckboxProps> = (
+	props,
+) => {
+	const { actual, label, expected, onClick } =
+		props;
 
-	const {
-		id,
-		actualDepartureDatetime,
-		actualArrivalDatetime,
-		expectedArrivalDatetime,
-	} = item;
 	const { revalidate } = useRevalidator();
-	const expected = dayjs(expectedArrivalDatetime);
 
-	const handleCheckin = async () => {
+	const handleClick = async () => {
 		if (isChecked) {
 			return;
 		}
-
-		await putAttendanceLog({
-			id,
-			actualArrivalDatetime: dayjs().format(),
-			actualDepartureDatetime,
-		});
+		await onClick();
 		revalidate();
 	};
 
-	const isChecked =
-		actualArrivalDatetime !== null;
+	const isChecked = actual !== null;
 
-	const isLate =
-		isChecked &&
-		dayjs(actualArrivalDatetime).isAfter(
-			dayjs(expectedArrivalDatetime),
-		);
-
-	let label = "รับเข้า";
+	let _label = label;
 	let lateBy: ReactNode = null;
 	if (isChecked) {
-		const actual = dayjs(actualArrivalDatetime);
+		const actualDatetime = dayjs(actual);
+		const expectedDatetime = dayjs(expected);
 
-		label = actual.isSame(expected, "day")
-			? actual.format("HH:mm น.")
-			: actual.format("HH:mm น., DD/MM/YYYY ");
-
-		if (isLate) {
-			const lateByLabel = expected
+		_label = actualDatetime.format("HH:mm น.");
+		if (
+			actualDatetime.isAfter(expectedDatetime)
+		) {
+			const lateByLabel = expectedDatetime
 				.locale("th")
 				.from(actual, true);
 			lateBy = (
@@ -156,89 +169,9 @@ const CustomArrivalCheckbox: FC<
 				disableTypography
 				checked={isChecked}
 				disabled={isChecked}
-				onClick={handleCheckin}
-				label={<Typography>{label}</Typography>}
+				onClick={handleClick}
+				label={<Typography>{_label}</Typography>}
 				control={<Checkbox />}
-			/>
-			{lateBy}
-		</Stack>
-	);
-};
-
-type CustomDepatureCheckboxProps = {
-	item: AttendanceLogEntry;
-};
-const CustomDepatureCheckbox: FC<
-	CustomDepatureCheckboxProps
-> = (props) => {
-	const { item } = props;
-	const {
-		id,
-		expectedDepartureDatetime,
-		actualDepartureDatetime,
-		actualArrivalDatetime,
-	} = item;
-	const { revalidate } = useRevalidator();
-	const expected = dayjs(
-		expectedDepartureDatetime,
-	);
-
-	const handleCheckin = async () => {
-		if (isChecked) {
-			return;
-		}
-
-		await putAttendanceLog({
-			id,
-			actualDepartureDatetime: dayjs().format(),
-			actualArrivalDatetime,
-		});
-		revalidate();
-	};
-
-	const isChecked =
-		actualDepartureDatetime !== null;
-
-	const isLate =
-		isChecked &&
-		dayjs(actualDepartureDatetime).isAfter(
-			dayjs(actualDepartureDatetime),
-		);
-
-	let label = "รับออก";
-	let lateBy: ReactNode = null;
-	if (isChecked) {
-		const actual = dayjs(actualDepartureDatetime);
-		label = actual.isSame(expected, "day")
-			? actual.format("HH:mm น.")
-			: actual.format("HH:mm น., DD/MM/YYYY ");
-		if (isLate) {
-			const lateByLabel = expected
-				.locale("th")
-				.from(actual, true);
-			lateBy = (
-				<Typography
-					color="error"
-					fontWeight="bold"
-				>
-					{`สาย ${lateByLabel}`}
-				</Typography>
-			);
-		}
-	}
-
-	return (
-		<Stack>
-			<FormControlLabel
-				disableTypography
-				label={<Typography>{label}</Typography>}
-				control={
-					<Checkbox
-						onChange={handleCheckin}
-						disabled={isChecked}
-						checked={isChecked}
-					/>
-				}
 			/>
 			{lateBy}
 		</Stack>
@@ -287,8 +220,8 @@ export const AttendanceLogTable: FC<
 	const filteredEntries = filterItems(
 		entries.filter(
 			({ driverId, routeId, vehicleId }) =>
-				driverSet.has(driverId.toString()) &&
 				routeSet.has(routeId.toString()) &&
+				driverSet.has(driverId.toString()) &&
 				vehicleSet.has(vehicleId.toString()),
 		),
 		search,
@@ -347,14 +280,14 @@ export const AttendanceLogTable: FC<
 			entries={filteredEntries}
 			slotProps={{
 				addButton: {
-					onClick: () => {},
 					hidden: true,
+					onClick: () => {},
 					label: "",
 				},
 				searchField: {
 					onChange: setSearch,
 					placeholder:
-						"ค้นหาด้วยคนขับรถ, เลขทะเบียนรถ, หรือสายรถ",
+						"ค้นหาด้วยคนขับรถ, เลขทะเบียน, หรือสายรถ",
 					value: search,
 				},
 			}}

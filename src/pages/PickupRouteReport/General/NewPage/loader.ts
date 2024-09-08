@@ -24,11 +24,12 @@ export const newPageLoader: LoaderFunction =
 			await getPickupRouteAll();
 		if (routeSelectOptions.length === 0) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.errorNoPickupRouteInDatabase,
 				},
-				{ status: 400 },
 			);
 		}
 		const route = routeSelectOptions[0];

@@ -33,8 +33,8 @@ export const putAttendanceLog = async ({
 
 //#region Driver
 export const putDriver = async (
-	model: DriverModel,
-) => invoke("put_driver", { model });
+	driver: DriverModel,
+) => invoke("put_driver", driver);
 export const putDriverReportGeneral = async (
 	report: DriverReportModel,
 ) => invoke("put_driver_report_general", report);

@@ -12,7 +12,7 @@ export const IndexPage: FC = () => {
 		driverMultiSelectOptions,
 		vehicleMultiSelectOptions,
 		routeMultiSelectOptions,
-		entries,
+		logEntries,
 	} = useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
 	return (
@@ -21,7 +21,7 @@ export const IndexPage: FC = () => {
 				ตารางบันทึกประวัติการเดินรถ
 			</Typography>
 			<OperationalLogTable
-				entries={entries}
+				entries={logEntries}
 				slotProps={{
 					addButton: {
 						onClick: () =>

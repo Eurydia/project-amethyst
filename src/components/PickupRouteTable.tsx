@@ -128,12 +128,12 @@ export const PickupRouteTable: FC<
 			slotProps={{
 				searchField: {
 					placeholder:
-						"ค้นหาด้วยสายรถ, ทะเบียนรถ, หรือชื่อนามสกุลคนขับรถ",
+						"ค้นหาด้วยคนขับรถ, เลขทะเบียน, หรือสายรถ",
 					value: search,
 					onChange: setSearch,
 				},
 				addButton: {
-					label: "ลงทะเบียน",
+					label: "ลงทะเบียนสายรถ",
 					onClick: () =>
 						submit(
 							{},

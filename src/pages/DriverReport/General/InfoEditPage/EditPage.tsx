@@ -24,11 +24,8 @@ export const InfoEditPage: FC = () => {
 	const handleSubmit = (
 		formData: DriverReportFormData,
 	) => {
-		if (formData.driver === null) {
-			return;
-		}
 		putDriverReportGeneral({
-			id: Number.parseInt(reportId),
+			id: reportId,
 			content: formData.content,
 			datetime: formData.datetime,
 			driver_id: formData.driver.id,
@@ -43,6 +40,7 @@ export const InfoEditPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/drivers/report/general/info/" +
 							reportId,
@@ -75,6 +73,7 @@ export const InfoEditPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action:
 										"/drivers/report/general/info/" +
 										reportId,

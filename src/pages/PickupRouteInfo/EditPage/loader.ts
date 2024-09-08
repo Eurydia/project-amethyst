@@ -14,11 +14,12 @@ export const editPageLoader: LoaderFunction =
 	async ({ params }) => {
 		if (params.routeId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.pickupRouteIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
 		const routeId = Number.parseInt(
@@ -27,11 +28,12 @@ export const editPageLoader: LoaderFunction =
 		const route = await getPickupRoute(routeId);
 		if (route === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.pickupRouteIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 		const initFormData: PickupRouteFormData = {

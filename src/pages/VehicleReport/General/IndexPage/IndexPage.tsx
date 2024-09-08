@@ -9,18 +9,19 @@ import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
 	const {
-		entries,
+		reportEntries,
 		topicMultiSelectOptions,
 		vehicleMultiSelectOptions,
 	} = useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
+
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
 				ตารางบันทึกเรื่องร้องเรียนรถรับส่ง
 			</Typography>
 			<VehicleReportGeneralTable
-				entries={entries}
+				entries={reportEntries}
 				slotProps={{
 					addButton: {
 						disabled:

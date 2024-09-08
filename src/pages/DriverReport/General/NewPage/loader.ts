@@ -23,17 +23,16 @@ export const newPageLoader: LoaderFunction =
 		const driverOptions = await getDriverAll();
 		if (driverOptions.length === 0) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.errorNoDriverInDatabase,
 				},
-				{ status: 400 },
 			);
 		}
 		const driver = driverOptions[0];
-
 		const topicOptions = await getTopicAll();
-
 		const initFormData: DriverReportFormData = {
 			datetime: dayjs().format(),
 			content: "",

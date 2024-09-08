@@ -12,7 +12,7 @@ export const IndexPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				ตารางสายรถ
+				รายชื่อสายรถ
 			</Typography>
 			<PickupRouteTable
 				entries={routeEntries}

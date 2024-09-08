@@ -20,6 +20,16 @@ export const NewPage: FC = () => {
 
 	const submit = useSubmit();
 
+	const handleCancel = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action: "/vehicles/report/inspection",
+			},
+		);
+	};
+
 	const handleSubmit = async (
 		formData: VehicleReportInspectionFormData,
 	) => {
@@ -29,6 +39,7 @@ export const NewPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/vehicles/report/inspection/info" +
 							reportId,
@@ -37,12 +48,7 @@ export const NewPage: FC = () => {
 			})
 			.catch(() => {
 				toast.error("ลงบันทึกล้มเหลว");
-				submit(
-					{},
-					{
-						action: "/vehicles/report/inspection",
-					},
-				);
+				handleCancel();
 			});
 	};
 
@@ -60,14 +66,7 @@ export const NewPage: FC = () => {
 						onClick: handleSubmit,
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									action:
-										"/vehicles/report/inspection",
-								},
-							),
+						onClick: handleCancel,
 					},
 					vehicleSelect: {
 						options: vehicleSelectOptions,

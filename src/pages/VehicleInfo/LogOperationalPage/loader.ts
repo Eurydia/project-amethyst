@@ -23,11 +23,12 @@ export const logOperationalPageLoader: LoaderFunction =
 	async ({ params }) => {
 		if (params.vehicleId === undefined) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.vehicleIdIsMissingFromParams,
 				},
-				{ status: 400 },
 			);
 		}
 
@@ -37,33 +38,36 @@ export const logOperationalPageLoader: LoaderFunction =
 		const vehicle = await getVehicle(vehicleId);
 		if (vehicle === null) {
 			throw json(
+				{},
 				{
-					message:
+					status: 404,
+					statusText:
 						TRANSLATION.vehicleIsMissingFromDatabase,
 				},
-				{ status: 404 },
 			);
 		}
 		const driverSelectOptions =
 			await getDriverAll();
 		if (driverSelectOptions.length === 0) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.errorNoDriverInDatabase,
 				},
-				{ status: 400 },
 			);
 		}
 		const routeSelectOptions =
 			await getPickupRouteAll();
 		if (routeSelectOptions.length === 0) {
 			throw json(
+				{},
 				{
-					message:
+					status: 400,
+					statusText:
 						TRANSLATION.errorNoPickupRouteInDatabase,
 				},
-				{ status: 400 },
 			);
 		}
 		const driver = driverSelectOptions[0];

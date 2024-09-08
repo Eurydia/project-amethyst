@@ -12,7 +12,7 @@ import { VehicleReportGeneralEntry } from "$types/models/Vehicle";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
-	entries: VehicleReportGeneralEntry[];
+	reportEntries: VehicleReportGeneralEntry[];
 	topicMultiSelectOptions: MultiSelectOption[];
 	vehicleMultiSelectOptions: MultiSelectOption[];
 };
@@ -22,7 +22,7 @@ export const indexPageLoader: LoaderFunction =
 			await getVehicleReportGeneralAll()
 		).map(VehicleReportGeneralModelImpl.toEntry);
 
-		const entries = (
+		const reportEntries = (
 			await Promise.all(reports)
 		).filter((report) => report !== null);
 
@@ -31,13 +31,12 @@ export const indexPageLoader: LoaderFunction =
 				label: topic,
 				value: topic,
 			}));
-
 		const vehicleMultiSelectOptions = (
 			await getVehicleAll()
 		).map(VehicleModelImpl.toMultiSelectOption);
 
 		const loaderData: IndexPageLoaderData = {
-			entries,
+			reportEntries,
 			topicMultiSelectOptions,
 			vehicleMultiSelectOptions,
 		};

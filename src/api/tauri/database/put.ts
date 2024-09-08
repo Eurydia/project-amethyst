@@ -1,15 +1,15 @@
 import {
-	DriverModel,
-	DriverReportModel,
+	DriverFormData,
+	DriverReportFormData,
 } from "$types/models/Driver";
 import {
-	PickupRouteModel,
-	PickupRouteReportModel,
+	PickupRouteFormData,
+	PickupRouteReportFormData,
 } from "$types/models/PickupRoute";
 import {
-	VehicleModel,
-	VehicleReportGeneralModel,
-	VehicleReportInspectionModel,
+	VehicleFormData,
+	VehicleReportGeneralFormData,
+	VehicleReportInspectionFormData,
 } from "$types/models/Vehicle";
 import { invoke } from "@tauri-apps/api/tauri";
 
@@ -33,38 +33,73 @@ export const putAttendanceLog = async ({
 
 //#region Driver
 export const putDriver = async (
-	driver: DriverModel,
-) => invoke("put_driver", driver);
+	driverId: number,
+	driver: DriverFormData,
+) =>
+	invoke("put_driver", {
+		driverId,
+		...driver,
+	});
 export const putDriverReportGeneral = async (
-	report: DriverReportModel,
-) => invoke("put_driver_report_general", report);
+	reportId: number,
+	report: DriverReportFormData,
+) =>
+	invoke("put_driver_report_general", {
+		reportId,
+		...report,
+	});
 export const putDriverReportMedical = async (
-	report: DriverReportModel,
-) => invoke("put_driver_report_medical", report);
+	reportId: number,
+	report: DriverReportFormData,
+) =>
+	invoke("put_driver_report_medical", {
+		reportId,
+		...report,
+	});
 //#endregion
 
 //#region Pickup Route
 export const putPickupRoute = async (
-	route: PickupRouteModel,
-) => invoke("put_pickup_route", route);
-export const putPickupRouteReportGeneral = async (
-	report: PickupRouteReportModel,
+	routeId: number,
+	route: PickupRouteFormData,
 ) =>
-	invoke(
-		"put_pickup_route_report_general",
-		report,
-	);
+	invoke("put_pickup_route", {
+		routeId,
+		...route,
+	});
+export const putPickupRouteReportGeneral = async (
+	reportId: number,
+	report: PickupRouteReportFormData,
+) =>
+	invoke("put_pickup_route_report_general", {
+		reportId,
+		...report,
+	});
 //#endregion
 
 //#region Vehicle
 export const putVehicle = async (
-	vehicle: VehicleModel,
-) => invoke("put_vehicle", vehicle);
-export const putVehicleReportGeneral = async (
-	report: VehicleReportGeneralModel,
-) => invoke("put_vehicle_report_general", report);
-export const putVehicleReportInspection = async (
-	report: VehicleReportInspectionModel,
+	vehicleId: number,
+	vehicle: VehicleFormData,
 ) =>
-	invoke("put_vehicle_report_inspection", report);
+	invoke("put_vehicle", {
+		vehicleId,
+		...vehicle,
+	});
+export const putVehicleReportGeneral = async (
+	reportId: number,
+	report: VehicleReportGeneralFormData,
+) =>
+	invoke("put_vehicle_report_general", {
+		reportId,
+		...report,
+	});
+export const putVehicleReportInspection = async (
+	reportId: number,
+	report: VehicleReportInspectionFormData,
+) =>
+	invoke("put_vehicle_report_inspection", {
+		reportId,
+		...report,
+	});
 //#endregion

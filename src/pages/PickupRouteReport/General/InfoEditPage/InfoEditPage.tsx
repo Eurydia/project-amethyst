@@ -21,32 +21,30 @@ export const InfoEditPage: FC = () => {
 	} = useLoaderData() as InfoEditPageLoaderData;
 	const submit = useSubmit();
 
+	const handleReturn = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action:
+					"/pickup-routes/report/general/info/" +
+					reportId,
+			},
+		);
+	};
+
 	const handleSubmit = (
 		formData: PickupRouteReportFormData,
 	) => {
-		putPickupRouteReportGeneral({
-			id: reportId,
-			content: formData.content,
-			datetime: formData.datetime,
-			route_id: formData.route.id,
-			title: formData.title,
-			topics: formData.topics.join(","),
-		})
+		putPickupRouteReportGeneral(
+			reportId,
+			formData,
+		)
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
 				() => toast.error("แก้ไขล้มเหลว"),
 			)
-			.finally(() =>
-				submit(
-					{},
-					{
-						replace: true,
-						action:
-							"/pickup-routes/report/general/info/" +
-							reportId,
-					},
-				),
-			);
+			.finally(handleReturn);
 	};
 
 	return (
@@ -70,17 +68,7 @@ export const InfoEditPage: FC = () => {
 						label: "บันทึก",
 					},
 					cancelButton: {
-						onClick: () => {
-							submit(
-								{},
-								{
-									replace: true,
-									action:
-										"/pickup-route/report/general/info/" +
-										reportId,
-								},
-							);
-						},
+						onClick: handleReturn,
 					},
 				}}
 			/>

@@ -15,7 +15,15 @@ export const NewPage: FC = () => {
 	const { initFormData } =
 		useLoaderData() as NewPageLoaderData;
 	const submit = useSubmit();
-
+	const handleCancel = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action: "/pickup-routes",
+			},
+		);
+	};
 	const handleSubmit = (
 		formData: PickupRouteFormData,
 	) => {
@@ -33,13 +41,7 @@ export const NewPage: FC = () => {
 			})
 			.catch(() => {
 				toast.error("ลงทะเบียนล้มเหลว");
-				submit(
-					{},
-					{
-						replace: true,
-						action: "/pickup-routes",
-					},
-				);
+				handleCancel();
 			});
 	};
 
@@ -57,15 +59,7 @@ export const NewPage: FC = () => {
 						startIcon: <AddRounded />,
 					},
 					cancelButton: {
-						onClick: () => {
-							submit(
-								{},
-								{
-									replace: true,
-									action: "/pickup-routes",
-								},
-							);
-						},
+						onClick: handleCancel,
 					},
 				}}
 			/>

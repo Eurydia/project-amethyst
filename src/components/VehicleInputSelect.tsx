@@ -88,6 +88,7 @@ export const VehicleInputSelect: FC<
 			getOptionLabel={(option) =>
 				option.license_plate
 			}
+			groupBy={(option) => option.vendor}
 			renderInput={renderInput}
 			filterOptions={filterOptions}
 			renderOption={renderOption}

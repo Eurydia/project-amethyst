@@ -16,31 +16,25 @@ export const EditPage: FC = () => {
 		useLoaderData() as EditPageLoaderData;
 	const submit = useSubmit();
 
+	const handleReturn = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action: "/pickup-routes/info/" + routeId,
+			},
+		);
+	};
+
 	const handleSubmit = async (
 		formData: PickupRouteFormData,
 	) => {
-		putPickupRoute({
-			id: routeId,
-			arrival_time: formData.arrivalTime,
-			departure_time: formData.departureTime,
-			name: formData.name,
-		})
+		putPickupRoute(routeId, formData)
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
-				() => {
-					toast.error("แก้ไขล้มเหลว");
-				},
+				() => toast.error("แก้ไขล้มเหลว"),
 			)
-			.finally(() =>
-				submit(
-					{},
-					{
-						replace: true,
-						action:
-							"/pickup-routes/info/" + routeId,
-					},
-				),
-			);
+			.finally(handleReturn);
 	};
 
 	return (
@@ -57,16 +51,7 @@ export const EditPage: FC = () => {
 						onClick: handleSubmit,
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									replace: true,
-									action:
-										"/pickup-routes/info/" +
-										routeId,
-								},
-							),
+						onClick: handleReturn,
 					},
 				}}
 			/>

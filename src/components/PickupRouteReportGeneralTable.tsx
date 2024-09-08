@@ -77,6 +77,7 @@ type PickupRouteReportGeneralTableProps = {
 	entries: PickupRouteReportEntry[];
 	slotProps: {
 		addButton: {
+			disabled?: boolean;
 			onClick: () => void;
 		};
 		routeMultiSelect: {
@@ -197,6 +198,7 @@ export const PickupRouteReportGeneralTable: FC<
 			headers={HEADER_DEFINITIONS}
 			slotProps={{
 				addButton: {
+					disabled: slotProps.addButton.disabled,
 					onClick: slotProps.addButton.onClick,
 					label: "ลงบันทึก",
 				},

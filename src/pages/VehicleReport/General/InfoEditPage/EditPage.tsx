@@ -19,7 +19,7 @@ export const InfoEditPage: FC = () => {
 		vehicleSelectOptions,
 	} = useLoaderData() as InfoEditPageLoaderData;
 	const submit = useSubmit();
-	const handleCancel = () => {
+	const handleReturn = () => {
 		submit(
 			{},
 			{
@@ -34,29 +34,12 @@ export const InfoEditPage: FC = () => {
 	const handleSubmit = (
 		formData: VehicleReportGeneralFormData,
 	) => {
-		putVehicleReportGeneral({
-			id: reportId,
-			content: formData.content,
-			vehicle_id: formData.vehicle.id,
-			datetime: formData.datetime,
-			title: formData.title,
-			topics: formData.topics.join(","),
-		})
+		putVehicleReportGeneral(reportId, formData)
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
 				() => toast.error("แก้ไขล้มเหลว"),
 			)
-			.finally(() =>
-				submit(
-					{},
-					{
-						replace: true,
-						action:
-							"/vehicle/reports/general/info/" +
-							reportId,
-					},
-				),
-			);
+			.finally(handleReturn);
 	};
 
 	return (
@@ -80,7 +63,7 @@ export const InfoEditPage: FC = () => {
 						options: vehicleSelectOptions,
 					},
 					cancelButton: {
-						onClick: handleCancel,
+						onClick: handleReturn,
 					},
 				}}
 			/>

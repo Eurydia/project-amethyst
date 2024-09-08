@@ -19,29 +19,25 @@ export const EditPage: FC = () => {
 	} = useLoaderData() as EditPageLoaderData;
 	const submit = useSubmit();
 
+	const handleReturn = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action: "/vehicles/info/" + vehicleId,
+			},
+		);
+	};
+
 	const handleSubmit = async (
 		formData: VehicleFormData,
 	) => {
-		putVehicle({
-			id: vehicleId,
-			license_plate: formData.licensePlate,
-			registered_city: formData.registeredCity,
-			vendor: formData.vendor,
-			vehicle_class: formData.vehicleClass,
-		})
+		putVehicle(vehicleId, formData)
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
 				() => toast.error("แก้ไขล้มเหลว"),
 			)
-			.finally(() =>
-				submit(
-					{},
-					{
-						replace: true,
-						action: "/vehicles/info/" + vehicleId,
-					},
-				),
-			);
+			.finally(handleReturn);
 	};
 
 	return (
@@ -52,23 +48,16 @@ export const EditPage: FC = () => {
 			<VehicleForm
 				initFormData={initFormData}
 				slotProps={{
+					vendorSelect: {
+						options: vendorSelectOptions,
+					},
 					submitButton: {
 						label: "บันทึก",
 						startIcon: <SaveRounded />,
 						onClick: handleSubmit,
 					},
-					vendorSelect: {
-						options: vendorSelectOptions,
-					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									action:
-										"/vehicles/info/" + vehicleId,
-								},
-							),
+						onClick: handleReturn,
 					},
 				}}
 			/>

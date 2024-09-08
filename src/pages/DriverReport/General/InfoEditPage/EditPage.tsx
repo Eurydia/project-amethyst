@@ -16,37 +16,30 @@ export const InfoEditPage: FC = () => {
 	const {
 		reportId,
 		initFormData,
-		driverOptions,
-		topicOptions,
+		driver,
+		topicComboBoxOptions,
 	} = useLoaderData() as InfoEditPageLoaderData;
 	const submit = useSubmit();
 
+	const handleReturn = () =>
+		submit(
+			{},
+			{
+				replace: true,
+				action:
+					"/drivers/report/general/info/" +
+					reportId,
+			},
+		);
 	const handleSubmit = (
 		formData: DriverReportFormData,
 	) => {
-		putDriverReportGeneral({
-			id: reportId,
-			content: formData.content,
-			datetime: formData.datetime,
-			driver_id: formData.driver.id,
-			topics: formData.topics.join(","),
-			title: formData.title,
-		})
+		putDriverReportGeneral(reportId, formData)
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
 				() => toast.error("แก้ไขล้มเหลว"),
 			)
-			.finally(() =>
-				submit(
-					{},
-					{
-						replace: true,
-						action:
-							"/drivers/report/general/info/" +
-							reportId,
-					},
-				),
-			);
+			.finally(handleReturn);
 	};
 
 	return (
@@ -63,22 +56,14 @@ export const InfoEditPage: FC = () => {
 						onClick: handleSubmit,
 					},
 					driverSelect: {
-						options: driverOptions,
+						disabled: true,
+						options: [driver],
 					},
 					topicComboBox: {
-						options: topicOptions,
+						options: topicComboBoxOptions,
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									replace: true,
-									action:
-										"/drivers/report/general/info/" +
-										reportId,
-								},
-							),
+						onClick: handleReturn,
 					},
 				}}
 			/>

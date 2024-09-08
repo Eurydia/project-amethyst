@@ -20,6 +20,16 @@ export const LogOperationalPage: FC = () => {
 		useLoaderData() as LogOperationalPageLoaderData;
 	const submit = useSubmit();
 
+	const handleReturn = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action: "/pickup-routes/info/" + route.id,
+			},
+		);
+	};
+
 	const handleSubmit = (
 		formData: OperationalLogFormData,
 	) => {
@@ -28,16 +38,7 @@ export const LogOperationalPage: FC = () => {
 				() => toast.success("ลงบันทึกสำเร็จ"),
 				() => toast.error("ลงบันทึกล้มเหลว"),
 			)
-			.finally(() =>
-				submit(
-					{},
-					{
-						replace: true,
-						action:
-							"/pickup-routes/info/" + route.id,
-					},
-				),
-			);
+			.finally(handleReturn);
 	};
 
 	return (
@@ -52,16 +53,7 @@ export const LogOperationalPage: FC = () => {
 						onClick: handleSubmit,
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									replace: true,
-									action:
-										"/pickup-routes/info/" +
-										route.id,
-								},
-							),
+						onClick: handleReturn,
 					},
 					routeSelect: {
 						disabled: true,

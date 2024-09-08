@@ -21,43 +21,26 @@ export const InfoEditPage: FC = () => {
 	} = useLoaderData() as InfoPageLoaderData;
 	const submit = useSubmit();
 
+	const handleReturn = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action:
+					"/vehicles/report/inspection/info/" +
+					reportId,
+			},
+		);
+	};
 	const handleSubmit = (
 		formData: VehicleReportInspectionFormData,
 	) => {
-		putVehicleReportInspection({
-			content: formData.content,
-			datetime: formData.datetime,
-			frame: formData.frame,
-			seatbelts: formData.seatbelts,
-			seats: formData.seats,
-			tires: formData.tires,
-			windows: formData.windows,
-			overhead_fan: formData.overheadFan,
-			turn_signals: formData.turnSignals,
-			brake_light: formData.brakeLights,
-			headlights: formData.headlights,
-			rearview_mirror: formData.rearviewMirror,
-			sideview_mirror: formData.sideviewMirror,
-			vehicle_id: formData.vehicle.id,
-			front_camera: formData.frontCamera,
-			topics: formData.topics.join(","),
-			id: reportId,
-		})
+		putVehicleReportInspection(reportId, formData)
 			.then(
 				() => toast.success("แก้ไขสำเร็จ"),
 				() => toast.error("แก้ไขล้มเหลว"),
 			)
-			.finally(() =>
-				submit(
-					{},
-					{
-						replace: true,
-						action:
-							"/vehicles/report/inspection/info/" +
-							reportId,
-					},
-				),
-			);
+			.finally(handleReturn);
 	};
 
 	return (
@@ -74,17 +57,7 @@ export const InfoEditPage: FC = () => {
 						onClick: handleSubmit,
 					},
 					cancelButton: {
-						onClick: () => {
-							submit(
-								{},
-								{
-									replace: true,
-									action:
-										"/vehicles/report/inspection/info/" +
-										reportId,
-								},
-							);
-						},
+						onClick: handleReturn,
 					},
 					vehicleSelect: {
 						options: vehicleSelectOptions,

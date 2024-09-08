@@ -64,6 +64,11 @@ export const IndexPage: FC = () => {
 				entries={logEntries}
 				slotProps={{
 					addButton: {
+						disabled:
+							driverMultiSelectOptions.length ===
+								0 ||
+							vehicleMultiSelectOptions.length ===
+								0,
 						onClick: () =>
 							submit(
 								{},

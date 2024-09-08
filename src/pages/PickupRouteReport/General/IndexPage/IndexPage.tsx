@@ -24,6 +24,9 @@ export const IndexPage: FC = () => {
 				entries={reportEntries}
 				slotProps={{
 					addButton: {
+						disabled:
+							routeMultiSelectOptions.length ===
+							0,
 						onClick: () =>
 							submit(
 								{},

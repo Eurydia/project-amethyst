@@ -86,7 +86,7 @@ export const IndexPage: FC = () => {
 						options: vehicleMultiSelectOptions,
 					},
 					addButton: {
-						isDisabled:
+						disabled:
 							driverMultiSelectOptions.length ===
 								0 ||
 							routeMultiSelectOptions.length ===

@@ -20,7 +20,15 @@ export const ReportGeneralPage: FC = () => {
 		useLoaderData() as ReportGeneralPageLoaderData;
 
 	const submit = useSubmit();
-
+	const handleCancel = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action: "/pickup-routes/info/" + route.id,
+			},
+		);
+	};
 	const handleSubmit = async (
 		formData: PickupRouteReportFormData,
 	) => {
@@ -38,14 +46,8 @@ export const ReportGeneralPage: FC = () => {
 				);
 			},
 			() => {
-				submit(
-					{},
-					{
-						replace: true,
-						action:
-							"/pickup-routes/info/" + route.id,
-					},
-				);
+				toast.error("ลงบันทึกล้มเหลว");
+				handleCancel();
 			},
 		);
 	};
@@ -64,16 +66,7 @@ export const ReportGeneralPage: FC = () => {
 						onClick: handleSubmit,
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									replace: true,
-									action:
-										"/pickup-routes/info/" +
-										initFormData.route.id,
-								},
-							),
+						onClick: handleCancel,
 					},
 					routeSelect: {
 						disabled: true,

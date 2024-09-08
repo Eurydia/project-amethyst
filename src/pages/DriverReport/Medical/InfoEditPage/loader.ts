@@ -14,9 +14,9 @@ import {
 } from "react-router-dom";
 
 export type InfoPageLoaderData = {
-	driverSelectOptions: DriverModel[];
-	topicComboBoxOptions: string[];
+	driver: DriverModel;
 	reportId: number;
+	topicComboBoxOptions: string[];
 	initFormData: DriverReportFormData;
 };
 export const infoEditPageLoader: LoaderFunction =
@@ -59,7 +59,6 @@ export const infoEditPageLoader: LoaderFunction =
 		}
 		const topicComboBoxOptions =
 			await getTopicAll();
-		const driverSelectOptions = [driver];
 
 		const initFormData: DriverReportFormData = {
 			content: report.content,
@@ -74,7 +73,7 @@ export const infoEditPageLoader: LoaderFunction =
 			driver,
 		};
 		const loaderData: InfoPageLoaderData = {
-			driverSelectOptions,
+			driver,
 			topicComboBoxOptions,
 			initFormData,
 			reportId,

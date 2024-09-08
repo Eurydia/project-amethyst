@@ -16,29 +16,23 @@ export const EditPage: FC = () => {
 		useLoaderData() as EditPageLoaderData;
 	const submit = useSubmit();
 
+	const handleReturn = () =>
+		submit(
+			{},
+			{
+				replace: true,
+				action: "/drivers/info/" + driverId,
+			},
+		);
 	const handleSubmit = (
 		formData: DriverFormData,
 	) => {
-		putDriver({
-			id: driverId,
-			contact: formData.contact,
-			license_type: formData.contact,
-			name: formData.name,
-			surname: formData.surname,
-		})
+		putDriver(driverId, formData)
 			.then(
 				() => toast.success("แก้ไขข้อมูลสำเร็จ"),
 				() => toast.error("แก้ไขข้อมูลล้มเหลว"),
 			)
-			.finally(() =>
-				submit(
-					{},
-					{
-						replace: true,
-						action: "/drivers/info/" + driverId,
-					},
-				),
-			);
+			.finally(handleReturn);
 	};
 
 	return (
@@ -55,15 +49,7 @@ export const EditPage: FC = () => {
 						onClick: handleSubmit,
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									replace: true,
-									action:
-										"/drivers/info/" + driverId,
-								},
-							),
+						onClick: handleReturn,
 					},
 				}}
 			/>

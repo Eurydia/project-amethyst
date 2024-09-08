@@ -15,8 +15,8 @@ import {
 
 export type InfoEditPageLoaderData = {
 	reportId: number;
-	topicOptions: string[];
-	driverOptions: DriverModel[];
+	topicComboBoxOptions: string[];
+	driver: DriverModel;
 	initFormData: DriverReportFormData;
 };
 export const infoEditPageLoader: LoaderFunction =
@@ -60,8 +60,9 @@ export const infoEditPageLoader: LoaderFunction =
 				},
 			);
 		}
-		const topicOptions = await getTopicAll();
-		const driverOptions = [driver];
+		const topicComboBoxOptions =
+			await getTopicAll();
+
 		const initFormData: DriverReportFormData = {
 			content: report.content,
 			datetime: report.datetime,
@@ -76,8 +77,8 @@ export const infoEditPageLoader: LoaderFunction =
 		};
 		const loaderData: InfoEditPageLoaderData = {
 			reportId,
-			driverOptions,
-			topicOptions,
+			driver,
+			topicComboBoxOptions,
 			initFormData,
 		};
 		return loaderData;

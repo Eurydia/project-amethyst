@@ -128,7 +128,7 @@ export const PickupRouteTable: FC<
 			slotProps={{
 				searchField: {
 					placeholder:
-						"ค้นหาด้วยคนขับรถ, เลขทะเบียน, หรือสายรถ",
+						"ค้นหาด้วยสายรถ, เลขทะเบียน, หรือคนขับรถ",
 					value: search,
 					onChange: setSearch,
 				},

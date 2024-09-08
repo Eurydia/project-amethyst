@@ -85,7 +85,7 @@ type OperationalLogTableProps = {
 	entries: OperationalLogEntry[];
 	slotProps: {
 		addButton: {
-			isDisabled?: boolean;
+			disabled?: boolean;
 			onClick: () => void;
 		};
 		vehicleMultiSelect: {
@@ -197,8 +197,7 @@ export const OperationalLogTable: FC<
 				addButton: {
 					label: "ลงบันทึก",
 					onClick: slotProps.addButton.onClick,
-					disabled:
-						slotProps.addButton.isDisabled,
+					disabled: slotProps.addButton.disabled,
 				},
 			}}
 		>

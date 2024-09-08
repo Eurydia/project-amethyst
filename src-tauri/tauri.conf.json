@@ -9,7 +9,7 @@
 	},
 	"package": {
 		"productName": "project-amethyst",
-		"version": "0.1.0"
+		"version": "0.1.1"
 	},
 	"tauri": {
 		"allowlist": {
@@ -72,7 +72,9 @@
 				"fullscreen": false,
 				"height": 600,
 				"resizable": true,
-				"title": "project-amethyst",
+				"minHeight": 600,
+				"title": "สมุดบันทึกการเดินรถ",
+				"minWidth": 800,
 				"width": 800
 			}
 		]

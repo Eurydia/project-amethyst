@@ -20,6 +20,16 @@ export const LogOperationalPage: FC = () => {
 		useLoaderData() as LogOperationalPageLoaderData;
 	const submit = useSubmit();
 
+	const handleReturn = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action: "/drivers/info/" + driver.id,
+			},
+		);
+	};
+
 	const handleSubmit = (
 		formData: OperationalLogFormData,
 	) => {
@@ -28,36 +38,19 @@ export const LogOperationalPage: FC = () => {
 				() => toast.success("ลงบันทึกสำเร็จ"),
 				() => toast.error("ลงบันทึกล้มเหลว"),
 			)
-			.finally(() =>
-				submit(
-					{},
-					{
-						replace: true,
-						action: "/drivers/info/" + driver.id,
-					},
-				),
-			);
+			.finally(handleReturn);
 	};
 
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				ลงบันทึกประวัติการเดินรถ
+				{`ลงบันทึกประวัติการเดินรถของ "${driver.name} ${driver.surname}"`}
 			</Typography>
 			<OperationalLogForm
 				initFormData={initFormData}
 				slotProps={{
 					cancelButton: {
-						onClick: () => {
-							submit(
-								{},
-								{
-									replace: true,
-									action:
-										"/vehicles/info/" + driver.id,
-								},
-							);
-						},
+						onClick: handleReturn,
 					},
 					driverSelect: {
 						disabled: true,

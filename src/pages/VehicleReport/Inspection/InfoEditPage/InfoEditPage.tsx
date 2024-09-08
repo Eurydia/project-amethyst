@@ -17,7 +17,8 @@ export const InfoEditPage: FC = () => {
 		reportId,
 		initFormData,
 		topicComboBoxOptions,
-		vehicleSelectOptions,
+		vehicle,
+		inspectionRoundNumber,
 	} = useLoaderData() as InfoPageLoaderData;
 	const submit = useSubmit();
 
@@ -46,7 +47,7 @@ export const InfoEditPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				แก้ไขผลการตรวจสภาพรถ{" "}
+				{`แก้ไขผลการตรวจสภาพรอบที่ ${inspectionRoundNumber} ของ "${vehicle.license_plate}"`}
 			</Typography>
 			<VehicleReportInspectionForm
 				initFormData={initFormData}
@@ -60,7 +61,7 @@ export const InfoEditPage: FC = () => {
 						onClick: handleReturn,
 					},
 					vehicleSelect: {
-						options: vehicleSelectOptions,
+						options: [vehicle],
 						disabled: true,
 					},
 					topicComboBox: {

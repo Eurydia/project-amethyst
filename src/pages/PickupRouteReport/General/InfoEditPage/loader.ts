@@ -1,6 +1,5 @@
 import {
 	getPickupRoute,
-	getPickupRouteAll,
 	getPickupRouteReportGeneral,
 	getTopicAll,
 } from "$backend/database/get";
@@ -15,7 +14,7 @@ import {
 } from "react-router-dom";
 
 export type InfoEditPageLoaderData = {
-	routeSelectOptions: PickupRouteModel[];
+	route: PickupRouteModel;
 	reportId: number;
 	initFormData: PickupRouteReportFormData;
 	topicComboBoxOptions: string[];
@@ -63,9 +62,6 @@ export const infoEditPageLoader: LoaderFunction =
 
 		const topicComboBoxOptions =
 			await getTopicAll();
-		const routeSelectOptions =
-			await getPickupRouteAll();
-
 		const initFormData: PickupRouteReportFormData =
 			{
 				content: report.content,
@@ -83,7 +79,7 @@ export const infoEditPageLoader: LoaderFunction =
 		const loaderData: InfoEditPageLoaderData = {
 			reportId,
 			initFormData,
-			routeSelectOptions,
+			route,
 			topicComboBoxOptions,
 		};
 

@@ -97,7 +97,7 @@ export type VehicleReportInspectionFormData = {
 	seats: string;
 	headlights: string;
 	turnSignals: string;
-	brakeLights: string;
+	brakeLight: string;
 	rearviewMirror: string;
 	sideviewMirror: string;
 	tires: string;

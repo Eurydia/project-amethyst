@@ -32,7 +32,9 @@ const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
 			compare: null,
 			render: (item) =>
 				item.routes.length === 0 ? (
-					<Typography>ไม่มี</Typography>
+					<Typography fontWeight="bold">
+						ไม่มี
+					</Typography>
 				) : (
 					<Stack spacing={1}>
 						{item.routes.map(
@@ -54,7 +56,9 @@ const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
 			compare: null,
 			render: ({ drivers }) =>
 				drivers.length === 0 ? (
-					<Typography>ไม่มี</Typography>
+					<Typography fontWeight="bold">
+						ไม่มี
+					</Typography>
 				) : (
 					<Stack spacing={1}>
 						{drivers.map(

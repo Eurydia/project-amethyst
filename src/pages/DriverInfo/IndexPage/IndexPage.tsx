@@ -53,7 +53,7 @@ export const IndexPage: FC = () => {
 				variant="h1"
 				id="info"
 			>
-				{TRANSLATION.driverInfoGroup}
+				{`ข้อมูลคนขับรถของ "${driver.name} ${driver.surname}"`}
 			</Typography>
 			<DriverInfoGroup
 				driver={driver}

@@ -1,3 +1,4 @@
+import { AttendanceLogFormData } from "$types/models/AttendanceLog";
 import {
 	DriverFormData,
 	DriverReportFormData,
@@ -13,6 +14,12 @@ import {
 	VehicleReportInspectionFormData,
 } from "$types/models/Vehicle";
 import { invoke } from "@tauri-apps/api/tauri";
+
+//#region Operational Log
+export const postAttendanceLog = async (
+	log: AttendanceLogFormData,
+) => invoke("post_attendance_log", log);
+//#endregion
 
 //#region Operational Log
 export const postOperationalLog = async (

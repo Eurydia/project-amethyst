@@ -60,7 +60,7 @@ export const reportInspectionPageLoader: LoaderFunction =
 				windows: "",
 				frontCamera: "",
 				overheadFan: "",
-				brakeLights: "",
+				brakeLight: "",
 				headlights: "",
 				turnSignals: "",
 				rearviewMirror: "",

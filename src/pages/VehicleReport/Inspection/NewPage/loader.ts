@@ -46,7 +46,7 @@ export const newPageLoader: LoaderFunction =
 				frontCamera: "",
 				content: "",
 				overheadFan: "",
-				brakeLights: "",
+				brakeLight: "",
 				headlights: "",
 				turnSignals: "",
 				rearviewMirror: "",

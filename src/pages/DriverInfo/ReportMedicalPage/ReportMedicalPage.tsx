@@ -12,16 +12,20 @@ import { toast } from "react-toastify";
 import { ReportMedicalPageLoaderData } from "./loader";
 
 export const ReportMedicalPage: FC = () => {
-	const {
-		driverId,
-		topicOptions,
-		driverOptions,
-		initFormData,
-	} =
+	const { topicOptions, driver, initFormData } =
 		useLoaderData() as ReportMedicalPageLoaderData;
 
 	const submit = useSubmit();
 
+	const handleCancel = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action: "/drivers/info/" + driver.id,
+			},
+		);
+	};
 	const handleSubmit = async (
 		formData: DriverReportFormData,
 	) => {
@@ -40,13 +44,7 @@ export const ReportMedicalPage: FC = () => {
 			},
 			() => {
 				toast.error("ลงบันทึกล้มเหลว");
-				submit(
-					{},
-					{
-						replace: true,
-						action: "/drivers/info/" + driverId,
-					},
-				);
+				handleCancel();
 			},
 		);
 	};
@@ -54,7 +52,7 @@ export const ReportMedicalPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				ลงบันทึกผลการตรวจสารเสพติด
+				{`ลงบันทึกผลการตรวจสารเสพติดของ "${driver.name} ${driver.surname}"`}
 			</Typography>
 			<DriverReportForm
 				initFormData={initFormData}
@@ -65,17 +63,10 @@ export const ReportMedicalPage: FC = () => {
 						onClick: handleSubmit,
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									action:
-										"/drivers/info/" + driverId,
-								},
-							),
+						onClick: handleCancel,
 					},
 					driverSelect: {
-						options: driverOptions,
+						options: [driver],
 						disabled: true,
 					},
 					topicComboBox: {

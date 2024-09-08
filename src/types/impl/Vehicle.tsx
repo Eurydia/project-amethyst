@@ -66,11 +66,7 @@ export const VehicleReportInspectionModelImpl = {
 	) =>
 		[
 			{
-				label: "เลขที่ผลตรวจ",
-				value: report.id,
-			},
-			{
-				label: "ผลตรวจครั้งที่",
+				label: "ตรวจสภาพรอบที่",
 				value: inspectionRoundNumber,
 			},
 			{
@@ -80,7 +76,7 @@ export const VehicleReportInspectionModelImpl = {
 					.format("HH:mm น. DD MMMM YYYY"),
 			},
 			{
-				label: "เลขทะเบียนรถ",
+				label: "เลขทะเบียน",
 				value: (
 					<Link
 						to={"/vehicles/info/" + vehicle.id}
@@ -139,14 +135,14 @@ export const VehicleReportInspectionModelImpl = {
 			},
 			{
 				label: "รายละเอียดเพิ่มเติม",
-				value: report.content,
+				value: report.content || "...",
 			},
 			{
 				label: "หัวข้อที่เกี่ยวข้อง",
-				value: report.topics.replaceAll(
-					",",
-					", ",
-				),
+				value:
+					report.topics.length === 0
+						? "ไม่มีหัวข้อที่เกี่ยวข้อง"
+						: report.topics.replaceAll(",", ", "),
 			},
 		].map((item) => ({
 			label: item.label,
@@ -188,10 +184,6 @@ export const VehicleReportGeneralModelImpl = {
 	) =>
 		[
 			{
-				label: "เลขที่ร้องเรียน",
-				value: report.id,
-			},
-			{
 				label: "วันที่ลงบันทึก",
 				value: dayjs(report.datetime)
 					.locale("th")
@@ -200,7 +192,7 @@ export const VehicleReportGeneralModelImpl = {
 					),
 			},
 			{
-				label: "ทะเบียนรถ",
+				label: "เลขทะเบียน",
 				value: (
 					<Link
 						to={"/vehicles/info/" + vehicle.id}
@@ -309,7 +301,7 @@ export const VehicleReportInspectionEntryImpl = {
 		afterDate: Dayjs | null,
 		beforeDate: Dayjs | null,
 		selectedVehicles: string[],
-		selectedTopics: string[],
+		topics: string[],
 		topicMustHaveAll: boolean,
 		search: string,
 	) => {
@@ -336,10 +328,10 @@ export const VehicleReportInspectionEntryImpl = {
 			.filter((entry) => {
 				const topicSet = new Set(entry.topics);
 				return topicMustHaveAll
-					? selectedTopics.every((topic) =>
+					? topics.every((topic) =>
 							topicSet.has(topic),
 					  )
-					: selectedTopics.some((topic) =>
+					: topics.some((topic) =>
 							topicSet.has(topic),
 					  );
 			});
@@ -357,8 +349,8 @@ export const VehicleReportGeneralEntryImpl = {
 		entries: VehicleReportGeneralEntry[],
 		afterDate: Dayjs | null,
 		beforeDate: Dayjs | null,
-		selectedVehicles: string[],
-		selectedTopics: string[],
+		vehicles: string[],
+		topics: string[],
 		topicMustHaveAll: boolean,
 		search: string,
 	) => {
@@ -378,7 +370,7 @@ export const VehicleReportGeneralEntryImpl = {
 					),
 			);
 
-		const vehicleSet = new Set(selectedVehicles);
+		const vehicleSet = new Set(vehicles);
 
 		const filtered = items
 			.filter((entry) =>
@@ -389,10 +381,10 @@ export const VehicleReportGeneralEntryImpl = {
 			.filter((entry) => {
 				const topicSet = new Set(entry.topics);
 				return topicMustHaveAll
-					? selectedTopics.every((topic) =>
+					? topics.every((topic) =>
 							topicSet.has(topic),
 					  )
-					: selectedTopics.some((topic) =>
+					: topics.some((topic) =>
 							topicSet.has(topic),
 					  );
 			});

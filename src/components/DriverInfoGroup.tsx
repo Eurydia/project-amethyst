@@ -26,10 +26,6 @@ export const DriverInfoGroup: FC<
 		value: ReactNode;
 	}[] = [
 		{
-			label: "เลขที่คนขับรถ",
-			value: driver.id,
-		},
-		{
 			label: "ชื่อสกุล",
 			value: `${driver.name} ${driver.surname}`,
 		},

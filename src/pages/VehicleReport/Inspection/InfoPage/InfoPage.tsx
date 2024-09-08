@@ -15,7 +15,7 @@ export const InfoPage: FC = () => {
 	return (
 		<Stack sx={{ gap: 1 }}>
 			<Typography variant="h1">
-				ผลการตรวจสภาพรถ
+				{`ผลการตรวจสภาพรถรอบที่ ${inspectionRoundNumber} ของ "${vehicle.license_plate}"`}
 			</Typography>
 			<VehicleReportInspectionInfoGroup
 				report={report}

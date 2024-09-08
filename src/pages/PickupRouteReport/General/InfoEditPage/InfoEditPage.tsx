@@ -16,7 +16,7 @@ export const InfoEditPage: FC = () => {
 	const {
 		initFormData,
 		reportId,
-		routeSelectOptions,
+		route,
 		topicComboBoxOptions,
 	} = useLoaderData() as InfoEditPageLoaderData;
 	const submit = useSubmit();
@@ -60,7 +60,7 @@ export const InfoEditPage: FC = () => {
 					},
 					routeSelect: {
 						disabled: true,
-						options: routeSelectOptions,
+						options: [route],
 					},
 					submitButton: {
 						onClick: handleSubmit,

@@ -21,6 +21,17 @@ export const ReportGeneralPage: FC = () => {
 
 	const submit = useSubmit();
 
+	const handleCancel = () =>
+		submit(
+			{},
+			{
+				replace: true,
+				action:
+					"/vehicles/info/" +
+					initFormData.vehicle.id,
+			},
+		);
+
 	const handleSubmit = async (
 		formData: VehicleReportGeneralFormData,
 	) => {
@@ -32,22 +43,14 @@ export const ReportGeneralPage: FC = () => {
 					{
 						replace: true,
 						action:
-							"/vehicles/report/general/info" +
+							"/vehicles/report/general/info/" +
 							reportId,
 					},
 				);
 			},
 			() => {
 				toast.error("ลงบันทึกล้มเหลว");
-				submit(
-					{},
-					{
-						replace: true,
-						action:
-							"/vehicles/info/" +
-							initFormData.vehicle.id,
-					},
-				);
+				handleCancel();
 			},
 		);
 	};
@@ -55,7 +58,7 @@ export const ReportGeneralPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				ลงบันทึกเรื่องร้องเรียนรถรับส่ง
+				{`ลงบันทึกเรื่องร้องเรียนรถรับส่ง (${initFormData.vehicle.license_plate})`}
 			</Typography>
 			<VehicleReportGeneralForm
 				initFormData={initFormData}
@@ -73,16 +76,7 @@ export const ReportGeneralPage: FC = () => {
 						options: vehicleSelectOptions,
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									replace: true,
-									action:
-										"/vehicles/info/" +
-										initFormData.vehicle.id,
-								},
-							),
+						onClick: handleCancel,
 					},
 				}}
 			/>

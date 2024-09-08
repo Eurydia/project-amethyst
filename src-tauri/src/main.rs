@@ -49,7 +49,7 @@ async fn main() -> Result<(), &'static str> {
             post_vehicle_report_inspection,
             post_pickup_route,
             post_pickup_route_report_general,
-            // post_attendance_log,
+            post_attendance_log,
             post_operational_log,
             //////////////////////////////////////////
             put_attendance_log,
@@ -74,42 +74,42 @@ async fn main() -> Result<(), &'static str> {
     let db = database::init::prepare_db(&app).await?;
     app.manage(AppState { db });
 
-    let op_logs = get_operational_log_today(app.handle(), app.state()).await?;
-    let att_logs = get_attendance_log_today(app.handle(), app.state()).await?;
+    // let op_logs = get_operational_log_today(app.handle(), app.state()).await?;
+    // let att_logs = get_attendance_log_today(app.handle(), app.state()).await?;
 
-    let today = chrono::Local::now();
-    if op_logs.len() <= att_logs.len() {
-        for op_log in op_logs {
-            let route =
-                match get_pickup_route(app.app_handle(), app.state(), op_log.route_id).await? {
-                    Some(route) => route,
-                    None => continue,
-                };
-            let arrival_time =
-                chrono::NaiveTime::parse_from_str(route.arrival_time.as_str(), "%H:%M").unwrap();
+    // let today = chrono::Local::now();
+    // if op_logs.len() <= att_logs.len() {
+    //     for op_log in op_logs {
+    //         let route =
+    //             match get_pickup_route(app.app_handle(), app.state(), op_log.route_id).await? {
+    //                 Some(route) => route,
+    //                 None => continue,
+    //             };
+    //         let arrival_time =
+    //             chrono::NaiveTime::parse_from_str(route.arrival_time.as_str(), "%H:%M").unwrap();
 
-            let depature_time =
-                chrono::NaiveTime::parse_from_str(route.departure_time.as_str(), "%H:%M").unwrap();
+    //         let depature_time =
+    //             chrono::NaiveTime::parse_from_str(route.departure_time.as_str(), "%H:%M").unwrap();
 
-            let expected_arrival_datetime = today.with_time(arrival_time).unwrap();
-            let expected_departure_datetime = today.with_time(depature_time).unwrap();
+    //         let expected_arrival_datetime = today.with_time(arrival_time).unwrap();
+    //         let expected_departure_datetime = today.with_time(depature_time).unwrap();
 
-            post_attendance_log(
-                app.app_handle(),
-                app.state(),
-                op_log.driver_id,
-                op_log.vehicle_id,
-                op_log.route_id,
-                expected_arrival_datetime
-                    .format("%Y-%m-%dT%H:%M:%S%z")
-                    .to_string(),
-                expected_departure_datetime
-                    .format("%Y-%m-%dT%H:%M:%S%z")
-                    .to_string(),
-            )
-            .await?;
-        }
-    }
+    //         post_attendance_log(
+    //             app.app_handle(),
+    //             app.state(),
+    //             op_log.driver_id,
+    //             op_log.vehicle_id,
+    //             op_log.route_id,
+    //             expected_arrival_datetime
+    //                 .format("%Y-%m-%dT%H:%M:%S%z")
+    //                 .to_string(),
+    //             expected_departure_datetime
+    //                 .format("%Y-%m-%dT%H:%M:%S%z")
+    //                 .to_string(),
+    //         )
+    //         .await?;
+    //     }
+    // }
 
     app.run(|_, _| {});
 

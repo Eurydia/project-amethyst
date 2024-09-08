@@ -12,14 +12,19 @@ import { toast } from "react-toastify";
 import { ReportGeneralPageLoaderData } from "./loader";
 
 export const ReportGeneralPage: FC = () => {
-	const {
-		driverId,
-		topicOptions,
-		initFormData,
-		driverOptions,
-	} =
+	const { topicOptions, initFormData, driver } =
 		useLoaderData() as ReportGeneralPageLoaderData;
 	const submit = useSubmit();
+
+	const handleCancel = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action: "/drivers/info/" + driver.id,
+			},
+		);
+	};
 
 	const handleSubmit = (
 		formData: DriverReportFormData,
@@ -39,13 +44,7 @@ export const ReportGeneralPage: FC = () => {
 			},
 			() => {
 				toast.error("ลงบันทึกล้มเหลว");
-				submit(
-					{},
-					{
-						replace: true,
-						action: "/drivers/info/" + driverId,
-					},
-				);
+				handleCancel();
 			},
 		);
 	};
@@ -53,13 +52,13 @@ export const ReportGeneralPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				ลงบันทึกเรื่องร้องเรียนคนขับรถ
+				{`ลงบันทึกเรื่องร้องเรียนของ "${driver.name} ${driver.surname}"`}
 			</Typography>
 			<DriverReportForm
 				initFormData={initFormData}
 				slotProps={{
 					driverSelect: {
-						options: driverOptions,
+						options: [driver],
 					},
 					topicComboBox: {
 						options: topicOptions,
@@ -70,15 +69,7 @@ export const ReportGeneralPage: FC = () => {
 						onClick: handleSubmit,
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									replace: true,
-									action:
-										"/drivers/info/" + driverId,
-								},
-							),
+						onClick: handleCancel,
 					},
 				}}
 			/>

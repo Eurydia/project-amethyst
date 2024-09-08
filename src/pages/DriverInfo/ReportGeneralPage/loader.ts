@@ -15,8 +15,7 @@ import {
 } from "react-router-dom";
 
 export type ReportGeneralPageLoaderData = {
-	driverId: string;
-	driverOptions: DriverModel[];
+	driver: DriverModel;
 	topicOptions: string[];
 	initFormData: DriverReportFormData;
 };
@@ -48,7 +47,6 @@ export const reportGeneralPageLoader: LoaderFunction =
 		}
 
 		const topicOptions = await getTopicAll();
-		const driverOptions = [driver];
 		const initFormData: DriverReportFormData = {
 			datetime: dayjs().format(),
 			driver,
@@ -58,8 +56,7 @@ export const reportGeneralPageLoader: LoaderFunction =
 		};
 		const loaderData: ReportGeneralPageLoaderData =
 			{
-				driverId,
-				driverOptions,
+				driver,
 				initFormData,
 				topicOptions,
 			};

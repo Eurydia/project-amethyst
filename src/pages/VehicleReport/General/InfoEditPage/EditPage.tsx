@@ -16,7 +16,7 @@ export const InfoEditPage: FC = () => {
 		reportId,
 		initFormData,
 		topicComboBoxOptions,
-		vehicleSelectOptions,
+		vehicle,
 	} = useLoaderData() as InfoEditPageLoaderData;
 	const submit = useSubmit();
 	const handleReturn = () => {
@@ -60,7 +60,7 @@ export const InfoEditPage: FC = () => {
 					},
 					vehcleSelect: {
 						disabled: true,
-						options: vehicleSelectOptions,
+						options: [vehicle],
 					},
 					cancelButton: {
 						onClick: handleReturn,

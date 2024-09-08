@@ -149,5 +149,4 @@ export const getAttendanceLogAll =
 export const getAttendanceLogToday =
 	async (): Promise<AttendanceLogModel[]> =>
 		invoke("get_attendance_log_today");
-
 //#endregion

@@ -1,11 +1,10 @@
-use super::models::DriverModel;
-
+#[tauri::command(rename_all = "camelCase")]
 pub async fn post_attendance_log(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    driver_id: i64,
-    vehicle_id: i64,
-    route_id: i64,
+    driver: super::models::DriverModel,
+    vehicle: super::models::VehicleModel,
+    route: super::models::PickupRouteModel,
     expected_arrival_datetime: String,
     expected_departure_datetime: String,
 ) -> Result<i64, &'static str> {
@@ -28,9 +27,9 @@ pub async fn post_attendance_log(
             );
         "#,
     )
-    .bind(driver_id)
-    .bind(vehicle_id)
-    .bind(route_id)
+    .bind(driver.id)
+    .bind(vehicle.id)
+    .bind(route.id)
     .bind(expected_arrival_datetime)
     .bind(expected_departure_datetime)
     .execute(&state.db)
@@ -128,7 +127,7 @@ pub async fn post_driver(
 pub async fn post_driver_report_general(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    driver: DriverModel,
+    driver: super::models::DriverModel,
     datetime: String,
     title: String,
     content: String,
@@ -165,7 +164,7 @@ pub async fn post_driver_report_general(
 pub async fn post_driver_report_medical(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    driver: DriverModel,
+    driver: super::models::DriverModel,
     datetime: String,
     title: String,
     content: String,
@@ -304,11 +303,11 @@ pub async fn post_vehicle(
 pub async fn post_vehicle_report_general(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    vehicle_id: i64,
+    vehicle: super::models::VehicleModel,
     datetime: String,
     title: String,
     content: String,
-    topics: String,
+    topics: Vec<String>,
 ) -> Result<i64, &'static str> {
     let query = sqlx::query(
         r#"
@@ -323,11 +322,11 @@ pub async fn post_vehicle_report_general(
             VALUES (?, ?, ?, ?, ?);
         "#,
     )
-    .bind(vehicle_id)
+    .bind(vehicle.id)
     .bind(datetime)
     .bind(title)
     .bind(content)
-    .bind(topics)
+    .bind(topics.join(","))
     .execute(&state.db)
     .await;
 
@@ -341,10 +340,10 @@ pub async fn post_vehicle_report_general(
 pub async fn post_vehicle_report_inspection(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
-    vehicle_id: i64,
+    vehicle: super::models::VehicleModel,
     datetime: String,
     content: String,
-    topics: String,
+    topics: Vec<String>,
     front_camera: String,
     overhead_fan: String,
     windows: String,
@@ -383,10 +382,10 @@ pub async fn post_vehicle_report_inspection(
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
         "#,
     )
-    .bind(vehicle_id)
+    .bind(vehicle.id)
     .bind(datetime)
     .bind(content)
-    .bind(topics)
+    .bind(topics.join(","))
     .bind(front_camera)
     .bind(overhead_fan)
     .bind(windows)

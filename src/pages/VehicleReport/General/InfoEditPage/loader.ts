@@ -16,7 +16,7 @@ import {
 export type InfoEditPageLoaderData = {
 	reportId: number;
 	topicComboBoxOptions: string[];
-	vehicleSelectOptions: VehicleModel[];
+	vehicle: VehicleModel;
 	initFormData: VehicleReportGeneralFormData;
 };
 export const infoEditPageLoader: LoaderFunction =
@@ -60,7 +60,6 @@ export const infoEditPageLoader: LoaderFunction =
 		}
 		const topicComboBoxOptions =
 			await getTopicAll();
-		const vehicleSelectOptions = [vehicle];
 		const initFormData: VehicleReportGeneralFormData =
 			{
 				vehicle,
@@ -76,7 +75,7 @@ export const infoEditPageLoader: LoaderFunction =
 
 		const loaderData: InfoEditPageLoaderData = {
 			reportId,
-			vehicleSelectOptions,
+			vehicle,
 			topicComboBoxOptions,
 			initFormData,
 		};

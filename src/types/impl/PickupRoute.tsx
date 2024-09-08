@@ -70,7 +70,15 @@ export const PickupRouteModelImpl = {
 			},
 		].map(({ label, value }) => ({
 			label,
-			value: <Typography>{value}</Typography>,
+			value: (
+				<Typography
+					sx={{
+						wordBreak: "break-word",
+					}}
+				>
+					{value}
+				</Typography>
+			),
 		}));
 	},
 
@@ -184,7 +192,15 @@ export const PickupRouteReportModelImpl = {
 			},
 		].map(({ label, value }) => ({
 			label,
-			value: <Typography> {value}</Typography>,
+			value: (
+				<Typography
+					sx={{
+						wordBreak: "break-word",
+					}}
+				>
+					{value}
+				</Typography>
+			),
 		})),
 };
 
@@ -193,25 +209,20 @@ export const PickupRouteReportEntryImpl = {
 		entries: PickupRouteReportEntry[],
 		afterDate: Dayjs | null,
 		beforeDate: Dayjs | null,
-		selectedRoutes: string[],
-		selectedTopics: string[],
+		routes: string[],
+		topics: string[],
 		topicMustHaveAll: boolean,
 		search: string,
 	) => {
-		const items = entries
-			.filter(
-				({ datetime }) =>
-					afterDate === null ||
-					dayjs(datetime).isAfter(afterDate),
-			)
-			.filter(
-				({ datetime }) =>
-					beforeDate === null ||
-					dayjs(datetime).isBefore(beforeDate),
-			);
+		const items = entries.filter(
+			({ datetime }) =>
+				(afterDate === null ||
+					dayjs(datetime).isAfter(afterDate)) &&
+				(beforeDate === null ||
+					dayjs(datetime).isBefore(beforeDate)),
+		);
 
-		const routeSet = new Set(selectedRoutes);
-
+		const routeSet = new Set(routes);
 		const filtered = items
 			.filter((entry) =>
 				routeSet.has(entry.routeId.toString()),
@@ -219,10 +230,10 @@ export const PickupRouteReportEntryImpl = {
 			.filter((entry) => {
 				const topicSet = new Set(entry.topics);
 				return topicMustHaveAll
-					? selectedTopics.every((topic) =>
+					? topics.every((topic) =>
 							topicSet.has(topic),
 					  )
-					: selectedTopics.some((topic) =>
+					: topics.some((topic) =>
 							topicSet.has(topic),
 					  );
 			});

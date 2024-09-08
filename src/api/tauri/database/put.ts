@@ -33,73 +33,73 @@ export const putAttendanceLog = async ({
 
 //#region Driver
 export const putDriver = async (
-	driverId: number,
+	id: number,
 	driver: DriverFormData,
 ) =>
 	invoke("put_driver", {
-		driverId,
+		id,
 		...driver,
 	});
 export const putDriverReportGeneral = async (
-	reportId: number,
+	id: number,
 	report: DriverReportFormData,
 ) =>
 	invoke("put_driver_report_general", {
-		reportId,
+		id,
 		...report,
 	});
 export const putDriverReportMedical = async (
-	reportId: number,
+	id: number,
 	report: DriverReportFormData,
 ) =>
 	invoke("put_driver_report_medical", {
-		reportId,
+		id,
 		...report,
 	});
 //#endregion
 
 //#region Pickup Route
 export const putPickupRoute = async (
-	routeId: number,
+	id: number,
 	route: PickupRouteFormData,
 ) =>
 	invoke("put_pickup_route", {
-		routeId,
+		id,
 		...route,
 	});
 export const putPickupRouteReportGeneral = async (
-	reportId: number,
+	id: number,
 	report: PickupRouteReportFormData,
 ) =>
 	invoke("put_pickup_route_report_general", {
-		reportId,
+		id,
 		...report,
 	});
 //#endregion
 
 //#region Vehicle
 export const putVehicle = async (
-	vehicleId: number,
+	id: number,
 	vehicle: VehicleFormData,
 ) =>
 	invoke("put_vehicle", {
-		vehicleId,
+		id,
 		...vehicle,
 	});
 export const putVehicleReportGeneral = async (
-	reportId: number,
+	id: number,
 	report: VehicleReportGeneralFormData,
 ) =>
 	invoke("put_vehicle_report_general", {
-		reportId,
+		id,
 		...report,
 	});
 export const putVehicleReportInspection = async (
-	reportId: number,
+	id: number,
 	report: VehicleReportInspectionFormData,
 ) =>
 	invoke("put_vehicle_report_inspection", {
-		reportId,
+		id,
 		...report,
 	});
 //#endregion

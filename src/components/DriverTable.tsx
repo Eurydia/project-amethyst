@@ -1,5 +1,4 @@
 import { BaseSortableTable } from "$components/BaseSortableTable";
-import { TRANSLATION } from "$locale/th";
 import {
 	MultiSelectOption,
 	TableHeaderDefinition,
@@ -34,8 +33,8 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 			compare: null,
 			render: (item) =>
 				item.routes.length === 0 ? (
-					<Typography>
-						{TRANSLATION.globalNone}
+					<Typography fontWeight="bold">
+						ไม่มี
 					</Typography>
 				) : (
 					<Stack spacing={1}>
@@ -59,7 +58,9 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 			compare: null,
 			render: (item) =>
 				item.vehicles.length === 0 ? (
-					<Typography>ไม่มี</Typography>
+					<Typography fontWeight="bold">
+						ไม่มี
+					</Typography>
 				) : (
 					<Stack spacing={1}>
 						{item.vehicles.map(
@@ -131,7 +132,7 @@ export const DriverTable: FC<DriverTableProps> = (
 			slotProps={{
 				searchField: {
 					placeholder:
-						"ค้นหาด้วยชื่อนามสกุลคนขับรถ, สายรถ, หรือทะเบียนรถ",
+						"ค้นหาด้วยคนขับรถ, สายรถ, หรือทะเบียนรถ",
 					value: search,
 					onChange: setSearch,
 				},

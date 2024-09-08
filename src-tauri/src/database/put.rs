@@ -68,7 +68,7 @@ pub async fn put_driver_report_general(
     datetime: String,
     title: String,
     content: String,
-    topics: String,
+    topics: Vec<String>,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
@@ -84,7 +84,7 @@ pub async fn put_driver_report_general(
     .bind(datetime)
     .bind(title)
     .bind(content)
-    .bind(topics)
+    .bind(topics.join(","))
     .bind(id)
     .execute(&state.db)
     .await;
@@ -102,7 +102,7 @@ pub async fn put_driver_report_medical(
     datetime: String,
     title: String,
     content: String,
-    topics: String,
+    topics: Vec<String>,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
@@ -118,7 +118,7 @@ pub async fn put_driver_report_medical(
     .bind(datetime)
     .bind(title)
     .bind(content)
-    .bind(topics)
+    .bind(topics.join(","))
     .bind(id)
     .execute(&state.db)
     .await;
@@ -129,8 +129,7 @@ pub async fn put_driver_report_medical(
     }
 }
 
-// #[tauri::command(rename_all = "camelCase")] <- not needed
-#[tauri::command(rename_all = "snake_case")]
+#[tauri::command(rename_all = "camelCase")]
 pub async fn put_pickup_route(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -169,7 +168,7 @@ pub async fn put_pickup_route_report_general(
     datetime: String,
     title: String,
     content: String,
-    topics: String,
+    topics: Vec<String>,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
@@ -185,7 +184,7 @@ pub async fn put_pickup_route_report_general(
     .bind(datetime)
     .bind(title)
     .bind(content)
-    .bind(topics)
+    .bind(topics.join(","))
     .bind(id)
     .execute(&state.db)
     .await;
@@ -237,7 +236,7 @@ pub async fn put_vehicle_report_general(
     datetime: String,
     title: String,
     content: String,
-    topics: String,
+    topics: Vec<String>,
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
@@ -253,7 +252,7 @@ pub async fn put_vehicle_report_general(
     .bind(datetime)
     .bind(title)
     .bind(content)
-    .bind(topics)
+    .bind(topics.join(","))
     .bind(id)
     .execute(&state.db)
     .await;
@@ -269,8 +268,8 @@ pub async fn put_vehicle_report_inspection(
     state: tauri::State<'_, crate::AppState>,
     id: i64,
     datetime: String,
-    topics: String,
     content: String,
+    topics: Vec<String>,
 
     front_camera: String,
     overhead_fan: String,
@@ -310,7 +309,7 @@ pub async fn put_vehicle_report_inspection(
         "#,
     )
     .bind(datetime)
-    .bind(topics)
+    .bind(topics.join(","))
     .bind(front_camera)
     .bind(content)
     .bind(overhead_fan)

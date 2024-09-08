@@ -33,7 +33,9 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 			compare: null,
 			render: (item) =>
 				item.vehicles.length === 0 ? (
-					<Typography>ไม่มี</Typography>
+					<Typography fontWeight="bold">
+						ไม่มี
+					</Typography>
 				) : (
 					<Stack spacing={1}>
 						{item.vehicles.map(
@@ -57,7 +59,9 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 			compare: null,
 			render: (item) =>
 				item.drivers.length === 0 ? (
-					<Typography>ไม่มี</Typography>
+					<Typography fontWeight="bold">
+						ไม่มี
+					</Typography>
 				) : (
 					<Stack spacing={1}>
 						{item.drivers.map((driver, index) => (

@@ -162,10 +162,10 @@ export const DriverReportModelImpl = {
 export const DriverReportEntryImpl = {
 	filter: (
 		entries: DriverReportEntry[],
-		selectedDrivers: string[],
+		drivers: string[],
 		afterDate: Dayjs | null,
 		beforeDate: Dayjs | null,
-		selectedTopics: string[],
+		topics: string[],
 		topicMustHaveAll: boolean,
 		search: string,
 	) => {
@@ -184,7 +184,7 @@ export const DriverReportEntryImpl = {
 						beforeDate,
 					),
 			);
-		const driverSet = new Set(selectedDrivers);
+		const driverSet = new Set(drivers);
 		const filtered = items
 			.filter((entry) =>
 				driverSet.has(entry.driverId.toString()),
@@ -192,10 +192,10 @@ export const DriverReportEntryImpl = {
 			.filter((entry) => {
 				const topicSet = new Set(entry.topics);
 				return topicMustHaveAll
-					? selectedTopics.every((topic) =>
+					? topics.every((topic) =>
 							topicSet.has(topic),
 					  )
-					: selectedTopics.some((topic) =>
+					: topics.some((topic) =>
 							topicSet.has(topic),
 					  );
 			});

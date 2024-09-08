@@ -25,8 +25,9 @@ export const ReportInspectionPage: FC = () => {
 		submit(
 			{},
 			{
+				replace: true,
 				action:
-					"/vehicles/info" +
+					"/vehicles/info/" +
 					initFormData.vehicle.id,
 			},
 		);
@@ -48,7 +49,8 @@ export const ReportInspectionPage: FC = () => {
 					},
 				);
 			},
-			() => {
+			(err) => {
+				console.error(err);
 				toast.error("ลงบันทึกล้มเหลว");
 				handleCancel();
 			},
@@ -58,7 +60,7 @@ export const ReportInspectionPage: FC = () => {
 	return (
 		<Stack spacing={1}>
 			<Typography variant="h1">
-				ลงบันทึกผลการตรวจสภาพรถ
+				{`ลงบันทึกผลการตรวจสภาพรถ (${initFormData.vehicle.license_plate})`}
 			</Typography>
 			<VehicleReportInspectionForm
 				initFormData={initFormData}

@@ -20,9 +20,9 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<OperationalLogEntry>[] =
 				dayjs(b.startDate).unix(),
 			render: (item) => (
 				<Typography>
-					{dayjs(item.startDate).format(
-						"DD MMMM YYYY",
-					)}
+					{dayjs(item.startDate)
+						.locale("th")
+						.format("DD MMMM YYYY")}
 				</Typography>
 			),
 		},

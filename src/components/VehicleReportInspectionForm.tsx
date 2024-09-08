@@ -76,7 +76,7 @@ export const VehicleReportInspectionForm: FC<
 	const [fieldFanOverhead, setFieldFanOverhead] =
 		useState(initFormData.overheadFan);
 	const [fieldBrakeLight, setFieldBrakeLight] =
-		useState(initFormData.brakeLights);
+		useState(initFormData.brakeLight);
 	const [fieldHeadlights, setFieldHeadlights] =
 		useState(initFormData.headlights);
 	const [fieldTurnSignals, setFieldTurnSignals] =
@@ -137,7 +137,7 @@ export const VehicleReportInspectionForm: FC<
 				overheadFan:
 					fieldFanOverhead.normalize().trim() ||
 					"ปกติ",
-				brakeLights:
+				brakeLight:
 					fieldBrakeLight.normalize().trim() ||
 					"ปกติ",
 				headlights:

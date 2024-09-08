@@ -74,8 +74,10 @@ export const logOperationalPageLoader: LoaderFunction =
 		const route = routeSelectOptions[0];
 
 		const initFormData: OperationalLogFormData = {
-			startDate: dayjs().format(),
-			endDate: dayjs().format(),
+			startDate: dayjs()
+				.startOf("month")
+				.format(),
+			endDate: dayjs().endOf("month").format(),
 
 			driver,
 			route,

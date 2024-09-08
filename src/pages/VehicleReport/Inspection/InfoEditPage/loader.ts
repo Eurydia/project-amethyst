@@ -2,6 +2,7 @@ import {
 	getTopicAll,
 	getVehicle,
 	getVehicleReportInspection,
+	getVehicleReportInspectionAll,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
 import {
@@ -16,7 +17,8 @@ import {
 export type InfoPageLoaderData = {
 	reportId: number;
 	topicComboBoxOptions: string[];
-	vehicleSelectOptions: VehicleModel[];
+	inspectionRoundNumber: number;
+	vehicle: VehicleModel;
 	initFormData: VehicleReportInspectionFormData;
 };
 export const infoEditPageLoader: LoaderFunction =
@@ -58,7 +60,6 @@ export const infoEditPageLoader: LoaderFunction =
 			);
 		}
 
-		const vehicleSelectOptions = [vehicle];
 		const topicComboBoxOptions =
 			await getTopicAll();
 
@@ -70,7 +71,7 @@ export const infoEditPageLoader: LoaderFunction =
 				windows: report.windows,
 				frontCamera: report.front_camera,
 				overheadFan: report.overhead_fan,
-				brakeLights: report.brake_light,
+				brakeLight: report.brake_light,
 				headlights: report.headlights,
 				turnSignals: report.turn_signals,
 				rearviewMirror: report.rearview_mirror,
@@ -86,9 +87,27 @@ export const infoEditPageLoader: LoaderFunction =
 				vehicle,
 			};
 
+		const reports = (
+			await getVehicleReportInspectionAll()
+		)
+			.filter(
+				({ vehicle_id }) =>
+					vehicle_id === vehicle.id,
+			)
+			.toReversed();
+
+		let inspectionRoundNumber = 0;
+		for (const report of reports) {
+			inspectionRoundNumber++;
+			if (report.id === reportId) {
+				break;
+			}
+		}
+
 		const loaderData: InfoPageLoaderData = {
+			inspectionRoundNumber,
 			reportId,
-			vehicleSelectOptions,
+			vehicle,
 			topicComboBoxOptions,
 			initFormData,
 		};

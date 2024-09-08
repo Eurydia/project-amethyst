@@ -300,6 +300,9 @@ pub async fn get_attendance_log_today(
     .await;
     match query {
         Ok(entries) => Ok(entries),
-        Err(_) => Ok(Vec::new()),
+        Err(err) => {
+            dbg!(err);
+            Ok(Vec::new())
+        }
     }
 }

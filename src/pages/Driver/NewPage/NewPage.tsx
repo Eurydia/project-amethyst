@@ -16,6 +16,16 @@ export const NewPage: FC = () => {
 		useLoaderData() as NewPageLoaderData;
 	const submit = useSubmit();
 
+	const handleCancel = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action: "/drivers",
+			},
+		);
+	};
+
 	const handleSubmit = (
 		formData: DriverFormData,
 	) => {
@@ -30,16 +40,7 @@ export const NewPage: FC = () => {
 					},
 				);
 			},
-			() => {
-				toast.error("ลงทะเบียนล้มเหลว");
-				submit(
-					{},
-					{
-						replace: true,
-						action: "/drivers",
-					},
-				);
-			},
+			() => toast.error("ลงทะเบียนล้มเหลว"),
 		);
 	};
 
@@ -57,14 +58,7 @@ export const NewPage: FC = () => {
 						label: "ลงทะเบียน",
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									replace: true,
-									action: "/drivers",
-								},
-							),
+						onClick: handleCancel,
 					},
 				}}
 			/>

@@ -8,6 +8,7 @@ import { DriverModel } from "$types/models/Driver";
 import { OperationalLogFormData } from "$types/models/OperatonalLog";
 import { PickupRouteModel } from "$types/models/PickupRoute";
 import { VehicleModel } from "$types/models/Vehicle";
+import dayjs from "dayjs";
 import {
 	json,
 	LoaderFunction,
@@ -74,8 +75,10 @@ export const logOperationalPageLoader: LoaderFunction =
 		const route = routeSelectOptions[0];
 
 		const initFormData: OperationalLogFormData = {
-			startDate: "",
-			endDate: "",
+			startDate: dayjs()
+				.startOf("month")
+				.format(),
+			endDate: dayjs().endOf("month").format(),
 
 			driver,
 			route,

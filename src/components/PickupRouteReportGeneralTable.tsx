@@ -22,9 +22,9 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<PickupRouteReportEntry>[] =
 				dayjs(b.datetime).unix(),
 			render: (item) => (
 				<Typography>
-					{dayjs(item.datetime).format(
-						"HH:mm น. DD MMMM BBBB",
-					)}
+					{dayjs(item.datetime)
+						.locale("th")
+						.format("HH:mm น. DD MMMM YYYY")}
 				</Typography>
 			),
 		},
@@ -65,11 +65,16 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<PickupRouteReportEntry>[] =
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			compare: null,
-			render: (item) => (
-				<Typography>
-					{item.topics.join(", ")}
-				</Typography>
-			),
+			render: (item) =>
+				item.topics.length === 0 ? (
+					<Typography fontWeight="bold">
+						ไม่มี
+					</Typography>
+				) : (
+					<Typography>
+						{item.topics.join(", ")}
+					</Typography>
+				),
 		},
 	];
 

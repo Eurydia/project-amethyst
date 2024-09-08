@@ -10,6 +10,7 @@ import { IndexPageLoaderData } from "./loader";
 export const IndexPage: FC = () => {
 	const {
 		reportEntries,
+
 		topicMultiSelectOptions,
 		vehicleMultiSelectOptions,
 	} = useLoaderData() as IndexPageLoaderData;

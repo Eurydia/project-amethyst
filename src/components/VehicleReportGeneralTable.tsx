@@ -22,9 +22,9 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<VehicleReportGeneralEntry>[] =
 				dayjs(b.datetime).unix(),
 			render: (item) => (
 				<Typography>
-					{dayjs(item.datetime).format(
-						"HH:mm น. DD MMMM BBBB",
-					)}
+					{dayjs(item.datetime)
+						.locale("th")
+						.format("HH:mm น. DD MMMM YYYY")}
 				</Typography>
 			),
 		},
@@ -60,11 +60,16 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<VehicleReportGeneralEntry>[] =
 		{
 			label: "หัวข้อที่เกี่ยวข้อง",
 			compare: null,
-			render: ({ topics }) => (
-				<Typography>
-					{topics.join(", ")}
-				</Typography>
-			),
+			render: ({ topics }) =>
+				topics.length === 0 ? (
+					<Typography fontWeight="bold">
+						ไม่มี
+					</Typography>
+				) : (
+					<Typography>
+						{topics.join(", ")}
+					</Typography>
+				),
 		},
 	];
 

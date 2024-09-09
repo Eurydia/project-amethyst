@@ -18,7 +18,7 @@ import { NewPageLoaderData } from "./loader";
 export const NewPage: FC = () => {
 	const {
 		selectedDriver,
-		driverOptions,
+		driverSelectOptions,
 		topicOptions,
 		initFormData,
 	} = useLoaderData() as NewPageLoaderData;
@@ -64,11 +64,9 @@ export const NewPage: FC = () => {
 			});
 	};
 
-	const secondaryHeading = hasSelectedDriver ? (
-		<Typography fontWeight="bold">
-			{`คนขับที่ถูกร้องเรียน: "${selectedDriver.name} ${selectedDriver.surname}"`}
-		</Typography>
-	) : null;
+	const heading = hasSelectedDriver
+		? `ลงบันทึกเรื่องร้องเรียน "${selectedDriver.name} ${selectedDriver.surname}"`
+		: `ลงบันทึกเรื่องร้องเรียนคนขับรถ`;
 
 	const backButtonLabel = hasSelectedDriver
 		? "กลับไปที่ข้อมูลคนขับ"
@@ -84,15 +82,14 @@ export const NewPage: FC = () => {
 				{backButtonLabel}
 			</Typography>
 			<Typography variant="h1">
-				{`ลงบันทึกเรื่องร้องเรียนคนขับ`}
+				{heading}
 			</Typography>
-			{secondaryHeading}
 			<DriverReportForm
 				initFormData={initFormData}
 				slotProps={{
 					driverSelect: {
 						disabled: hasSelectedDriver,
-						options: driverOptions,
+						options: driverSelectOptions,
 					},
 					topicComboBox: {
 						options: topicOptions,

@@ -94,7 +94,7 @@ export const IndexPage: FC = () => {
 								{ driverId: driver.id },
 								{
 									replace: true,
-									action: "operational-logs/new",
+									action: "/operational-logs/new",
 								},
 							),
 					},

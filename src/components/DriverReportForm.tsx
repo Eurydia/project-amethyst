@@ -137,7 +137,7 @@ export const DriverReportForm: FC<
 			),
 		},
 		{
-			label: "คนขับรถที่ถูกร้องเรียน",
+			label: "คนขับรถ",
 			value: (
 				<DriverInputSelect
 					isDisabled={

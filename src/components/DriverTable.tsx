@@ -137,7 +137,7 @@ export const DriverTable: FC<DriverTableProps> = (
 					onChange: setSearch,
 				},
 				addButton: {
-					label: "ลงทะเบียน",
+					label: "เพิ่มคนขับรถ",
 					onClick: () =>
 						submit(
 							{},

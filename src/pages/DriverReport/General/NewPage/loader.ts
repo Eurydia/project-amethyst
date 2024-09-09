@@ -16,7 +16,7 @@ import {
 
 export type NewPageLoaderData = {
 	selectedDriver: DriverModel | null;
-	driverOptions: DriverModel[];
+	driverSelectOptions: DriverModel[];
 	topicOptions: string[];
 	initFormData: DriverReportFormData;
 };
@@ -28,7 +28,7 @@ export const newPageLoader: LoaderFunction =
 
 		let selectedDriver: DriverModel | null = null;
 		let driver: DriverModel | null = null;
-		let driverOptions: DriverModel[] = [];
+		let driverSelectOptions: DriverModel[] = [];
 
 		if (queryDriverId !== null) {
 			driver = await getDriver(
@@ -45,10 +45,10 @@ export const newPageLoader: LoaderFunction =
 				);
 			}
 			selectedDriver = driver;
-			driverOptions = [driver];
+			driverSelectOptions = [driver];
 		} else {
-			driverOptions = await getDriverAll();
-			if (driverOptions.length === 0) {
+			driverSelectOptions = await getDriverAll();
+			if (driverSelectOptions.length === 0) {
 				throw json(
 					{},
 					{
@@ -58,7 +58,7 @@ export const newPageLoader: LoaderFunction =
 					},
 				);
 			}
-			driver = driverOptions[0];
+			driver = driverSelectOptions[0];
 		}
 
 		const topicOptions = await getTopicAll();
@@ -73,7 +73,7 @@ export const newPageLoader: LoaderFunction =
 			selectedDriver,
 			initFormData,
 			topicOptions,
-			driverOptions,
+			driverSelectOptions,
 		};
 		return loaderData;
 	};

@@ -1,10 +1,14 @@
 import { postDriver } from "$backend/database/post";
 import { DriverForm } from "$components/DriverForm";
 import { DriverFormData } from "$types/models/Driver";
-import { AddRounded } from "@mui/icons-material";
+import {
+	AddRounded,
+	KeyboardArrowLeftRounded,
+} from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
+	Link,
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
@@ -40,14 +44,24 @@ export const NewPage: FC = () => {
 					},
 				);
 			},
-			() => toast.error("ลงทะเบียนล้มเหลว"),
+			() => {
+				toast.error("ลงทะเบียนล้มเหลว");
+				handleCancel();
+			},
 		);
 	};
 
 	return (
 		<Stack spacing={1}>
+			<Typography
+				component={Link}
+				to="/drivers"
+			>
+				<KeyboardArrowLeftRounded />
+				กลับไปที่รายชื่อคนขับรถ
+			</Typography>
 			<Typography variant="h1">
-				ลงทะเบียนคนขับรถ
+				เพิ่มคนขับรถ
 			</Typography>
 			<DriverForm
 				initFormData={initFormData}
@@ -55,7 +69,7 @@ export const NewPage: FC = () => {
 					submitButton: {
 						startIcon: <AddRounded />,
 						onClick: handleSubmit,
-						label: "ลงทะเบียน",
+						label: "เพิ่ม",
 					},
 					cancelButton: {
 						onClick: handleCancel,

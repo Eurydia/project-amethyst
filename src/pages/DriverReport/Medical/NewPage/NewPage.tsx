@@ -1,10 +1,14 @@
 import { postDriverReportGeneral } from "$backend/database/post";
 import { DriverReportForm } from "$components/DriverReportForm";
 import { DriverReportFormData } from "$types/models/Driver";
-import { AddRounded } from "@mui/icons-material";
+import {
+	AddRounded,
+	KeyboardArrowLeftRounded,
+} from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
+	Link,
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
@@ -13,12 +17,29 @@ import { NewPageLoaderData } from "./loader";
 
 export const NewPage: FC = () => {
 	const {
+		selectedDriver,
 		driverSelectOptions,
 		topicComboBoxOptions,
 		initFormData,
 	} = useLoaderData() as NewPageLoaderData;
 
 	const submit = useSubmit();
+
+	const hasSelectedDriver =
+		selectedDriver !== null;
+	const action = hasSelectedDriver
+		? `/drivers/info/` + selectedDriver.id
+		: `/drivers/report/medical`;
+
+	const handleCancel = () => {
+		submit(
+			{},
+			{
+				replace: true,
+				action,
+			},
+		);
+	};
 
 	const handleSubmit = async (
 		formData: DriverReportFormData,
@@ -29,6 +50,7 @@ export const NewPage: FC = () => {
 				submit(
 					{},
 					{
+						replace: true,
 						action:
 							"/drivers/report/medical/info/" +
 							reportId,
@@ -37,23 +59,36 @@ export const NewPage: FC = () => {
 			},
 			() => {
 				toast.error(`ลงบันทึกล้มเหลว`);
-				submit(
-					{},
-					{ action: "/drivers/report/medical" },
-				);
+				handleCancel();
 			},
 		);
 	};
 
+	const backButtonLabel = hasSelectedDriver
+		? "กลับไปที่ข้อมูลคนขับ"
+		: "กลับไปที่ตารางบันทึกเรื่องร้องเรียนคนขับ";
+
+	const heading = hasSelectedDriver
+		? `ลงบันทึกผลการตรวจสารเสพติดของ "${selectedDriver.name} ${selectedDriver.surname}"`
+		: `ลงบันทึกผลการตรวจสารเสพติด`;
+
 	return (
 		<Stack spacing={1}>
+			<Typography
+				component={Link}
+				to={action}
+			>
+				<KeyboardArrowLeftRounded />
+				{backButtonLabel}
+			</Typography>
 			<Typography variant="h1">
-				ลงบันทึกผลการตรวจสารเสพติด
+				{heading}
 			</Typography>
 			<DriverReportForm
 				initFormData={initFormData}
 				slotProps={{
 					driverSelect: {
+						disabled: hasSelectedDriver,
 						options: driverSelectOptions,
 					},
 					topicComboBox: {
@@ -61,18 +96,11 @@ export const NewPage: FC = () => {
 					},
 					submitButton: {
 						startIcon: <AddRounded />,
-						label: `ลงบันทึก`,
+						label: `เพิ่มผลตรวจ`,
 						onClick: handleSubmit,
 					},
 					cancelButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									action:
-										"/drivers/report/medical",
-								},
-							),
+						onClick: handleCancel,
 					},
 				}}
 			/>

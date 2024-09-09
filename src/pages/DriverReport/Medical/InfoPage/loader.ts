@@ -47,7 +47,7 @@ export const infoPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						TRANSLATION.driverIsMissingFromDatabase,
+						TRANSLATION.errorDriverIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);

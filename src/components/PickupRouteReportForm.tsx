@@ -182,7 +182,7 @@ export const PickupRouteReportForm: FC<
 					options={
 						slotProps.topicComboBox.options
 					}
-					value={fieldTopics}
+					values={fieldTopics}
 					onChange={setFieldTopics}
 				/>
 			),

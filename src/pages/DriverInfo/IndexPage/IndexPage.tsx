@@ -91,8 +91,11 @@ export const IndexPage: FC = () => {
 								0,
 						onClick: () =>
 							submit(
-								{},
-								{ action: "./log/operational" },
+								{ driverId: driver.id },
+								{
+									replace: true,
+									action: "operational-logs/new",
+								},
 							),
 					},
 				}}
@@ -109,8 +112,14 @@ export const IndexPage: FC = () => {
 					addButton: {
 						onClick: () =>
 							submit(
-								{},
-								{ action: "./report/general" },
+								{
+									driverId: driver.id,
+								},
+								{
+									replace: true,
+									action:
+										"/drivers/report/general/new",
+								},
 							),
 					},
 					driverMultiSelect: {
@@ -134,8 +143,14 @@ export const IndexPage: FC = () => {
 					addButton: {
 						onClick: () =>
 							submit(
-								{},
-								{ action: "./report/medical" },
+								{
+									driverId: driver.id,
+								},
+								{
+									replace: true,
+									action:
+										"/drivers/report/medical/new",
+								},
 							),
 					},
 					driverMultiSelect: {

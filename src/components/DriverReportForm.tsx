@@ -83,20 +83,20 @@ export const DriverReportForm: FC<
 		});
 	};
 
-	const isFieldTimeInvalid =
+	const isMissingTime =
 		Number.isNaN(fieldTime.hour()) ||
 		Number.isNaN(fieldTime.minute());
-	const isFieldDateInvalid =
+	const isMissingDate =
 		Number.isNaN(fieldDate.day()) ||
 		Number.isNaN(fieldDate.month()) ||
 		Number.isNaN(fieldDate.year());
-	const isTitleEmpty = fieldTitle.trim() === "";
-	const isDriverEmpty = fieldDriver === null;
+	const isMissingTitle = fieldTitle.trim() === "";
+	const isMissingContent =
+		fieldContent.trim() === "";
 	const isFormIncomplete =
-		isTitleEmpty ||
-		isDriverEmpty ||
-		isFieldDateInvalid ||
-		isFieldTimeInvalid;
+		isMissingTitle ||
+		isMissingDate ||
+		isMissingTime;
 
 	const formItems: {
 		label: string;
@@ -132,12 +132,12 @@ export const DriverReportForm: FC<
 						}
 						setFieldDate(value);
 					}}
-					format="DD/MM/BBBB"
+					format="DD/MM/YYYY"
 				/>
 			),
 		},
 		{
-			label: "คนขับรถ",
+			label: "คนขับรถที่ถูกร้องเรียน",
 			value: (
 				<DriverInputSelect
 					isDisabled={
@@ -157,7 +157,7 @@ export const DriverReportForm: FC<
 					onChange={setFieldTitle}
 					placeholder={initFormData.title}
 					value={fieldTitle}
-					isError={isTitleEmpty}
+					isError={isMissingTitle}
 				/>
 			),
 		},
@@ -168,6 +168,7 @@ export const DriverReportForm: FC<
 					multiline
 					minRows={6}
 					value={fieldContent}
+					isError={isMissingContent}
 					placeholder={initFormData.content}
 					onChange={setFieldContent}
 				/>
@@ -180,7 +181,7 @@ export const DriverReportForm: FC<
 					options={
 						slotProps.topicComboBox.options
 					}
-					value={fieldTopics}
+					values={fieldTopics}
 					onChange={setFieldTopics}
 				/>
 			),

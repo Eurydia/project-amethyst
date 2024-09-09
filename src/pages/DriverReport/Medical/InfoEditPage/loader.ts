@@ -52,7 +52,7 @@ export const infoEditPageLoader: LoaderFunction =
 			throw json(
 				{
 					message:
-						TRANSLATION.driverIsMissingFromDatabase,
+						TRANSLATION.errorDriverIsMissingFromDatabase,
 				},
 				{ status: 404 },
 			);

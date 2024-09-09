@@ -34,6 +34,7 @@ export const IndexPage: FC = () => {
 							submit(
 								{},
 								{
+									replace: true,
 									action: "./new",
 								},
 							),

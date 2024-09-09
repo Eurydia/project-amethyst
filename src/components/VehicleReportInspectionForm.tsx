@@ -376,7 +376,7 @@ export const VehicleReportInspectionForm: FC<
 					options={
 						slotProps.topicComboBox.options
 					}
-					value={fieldTopics}
+					values={fieldTopics}
 					onChange={setFieldTopics}
 				/>
 			),

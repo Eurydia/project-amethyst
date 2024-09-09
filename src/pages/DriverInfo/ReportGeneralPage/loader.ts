@@ -41,7 +41,7 @@ export const reportGeneralPageLoader: LoaderFunction =
 				{
 					status: 404,
 					statusText:
-						TRANSLATION.driverIsMissingFromDatabase,
+						TRANSLATION.errorDriverIsMissingFromDatabase,
 				},
 			);
 		}

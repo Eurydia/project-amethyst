@@ -42,7 +42,7 @@ export const logOperationalPageLoader: LoaderFunction =
 				{
 					status: 404,
 					statusText:
-						TRANSLATION.driverIsMissingFromDatabase,
+						TRANSLATION.errorDriverIsMissingFromDatabase,
 				},
 			);
 		}

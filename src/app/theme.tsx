@@ -19,6 +19,7 @@ let theme = createTheme(
 		palette: {
 			background: {
 				default: amber[50],
+				paper: amber[50],
 			},
 			primary: indigo,
 			secondary: purple,
@@ -35,7 +36,11 @@ let theme = createTheme(
 			MuiTypography: {
 				defaultProps: {
 					sx: {
-						width: "auto",
+						width: "fit-content",
+						display: "flex",
+						flexDirection: "row",
+						alignItems: "center",
+						gap: 0,
 					},
 					variantMapping: {
 						body1: "span",

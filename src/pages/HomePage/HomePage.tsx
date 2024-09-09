@@ -61,19 +61,14 @@ export const HomePage: FC = () => {
 				{ROUTES.map((route, index) => (
 					<ListItem
 						key={"route" + index}
-						component={Link}
-						to={route.path}
 						dense
 						disableGutters
 						disablePadding
 					>
 						<ListItemText disableTypography>
 							<Typography
-								sx={{
-									display: "flex",
-									alignItems: "center",
-									gap: 1,
-								}}
+								component={Link}
+								to={route.path}
 							>
 								<KeyboardArrowRightRounded />
 								{route.label}

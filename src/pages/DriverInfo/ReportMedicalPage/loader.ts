@@ -40,7 +40,7 @@ export const reportMedicalPageLoader: LoaderFunction =
 				{
 					status: 404,
 					statusText:
-						TRANSLATION.driverIsMissingFromDatabase,
+						TRANSLATION.errorDriverIsMissingFromDatabase,
 				},
 			);
 		}

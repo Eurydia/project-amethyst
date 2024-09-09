@@ -13,7 +13,15 @@ export const TypographyTooltip: FC<
 		<Tooltip
 			{...rest}
 			arrow
-			title={<Typography>{title}</Typography>}
+			title={
+				<Typography
+					sx={{
+						wordBreak: "break-word",
+					}}
+				>
+					{title}
+				</Typography>
+			}
 		>
 			{children}
 		</Tooltip>

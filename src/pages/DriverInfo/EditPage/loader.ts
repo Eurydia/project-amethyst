@@ -32,7 +32,7 @@ export const editPageLoader: LoaderFunction =
 				{
 					status: 404,
 					statusText:
-						TRANSLATION.driverIsMissingFromDatabase,
+						TRANSLATION.errorDriverIsMissingFromDatabase,
 				},
 			);
 		}

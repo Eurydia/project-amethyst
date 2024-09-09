@@ -78,7 +78,7 @@ export const TRANSLATION = {
 		"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบเรื่องร้องเรียนคนขับรถในฐานข้อมูล (Cannot find report with given ID)",
 	driverMedicalReportIsMissingFromDatabase:
 		"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบผลการตรวจสารเสพติดในฐานข้อมูล (Cannot find report with given ID)",
-	driverIsMissingFromDatabase:
+	errorDriverIsMissingFromDatabase:
 		"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับรถที่ต้องการฐานข้อมูล (Cannot find driver with given ID)",
 
 	driverTableSearch:

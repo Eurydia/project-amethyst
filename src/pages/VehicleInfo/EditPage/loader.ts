@@ -36,7 +36,7 @@ export const editPageLoader: LoaderFunction =
 				{
 					status: 404,
 					statusText:
-						TRANSLATION.vehicleIsMissingFromDatabase,
+						TRANSLATION.errorVehicleIsMissingFromDatabase,
 				},
 			);
 		}

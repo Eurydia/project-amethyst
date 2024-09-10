@@ -38,21 +38,22 @@ export const DriverForm: FC<DriverFormProps> = (
 		if (isFormIncomplete) {
 			return;
 		}
-		const formData: DriverFormData = {
+		slotProps.submitButton.onClick({
 			name: fieldName.trim().normalize(),
 			surname: fieldSurname.trim().normalize(),
-			contact: fieldContact.trim().normalize(),
+			contact:
+				fieldContact.trim().normalize() ||
+				`ไม่มี`,
 			licenseType: fieldLicenseType,
-		};
-		slotProps.submitButton.onClick(formData);
+		});
 	};
 
-	const missingFieldName =
+	const isMissingName =
 		fieldName.trim().normalize() === "";
-	const missingFieldSurname =
+	const isMissingSurname =
 		fieldSurname.trim().normalize() === "";
 	const isFormIncomplete =
-		missingFieldName || missingFieldSurname;
+		isMissingName || isMissingSurname;
 
 	const formItems: {
 		label: string;
@@ -63,7 +64,7 @@ export const DriverForm: FC<DriverFormProps> = (
 			value: (
 				<BaseInputTextField
 					shouldAutoFocus
-					isError={missingFieldName}
+					isError={isMissingName}
 					placeholder={initFormData.name}
 					value={fieldName}
 					onChange={setFieldName}
@@ -74,7 +75,7 @@ export const DriverForm: FC<DriverFormProps> = (
 			label: "นามสกุล",
 			value: (
 				<BaseInputTextField
-					isError={missingFieldSurname}
+					isError={isMissingSurname}
 					value={fieldSurname}
 					placeholder={initFormData.surname}
 					onChange={setFielSurname}
@@ -85,7 +86,9 @@ export const DriverForm: FC<DriverFormProps> = (
 			label: "เบอร์ติดต่อ",
 			value: (
 				<BaseInputTextField
-					placeholder={initFormData.contact}
+					placeholder={
+						initFormData.contact || `ไม่มี`
+					}
 					value={fieldContact}
 					onChange={setFieldContact}
 				/>

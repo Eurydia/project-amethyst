@@ -4,9 +4,11 @@ import { DriverReportGeneralTable } from "$components/DriverReportGeneralTable";
 import { DriverReportMedicalTable } from "$components/DriverReportMedicalTable";
 import { OperationalLogTable } from "$components/OperationalLogTable";
 import { TRANSLATION } from "$locale/th";
+import { KeyboardArrowLeftRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
+	Link,
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
@@ -48,12 +50,22 @@ export const IndexPage: FC = () => {
 
 	return (
 		<Stack spacing={1}>
-			<BaseTOC>{TOC_ITEMS}</BaseTOC>
+			<Typography
+				component={Link}
+				to="/drivers"
+			>
+				<KeyboardArrowLeftRounded />
+				{`รายชื่อคนขับรถ`}
+			</Typography>
 			<Typography
 				variant="h1"
 				id="info"
 			>
-				{`ข้อมูลคนขับรถของ "${driver.name} ${driver.surname}"`}
+				{`${driver.name} ${driver.surname}`}
+			</Typography>
+			<BaseTOC>{TOC_ITEMS}</BaseTOC>
+			<Typography variant="h2">
+				{`ข้อมูลคนขับรถ`}
 			</Typography>
 			<DriverInfoGroup
 				driver={driver}

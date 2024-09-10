@@ -58,10 +58,10 @@ export const NewPage: FC = () => {
 				to="/drivers"
 			>
 				<KeyboardArrowLeftRounded />
-				กลับไปที่รายชื่อคนขับรถ
+				รายชื่อคนขับรถ
 			</Typography>
 			<Typography variant="h1">
-				เพิ่มคนขับรถ
+				ลงทะเบียนคนขับรถ
 			</Typography>
 			<DriverForm
 				initFormData={initFormData}

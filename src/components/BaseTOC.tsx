@@ -1,35 +1,7 @@
-import {
-	List,
-	ListItem,
-	ListItemText,
-	Typography,
-} from "@mui/material";
+import { List } from "@mui/material";
 import { FC } from "react";
+import { BaseTOCItem } from "./BaseTOCItem";
 
-type CustomItemProps = {
-	label: string;
-	href: string;
-};
-const CustomItem: FC<CustomItemProps> = (
-	props,
-) => {
-	const { label, href } = props;
-	return (
-		<ListItem
-			disablePadding
-			disableGutters
-		>
-			<ListItemText disableTypography>
-				<Typography
-					component="a"
-					href={href}
-				>
-					{label}
-				</Typography>
-			</ListItemText>
-		</ListItem>
-	);
-};
 type BaseTOCProps = {
 	children: { label: string; href: string }[];
 };
@@ -40,7 +12,7 @@ export const BaseTOC: FC<BaseTOCProps> = (
 
 	const renderedItems = children.map(
 		({ label, href }, index) => (
-			<CustomItem
+			<BaseTOCItem
 				key={"toc-item" + index}
 				href={href}
 				label={label}

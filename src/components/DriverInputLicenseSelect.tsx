@@ -23,6 +23,7 @@ export const DriverLicenseSelect: FC<
 
 	return (
 		<RadioGroup
+			row
 			value={value}
 			onChange={(_, value) => onChange(value)}
 		>

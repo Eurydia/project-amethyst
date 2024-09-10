@@ -40,7 +40,7 @@ export const reportInspectionPageLoader: LoaderFunction =
 				{
 					status: 404,
 					statusText:
-						TRANSLATION.vehicleIsMissingFromDatabase,
+						TRANSLATION.errorVehicleIsMissingFromDatabase,
 				},
 			);
 		}

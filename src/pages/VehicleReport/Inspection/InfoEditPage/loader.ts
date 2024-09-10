@@ -55,7 +55,7 @@ export const infoEditPageLoader: LoaderFunction =
 				{
 					status: 404,
 					statusText:
-						TRANSLATION.vehicleIsMissingFromDatabase,
+						TRANSLATION.errorVehicleIsMissingFromDatabase,
 				},
 			);
 		}

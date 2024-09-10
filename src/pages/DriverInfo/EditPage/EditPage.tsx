@@ -1,10 +1,14 @@
 import { putDriver } from "$backend/database/put";
 import { DriverForm } from "$components/DriverForm";
 import { DriverFormData } from "$types/models/Driver";
-import { SaveRounded } from "@mui/icons-material";
+import {
+	KeyboardArrowLeftRounded,
+	SaveRounded,
+} from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
+	Link,
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
@@ -37,6 +41,13 @@ export const EditPage: FC = () => {
 
 	return (
 		<Stack spacing={1}>
+			<Typography
+				component={Link}
+				to={"/drivers/info/" + driverId}
+			>
+				<KeyboardArrowLeftRounded />
+				ข้อมูลคนขับรถ
+			</Typography>
 			<Typography variant="h1">
 				แก้ไขข้อมูลคนขับรถ
 			</Typography>

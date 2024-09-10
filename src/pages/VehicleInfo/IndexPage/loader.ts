@@ -73,7 +73,7 @@ export const indexPageLoader: LoaderFunction =
 				{
 					status: 404,
 					statusText:
-						TRANSLATION.vehicleIsMissingFromDatabase,
+						TRANSLATION.errorVehicleIsMissingFromDatabase,
 				},
 			);
 		}

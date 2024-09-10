@@ -55,7 +55,7 @@ export const TRANSLATION = {
 	vehicleGeneralReportIsMissingFromDatabase: `ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องไม่พบเรื่องร้องเรียนรถขนส่งที่ต้องการในฐานข้อมูล (Cannot find general vehicle report with given ID in database)`,
 	vehicleReportIdIsMissingFromParams:
 		"ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากข้อมูลไม่ครบถ้วน (Params is missing reportId)",
-	vehicleIsMissingFromDatabase: `ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องไม่พบข้อมูลรถรับส่งที่ต้องการในฐานข้อมูล (Cannot find vehicle with given ID in database)`,
+	errorVehicleIsMissingFromDatabase: `ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องไม่พบข้อมูลรถรับส่งที่ต้องการในฐานข้อมูล (Cannot find vehicle with given ID in database)`,
 
 	postReportSuccess: `ลงบันทึกสำเร็จ`,
 	postReportFail: `ลงบันทึกล้มเหลว`,

@@ -6,7 +6,7 @@ import {
 	KeyboardArrowLeftRounded,
 } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
-import { FC } from "react";
+import { FC, Fragment, ReactNode } from "react";
 import {
 	Link,
 	useLoaderData,
@@ -64,13 +64,27 @@ export const NewPage: FC = () => {
 		);
 	};
 
+	let heading: ReactNode = (
+		<Typography variant="h1">
+			แบบฟอร์มลงบันทึกผลการตรวจสารเสพติด
+		</Typography>
+	);
+	if (hasSelectedDriver) {
+		heading = (
+			<Fragment>
+				<Typography variant="h1">
+					{`${selectedDriver.name} ${selectedDriver.surname}`}
+				</Typography>
+				<Typography variant="h2">
+					แบบฟอร์มลงบันทึกผลการตรวจสารเสพติด
+				</Typography>
+			</Fragment>
+		);
+	}
+
 	const backButtonLabel = hasSelectedDriver
 		? "ข้อมูลคนขับรถ"
 		: "ตารางบันทึกเรื่องร้องเรียนคนขับรถ";
-
-	const heading = hasSelectedDriver
-		? `ลงบันทึกผลการตรวจสารเสพติดของ "${selectedDriver.name} ${selectedDriver.surname}"`
-		: `ลงบันทึกผลการตรวจสารเสพติด`;
 
 	return (
 		<Stack spacing={1}>
@@ -81,9 +95,7 @@ export const NewPage: FC = () => {
 				<KeyboardArrowLeftRounded />
 				{backButtonLabel}
 			</Typography>
-			<Typography variant="h1">
-				{heading}
-			</Typography>
+			{heading}
 			<DriverReportForm
 				initFormData={initFormData}
 				slotProps={{
@@ -96,10 +108,11 @@ export const NewPage: FC = () => {
 					},
 					submitButton: {
 						startIcon: <AddRounded />,
-						label: `เพิ่มผลตรวจ`,
+						label: `ยืนยัน`,
 						onClick: handleSubmit,
 					},
 					cancelButton: {
+						label: "ยกเลิก",
 						onClick: handleCancel,
 					},
 				}}

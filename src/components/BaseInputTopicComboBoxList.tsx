@@ -1,4 +1,4 @@
-import { List } from "@mui/material";
+import { List, Typography } from "@mui/material";
 import { FC } from "react";
 import { BaseInputTopicComboBoxListItem } from "./BaseInputTopicComboBoxListItem";
 
@@ -30,6 +30,14 @@ export const BaseInputTopicComboBoxList: FC<
 			);
 		},
 	);
+
+	if (values.length === 0) {
+		return (
+			<Typography fontStyle="italic">
+				ยังไม่ได้เลือกหัวข้อ
+			</Typography>
+		);
+	}
 
 	return (
 		<List

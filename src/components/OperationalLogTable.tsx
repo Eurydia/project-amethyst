@@ -116,7 +116,7 @@ export const OperationalLogTable: FC<
 					},
 					searchField: {
 						placeholder:
-							"ค้นหาด้วยคนขับรถ, เลขทะเบียน, หรือสายรถ",
+							"ค้นหาด้วยชื่อสกุลคนขับรถ, เลขทะเบียน, หรือสายรถ",
 						value: search,
 						onChange: setSearch,
 					},

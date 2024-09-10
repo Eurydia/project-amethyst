@@ -63,6 +63,11 @@ export const BaseSortableTableToolbar: FC<
 				}
 				slotProps={{
 					input: {
+						sx: {
+							"&::placeholder": {
+								color: "red",
+							},
+						},
 						startAdornment: (
 							<InputAdornment position="start">
 								<SearchRounded />

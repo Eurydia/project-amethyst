@@ -61,7 +61,7 @@ export const NewPage: FC = () => {
 				รายชื่อคนขับรถ
 			</Typography>
 			<Typography variant="h1">
-				ลงทะเบียนคนขับรถ
+				แบบฟอร์มลงทะเบียนคนขับรถ
 			</Typography>
 			<DriverForm
 				initFormData={initFormData}
@@ -69,9 +69,10 @@ export const NewPage: FC = () => {
 					submitButton: {
 						startIcon: <AddRounded />,
 						onClick: handleSubmit,
-						label: "เพิ่ม",
+						label: "เพิ่มคนขับรถ",
 					},
 					cancelButton: {
+						label: "ยกเลิก",
 						onClick: handleCancel,
 					},
 				}}

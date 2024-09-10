@@ -10,7 +10,6 @@ type DriverInfoGroupProps = {
 	driver: DriverModel;
 	slotProps: {
 		editButton: {
-			label: string;
 			onClick: () => void;
 		};
 		gallery: {
@@ -65,7 +64,7 @@ export const DriverInfoGroup: FC<
 		<BaseInfoGroup
 			slotProps={{
 				editButton: {
-					label: slotProps.editButton.label,
+					label: "แก้ไขข้อมูล",
 					onClick: slotProps.editButton.onClick,
 				},
 			}}

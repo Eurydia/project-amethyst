@@ -42,9 +42,7 @@ export const DriverForm: FC<DriverFormProps> = (
 		slotProps.submitButton.onClick({
 			name: fieldName.trim().normalize(),
 			surname: fieldSurname.trim().normalize(),
-			contact:
-				fieldContact.trim().normalize() ||
-				`ไม่มี`,
+			contact: fieldContact.trim().normalize(),
 			licenseType: fieldLicenseType,
 		});
 	};

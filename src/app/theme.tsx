@@ -48,6 +48,16 @@ let theme = createTheme(
 					},
 				},
 			},
+			MuiInputBase: {
+				styleOverrides: {
+					input: {
+						"::placeholder": {
+							opacity: 0.7,
+							fontStyle: "italic",
+						},
+					},
+				},
+			},
 			MuiTextField: {
 				defaultProps: {
 					autoComplete: "off",

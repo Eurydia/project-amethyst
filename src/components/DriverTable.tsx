@@ -23,11 +23,11 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 			),
 		},
 		{
-			label: "สายรถ",
+			label: "สายรถปัจจุบัน",
 			compare: null,
 			render: (item) =>
 				item.routes.length === 0 ? (
-					<Typography fontWeight="bold">
+					<Typography fontStyle="italic">
 						ไม่มี
 					</Typography>
 				) : (
@@ -48,11 +48,11 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 				),
 		},
 		{
-			label: "ทะเบียนรถ",
+			label: "ทะเบียนรถปัจจุบัน",
 			compare: null,
 			render: (item) =>
 				item.vehicles.length === 0 ? (
-					<Typography fontWeight="bold">
+					<Typography fontStyle="italic">
 						ไม่มี
 					</Typography>
 				) : (
@@ -118,26 +118,12 @@ export const DriverTable: FC<DriverTableProps> = (
 				defaultSortOrder="asc"
 				defaultSortByColumn={0}
 				entries={filteredEntries}
-				// slotProps={{
-				// 	searchField: {
-				// 		placeholder:
-				// 			"ค้นหาด้วยคนขับรถ, สายรถ, หรือทะเบียนรถ",
-				// 		value: search,
-				// 		onChange: setSearch,
-				// 	},
-				// 	addButton: {
-				// 		label: "เพิ่มคนขับรถ",
-				// 		onClick: () =>
-				// 			submit(
-				// 				{},
-				// 				{
-				// 					action: "/drivers/new",
-				// 				},
-				// 			),
-				// 	},
-				// }}
+				slotProps={{
+					body: {
+						emptyText: "ไม่พบคนขับรถ",
+					},
+				}}
 			/>
-			{/* {formItems} */}
 		</Stack>
 	);
 };

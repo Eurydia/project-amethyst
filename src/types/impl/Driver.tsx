@@ -12,9 +12,6 @@ import {
 	DriverReportEntry,
 	DriverReportModel,
 } from "$types/models/Driver";
-import { Typography } from "@mui/material";
-import dayjs from "dayjs";
-import { Link } from "react-router-dom";
 
 export const DriverModelImpl = {
 	toMultiSelectOption: (
@@ -105,51 +102,4 @@ export const DriverReportModelImpl = {
 		};
 		return entry;
 	},
-
-	toInfoItems: (
-		report: DriverReportModel,
-		driver: DriverModel,
-	) =>
-		[
-			{
-				label: "เลขที่รายงาน",
-				value: report.id,
-			},
-			{
-				label: "คนขับรถ",
-				value: (
-					<Link to={"/drivers/info/" + driver.id}>
-						{`${driver.name} ${driver.surname}`}
-					</Link>
-				),
-			},
-			{
-				label: "ลงบันทึกเมื่อ",
-				value: dayjs(report.datetime)
-					.locale("th")
-					.format(
-						" HH:mm น. วันddddที่ DD MMMM YYYY",
-					),
-			},
-			{
-				label: "เรื่อง",
-				value: report.title,
-			},
-			{
-				label: "รายละเอียด",
-				value: report.content,
-			},
-			{
-				label: "หัวข้อที่เกี่ยวข้อง",
-				value: report.topics.replaceAll(
-					",",
-					", ",
-				),
-			},
-		].map((item) => ({
-			label: item.label,
-			value: (
-				<Typography>{item.value}</Typography>
-			),
-		})),
 };

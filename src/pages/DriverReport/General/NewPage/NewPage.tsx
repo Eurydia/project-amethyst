@@ -63,10 +63,11 @@ export const NewPage: FC = () => {
 				handleCancel();
 			});
 	};
-
-	const heading = hasSelectedDriver
-		? `ลงบันทึกเรื่องร้องเรียน "${selectedDriver.name} ${selectedDriver.surname}"`
-		: `ลงบันทึกเรื่องร้องเรียนคนขับรถ`;
+	const secondaryHeading = hasSelectedDriver ? (
+		<Typography variant="h2">
+			{`"${selectedDriver.name} ${selectedDriver.surname}"`}
+		</Typography>
+	) : null;
 
 	const backButtonLabel = hasSelectedDriver
 		? "ข้อมูลคนขับรถ"
@@ -82,8 +83,9 @@ export const NewPage: FC = () => {
 				{backButtonLabel}
 			</Typography>
 			<Typography variant="h1">
-				{heading}
+				{`ลงบันทึกเรื่องร้องเรียนคนขับรถ`}
 			</Typography>
+			{secondaryHeading}
 			<DriverReportForm
 				initFormData={initFormData}
 				slotProps={{
@@ -100,6 +102,7 @@ export const NewPage: FC = () => {
 						onClick: handleSubmit,
 					},
 					cancelButton: {
+						label: "ยกเลิก",
 						onClick: handleCancel,
 					},
 				}}

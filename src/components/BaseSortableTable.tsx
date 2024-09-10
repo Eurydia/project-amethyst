@@ -33,15 +33,21 @@ type BaseSortableTableProps<T> = {
 	headers: TableHeaderDefinition<T>[];
 	defaultSortByColumn: number;
 	defaultSortOrder: "asc" | "desc";
+	slotProps: {
+		body: {
+			emptyText: string;
+		};
+	};
 };
 export const BaseSortableTable = <T,>(
 	props: BaseSortableTableProps<T>,
 ) => {
 	const {
 		entries,
-		defaultSortOrder,
-		defaultSortByColumn,
 		headers,
+		defaultSortByColumn,
+		defaultSortOrder,
+		slotProps,
 	} = props;
 
 	const [sortOrder, setOrderDirection] = useState(
@@ -78,6 +84,7 @@ export const BaseSortableTable = <T,>(
 					onRequestSort={handleRequestSort}
 				/>
 				<BaseSortableTableBody
+					emptyText={slotProps.body.emptyText}
 					entries={sortedEntries}
 					headers={headers}
 				/>

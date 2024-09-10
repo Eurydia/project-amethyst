@@ -69,12 +69,11 @@ export const IndexPage: FC = () => {
 				driver={driver}
 				slotProps={{
 					editButton: {
-						label: "แก้ไขข้อมูลคนขับรถ",
 						onClick: () =>
 							submit(
 								{},
 								{
-									replace: true,
+									// replace: true,
 									action: "./edit",
 								},
 							),
@@ -102,7 +101,7 @@ export const IndexPage: FC = () => {
 							submit(
 								{ driverId: driver.id },
 								{
-									replace: true,
+									// replace: true,
 									action: "/operational-logs/new",
 								},
 							),
@@ -125,7 +124,7 @@ export const IndexPage: FC = () => {
 									driverId: driver.id,
 								},
 								{
-									replace: true,
+									// replace: true,
 									action:
 										"/drivers/report/general/new",
 								},
@@ -149,7 +148,7 @@ export const IndexPage: FC = () => {
 									driverId: driver.id,
 								},
 								{
-									replace: true,
+									// replace: true,
 									action:
 										"/drivers/report/medical/new",
 								},

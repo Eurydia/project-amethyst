@@ -1,20 +1,14 @@
 import {
 	getDriverAll,
 	getDriverReportGeneralAll,
-	getTopicAll,
 } from "$backend/database/get";
-import { MultiSelectOption } from "$types/generics";
-import {
-	DriverModelImpl,
-	DriverReportModelImpl,
-} from "$types/impl/Driver";
+import { DriverReportModelImpl } from "$types/impl/Driver";
 import { DriverReportEntry } from "$types/models/Driver";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
 	reportEntries: DriverReportEntry[];
-	driverMultiSelectOptions: MultiSelectOption[];
-	topicMultiSelectOptions: MultiSelectOption[];
+	databaseIsMissingDriver: boolean;
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
@@ -26,21 +20,12 @@ export const indexPageLoader: LoaderFunction =
 			await Promise.all(reports)
 		).filter((entry) => entry !== null);
 
-		const driverMultiSelectOptions = (
-			await getDriverAll()
-		).map(DriverModelImpl.toMultiSelectOption);
-
-		const topicMultiSelectOptions = (
-			await getTopicAll()
-		).map((topic) => ({
-			label: topic,
-			value: topic,
-		}));
-
+		const drivers = await getDriverAll();
+		const databaseIsMissingDriver =
+			drivers.length === 0;
 		const loaderData: IndexPageLoaderData = {
 			reportEntries,
-			driverMultiSelectOptions,
-			topicMultiSelectOptions,
+			databaseIsMissingDriver,
 		};
 		return loaderData;
 	};

@@ -1,26 +1,21 @@
 import { putAttendanceLog } from "$backend/database/put";
 import { filterItems } from "$core/filter";
-import {
-	MultiSelectOption,
-	TableHeaderDefinition,
-} from "$types/generics";
+import { TableHeaderDefinition } from "$types/generics";
 import { AttendanceLogEntry } from "$types/models/AttendanceLog";
+import { SearchRounded } from "@mui/icons-material";
 import {
-	Checkbox,
-	FormControlLabel,
+	InputAdornment,
 	Stack,
+	TextField,
 	Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { FC, ReactNode, useState } from "react";
-import {
-	Link,
-	useRevalidator,
-} from "react-router-dom";
-import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
+import { FC, useState } from "react";
+import { Link } from "react-router-dom";
+import { AttendanceLogTableCheckBox } from "./AttendanceLogTableCheckBox";
 import { BaseSortableTable } from "./BaseSortableTable";
 
-const TABLE_HEADERS: TableHeaderDefinition<AttendanceLogEntry>[] =
+const HEADER_DEFINITIONS: TableHeaderDefinition<AttendanceLogEntry>[] =
 	[
 		{
 			label: "สายรถ",
@@ -75,7 +70,7 @@ const TABLE_HEADERS: TableHeaderDefinition<AttendanceLogEntry>[] =
 			label: "เวลารับข้า",
 			compare: null,
 			render: (item) => (
-				<CustomCheckbox
+				<AttendanceLogTableCheckBox
 					label="รับเข้า"
 					actual={item.actualArrivalDatetime}
 					expected={item.expectedArrivalDatetime}
@@ -95,7 +90,7 @@ const TABLE_HEADERS: TableHeaderDefinition<AttendanceLogEntry>[] =
 			label: "เวลารับออก",
 			compare: null,
 			render: (item) => (
-				<CustomCheckbox
+				<AttendanceLogTableCheckBox
 					label="รับออก"
 					actual={item.actualDepartureDatetime}
 					expected={
@@ -115,115 +110,17 @@ const TABLE_HEADERS: TableHeaderDefinition<AttendanceLogEntry>[] =
 		},
 	];
 
-type CustomCheckboxProps = {
-	onClick: () => Promise<void>;
-	label: string;
-	actual: string | null;
-	expected: string;
-};
-const CustomCheckbox: FC<CustomCheckboxProps> = (
-	props,
-) => {
-	const { actual, label, expected, onClick } =
-		props;
-
-	const { revalidate } = useRevalidator();
-
-	const handleClick = async () => {
-		if (isChecked) {
-			return;
-		}
-		await onClick();
-		revalidate();
-	};
-
-	const isChecked = actual !== null;
-
-	let _label = label;
-	let lateBy: ReactNode = null;
-	if (isChecked) {
-		const actualDatetime = dayjs(actual);
-		const expectedDatetime = dayjs(expected);
-
-		_label = actualDatetime.format("HH:mm น.");
-		if (
-			actualDatetime.isAfter(expectedDatetime)
-		) {
-			const lateByLabel = expectedDatetime
-				.locale("th")
-				.from(actual, true);
-			lateBy = (
-				<Typography
-					color="error"
-					fontWeight="bold"
-				>
-					{`สายไป ${lateByLabel}`}
-				</Typography>
-			);
-		}
-	}
-
-	return (
-		<Stack>
-			<FormControlLabel
-				disableTypography
-				checked={isChecked}
-				disabled={isChecked}
-				onClick={handleClick}
-				label={<Typography>{_label}</Typography>}
-				control={<Checkbox />}
-			/>
-			{lateBy}
-		</Stack>
-	);
-};
-
 type AttendanceLogTableProps = {
-	slotProps: {
-		driverMultiSelect: {
-			options: MultiSelectOption[];
-		};
-		vehicleMultiSelect: {
-			options: MultiSelectOption[];
-		};
-		routeMultiSelect: {
-			options: MultiSelectOption[];
-		};
-	};
 	entries: AttendanceLogEntry[];
 };
 export const AttendanceLogTable: FC<
 	AttendanceLogTableProps
 > = (props) => {
-	const { entries, slotProps } = props;
+	const { entries } = props;
 	const [search, setSearch] = useState("");
 
-	const [vehicles, setVehicles] = useState(
-		slotProps.vehicleMultiSelect.options.map(
-			({ value }) => value,
-		),
-	);
-	const [drivers, setDrivers] = useState(
-		slotProps.driverMultiSelect.options.map(
-			({ value }) => value,
-		),
-	);
-	const [routes, setRoutes] = useState(
-		slotProps.routeMultiSelect.options.map(
-			({ value }) => value,
-		),
-	);
-	const driverSet = new Set(drivers);
-	const routeSet = new Set(routes);
-	const vehicleSet = new Set(vehicles);
-
 	const filteredEntries = filterItems(
-		entries.filter(
-			({ driverId, routeId, vehicleId }) =>
-				routeSet.has(routeId.toString()) &&
-				driverSet.has(driverId.toString()) &&
-				vehicleSet.has(vehicleId.toString()),
-		),
+		entries,
 		search,
 		[
 			"routeName",
@@ -233,66 +130,36 @@ export const AttendanceLogTable: FC<
 		],
 	);
 
-	const filterFormItems = [
-		{
-			label: "คนขับรถ",
-			value: (
-				<BaseInputMultiSelect
-					options={
-						slotProps.driverMultiSelect.options
-					}
-					selectedOptions={drivers}
-					onChange={setDrivers}
-				/>
-			),
-		},
-		{
-			label: "สายรถ",
-			value: (
-				<BaseInputMultiSelect
-					options={
-						slotProps.routeMultiSelect.options
-					}
-					selectedOptions={routes}
-					onChange={setRoutes}
-				/>
-			),
-		},
-		{
-			label: "เลขทะเบียน",
-			value: (
-				<BaseInputMultiSelect
-					options={
-						slotProps.vehicleMultiSelect.options
-					}
-					selectedOptions={vehicles}
-					onChange={setVehicles}
-				/>
-			),
-		},
-	];
-
 	return (
-		<BaseSortableTable
-			headers={TABLE_HEADERS}
-			defaultSortByColumn={0}
-			defaultSortOrder="asc"
-			entries={filteredEntries}
-			slotProps={{
-				addButton: {
-					hidden: true,
-					onClick: () => {},
-					label: "",
-				},
-				searchField: {
-					onChange: setSearch,
-					placeholder:
-						"ค้นหาด้วยคนขับรถ, เลขทะเบียน, หรือสายรถ",
-					value: search,
-				},
-			}}
-		>
-			{filterFormItems}
-		</BaseSortableTable>
+		<Stack spacing={1}>
+			<TextField
+				fullWidth
+				placeholder="ค้นหาด้วยชื่อสกุลคนขับรถ, สายรถ, หรือเลขทะเบียน"
+				value={search}
+				onChange={(e) =>
+					setSearch(e.target.value)
+				}
+				slotProps={{
+					input: {
+						startAdornment: (
+							<InputAdornment position="start">
+								<SearchRounded />
+							</InputAdornment>
+						),
+					},
+				}}
+			/>
+			<BaseSortableTable
+				headers={HEADER_DEFINITIONS}
+				defaultSortByColumn={0}
+				defaultSortOrder="asc"
+				entries={filteredEntries}
+				slotProps={{
+					body: {
+						emptyText: "ไม่พบรายการ",
+					},
+				}}
+			/>
+		</Stack>
 	);
 };

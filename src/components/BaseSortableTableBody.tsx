@@ -9,11 +9,12 @@ import { TableHeaderDefinition } from "../types/generics";
 type BaseSortableTableBodyProps<T> = {
 	entries: T[];
 	headers: TableHeaderDefinition<T>[];
+	emptyText: string;
 };
 export const BaseSortableTableBody = <T,>(
 	props: BaseSortableTableBodyProps<T>,
 ) => {
-	const { entries, headers } = props;
+	const { entries, headers, emptyText } = props;
 
 	if (entries.length === 0) {
 		return (
@@ -21,7 +22,7 @@ export const BaseSortableTableBody = <T,>(
 				<TableRow hover>
 					<TableCell colSpan={headers.length}>
 						<Typography fontStyle="italic">
-							ไม่พบรายการ
+							{emptyText}
 						</Typography>
 					</TableCell>
 				</TableRow>

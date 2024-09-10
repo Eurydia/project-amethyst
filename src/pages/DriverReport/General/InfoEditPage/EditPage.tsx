@@ -63,6 +63,7 @@ export const InfoEditPage: FC = () => {
 						options: topicComboBoxOptions,
 					},
 					cancelButton: {
+						label: "ยกเลิก",
 						onClick: handleReturn,
 					},
 				}}

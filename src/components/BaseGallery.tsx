@@ -31,7 +31,9 @@ export const BaseGallery: FC<BaseGalleryProps> = (
 	);
 
 	let imageGallery = (
-		<Typography>ไม่พบรูปภาพ</Typography>
+		<Typography fontStyle="italic">
+			ไม่พบรูปภาพ
+		</Typography>
 	);
 	if (images.length > 0) {
 		imageGallery = (

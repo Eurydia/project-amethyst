@@ -5,14 +5,14 @@ import { FC } from "react";
 import {
 	Link,
 	useLoaderData,
+	useSubmit,
 } from "react-router-dom";
 import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
-	const {
-		driverEntries,
-		driverMultiSelectOptions,
-	} = useLoaderData() as IndexPageLoaderData;
+	const { driverEntries } =
+		useLoaderData() as IndexPageLoaderData;
+	const submit = useSubmit();
 
 	return (
 		<Stack spacing={1}>
@@ -29,8 +29,19 @@ export const IndexPage: FC = () => {
 			<DriverTable
 				entries={driverEntries}
 				slotProps={{
-					driverMultiSelect: {
-						options: driverMultiSelectOptions,
+					searchField: {
+						placeholder: "ค้นหาคนขับรถ",
+					},
+					addButton: {
+						label: "เพิ่มคนขับรถ",
+						onClick: () =>
+							submit(
+								{},
+								{
+									replace: true,
+									action: "/drivers/new",
+								},
+							),
 					},
 				}}
 			/>

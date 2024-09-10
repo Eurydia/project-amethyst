@@ -1,13 +1,16 @@
 import { getDriver } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { DriverFormData } from "$types/models/Driver";
+import {
+	DriverFormData,
+	DriverModel,
+} from "$types/models/Driver";
 import {
 	json,
 	LoaderFunction,
 } from "react-router-dom";
 
 export type EditPageLoaderData = {
-	driverId: number;
+	driver: DriverModel;
 	initFormData: DriverFormData;
 };
 export const editPageLoader: LoaderFunction =
@@ -43,7 +46,7 @@ export const editPageLoader: LoaderFunction =
 			surname: driver.surname,
 		};
 		const loaderData: EditPageLoaderData = {
-			driverId,
+			driver,
 			initFormData,
 		};
 		return loaderData;

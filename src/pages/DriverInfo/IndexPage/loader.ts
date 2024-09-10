@@ -4,18 +4,11 @@ import {
 	getDriverReportMedicalAll,
 	getOperationLogAll,
 	getPickupRouteAll,
-	getTopicAll,
 	getVehicleAll,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { MultiSelectOption } from "$types/generics";
-import {
-	DriverModelImpl,
-	DriverReportModelImpl,
-} from "$types/impl/Driver";
+import { DriverReportModelImpl } from "$types/impl/Driver";
 import { OperationalLogModelImpl } from "$types/impl/OperationalLog";
-import { PickupRouteModelImpl } from "$types/impl/PickupRoute";
-import { VehicleModelImpl } from "$types/impl/Vehicle";
 import {
 	DriverModel,
 	DriverReportEntry,
@@ -36,16 +29,14 @@ import {
 } from "react-router-dom";
 
 export type IndexPageLoaderData = {
+	databaseIsMissingRoute: boolean;
+	databaseIsMissingVehicle: boolean;
 	driver: DriverModel;
 	galleryDirPath: string;
 	galleryFileEntries: FileEntry[];
 	logEntries: OperationalLogEntry[];
 	generalEntries: DriverReportEntry[];
 	medicalEntries: DriverReportEntry[];
-	driverMultiSelectOptions: MultiSelectOption[];
-	vehicleMultiSelectOptions: MultiSelectOption[];
-	routeMultiSelectOptions: MultiSelectOption[];
-	topicMultiSelectOptions: MultiSelectOption[];
 };
 export const indexPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -98,24 +89,13 @@ export const indexPageLoader: LoaderFunction =
 			await Promise.all(generalReports)
 		).filter((entry) => entry !== null);
 
-		const vehicleMultiSelectOptions = (
-			await getVehicleAll()
-		).map(VehicleModelImpl.toMultiSelectOption);
+		const vehicles = await getVehicleAll();
+		const routes = await getPickupRouteAll();
 
-		const routeMultiSelectOptions = (
-			await getPickupRouteAll()
-		).map(
-			PickupRouteModelImpl.toMultiSelectOption,
-		);
-		const topicMultiSelectOptions: MultiSelectOption[] =
-			(await getTopicAll()).map((topic) => ({
-				label: topic,
-				value: topic,
-			}));
-
-		const driverMultiSelectOptions = [
-			DriverModelImpl.toMultiSelectOption(driver),
-		];
+		const databaseIsMissingVehicle =
+			vehicles.length === 0;
+		const databaseIsMissingRoute =
+			routes.length === 0;
 
 		const galleryDirPath = await join(
 			await appLocalDataDir(),
@@ -145,16 +125,13 @@ export const indexPageLoader: LoaderFunction =
 		).filter((entry) => entry !== null);
 
 		const loaderData: IndexPageLoaderData = {
+			databaseIsMissingRoute,
+			databaseIsMissingVehicle,
+
 			driver,
 			logEntries,
 			galleryDirPath,
 			galleryFileEntries,
-
-			topicMultiSelectOptions,
-
-			vehicleMultiSelectOptions,
-			routeMultiSelectOptions,
-			driverMultiSelectOptions,
 
 			generalEntries,
 			medicalEntries,

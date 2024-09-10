@@ -1,13 +1,12 @@
-import {
-	MultiSelectOption,
-	TableHeaderDefinition,
-} from "$types/generics";
+import { filterItems } from "$core/filter";
+import { TableHeaderDefinition } from "$types/generics";
 import { DriverReportEntry } from "$types/models/Driver";
-import { Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Link } from "react-router-dom";
-import { DriverReportTable } from "./DriverReportTable";
+import { BaseSortableTable } from "./BaseSortableTable";
+import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 
 const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReportEntry>[] =
 	[
@@ -76,13 +75,6 @@ type DriverReportGeneralTableProps = {
 			disabled?: boolean;
 			onClick: () => void;
 		};
-		driverMultiSelect: {
-			disabled?: boolean;
-			options: MultiSelectOption[];
-		};
-		topicMultiSelect: {
-			options: MultiSelectOption[];
-		};
 	};
 };
 export const DriverReportGeneralTable: FC<
@@ -90,11 +82,42 @@ export const DriverReportGeneralTable: FC<
 > = (props) => {
 	const { entries, slotProps } = props;
 
+	const [search, setSearch] = useState("");
+
+	const filteredEntries = filterItems(
+		entries,
+		search,
+		[
+			"title",
+			"topics",
+			"driverName",
+			"driverSurname",
+		],
+	);
+
 	return (
-		<DriverReportTable
-			headers={HEADER_DEFINITIONS}
-			entries={entries}
-			slotProps={slotProps}
-		/>
+		<Stack spacing={1}>
+			<BaseSortableTableToolbar
+				slotProps={{
+					addButton: {
+						label: "เพิ่มเรื่องร้องเรียน",
+						disabled:
+							slotProps.addButton.disabled,
+						onClick: slotProps.addButton.onClick,
+					},
+					searchField: {
+						placeholder: `ค้นหาด้วยชื่อสกุลคนขับรถ, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง`,
+						value: search,
+						onChange: setSearch,
+					},
+				}}
+			/>
+			<BaseSortableTable
+				defaultSortByColumn={0}
+				defaultSortOrder="desc"
+				entries={filteredEntries}
+				headers={HEADER_DEFINITIONS}
+			/>
+		</Stack>
 	);
 };

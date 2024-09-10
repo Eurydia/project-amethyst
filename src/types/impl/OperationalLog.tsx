@@ -3,7 +3,6 @@ import {
 	getPickupRoute,
 	getVehicle,
 } from "$backend/database/get";
-import { filterItems } from "$core/filter";
 import {
 	OperationalLogEntry,
 	OperationalLogModel,
@@ -39,35 +38,5 @@ export const OperationalLogModelImpl = {
 			routeName: route.name,
 		};
 		return entry;
-	},
-};
-
-export const OperationalLogEntryImpl = {
-	filter: (
-		entries: OperationalLogEntry[],
-		selectDrivers: Set<string>,
-		selectedRoutes: Set<string>,
-		selectedVehicles: Set<string>,
-		search: string,
-	) => {
-		const filtered = entries
-			.filter(({ routeId }) =>
-				selectedRoutes.has(routeId.toString()),
-			)
-			.filter(({ vehicleId }) =>
-				selectedVehicles.has(
-					vehicleId.toString(),
-				),
-			)
-			.filter(({ driverId }) =>
-				selectDrivers.has(driverId.toString()),
-			);
-
-		return filterItems(filtered, search, [
-			"driverName",
-			"driverSurname",
-			"vehicleLicensePlate",
-			"routeName",
-		]);
 	},
 };

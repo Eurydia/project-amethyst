@@ -13,9 +13,9 @@ type BaseFormProps = {
 		};
 		cancelButton: {
 			onClick: () => void;
+			label: string;
 		};
 	};
-
 	children: {
 		label: string;
 		value: ReactNode;
@@ -54,7 +54,7 @@ export const BaseForm: FC<BaseFormProps> = (
 					variant="outlined"
 					onClick={slotProps.cancelButton.onClick}
 				>
-					ยกเลิก
+					{slotProps.cancelButton.label}
 				</TypographyButton>
 			</Grid2>
 		</Grid2>

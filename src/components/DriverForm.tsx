@@ -14,6 +14,7 @@ type DriverFormProps = {
 			onClick: (formData: DriverFormData) => void;
 		};
 		cancelButton: {
+			label: string;
 			onClick: () => void;
 		};
 	};
@@ -116,6 +117,7 @@ export const DriverForm: FC<DriverFormProps> = (
 					onClick: handleSubmit,
 				},
 				cancelButton: {
+					label: slotProps.cancelButton.label,
 					onClick: slotProps.cancelButton.onClick,
 				},
 			}}

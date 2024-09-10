@@ -26,6 +26,7 @@ type DriverReportFormProps = {
 		};
 		cancelButton: {
 			onClick: () => void;
+			label: string;
 		};
 		driverSelect: {
 			options: DriverModel[];
@@ -200,6 +201,7 @@ export const DriverReportForm: FC<
 				},
 				cancelButton: {
 					onClick: slotProps.cancelButton.onClick,
+					label: slotProps.cancelButton.label,
 				},
 			}}
 		>

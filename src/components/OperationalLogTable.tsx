@@ -1,15 +1,12 @@
-import {
-	MultiSelectOption,
-	TableHeaderDefinition,
-} from "$types/generics";
-import { OperationalLogEntryImpl } from "$types/impl/OperationalLog";
+import { filterItems } from "$core/filter";
+import { TableHeaderDefinition } from "$types/generics";
 import { OperationalLogEntry } from "$types/models/OperatonalLog";
-import { Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
 import { Link } from "react-router-dom";
-import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 import { BaseSortableTable } from "./BaseSortableTable";
+import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 
 const HEADER_DEFINITIONS: TableHeaderDefinition<OperationalLogEntry>[] =
 	[
@@ -88,18 +85,6 @@ type OperationalLogTableProps = {
 			disabled?: boolean;
 			onClick: () => void;
 		};
-		vehicleMultiSelect: {
-			options: MultiSelectOption[];
-			disabled?: boolean;
-		};
-		driverMultiSelect: {
-			options: MultiSelectOption[];
-			disabled?: boolean;
-		};
-		routeMultiSelect: {
-			options: MultiSelectOption[];
-			disabled?: boolean;
-		};
 	};
 };
 export const OperationalLogTable: FC<
@@ -108,100 +93,41 @@ export const OperationalLogTable: FC<
 	const { slotProps, entries } = props;
 
 	const [search, setSearch] = useState("");
-	const [routes, setRoutes] = useState(
-		slotProps.routeMultiSelect.options.map(
-			({ value }) => value,
-		),
+	const filteredEntries = filterItems(
+		entries,
+		search,
+		[
+			"driverName",
+			"driverSurname",
+			"vehicleLicensePlate",
+			"routeName",
+		],
 	);
-	const [vehicles, setVehicles] = useState(
-		slotProps.vehicleMultiSelect.options.map(
-			({ value }) => value,
-		),
-	);
-	const [drivers, setDrivers] = useState(
-		slotProps.driverMultiSelect.options.map(
-			({ value }) => value,
-		),
-	);
-
-	const filteredEntries =
-		OperationalLogEntryImpl.filter(
-			entries,
-			new Set(drivers),
-			new Set(routes),
-			new Set(vehicles),
-			search,
-		);
-
-	const fitlerFormItems = [
-		{
-			label: "สายรถ",
-			value: (
-				<BaseInputMultiSelect
-					disabled={
-						slotProps.routeMultiSelect.disabled
-					}
-					options={
-						slotProps.routeMultiSelect.options
-					}
-					selectedOptions={routes}
-					onChange={setRoutes}
-				/>
-			),
-		},
-		{
-			label: "เลขทะเบียน",
-			value: (
-				<BaseInputMultiSelect
-					disabled={
-						slotProps.vehicleMultiSelect.disabled
-					}
-					options={
-						slotProps.vehicleMultiSelect.options
-					}
-					selectedOptions={vehicles}
-					onChange={setVehicles}
-				/>
-			),
-		},
-		{
-			label: "คนขับรถ",
-			value: (
-				<BaseInputMultiSelect
-					disabled={
-						slotProps.driverMultiSelect.disabled
-					}
-					options={
-						slotProps.driverMultiSelect.options
-					}
-					selectedOptions={drivers}
-					onChange={setDrivers}
-				/>
-			),
-		},
-	];
 
 	return (
-		<BaseSortableTable
-			entries={filteredEntries}
-			headers={HEADER_DEFINITIONS}
-			defaultSortByColumn={0}
-			defaultSortOrder="desc"
-			slotProps={{
-				searchField: {
-					placeholder:
-						"ค้นหาด้วยคนขับรถ, เลขทะเบียน, หรือสายรถ",
-					value: search,
-					onChange: setSearch,
-				},
-				addButton: {
-					label: "ลงบันทึก",
-					onClick: slotProps.addButton.onClick,
-					disabled: slotProps.addButton.disabled,
-				},
-			}}
-		>
-			{fitlerFormItems}
-		</BaseSortableTable>
+		<Stack spacing={1}>
+			<BaseSortableTableToolbar
+				slotProps={{
+					addButton: {
+						disabled:
+							slotProps.addButton.disabled,
+						onClick: slotProps.addButton.onClick,
+						label: "เพิ่มประวัติการเดินรถ",
+					},
+					searchField: {
+						placeholder:
+							"ค้นหาด้วยคนขับรถ, เลขทะเบียน, หรือสายรถ",
+						value: search,
+						onChange: setSearch,
+					},
+				}}
+			/>
+			<BaseSortableTable
+				entries={filteredEntries}
+				headers={HEADER_DEFINITIONS}
+				defaultSortByColumn={0}
+				defaultSortOrder="desc"
+			/>
+		</Stack>
 	);
 };

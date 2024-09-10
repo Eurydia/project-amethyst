@@ -6,6 +6,11 @@ export type TableHeaderDefinition<T> = {
 	label: string;
 };
 
+export type InfoGroupItemDefinition = {
+	label: string;
+	value: ReactNode;
+};
+
 type SnakeToCamelCase<S extends string> =
 	S extends `${infer T}_${infer U}`
 		? `${T}${Capitalize<SnakeToCamelCase<U>>}`

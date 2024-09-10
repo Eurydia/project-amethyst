@@ -1,17 +1,11 @@
 import { BaseSortableTable } from "$components/BaseSortableTable";
-import {
-	MultiSelectOption,
-	TableHeaderDefinition,
-} from "$types/generics";
+import { TableHeaderDefinition } from "$types/generics";
 import { DriverEntryImpl } from "$types/impl/Driver";
 import { DriverEntry } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
-import { FC, ReactNode, useState } from "react";
-import {
-	Link,
-	useSubmit,
-} from "react-router-dom";
-import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
+import { FC, useState } from "react";
+import { Link } from "react-router-dom";
+import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 
 const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 	[
@@ -84,8 +78,12 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 type DriverTableProps = {
 	entries: DriverEntry[];
 	slotProps: {
-		driverMultiSelect: {
-			options: MultiSelectOption[];
+		searchField: {
+			placeholder: string;
+		};
+		addButton: {
+			label: string;
+			onClick: () => void;
 		};
 	};
 };
@@ -93,62 +91,53 @@ export const DriverTable: FC<DriverTableProps> = (
 	props,
 ) => {
 	const { entries, slotProps } = props;
-	const submit = useSubmit();
 	const [search, setSearch] = useState("");
-	const [selected, setSelected] = useState(
-		slotProps.driverMultiSelect.options.map(
-			({ value }) => value,
-		),
-	);
 	const filteredEntries = DriverEntryImpl.filter(
 		entries,
-		selected,
 		search,
 	);
 
-	const formItems: {
-		label: string;
-		value: ReactNode;
-	}[] = [
-		{
-			label: "คนขับรถ",
-			value: (
-				<BaseInputMultiSelect
-					onChange={setSelected}
-					options={
-						slotProps.driverMultiSelect.options
-					}
-					selectedOptions={selected}
-				/>
-			),
-		},
-	];
 	return (
-		<BaseSortableTable
-			headers={HEADER_DEFINITION}
-			defaultSortOrder="asc"
-			defaultSortByColumn={0}
-			entries={filteredEntries}
-			slotProps={{
-				searchField: {
-					placeholder:
-						"ค้นหาด้วยคนขับรถ, สายรถ, หรือทะเบียนรถ",
-					value: search,
-					onChange: setSearch,
-				},
-				addButton: {
-					label: "เพิ่มคนขับรถ",
-					onClick: () =>
-						submit(
-							{},
-							{
-								action: "/drivers/new",
-							},
-						),
-				},
-			}}
-		>
-			{formItems}
-		</BaseSortableTable>
+		<Stack spacing={1}>
+			<BaseSortableTableToolbar
+				slotProps={{
+					searchField: {
+						onChange: setSearch,
+						value: search,
+						placeholder:
+							slotProps.searchField.placeholder,
+					},
+					addButton: {
+						label: slotProps.addButton.label,
+						onClick: slotProps.addButton.onClick,
+					},
+				}}
+			/>
+			<BaseSortableTable
+				headers={HEADER_DEFINITION}
+				defaultSortOrder="asc"
+				defaultSortByColumn={0}
+				entries={filteredEntries}
+				// slotProps={{
+				// 	searchField: {
+				// 		placeholder:
+				// 			"ค้นหาด้วยคนขับรถ, สายรถ, หรือทะเบียนรถ",
+				// 		value: search,
+				// 		onChange: setSearch,
+				// 	},
+				// 	addButton: {
+				// 		label: "เพิ่มคนขับรถ",
+				// 		onClick: () =>
+				// 			submit(
+				// 				{},
+				// 				{
+				// 					action: "/drivers/new",
+				// 				},
+				// 			),
+				// 	},
+				// }}
+			/>
+			{/* {formItems} */}
+		</Stack>
 	);
 };

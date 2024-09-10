@@ -12,6 +12,7 @@ type BaseInfoGroupProps = {
 	slotProps: {
 		editButton: {
 			onClick: () => void;
+			label: string;
 		};
 	};
 };
@@ -26,7 +27,7 @@ export const BaseInfoGroup: FC<
 				startIcon={<EditRounded />}
 				onClick={slotProps.editButton.onClick}
 			>
-				แก้ไขข้อมูล
+				{slotProps.editButton.label}
 			</TypographyButton>
 			<FormalLayout>{children}</FormalLayout>
 		</Stack>

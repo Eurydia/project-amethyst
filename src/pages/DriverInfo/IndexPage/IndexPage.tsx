@@ -35,16 +35,14 @@ const TOC_ITEMS = [
 
 export const IndexPage: FC = () => {
 	const {
+		databaseIsMissingRoute,
+		databaseIsMissingVehicle,
 		driver,
 		galleryDirPath,
 		galleryFileEntries,
 		logEntries,
 		generalEntries,
 		medicalEntries,
-		driverMultiSelectOptions,
-		vehicleMultiSelectOptions,
-		routeMultiSelectOptions,
-		topicMultiSelectOptions,
 	} = useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
 
@@ -70,6 +68,17 @@ export const IndexPage: FC = () => {
 			<DriverInfoGroup
 				driver={driver}
 				slotProps={{
+					editButton: {
+						label: "แก้ไขข้อมูลคนขับรถ",
+						onClick: () =>
+							submit(
+								{},
+								{
+									replace: true,
+									action: "./edit",
+								},
+							),
+					},
 					gallery: {
 						dirPath: galleryDirPath,
 						fileEntries: galleryFileEntries,
@@ -85,22 +94,10 @@ export const IndexPage: FC = () => {
 			<OperationalLogTable
 				entries={logEntries}
 				slotProps={{
-					driverMultiSelect: {
-						disabled: true,
-						options: driverMultiSelectOptions,
-					},
-					routeMultiSelect: {
-						options: routeMultiSelectOptions,
-					},
-					vehicleMultiSelect: {
-						options: vehicleMultiSelectOptions,
-					},
 					addButton: {
 						disabled:
-							vehicleMultiSelectOptions.length ===
-								0 ||
-							routeMultiSelectOptions.length ===
-								0,
+							databaseIsMissingVehicle ||
+							databaseIsMissingRoute,
 						onClick: () =>
 							submit(
 								{ driverId: driver.id },
@@ -134,13 +131,6 @@ export const IndexPage: FC = () => {
 								},
 							),
 					},
-					driverMultiSelect: {
-						disabled: true,
-						options: driverMultiSelectOptions,
-					},
-					topicMultiSelect: {
-						options: topicMultiSelectOptions,
-					},
 				}}
 			/>
 			<Typography
@@ -164,13 +154,6 @@ export const IndexPage: FC = () => {
 										"/drivers/report/medical/new",
 								},
 							),
-					},
-					driverMultiSelect: {
-						disabled: true,
-						options: driverMultiSelectOptions,
-					},
-					topicMultiSelect: {
-						options: topicMultiSelectOptions,
 					},
 				}}
 			/>

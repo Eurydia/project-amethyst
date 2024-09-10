@@ -16,22 +16,23 @@ import { toast } from "react-toastify";
 import { EditPageLoaderData } from "./loader";
 
 export const EditPage: FC = () => {
-	const { initFormData, driverId } =
+	const { initFormData, driver } =
 		useLoaderData() as EditPageLoaderData;
 	const submit = useSubmit();
 
+	const action = `/drivers/info/${driver.id}`;
 	const handleReturn = () =>
 		submit(
 			{},
 			{
 				replace: true,
-				action: "/drivers/info/" + driverId,
+				action,
 			},
 		);
 	const handleSubmit = (
 		formData: DriverFormData,
 	) => {
-		putDriver(driverId, formData)
+		putDriver(driver.id, formData)
 			.then(
 				() => toast.success("แก้ไขข้อมูลสำเร็จ"),
 				() => toast.error("แก้ไขข้อมูลล้มเหลว"),
@@ -39,17 +40,23 @@ export const EditPage: FC = () => {
 			.finally(handleReturn);
 	};
 
+	const headingMain = "แก้ไขข้อมูลคนขับรถ";
+	const headingSub = `"${driver.name} ${driver.surname}"`;
+
 	return (
 		<Stack spacing={1}>
 			<Typography
 				component={Link}
-				to={"/drivers/info/" + driverId}
+				to={action}
 			>
 				<KeyboardArrowLeftRounded />
 				ข้อมูลคนขับรถ
 			</Typography>
 			<Typography variant="h1">
-				แก้ไขข้อมูลคนขับรถ
+				{headingMain}
+			</Typography>
+			<Typography variant="h2">
+				{headingSub}
 			</Typography>
 			<DriverForm
 				initFormData={initFormData}
@@ -60,6 +67,7 @@ export const EditPage: FC = () => {
 						onClick: handleSubmit,
 					},
 					cancelButton: {
+						label: "ยกเลิก",
 						onClick: handleReturn,
 					},
 				}}

@@ -8,68 +8,72 @@ import { Link } from "react-router-dom";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 
-const HEADER_DEFINITIONS: TableHeaderDefinition<DriverReportEntry>[] =
-	[
-		{
-			label: "เวลาและวันที่",
-			compare: (a, b) =>
-				dayjs(a.datetime).unix() -
-				dayjs(b.datetime).unix(),
-			render: (item) => (
+const DATETIME_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
+	{
+		label: "เวลาและวันที่",
+		compare: (a, b) =>
+			dayjs(a.datetime).unix() -
+			dayjs(b.datetime).unix(),
+		render: (item) => (
+			<Typography>
+				{dayjs(item.datetime)
+					.locale("th")
+					.format("HH:mm น. DD MMMM YYYY")}
+			</Typography>
+		),
+	};
+const DRIVER_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
+	{
+		label: "คนขับรถ",
+		compare: (a, b) =>
+			a.driverName.localeCompare(b.driverName),
+		render: (item) => (
+			<Typography
+				component={Link}
+				to={"/drivers/info/" + item.driverId}
+			>
+				{item.driverName} {item.driverSurname}
+			</Typography>
+		),
+	};
+
+const TITLE_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
+	{
+		label: "ชื่อเรื่อง",
+		compare: (a, b) =>
+			a.title.localeCompare(b.title),
+		render: (item) => (
+			<Typography
+				component={Link}
+				to={
+					"/drivers/report/medical/info/" +
+					item.id
+				}
+			>
+				{item.title}
+			</Typography>
+		),
+	};
+
+const TOPICS_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
+	{
+		label: "หัวข้อที่เกี่ยวข้อง",
+		compare: null,
+		render: (item) =>
+			item.topics.length === 0 ? (
+				<Typography fontStyle="italic">
+					ไม่มี
+				</Typography>
+			) : (
 				<Typography>
-					{dayjs(item.datetime)
-						.locale("th")
-						.format("HH:mm น. DD MMMM YYYY")}
+					{item.topics.join(", ")}
 				</Typography>
 			),
-		},
-		{
-			label: "คนขับรถ",
-			compare: (a, b) =>
-				a.driverName.localeCompare(b.driverName),
-			render: (item) => (
-				<Typography
-					component={Link}
-					to={"/drivers/info/" + item.driverId}
-				>
-					{item.driverName} {item.driverSurname}
-				</Typography>
-			),
-		},
-		{
-			label: "เรื่อง",
-			compare: (a, b) =>
-				a.title.localeCompare(b.title),
-			render: (item) => (
-				<Typography
-					component={Link}
-					to={
-						"/drivers/report/medical/info/" +
-						item.id
-					}
-				>
-					{item.title}
-				</Typography>
-			),
-		},
-		{
-			label: "หัวข้อที่เกี่ยวข้อง",
-			compare: null,
-			render: (item) =>
-				item.topics.length === 0 ? (
-					<Typography fontWeight="bold">
-						ไม่มี
-					</Typography>
-				) : (
-					<Typography>
-						{item.topics.join(", ")}
-					</Typography>
-				),
-		},
-	];
+	};
 
 type DriverReportMedicalTableProps = {
 	entries: DriverReportEntry[];
+	hideDriverColumn?: boolean;
 	slotProps: {
 		addButton: {
 			disabled?: boolean;
@@ -80,7 +84,8 @@ type DriverReportMedicalTableProps = {
 export const DriverReportMedicalTable: FC<
 	DriverReportMedicalTableProps
 > = (props) => {
-	const { entries, slotProps } = props;
+	const { hideDriverColumn, entries, slotProps } =
+		props;
 
 	const [search, setSearch] = useState("");
 
@@ -95,12 +100,26 @@ export const DriverReportMedicalTable: FC<
 		],
 	);
 
+	let headers = [
+		DATETIME_COLUMN_DEFINITION,
+		DRIVER_COLUMN_DEFINITION,
+		TITLE_COLUMN_DEFINITION,
+		TOPICS_COLUMN_DEFINITION,
+	];
+	if (hideDriverColumn) {
+		headers = [
+			DATETIME_COLUMN_DEFINITION,
+			TITLE_COLUMN_DEFINITION,
+			TOPICS_COLUMN_DEFINITION,
+		];
+	}
+
 	return (
 		<Stack spacing={1}>
 			<BaseSortableTableToolbar
 				slotProps={{
 					addButton: {
-						label: "เพิ่มผลการตรวจสารเสพติด",
+						label: "เพิ่มผลตรวจ",
 						disabled:
 							slotProps.addButton.disabled,
 						onClick: slotProps.addButton.onClick,
@@ -113,10 +132,15 @@ export const DriverReportMedicalTable: FC<
 				}}
 			/>
 			<BaseSortableTable
+				slotProps={{
+					body: {
+						emptyText: `ไม่พบผลการตรวจสารเสพติด`,
+					},
+				}}
 				defaultSortByColumn={0}
 				defaultSortOrder="desc"
 				entries={filteredEntries}
-				headers={HEADER_DEFINITIONS}
+				headers={headers}
 			/>
 		</Stack>
 	);

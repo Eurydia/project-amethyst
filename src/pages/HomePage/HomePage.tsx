@@ -38,12 +38,8 @@ const ROUTES = [
 ];
 
 export const HomePage: FC = () => {
-	const {
-		logEntries,
-		driverMultiSelectOptions,
-		vehicleMultiSelectOptions,
-		routeMultiSelectOptions,
-	} = useLoaderData() as HomePageLoaderData;
+	const { logEntries } =
+		useLoaderData() as HomePageLoaderData;
 
 	return (
 		<Stack spacing={1}>
@@ -80,20 +76,7 @@ export const HomePage: FC = () => {
 			<Typography variant="h2">
 				สมุดบันทึกเวลารับเข้าและรับออก
 			</Typography>
-			<AttendanceLogTable
-				entries={logEntries}
-				slotProps={{
-					driverMultiSelect: {
-						options: driverMultiSelectOptions,
-					},
-					vehicleMultiSelect: {
-						options: vehicleMultiSelectOptions,
-					},
-					routeMultiSelect: {
-						options: routeMultiSelectOptions,
-					},
-				}}
-			/>
+			<AttendanceLogTable entries={logEntries} />
 		</Stack>
 	);
 };

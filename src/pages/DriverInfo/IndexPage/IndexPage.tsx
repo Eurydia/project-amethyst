@@ -73,7 +73,6 @@ export const IndexPage: FC = () => {
 							submit(
 								{},
 								{
-									// replace: true,
 									action: "./edit",
 								},
 							),
@@ -101,7 +100,6 @@ export const IndexPage: FC = () => {
 							submit(
 								{ driverId: driver.id },
 								{
-									// replace: true,
 									action: "/operational-logs/new",
 								},
 							),
@@ -124,7 +122,6 @@ export const IndexPage: FC = () => {
 									driverId: driver.id,
 								},
 								{
-									// replace: true,
 									action:
 										"/drivers/report/general/new",
 								},
@@ -148,7 +145,6 @@ export const IndexPage: FC = () => {
 									driverId: driver.id,
 								},
 								{
-									// replace: true,
 									action:
 										"/drivers/report/medical/new",
 								},

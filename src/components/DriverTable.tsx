@@ -1,6 +1,6 @@
 import { BaseSortableTable } from "$components/BaseSortableTable";
+import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
-import { DriverEntryImpl } from "$types/impl/Driver";
 import { DriverEntry } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
 import { FC, useState } from "react";
@@ -92,9 +92,15 @@ export const DriverTable: FC<DriverTableProps> = (
 ) => {
 	const { entries, slotProps } = props;
 	const [search, setSearch] = useState("");
-	const filteredEntries = DriverEntryImpl.filter(
+	const filteredEntries = filterItems(
 		entries,
 		search,
+		[
+			"name",
+			"surname",
+			"vehicles.*.licensePlate",
+			"routes.*.name",
+		],
 	);
 
 	return (

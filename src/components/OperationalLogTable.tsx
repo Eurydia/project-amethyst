@@ -127,6 +127,11 @@ export const OperationalLogTable: FC<
 				headers={HEADER_DEFINITIONS}
 				defaultSortByColumn={0}
 				defaultSortOrder="desc"
+				slotProps={{
+					body: {
+						emptyText: "ไม่พบประวัติการเดินรถ",
+					},
+				}}
 			/>
 		</Stack>
 	);

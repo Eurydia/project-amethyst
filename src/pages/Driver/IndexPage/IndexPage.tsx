@@ -30,7 +30,8 @@ export const IndexPage: FC = () => {
 				entries={driverEntries}
 				slotProps={{
 					searchField: {
-						placeholder: "ค้นหาคนขับรถ",
+						placeholder:
+							"ค้นหาด้วยชื่อสกุลคนขับรถ",
 					},
 					addButton: {
 						label: "เพิ่มคนขับรถ",
@@ -38,7 +39,6 @@ export const IndexPage: FC = () => {
 							submit(
 								{},
 								{
-									replace: true,
 									action: "/drivers/new",
 								},
 							),

@@ -4,34 +4,24 @@ import {
 	getPickupRouteAll,
 	getVehicleAll,
 } from "$backend/database/get";
-import { MultiSelectOption } from "$types/generics";
-import { DriverModelImpl } from "$types/impl/Driver";
 import { OperationalLogModelImpl } from "$types/impl/OperationalLog";
-import { PickupRouteModelImpl } from "$types/impl/PickupRoute";
-import { VehicleModelImpl } from "$types/impl/Vehicle";
 import { OperationalLogEntry } from "$types/models/OperatonalLog";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
-	driverMultiSelectOptions: MultiSelectOption[];
-	vehicleMultiSelectOptions: MultiSelectOption[];
-	routeMultiSelectOptions: MultiSelectOption[];
+	disableAddButton: boolean;
 	logEntries: OperationalLogEntry[];
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		const driverMultiSelectOptions = (
-			await getDriverAll()
-		).map(DriverModelImpl.toMultiSelectOption);
+		const drivers = await getDriverAll();
+		const vehicles = await getVehicleAll();
+		const routes = await getPickupRouteAll();
 
-		const vehicleMultiSelectOptions = (
-			await getVehicleAll()
-		).map(VehicleModelImpl.toMultiSelectOption);
-
-		const routeMultiSelectOptions: MultiSelectOption[] =
-			(await getPickupRouteAll()).map(
-				PickupRouteModelImpl.toMultiSelectOption,
-			);
+		const disableAddButton =
+			drivers.length === 0 ||
+			vehicles.length === 0 ||
+			routes.length === 0;
 
 		const logs = (await getOperationLogAll()).map(
 			OperationalLogModelImpl.toEntry,
@@ -41,10 +31,8 @@ export const indexPageLoader: LoaderFunction =
 		).filter((log) => log !== null);
 
 		const loaderData: IndexPageLoaderData = {
+			disableAddButton,
 			logEntries,
-			driverMultiSelectOptions,
-			routeMultiSelectOptions,
-			vehicleMultiSelectOptions,
 		};
 		return loaderData;
 	};

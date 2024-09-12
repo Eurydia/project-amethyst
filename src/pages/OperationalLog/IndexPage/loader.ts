@@ -4,7 +4,7 @@ import {
 	getPickupRouteAll,
 	getVehicleAll,
 } from "$backend/database/get";
-import { OperationalLogModelImpl } from "$types/impl/OperationalLog";
+import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log-model";
 import { OperationalLogEntry } from "$types/models/OperatonalLog";
 import { LoaderFunction } from "react-router-dom";
 
@@ -24,7 +24,7 @@ export const indexPageLoader: LoaderFunction =
 			routes.length === 0;
 
 		const logs = (await getOperationLogAll()).map(
-			OperationalLogModelImpl.toEntry,
+			OPERATIONAL_LOG_MODEL_TRANSFORMER.toOperationalLogEntry,
 		);
 		const logEntries = (
 			await Promise.all(logs)

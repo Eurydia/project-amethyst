@@ -8,7 +8,7 @@ import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
 	reportEntries: DriverReportEntry[];
-	databaseIsMissingDriver: boolean;
+	databaseHasNoDriver: boolean;
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
@@ -23,11 +23,11 @@ export const indexPageLoader: LoaderFunction =
 		).filter((entry) => entry !== null);
 
 		const drivers = await getDriverAll();
-		const databaseIsMissingDriver =
+		const databaseHasNoDriver =
 			drivers.length === 0;
 		const loaderData: IndexPageLoaderData = {
 			reportEntries,
-			databaseIsMissingDriver,
+			databaseHasNoDriver,
 		};
 		return loaderData;
 	};

@@ -6,10 +6,10 @@ import {
 	getTopicAll,
 	getVehicleAll,
 } from "$backend/database/get";
+import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log-model";
 import { TRANSLATION } from "$locale/th";
 import { MultiSelectOption } from "$types/generics";
 import { DriverModelImpl } from "$types/impl/Driver";
-import { OperationalLogModelImpl } from "$types/impl/OperationalLog";
 import {
 	PickupRouteModelImpl,
 	PickupRouteReportModelImpl,
@@ -73,7 +73,9 @@ export const indexPageLoader: LoaderFunction =
 			.filter(
 				({ route_id }) => route_id === route.id,
 			)
-			.map(OperationalLogModelImpl.toEntry);
+			.map(
+				OPERATIONAL_LOG_MODEL_TRANSFORMER.toOperationalLogEntry,
+			);
 		const reports = (
 			await getPickupRouteReportGeneralAll()
 		)

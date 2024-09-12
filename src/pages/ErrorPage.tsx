@@ -1,9 +1,7 @@
-import { KeyboardArrowLeftRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
 	isRouteErrorResponse,
-	Link,
 	useRouteError,
 } from "react-router-dom";
 
@@ -17,21 +15,7 @@ export const ErrorPage: FC = () => {
 	console.log(error);
 
 	return (
-		<Stack
-			spacing={1}
-			padding={2}
-		>
-			<Typography
-				component={Link}
-				to="/"
-				sx={{
-					alignItems: "center",
-					display: "flex",
-				}}
-			>
-				<KeyboardArrowLeftRounded />
-				กลับหน้าแรก
-			</Typography>
+		<Stack spacing={1}>
 			<Typography variant="h1">
 				{statusText}
 			</Typography>

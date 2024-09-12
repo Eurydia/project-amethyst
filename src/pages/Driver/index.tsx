@@ -1,3 +1,4 @@
+import { PageView } from "$views/PageView";
 import { RouteObject } from "react-router-dom";
 import {
 	IndexPage,
@@ -10,6 +11,7 @@ import {
 
 export const DRIVER_ROUTES: RouteObject = {
 	path: "drivers",
+	element: <PageView />,
 	children: [
 		{
 			index: true,
@@ -19,7 +21,7 @@ export const DRIVER_ROUTES: RouteObject = {
 		{
 			path: "new",
 			element: <NewPage />,
-			loader: newPageLoader, // OK
+			loader: newPageLoader,
 		},
 	],
 };

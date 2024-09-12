@@ -1,21 +1,20 @@
 import { BaseSortableTable } from "$components/BaseSortableTable";
 import { filterItems } from "$core/filter";
+import { prepareQueryParam } from "$core/query-param";
 import { TableHeaderDefinition } from "$types/generics";
 import { DriverEntry } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
 import { FC, useState } from "react";
 import {
-	createSearchParams,
 	Link,
 	useSubmit,
 } from "react-router-dom";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 
-const CURR_ROUTE_SEARCH_PARAM =
-	createSearchParams({
-		previousPath: "/drivers",
-		previousPathLabel: `รายชื่อคนขับรถ`,
-	}).toString();
+const CURR_ROUTE_SEARCH_PARAM = prepareQueryParam(
+	"/drivers",
+	`รายชื่อคนขับรถ`,
+);
 
 const HEADER_DEFINITIONS: TableHeaderDefinition<DriverEntry>[] =
 	[
@@ -101,8 +100,8 @@ export const DriverTable: FC<DriverTableProps> = (
 	props,
 ) => {
 	const { entries } = props;
-	const [search, setSearch] = useState("");
 	const submit = useSubmit();
+	const [search, setSearch] = useState("");
 	const filteredEntries = filterItems(
 		entries,
 		search,
@@ -127,9 +126,13 @@ export const DriverTable: FC<DriverTableProps> = (
 						label: `เพิ่มคนขับรถ`,
 						onClick: () =>
 							submit(
-								{},
 								{
-									action: "./new",
+									previousPath: "/drivers",
+									previousPathLabel:
+										"รายชื่อคนขับรถ",
+								},
+								{
+									action: "/drivers/new",
 								},
 							),
 					},

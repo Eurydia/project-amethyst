@@ -1,4 +1,5 @@
 import { AttendanceLogTable } from "$components/AttendanceLogTable";
+import { prepareQueryParam } from "$core/query-param";
 import { KeyboardArrowRightRounded } from "@mui/icons-material";
 import {
 	List,
@@ -29,7 +30,7 @@ const ROUTES = [
 	},
 	{
 		path: "/vehicles/report/inspection",
-		label: "ตารางบันทึกผลการตรวจสถาพรถ",
+		label: "ตารางบันทึกผลการตรวจสถาพรถรับส่ง",
 	},
 	{
 		path: "/pickup-routes/report/general",
@@ -64,7 +65,13 @@ export const HomePage: FC = () => {
 						<ListItemText disableTypography>
 							<Typography
 								component={Link}
-								to={route.path}
+								to={{
+									pathname: route.path,
+									search: prepareQueryParam(
+										"/",
+										"หน้าแรก",
+									),
+								}}
 							>
 								<KeyboardArrowRightRounded />
 								{route.label}

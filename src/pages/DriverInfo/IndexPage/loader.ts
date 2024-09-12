@@ -7,8 +7,8 @@ import {
 	getVehicleAll,
 } from "$backend/database/get";
 import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report-model";
+import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log-model";
 import { TRANSLATION } from "$locale/th";
-import { OperationalLogModelImpl } from "$types/impl/OperationalLog";
 import {
 	DriverModel,
 	DriverReportEntry,
@@ -29,8 +29,8 @@ import {
 } from "react-router-dom";
 
 export type IndexPageLoaderData = {
-	databaseIsMissingRoute: boolean;
-	databaseIsMissingVehicle: boolean;
+	databaseHasNoRoute: boolean;
+	databaseHasNoVehicle: boolean;
 	driver: DriverModel;
 	galleryDirPath: string;
 	galleryFileEntries: FileEntry[];
@@ -96,9 +96,9 @@ export const indexPageLoader: LoaderFunction =
 		const vehicles = await getVehicleAll();
 		const routes = await getPickupRouteAll();
 
-		const databaseIsMissingVehicle =
+		const databaseHasNoVehicle =
 			vehicles.length === 0;
-		const databaseIsMissingRoute =
+		const databaseHasNoRoute =
 			routes.length === 0;
 
 		const galleryDirPath = await join(
@@ -122,15 +122,17 @@ export const indexPageLoader: LoaderFunction =
 			.filter(
 				({ driver_id }) => driver_id === driverId,
 			)
-			.map(OperationalLogModelImpl.toEntry);
+			.map(
+				OPERATIONAL_LOG_MODEL_TRANSFORMER.toOperationalLogEntry,
+			);
 
 		const logEntries = (
 			await Promise.all(logs)
 		).filter((entry) => entry !== null);
 
 		const loaderData: IndexPageLoaderData = {
-			databaseIsMissingRoute,
-			databaseIsMissingVehicle,
+			databaseHasNoRoute,
+			databaseHasNoVehicle,
 
 			driver,
 			logEntries,

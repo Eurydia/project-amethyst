@@ -8,8 +8,10 @@ import {
 	OperationalLogModel,
 } from "$types/models/OperatonalLog";
 
-export const OperationalLogModelImpl = {
-	toEntry: async (log: OperationalLogModel) => {
+export const OPERATIONAL_LOG_MODEL_TRANSFORMER = {
+	toOperationalLogEntry: async (
+		log: OperationalLogModel,
+	) => {
 		const vehicle = await getVehicle(
 			log.vehicle_id,
 		);
@@ -18,7 +20,11 @@ export const OperationalLogModelImpl = {
 			log.route_id,
 		);
 
-		if (!vehicle || !driver || !route) {
+		if (
+			vehicle === null ||
+			driver === null ||
+			route === null
+		) {
 			return null;
 		}
 

@@ -63,10 +63,10 @@ export const newPageLoader: LoaderFunction =
 
 		const topicOptions = await getTopicAll();
 		const initFormData: DriverReportFormData = {
+			driver,
 			datetime: dayjs().format(),
 			title: "",
 			content: "",
-			driver,
 			topics: [],
 		};
 		const loaderData: NewPageLoaderData = {

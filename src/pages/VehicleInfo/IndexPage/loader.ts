@@ -7,10 +7,10 @@ import {
 	getVehicleReportGeneralAll,
 	getVehicleReportInspectionAll,
 } from "$backend/database/get";
+import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log-model";
 import { TRANSLATION } from "$locale/th";
 import { MultiSelectOption } from "$types/generics";
 import { DriverModelImpl } from "$types/impl/Driver";
-import { OperationalLogModelImpl } from "$types/impl/OperationalLog";
 import { PickupRouteModelImpl } from "$types/impl/PickupRoute";
 import {
 	VehicleModelImpl,
@@ -83,7 +83,9 @@ export const indexPageLoader: LoaderFunction =
 				({ vehicle_id }) =>
 					vehicle_id === vehicleId,
 			)
-			.map(OperationalLogModelImpl.toEntry);
+			.map(
+				OPERATIONAL_LOG_MODEL_TRANSFORMER.toOperationalLogEntry,
+			);
 
 		const generalReports = (
 			await getVehicleReportGeneralAll()

@@ -4,11 +4,9 @@ import { DriverReportGeneralTable } from "$components/DriverReportGeneralTable";
 import { DriverReportMedicalTable } from "$components/DriverReportMedicalTable";
 import { OperationalLogTable } from "$components/OperationalLogTable";
 import { TRANSLATION } from "$locale/th";
-import { KeyboardArrowLeftRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
-	Link,
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
@@ -35,8 +33,8 @@ const TOC_ITEMS = [
 
 export const IndexPage: FC = () => {
 	const {
-		databaseIsMissingRoute,
-		databaseIsMissingVehicle,
+		databaseHasNoRoute,
+		databaseHasNoVehicle,
 		driver,
 		galleryDirPath,
 		galleryFileEntries,
@@ -48,13 +46,6 @@ export const IndexPage: FC = () => {
 
 	return (
 		<Stack spacing={1}>
-			<Typography
-				component={Link}
-				to="/drivers"
-			>
-				<KeyboardArrowLeftRounded />
-				{`รายชื่อคนขับรถ`}
-			</Typography>
 			<Typography
 				variant="h1"
 				id="info"
@@ -71,7 +62,12 @@ export const IndexPage: FC = () => {
 					editButton: {
 						onClick: () =>
 							submit(
-								{},
+								{
+									previousPath:
+										"/drivers/info/" + driver.id,
+									previousPathLabel:
+										"ข้อมูลคนขับรถ",
+								},
 								{
 									action: "./edit",
 								},
@@ -94,11 +90,17 @@ export const IndexPage: FC = () => {
 				slotProps={{
 					addButton: {
 						disabled:
-							databaseIsMissingVehicle ||
-							databaseIsMissingRoute,
+							databaseHasNoVehicle ||
+							databaseHasNoRoute,
 						onClick: () =>
 							submit(
-								{ driverId: driver.id },
+								{
+									driverId: driver.id,
+									previousPath:
+										"/drivers/info/" + driver.id,
+									previousPathLabel:
+										"ข้อมูลคนขับรถ",
+								},
 								{
 									action: "/operational-logs/new",
 								},
@@ -120,6 +122,10 @@ export const IndexPage: FC = () => {
 							submit(
 								{
 									driverId: driver.id,
+									previousPath:
+										"/drivers/info/" + driver.id,
+									previousPathLabel:
+										"ข้อมูลคนขับรถ",
 								},
 								{
 									action:
@@ -143,6 +149,10 @@ export const IndexPage: FC = () => {
 							submit(
 								{
 									driverId: driver.id,
+									previousPath:
+										"/drivers/info/" + driver.id,
+									previousPathLabel:
+										"ข้อมูลคนขับรถ",
 								},
 								{
 									action:

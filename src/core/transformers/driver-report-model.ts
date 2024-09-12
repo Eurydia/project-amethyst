@@ -4,8 +4,10 @@ import {
 	DriverReportModel,
 } from "$types/models/Driver";
 
-export const DriverReportModelImpl = {
-	toEntry: async (report: DriverReportModel) => {
+export const DRIVER_REPORT_MODEL_TRANSFORMER = {
+	toDriverReportEntry: async (
+		report: DriverReportModel,
+	) => {
 		const driver = await getDriver(
 			report.driver_id,
 		);

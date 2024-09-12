@@ -4,10 +4,20 @@ import { TableHeaderDefinition } from "$types/generics";
 import { DriverEntry } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
 import { FC, useState } from "react";
-import { Link } from "react-router-dom";
+import {
+	createSearchParams,
+	Link,
+	useSubmit,
+} from "react-router-dom";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 
-const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
+const CURR_ROUTE_SEARCH_PARAM =
+	createSearchParams({
+		previousPath: "/drivers",
+		previousPathLabel: `รายชื่อคนขับรถ`,
+	}).toString();
+
+const HEADER_DEFINITIONS: TableHeaderDefinition<DriverEntry>[] =
 	[
 		{
 			label: "คนขับรถ",
@@ -16,7 +26,10 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 			render: (item) => (
 				<Typography
 					component={Link}
-					to={"/drivers/info/" + item.id}
+					to={{
+						pathname: "/drivers/info/" + item.id,
+						search: CURR_ROUTE_SEARCH_PARAM,
+					}}
 				>
 					{item.name} {item.surname}
 				</Typography>
@@ -36,10 +49,12 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 							<Typography
 								key={"route" + index}
 								component={Link}
-								to={
-									"/pickup-routes/info/" +
-									route.id
-								}
+								to={{
+									pathname:
+										"/pickup-routes/info/" +
+										route.id,
+									search: CURR_ROUTE_SEARCH_PARAM,
+								}}
 							>
 								{route.name}
 							</Typography>
@@ -62,9 +77,13 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 								<Typography
 									key={"vehicle" + index}
 									component={Link}
-									to={
-										"/vehicles/info/" + vehicle.id
-									}
+									to={{
+										pathname:
+											"/vehicles/info/" +
+											vehicle.id,
+										search:
+											CURR_ROUTE_SEARCH_PARAM,
+									}}
 								>
 									{vehicle.licensePlate}
 								</Typography>
@@ -77,21 +96,13 @@ const HEADER_DEFINITION: TableHeaderDefinition<DriverEntry>[] =
 
 type DriverTableProps = {
 	entries: DriverEntry[];
-	slotProps: {
-		searchField: {
-			placeholder: string;
-		};
-		addButton: {
-			label: string;
-			onClick: () => void;
-		};
-	};
 };
 export const DriverTable: FC<DriverTableProps> = (
 	props,
 ) => {
-	const { entries, slotProps } = props;
+	const { entries } = props;
 	const [search, setSearch] = useState("");
+	const submit = useSubmit();
 	const filteredEntries = filterItems(
 		entries,
 		search,
@@ -108,19 +119,24 @@ export const DriverTable: FC<DriverTableProps> = (
 			<BaseSortableTableToolbar
 				slotProps={{
 					searchField: {
-						onChange: setSearch,
+						placeholder: `ค้นหาด้วยชื่อสกุลคนขับรถ, เลขทะเบียนรถ, หรือสายรถ`,
 						value: search,
-						placeholder:
-							slotProps.searchField.placeholder,
+						onChange: setSearch,
 					},
 					addButton: {
-						label: slotProps.addButton.label,
-						onClick: slotProps.addButton.onClick,
+						label: `เพิ่มคนขับรถ`,
+						onClick: () =>
+							submit(
+								{},
+								{
+									action: "./new",
+								},
+							),
 					},
 				}}
 			/>
 			<BaseSortableTable
-				headers={HEADER_DEFINITION}
+				headers={HEADER_DEFINITIONS}
 				defaultSortOrder="asc"
 				defaultSortByColumn={0}
 				entries={filteredEntries}

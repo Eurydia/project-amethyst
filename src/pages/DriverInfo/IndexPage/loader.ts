@@ -6,8 +6,8 @@ import {
 	getPickupRouteAll,
 	getVehicleAll,
 } from "$backend/database/get";
+import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report-model";
 import { TRANSLATION } from "$locale/th";
-import { DriverReportModelImpl } from "$types/impl/Driver";
 import { OperationalLogModelImpl } from "$types/impl/OperationalLog";
 import {
 	DriverModel,
@@ -71,7 +71,9 @@ export const indexPageLoader: LoaderFunction =
 			.filter(
 				({ driver_id }) => driver_id === driverId,
 			)
-			.map(DriverReportModelImpl.toEntry);
+			.map(
+				DRIVER_REPORT_MODEL_TRANSFORMER.toDriverReportEntry,
+			);
 
 		const generalReports = (
 			await getDriverReportGeneralAll()
@@ -79,7 +81,9 @@ export const indexPageLoader: LoaderFunction =
 			.filter(
 				({ driver_id }) => driver_id === driverId,
 			)
-			.map(DriverReportModelImpl.toEntry);
+			.map(
+				DRIVER_REPORT_MODEL_TRANSFORMER.toDriverReportEntry,
+			);
 
 		const medicalEntries = (
 			await Promise.all(medicalReports)

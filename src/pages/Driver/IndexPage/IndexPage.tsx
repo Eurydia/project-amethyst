@@ -5,14 +5,12 @@ import { FC } from "react";
 import {
 	Link,
 	useLoaderData,
-	useSubmit,
 } from "react-router-dom";
 import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
 	const { driverEntries } =
 		useLoaderData() as IndexPageLoaderData;
-	const submit = useSubmit();
 
 	return (
 		<Stack spacing={1}>
@@ -26,25 +24,7 @@ export const IndexPage: FC = () => {
 			<Typography variant="h1">
 				รายชื่อคนขับรถ
 			</Typography>
-			<DriverTable
-				entries={driverEntries}
-				slotProps={{
-					searchField: {
-						placeholder:
-							"ค้นหาด้วยชื่อสกุลคนขับรถ",
-					},
-					addButton: {
-						label: "เพิ่มคนขับรถ",
-						onClick: () =>
-							submit(
-								{},
-								{
-									action: "/drivers/new",
-								},
-							),
-					},
-				}}
-			/>
+			<DriverTable entries={driverEntries} />
 		</Stack>
 	);
 };

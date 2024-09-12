@@ -8,12 +8,13 @@ type BaseFormProps = {
 		submitButton: {
 			startIcon: ReactNode;
 			disabled: boolean;
-			label: string;
 			onClick: () => void;
+
+			label: string;
 		};
 		cancelButton: {
-			onClick: () => void;
 			label: string;
+			onClick: () => void;
 		};
 	};
 	children: {

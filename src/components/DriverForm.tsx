@@ -2,7 +2,7 @@ import { DriverFormData } from "$types/models/Driver";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
-import { DriverLicenseSelect } from "./DriverInputLicenseSelect";
+import { DriverInputLicenseTypeRadioGroup } from "./DriverInputLicenseTypeRadioGroup";
 
 type DriverFormProps = {
 	initFormData: DriverFormData;
@@ -86,7 +86,8 @@ export const DriverForm: FC<DriverFormProps> = (
 			value: (
 				<BaseInputTextField
 					placeholder={
-						initFormData.contact || `ไม่มี`
+						initFormData.contact ||
+						`ไม่มีรายละเอียด`
 					}
 					value={fieldContact}
 					onChange={setFieldContact}
@@ -96,7 +97,7 @@ export const DriverForm: FC<DriverFormProps> = (
 		{
 			label: "ประเภทใบขับขี่",
 			value: (
-				<DriverLicenseSelect
+				<DriverInputLicenseTypeRadioGroup
 					value={fieldLicenseType}
 					onChange={setFieldLicenseType}
 				/>

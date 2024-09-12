@@ -2,18 +2,16 @@ import {
 	DriverModel,
 	DriverReportFormData,
 } from "$types/models/Driver";
-import {
-	DateField,
-	TimeField,
-} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
+import { BaseInputDateField } from "./BaseInputDateField";
 import { BaseInputTextField } from "./BaseInputTextField";
+import { BaseInputTimeField } from "./BaseInputTimeField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { DriverInputDriverSelect } from "./DriverInputDriverSelect";
 
-type DriverReportFormProps = {
+type DriverReportGeneralFormProps = {
 	initFormData: DriverReportFormData;
 
 	slotProps: {
@@ -25,20 +23,22 @@ type DriverReportFormProps = {
 			) => void;
 		};
 		cancelButton: {
-			onClick: () => void;
 			label: string;
+			onClick: () => void;
 		};
 		driverSelect: {
+			fieldLabel: string;
 			options: DriverModel[];
 			disabled?: boolean;
 		};
 		topicComboBox: {
+			label: string;
 			options: string[];
 		};
 	};
 };
-export const DriverReportForm: FC<
-	DriverReportFormProps
+export const DriverReportGeneralForm: FC<
+	DriverReportGeneralFormProps
 > = (props) => {
 	const { initFormData, slotProps } = props;
 
@@ -106,34 +106,18 @@ export const DriverReportForm: FC<
 		{
 			label: "เวลา",
 			value: (
-				<TimeField
-					fullWidth
-					formatDensity="spacious"
+				<BaseInputTimeField
 					value={fieldTime}
-					onChange={(value) => {
-						if (value === null) {
-							return;
-						}
-						setFieldTime(value);
-					}}
-					format="HH:mm น."
+					onChange={setFieldTime}
 				/>
 			),
 		},
 		{
 			label: "วัน/เดือน/ปี",
 			value: (
-				<DateField
-					fullWidth
-					formatDensity="spacious"
+				<BaseInputDateField
 					value={fieldDate}
-					onChange={(value) => {
-						if (value === null) {
-							return;
-						}
-						setFieldDate(value);
-					}}
-					format="DD/MM/YYYY"
+					onChange={setFieldDate}
 				/>
 			),
 		},

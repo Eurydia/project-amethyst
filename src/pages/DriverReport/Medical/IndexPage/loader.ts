@@ -2,7 +2,7 @@ import {
 	getDriverAll,
 	getDriverReportMedicalAll,
 } from "$backend/database/get";
-import { DriverReportModelImpl } from "$types/impl/Driver";
+import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report-model";
 import { DriverReportEntry } from "$types/models/Driver";
 import { LoaderFunction } from "react-router-dom";
 
@@ -14,7 +14,9 @@ export const indexPageLoader: LoaderFunction =
 	async () => {
 		const reports = (
 			await getDriverReportMedicalAll()
-		).map(DriverReportModelImpl.toEntry);
+		).map(
+			DRIVER_REPORT_MODEL_TRANSFORMER.toDriverReportEntry,
+		);
 
 		const reportEntries = (
 			await Promise.all(reports)

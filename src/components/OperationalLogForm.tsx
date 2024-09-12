@@ -7,7 +7,7 @@ import { DateField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
-import { DriverInputSelect } from "./DriverInputSelect";
+import { DriverInputDriverSelect } from "./DriverInputDriverSelect";
 import { PickupRouteInputSelect } from "./PickupRouteInputSelect";
 import { VehicleInputSelect } from "./VehicleInputSelect";
 
@@ -131,8 +131,8 @@ export const OperationalLogForm: FC<
 		{
 			label: "คนขับรถ",
 			value: (
-				<DriverInputSelect
-					isDisabled={
+				<DriverInputDriverSelect
+					disabled={
 						slotProps.driverSelect.disabled
 					}
 					options={slotProps.driverSelect.options}

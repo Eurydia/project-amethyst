@@ -6,12 +6,12 @@ import {
 } from "@mui/material";
 import { FC, useEffect } from "react";
 
-type LicenseSelectProps = {
+type DriverInputLicenseTypeRadioGroupProps = {
 	value: string;
 	onChange: (value: string) => void;
 };
-export const DriverLicenseSelect: FC<
-	LicenseSelectProps
+export const DriverInputLicenseTypeRadioGroup: FC<
+	DriverInputLicenseTypeRadioGroupProps
 > = (props) => {
 	const { value, onChange } = props;
 

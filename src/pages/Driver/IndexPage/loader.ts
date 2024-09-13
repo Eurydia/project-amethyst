@@ -1,6 +1,6 @@
 import { getDriverAll } from "$backend/database/get";
 import { DRIVER_MODEL_TRANSFORMER } from "$core/transformers/driver-model";
-import { DriverEntry } from "$types/models/Driver";
+import { DriverEntry } from "$types/models/driver";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {

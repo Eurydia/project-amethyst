@@ -1,5 +1,5 @@
 import { filterItems } from "$core/filter";
-import { DriverModel } from "$types/models/Driver";
+import { DriverModel } from "$types/models/driver";
 import { LockRounded } from "@mui/icons-material";
 import {
 	Autocomplete,

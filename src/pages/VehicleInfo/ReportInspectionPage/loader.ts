@@ -6,7 +6,7 @@ import { TRANSLATION } from "$locale/th";
 import {
 	VehicleModel,
 	VehicleReportInspectionFormData,
-} from "$types/models/Vehicle";
+} from "$types/models/vehicle";
 import dayjs from "dayjs";
 import {
 	json,

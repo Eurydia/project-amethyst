@@ -1,5 +1,5 @@
 import { filterItems } from "$core/filter";
-import { PickupRouteModel } from "$types/models/PickupRoute";
+import { PickupRouteModel } from "$types/models/pickup-route";
 import { LockRounded } from "@mui/icons-material";
 import {
 	Autocomplete,

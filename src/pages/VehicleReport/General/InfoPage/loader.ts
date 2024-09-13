@@ -6,7 +6,7 @@ import { TRANSLATION } from "$locale/th";
 import {
 	VehicleModel,
 	VehicleReportGeneralModel,
-} from "$types/models/Vehicle";
+} from "$types/models/vehicle";
 import {
 	json,
 	LoaderFunction,

@@ -1,6 +1,6 @@
 import { putPickupRoute } from "$backend/database/put";
 import { PickupRouteForm } from "$components/PickupRouteForm";
-import { PickupRouteFormData } from "$types/models/PickupRoute";
+import { PickupRouteFormData } from "$types/models/pickup-route";
 import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";

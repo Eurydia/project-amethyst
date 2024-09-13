@@ -6,11 +6,11 @@ import {
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log-model";
 import { PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-report-general-model";
 import { TRANSLATION } from "$locale/th";
-import { OperationalLogEntry } from "$types/models/OperatonalLog";
+import { OperationalLogEntry } from "$types/models/operational-log";
 import {
 	PickupRouteModel,
 	PickupRouteReportEntry,
-} from "$types/models/PickupRoute";
+} from "$types/models/pickup-route";
 import {
 	json,
 	LoaderFunction,

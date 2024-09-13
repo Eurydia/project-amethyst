@@ -1,6 +1,6 @@
 import { getAttendanceLogToday } from "$backend/database/get";
 import { ATTENDANCE_LOG_MODEL_TRANSFORMER } from "$core/transformers/attendance-log-model";
-import { AttendanceLogEntry } from "$types/models/AttendanceLog";
+import { AttendanceLogEntry } from "$types/models/attendance-log";
 import { LoaderFunction } from "react-router-dom";
 
 export type HomePageLoaderData = {

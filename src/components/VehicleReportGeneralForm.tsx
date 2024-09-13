@@ -1,7 +1,7 @@
 import {
 	VehicleModel,
 	VehicleReportGeneralFormData,
-} from "$types/models/Vehicle";
+} from "$types/models/vehicle";
 import {
 	DateField,
 	TimeField,

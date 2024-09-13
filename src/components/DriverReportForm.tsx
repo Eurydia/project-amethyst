@@ -1,7 +1,7 @@
 import {
 	DriverModel,
 	DriverReportFormData,
-} from "$types/models/Driver";
+} from "$types/models/driver";
 import {
 	DateField,
 	TimeField,

@@ -1,5 +1,5 @@
 import { InfoGroupItemDefinition } from "$types/generics";
-import { DriverModel } from "$types/models/Driver";
+import { DriverModel } from "$types/models/driver";
 import { Typography } from "@mui/material";
 import { FileEntry } from "@tauri-apps/api/fs";
 import { FC } from "react";

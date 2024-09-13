@@ -1,4 +1,4 @@
-import { PickupRouteFormData } from "$types/models/PickupRoute";
+import { PickupRouteFormData } from "$types/models/pickup-route";
 import { TimeField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";

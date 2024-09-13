@@ -1,6 +1,6 @@
 import { getVehicleReportGeneralAll } from "$backend/database/get";
 import { VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-general-model";
-import { VehicleReportGeneralEntry } from "$types/models/Vehicle";
+import { VehicleReportGeneralEntry } from "$types/models/vehicle";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {

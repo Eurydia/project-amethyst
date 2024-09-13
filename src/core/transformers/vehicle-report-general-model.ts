@@ -2,7 +2,7 @@ import { getVehicle } from "$backend/database/get";
 import {
 	VehicleReportGeneralEntry,
 	VehicleReportGeneralModel,
-} from "$types/models/Vehicle";
+} from "$types/models/vehicle";
 
 export const VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER =
 	{

@@ -1,4 +1,4 @@
-import { VehicleModel } from "$types/models/Vehicle";
+import { VehicleModel } from "$types/models/vehicle";
 import { Typography } from "@mui/material";
 import { FileEntry } from "@tauri-apps/api/fs";
 import { FC } from "react";

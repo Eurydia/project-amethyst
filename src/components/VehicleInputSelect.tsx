@@ -1,5 +1,5 @@
 import { filterItems } from "$core/filter";
-import { VehicleModel } from "$types/models/Vehicle";
+import { VehicleModel } from "$types/models/vehicle";
 import { LockRounded } from "@mui/icons-material";
 import {
 	Autocomplete,

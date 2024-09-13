@@ -2,7 +2,7 @@ import { getPickupRoute } from "$backend/database/get";
 import {
 	PickupRouteReportEntry,
 	PickupRouteReportModel,
-} from "$types/models/PickupRoute";
+} from "$types/models/pickup-route";
 
 export const PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER =
 	{

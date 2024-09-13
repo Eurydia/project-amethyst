@@ -1,6 +1,6 @@
 import { putVehicleReportInspection } from "$backend/database/put";
 import { VehicleReportInspectionForm } from "$components/VehicleReportInspectionForm";
-import { VehicleReportInspectionFormData } from "$types/models/Vehicle";
+import { VehicleReportInspectionFormData } from "$types/models/vehicle";
 import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import "dayjs/locale/th";

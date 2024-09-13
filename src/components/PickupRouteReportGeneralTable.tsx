@@ -3,7 +3,7 @@ import {
 	MultiSelectOption,
 	TableHeaderDefinition,
 } from "$types/generics";
-import { PickupRouteReportEntry } from "$types/models/PickupRoute";
+import { PickupRouteReportEntry } from "$types/models/pickup-route";
 import { Typography } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";

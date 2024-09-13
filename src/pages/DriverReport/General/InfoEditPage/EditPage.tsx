@@ -1,6 +1,6 @@
 import { putDriverReportGeneral } from "$backend/database/put";
 import { DriverReportForm } from "$components/DriverReportForm";
-import { DriverReportFormData } from "$types/models/Driver";
+import { DriverReportFormData } from "$types/models/driver";
 import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import "dayjs/locale/th";

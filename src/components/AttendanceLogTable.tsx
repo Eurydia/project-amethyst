@@ -1,7 +1,7 @@
 import { putAttendanceLog } from "$backend/database/put";
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
-import { AttendanceLogEntry } from "$types/models/AttendanceLog";
+import { AttendanceLogEntry } from "$types/models/attendance-log";
 import { SearchRounded } from "@mui/icons-material";
 import {
 	InputAdornment,

@@ -1,4 +1,3 @@
-//#region Driver
 export type DriverModel = {
 	id: number;
 
@@ -7,6 +6,7 @@ export type DriverModel = {
 	contact: string;
 	license_type: string;
 };
+
 export type DriverEntry = {
 	id: number;
 	name: string;
@@ -28,33 +28,3 @@ export type DriverFormData = {
 	contact: string;
 	licenseType: string;
 };
-//#endregion
-
-//#region Generic Report
-export type DriverReportModel = {
-	id: number;
-	driver_id: number;
-
-	datetime: string;
-	title: string;
-	content: string;
-	topics: string;
-};
-export type DriverReportEntry = {
-	id: number;
-	datetime: string;
-	title: string;
-	topics: string[];
-
-	driverId: number;
-	driverName: string;
-	driverSurname: string;
-};
-export type DriverReportFormData = {
-	datetime: string;
-	title: string;
-	content: string;
-	topics: string[];
-	driver: DriverModel;
-};
-//#endregion

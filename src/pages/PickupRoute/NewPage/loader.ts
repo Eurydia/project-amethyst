@@ -1,4 +1,4 @@
-import { PickupRouteFormData } from "$types/models/PickupRoute";
+import { PickupRouteFormData } from "$types/models/pickup-route";
 import dayjs from "dayjs";
 import { LoaderFunction } from "react-router-dom";
 

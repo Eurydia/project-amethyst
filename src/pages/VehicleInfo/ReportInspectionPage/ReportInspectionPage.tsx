@@ -1,6 +1,6 @@
 import { postVehicleReportInspection } from "$backend/database/post";
 import { VehicleReportInspectionForm } from "$components/VehicleReportInspectionForm";
-import { VehicleReportInspectionFormData } from "$types/models/Vehicle";
+import { VehicleReportInspectionFormData } from "$types/models/vehicle";
 import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";

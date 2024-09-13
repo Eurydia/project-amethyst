@@ -1,6 +1,6 @@
-import { DriverModel } from "./Driver";
-import { PickupRouteModel } from "./PickupRoute";
-import { VehicleModel } from "./Vehicle";
+import { DriverModel } from "./driver";
+import { PickupRouteModel } from "./pickup-route";
+import { VehicleModel } from "./vehicle";
 
 export type AttendanceLogModel = {
 	id: number;

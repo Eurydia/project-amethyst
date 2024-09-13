@@ -7,7 +7,7 @@ import { TRANSLATION } from "$locale/th";
 import {
 	DriverModel,
 	DriverReportFormData,
-} from "$types/models/Driver";
+} from "$types/models/driver";
 import {
 	json,
 	LoaderFunction,

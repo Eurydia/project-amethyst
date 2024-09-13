@@ -1,7 +1,7 @@
 import {
 	DriverModel,
 	DriverReportFormData,
-} from "$types/models/Driver";
+} from "$types/models/driver";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";

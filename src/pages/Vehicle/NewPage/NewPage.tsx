@@ -1,6 +1,6 @@
 import { postVehicle } from "$backend/database/post";
 import { VehicleForm } from "$components/VehicleForm";
-import { VehicleFormData } from "$types/models/Vehicle";
+import { VehicleFormData } from "$types/models/vehicle";
 import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";

@@ -1,6 +1,6 @@
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
-import { PickupRouteEntry } from "$types/models/PickupRoute";
+import { PickupRouteEntry } from "$types/models/pickup-route";
 import { Stack, Typography } from "@mui/material";
 import { FC, useState } from "react";
 import {

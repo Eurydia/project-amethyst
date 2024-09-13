@@ -3,7 +3,7 @@ import {
 	getDriverReportMedicalAll,
 } from "$backend/database/get";
 import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report-model";
-import { DriverReportEntry } from "$types/models/Driver";
+import { DriverReportEntry } from "$types/models/driver";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {

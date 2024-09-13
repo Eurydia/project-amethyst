@@ -1,6 +1,6 @@
 import { postDriverReportGeneral } from "$backend/database/post";
 import { DriverReportForm } from "$components/DriverReportForm";
-import { DriverReportFormData } from "$types/models/Driver";
+import { DriverReportFormData } from "$types/models/driver";
 import {
 	AddRounded,
 	KeyboardArrowLeftRounded,

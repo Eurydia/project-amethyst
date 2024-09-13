@@ -6,7 +6,7 @@ import {
 import {
 	OperationalLogEntry,
 	OperationalLogModel,
-} from "$types/models/OperatonalLog";
+} from "$types/models/operational-log";
 
 export const OPERATIONAL_LOG_MODEL_TRANSFORMER = {
 	toOperationalLogEntry: async (

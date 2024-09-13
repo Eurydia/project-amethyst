@@ -6,7 +6,7 @@ import {
 import {
 	VehicleEntry,
 	VehicleModel,
-} from "$types/models/Vehicle";
+} from "$types/models/vehicle";
 
 export const VEHICLE_MODEL_TRANSFORMER = {
 	toVehicleEntry: async (

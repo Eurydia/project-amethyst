@@ -12,8 +12,8 @@ import { TRANSLATION } from "$locale/th";
 import {
 	DriverModel,
 	DriverReportEntry,
-} from "$types/models/Driver";
-import { OperationalLogEntry } from "$types/models/OperatonalLog";
+} from "$types/models/driver";
+import { OperationalLogEntry } from "$types/models/operational-log";
 import { fs } from "@tauri-apps/api";
 import {
 	FileEntry,

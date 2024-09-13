@@ -1,6 +1,6 @@
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
-import { VehicleEntry } from "$types/models/Vehicle";
+import { VehicleEntry } from "$types/models/vehicle";
 import { Stack, Typography } from "@mui/material";
 import { FC, useState } from "react";
 import {

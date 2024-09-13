@@ -1,4 +1,4 @@
-import { DriverFormData } from "$types/models/Driver";
+import { DriverFormData } from "$types/models/driver";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";

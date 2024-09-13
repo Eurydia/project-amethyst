@@ -1,6 +1,6 @@
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
-import { DriverReportEntry } from "$types/models/Driver";
+import { DriverReportEntry } from "$types/models/driver";
 import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";

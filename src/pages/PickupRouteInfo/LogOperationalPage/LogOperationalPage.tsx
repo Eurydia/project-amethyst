@@ -1,6 +1,6 @@
 import { postOperationalLog } from "$backend/database/post";
 import { OperationalLogForm } from "$components/OperationalLogForm";
-import { OperationalLogFormData } from "$types/models/OperatonalLog";
+import { OperationalLogFormData } from "$types/models/operational-log";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {

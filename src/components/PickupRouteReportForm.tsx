@@ -1,7 +1,7 @@
 import {
 	PickupRouteModel,
 	PickupRouteReportFormData,
-} from "$types/models/PickupRoute";
+} from "$types/models/pickup-route";
 import {
 	DateField,
 	TimeField,

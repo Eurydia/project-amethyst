@@ -1,6 +1,6 @@
 import { getVehicleAll } from "$backend/database/get";
 import { VEHICLE_MODEL_TRANSFORMER } from "$core/transformers/vehicle-model";
-import { VehicleEntry } from "$types/models/Vehicle";
+import { VehicleEntry } from "$types/models/vehicle";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {

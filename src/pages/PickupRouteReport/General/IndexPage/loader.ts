@@ -1,6 +1,6 @@
 import { getPickupRouteReportGeneralAll } from "$backend/database/get";
 import { PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-report-general-model";
-import { PickupRouteReportEntry } from "$types/models/PickupRoute";
+import { PickupRouteReportEntry } from "$types/models/pickup-route";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {

@@ -3,7 +3,7 @@ import {
 	getVehicleAll,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { VehicleFormData } from "$types/models/Vehicle";
+import { VehicleFormData } from "$types/models/vehicle";
 import {
 	json,
 	LoaderFunction,

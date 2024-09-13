@@ -3,7 +3,7 @@ import {
 	MultiSelectOption,
 	TableHeaderDefinition,
 } from "$types/generics";
-import { VehicleReportInspectionEntry } from "$types/models/Vehicle";
+import { VehicleReportInspectionEntry } from "$types/models/vehicle";
 import { Typography } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";

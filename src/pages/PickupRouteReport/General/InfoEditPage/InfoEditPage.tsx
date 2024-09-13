@@ -1,6 +1,6 @@
 import { putPickupRouteReportGeneral } from "$backend/database/put";
 import { PickupRouteReportForm } from "$components/PickupRouteReportForm";
-import { PickupRouteReportFormData } from "$types/models/PickupRoute";
+import { PickupRouteReportFormData } from "$types/models/pickup-route";
 import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import "dayjs/locale/th";

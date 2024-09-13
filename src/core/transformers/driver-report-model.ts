@@ -2,7 +2,7 @@ import { getDriver } from "$backend/database/get";
 import {
 	DriverReportEntry,
 	DriverReportModel,
-} from "$types/models/Driver";
+} from "$types/models/driver";
 
 export const DRIVER_REPORT_MODEL_TRANSFORMER = {
 	toDriverReportEntry: async (

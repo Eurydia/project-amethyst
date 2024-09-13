@@ -1,7 +1,7 @@
 import {
 	VehicleModel,
 	VehicleReportInspectionFormData,
-} from "$types/models/Vehicle";
+} from "$types/models/vehicle";
 import {
 	TextField,
 	TextFieldProps,

@@ -1,6 +1,6 @@
 import { postPickupRouteReportGeneral } from "$backend/database/post";
 import { PickupRouteReportForm } from "$components/PickupRouteReportForm";
-import { PickupRouteReportFormData } from "$types/models/PickupRoute";
+import { PickupRouteReportFormData } from "$types/models/pickup-route";
 import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";

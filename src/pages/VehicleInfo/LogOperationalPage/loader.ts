@@ -4,10 +4,10 @@ import {
 	getVehicle,
 } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { DriverModel } from "$types/models/Driver";
-import { OperationalLogFormData } from "$types/models/OperatonalLog";
-import { PickupRouteModel } from "$types/models/PickupRoute";
-import { VehicleModel } from "$types/models/Vehicle";
+import { DriverModel } from "$types/models/driver";
+import { OperationalLogFormData } from "$types/models/operational-log";
+import { PickupRouteModel } from "$types/models/pickup-route";
+import { VehicleModel } from "$types/models/vehicle";
 import dayjs from "dayjs";
 import {
 	json,

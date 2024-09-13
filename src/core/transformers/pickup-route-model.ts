@@ -6,7 +6,7 @@ import {
 import {
 	PickupRouteEntry,
 	PickupRouteModel,
-} from "$types/models/PickupRoute";
+} from "$types/models/pickup-route";
 
 export const PICKUP_ROUTE_MODEL_TRANSFORMER = {
 	toPickupRouteEntry: async (

@@ -1,6 +1,6 @@
 import { getPickupRoute } from "$backend/database/get";
 import { TRANSLATION } from "$locale/th";
-import { PickupRouteFormData } from "$types/models/PickupRoute";
+import { PickupRouteFormData } from "$types/models/pickup-route";
 import {
 	json,
 	LoaderFunction,

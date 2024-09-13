@@ -3,7 +3,7 @@ import { TRANSLATION } from "$locale/th";
 import {
 	DriverFormData,
 	DriverModel,
-} from "$types/models/Driver";
+} from "$types/models/driver";
 import {
 	json,
 	LoaderFunction,

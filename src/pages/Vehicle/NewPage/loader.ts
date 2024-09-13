@@ -1,5 +1,5 @@
 import { getVehicleAll } from "$backend/database/get";
-import { VehicleFormData } from "$types/models/Vehicle";
+import { VehicleFormData } from "$types/models/vehicle";
 import { LoaderFunction } from "react-router-dom";
 
 export type NewPageLoaderData = {

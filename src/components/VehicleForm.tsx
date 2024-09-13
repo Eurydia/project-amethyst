@@ -1,4 +1,4 @@
-import { VehicleFormData } from "$types/models/Vehicle";
+import { VehicleFormData } from "$types/models/vehicle";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";

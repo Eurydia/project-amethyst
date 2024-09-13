@@ -5,7 +5,7 @@ import {
 import {
 	VehicleReportInspectionEntry,
 	VehicleReportInspectionModel,
-} from "$types/models/Vehicle";
+} from "$types/models/vehicle";
 
 export const VEHICLE_REPORT_INSPECTION_MODEL_TRANSFORMER =
 	{

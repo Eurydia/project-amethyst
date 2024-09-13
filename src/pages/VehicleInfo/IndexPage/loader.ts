@@ -8,12 +8,12 @@ import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operationa
 import { VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-general-model";
 import { VEHICLE_REPORT_INSPECTION_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-inspection-model";
 import { TRANSLATION } from "$locale/th";
-import { OperationalLogEntry } from "$types/models/OperatonalLog";
+import { OperationalLogEntry } from "$types/models/operational-log";
 import {
 	VehicleModel,
 	VehicleReportGeneralEntry,
 	VehicleReportInspectionEntry,
-} from "$types/models/Vehicle";
+} from "$types/models/vehicle";
 import { fs } from "@tauri-apps/api";
 import {
 	FileEntry,

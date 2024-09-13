@@ -1,4 +1,4 @@
-import { DriverFormData } from "$types/models/Driver";
+import { DriverFormData } from "$types/models/driver";
 import { LoaderFunction } from "react-router-dom";
 
 export type NewPageLoaderData = {

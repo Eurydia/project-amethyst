@@ -1,6 +1,6 @@
 import { putDriver } from "$backend/database/put";
 import { DriverForm } from "$components/DriverForm";
-import { DriverFormData } from "$types/models/Driver";
+import { DriverFormData } from "$types/models/driver";
 import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";

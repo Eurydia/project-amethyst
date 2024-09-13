@@ -6,7 +6,7 @@ import {
 import {
 	DriverEntry,
 	DriverModel,
-} from "$types/models/Driver";
+} from "$types/models/driver";
 
 export const DRIVER_MODEL_TRANSFORMER = {
 	toDriverEntry: async (driver: DriverModel) => {

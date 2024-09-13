@@ -1,7 +1,7 @@
 import {
 	PickupRouteModel,
 	PickupRouteReportModel,
-} from "$types/models/PickupRoute";
+} from "$types/models/pickup-route";
 import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC } from "react";

@@ -1,18 +1,18 @@
-import { AttendanceLogModel } from "$types/models/AttendanceLog";
+import { AttendanceLogModel } from "$types/models/attendance-log";
 import {
 	DriverModel,
 	DriverReportModel,
-} from "$types/models/Driver";
-import { OperationalLogModel } from "$types/models/OperatonalLog";
+} from "$types/models/driver";
+import { OperationalLogModel } from "$types/models/operational-log";
 import {
 	PickupRouteModel,
 	PickupRouteReportModel,
-} from "$types/models/PickupRoute";
+} from "$types/models/pickup-route";
 import {
 	VehicleModel,
 	VehicleReportGeneralModel,
 	VehicleReportInspectionModel,
-} from "$types/models/Vehicle";
+} from "$types/models/vehicle";
 import { invoke } from "@tauri-apps/api/tauri";
 
 //#region Topics

@@ -1,7 +1,7 @@
 import {
 	VehicleModel,
 	VehicleReportInspectionModel,
-} from "$types/models/Vehicle";
+} from "$types/models/vehicle";
 import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC } from "react";

@@ -1,6 +1,6 @@
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
-import { OperationalLogEntry } from "$types/models/OperatonalLog";
+import { OperationalLogEntry } from "$types/models/operational-log";
 import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";

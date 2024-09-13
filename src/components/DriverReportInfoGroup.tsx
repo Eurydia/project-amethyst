@@ -2,7 +2,7 @@ import { prepareQueryParam } from "$core/query-param";
 import {
 	DriverModel,
 	DriverReportModel,
-} from "$types/models/Driver";
+} from "$types/models/driver";
 import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC } from "react";

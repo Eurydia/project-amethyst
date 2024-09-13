@@ -1,6 +1,6 @@
 import { getVehicleReportInspectionAll } from "$backend/database/get";
 import { VEHICLE_REPORT_INSPECTION_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-inspection-model";
-import { VehicleReportInspectionEntry } from "$types/models/Vehicle";
+import { VehicleReportInspectionEntry } from "$types/models/vehicle";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {

@@ -6,7 +6,7 @@ import {
 import {
 	AttendanceLogEntry,
 	AttendanceLogModel,
-} from "$types/models/AttendanceLog";
+} from "$types/models/attendance-log";
 
 export const ATTENDANCE_LOG_MODEL_TRANSFORMER = {
 	toAttendanceLogEntry: async (

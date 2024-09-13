@@ -1,6 +1,6 @@
 import { putVehicleReportGeneral } from "$backend/database/put";
 import { VehicleReportGeneralForm } from "$components/VehicleReportGeneralForm";
-import { VehicleReportGeneralFormData } from "$types/models/Vehicle";
+import { VehicleReportGeneralFormData } from "$types/models/vehicle";
 import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";

@@ -6,7 +6,7 @@ import { TRANSLATION } from "$locale/th";
 import {
 	PickupRouteModel,
 	PickupRouteReportModel,
-} from "$types/models/PickupRoute";
+} from "$types/models/pickup-route";
 import {
 	json,
 	LoaderFunction,

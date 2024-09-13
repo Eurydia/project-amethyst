@@ -5,7 +5,7 @@ import {
 	getVehicleAll,
 } from "$backend/database/get";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log-model";
-import { OperationalLogEntry } from "$types/models/OperatonalLog";
+import { OperationalLogEntry } from "$types/models/operational-log";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {

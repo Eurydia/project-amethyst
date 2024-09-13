@@ -86,8 +86,7 @@ export const DriverForm: FC<DriverFormProps> = (
 			value: (
 				<BaseInputTextField
 					placeholder={
-						initFormData.contact ||
-						`ไม่มีรายละเอียด`
+						initFormData.contact || `ไม่มี`
 					}
 					value={fieldContact}
 					onChange={setFieldContact}

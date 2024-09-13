@@ -1,14 +1,10 @@
 import { postDriverReportGeneral } from "$backend/database/post";
 import { DriverReportForm } from "$components/DriverReportForm";
 import { DriverReportFormData } from "$types/models/Driver";
-import {
-	AddRounded,
-	KeyboardArrowLeftRounded,
-} from "@mui/icons-material";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
-import { FC } from "react";
+import { FC, Fragment } from "react";
 import {
-	Link,
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
@@ -24,20 +20,18 @@ export const NewPage: FC = () => {
 	} = useLoaderData() as NewPageLoaderData;
 
 	const submit = useSubmit();
-
 	const hasSelectedDriver =
 		selectedDriver !== null;
 
-	const previousPage = hasSelectedDriver
+	const action = hasSelectedDriver
 		? "/drivers/info/" + selectedDriver.id
 		: "/drivers/report/general";
-
 	const handleCancel = () => {
 		submit(
 			{},
 			{
 				replace: true,
-				action: previousPage,
+				action,
 			},
 		);
 	};
@@ -63,29 +57,24 @@ export const NewPage: FC = () => {
 				handleCancel();
 			});
 	};
-	const secondaryHeading = hasSelectedDriver ? (
-		<Typography variant="h2">
-			{`"${selectedDriver.name} ${selectedDriver.surname}"`}
+	const heading = hasSelectedDriver ? (
+		<Fragment>
+			<Typography variant="h1">
+				{`${selectedDriver.name} ${selectedDriver.surname}`}
+			</Typography>
+			<Typography variant="h2">
+				แบบฟอร์มบันทึกเรื่องร้องเรียน
+			</Typography>
+		</Fragment>
+	) : (
+		<Typography variant="h1">
+			แบบฟอร์มบันทึกเรื่องร้องเรียน
 		</Typography>
-	) : null;
-
-	const backButtonLabel = hasSelectedDriver
-		? "ข้อมูลคนขับรถ"
-		: "ตารางบันทึกเรื่องร้องเรียนคนขับรถ";
+	);
 
 	return (
 		<Stack spacing={1}>
-			<Typography
-				component={Link}
-				to={previousPage}
-			>
-				<KeyboardArrowLeftRounded />
-				{backButtonLabel}
-			</Typography>
-			<Typography variant="h1">
-				{`ลงบันทึกเรื่องร้องเรียนคนขับรถ`}
-			</Typography>
-			{secondaryHeading}
+			{heading}
 			<DriverReportForm
 				initFormData={initFormData}
 				slotProps={{

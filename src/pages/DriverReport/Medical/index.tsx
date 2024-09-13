@@ -1,3 +1,4 @@
+import { PageView } from "$views/PageView";
 import { RouteObject } from "react-router-dom";
 import {
 	IndexPage,
@@ -19,6 +20,7 @@ import {
 export const DRIVER_REPORT_MEDICAL_ROUTES: RouteObject =
 	{
 		path: "drivers/report/medical",
+		element: <PageView />,
 		children: [
 			{
 				index: true,

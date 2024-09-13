@@ -19,7 +19,6 @@ export const extractBacklinkRouteData = (
 			previousPathLabel: "หน้าแรก",
 		};
 	}
-	console.log(paramPath);
 
 	const previousPath =
 		decodeURIComponent(paramPath);

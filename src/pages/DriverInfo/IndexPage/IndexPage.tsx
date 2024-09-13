@@ -62,12 +62,7 @@ export const IndexPage: FC = () => {
 					editButton: {
 						onClick: () =>
 							submit(
-								{
-									previousPath:
-										"/drivers/info/" + driver.id,
-									previousPathLabel:
-										"ข้อมูลคนขับรถ",
-								},
+								{},
 								{
 									action: "./edit",
 								},
@@ -96,10 +91,6 @@ export const IndexPage: FC = () => {
 							submit(
 								{
 									driverId: driver.id,
-									previousPath:
-										"/drivers/info/" + driver.id,
-									previousPathLabel:
-										"ข้อมูลคนขับรถ",
 								},
 								{
 									action: "/operational-logs/new",
@@ -115,6 +106,7 @@ export const IndexPage: FC = () => {
 				{TRANSLATION.driverGeneralReportTable}
 			</Typography>
 			<DriverReportGeneralTable
+				hideDriverColumn
 				entries={generalEntries}
 				slotProps={{
 					addButton: {
@@ -122,10 +114,6 @@ export const IndexPage: FC = () => {
 							submit(
 								{
 									driverId: driver.id,
-									previousPath:
-										"/drivers/info/" + driver.id,
-									previousPathLabel:
-										"ข้อมูลคนขับรถ",
 								},
 								{
 									action:
@@ -149,10 +137,6 @@ export const IndexPage: FC = () => {
 							submit(
 								{
 									driverId: driver.id,
-									previousPath:
-										"/drivers/info/" + driver.id,
-									previousPathLabel:
-										"ข้อมูลคนขับรถ",
 								},
 								{
 									action:

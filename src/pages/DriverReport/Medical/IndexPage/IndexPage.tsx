@@ -24,7 +24,15 @@ export const IndexPage: FC = () => {
 					addButton: {
 						disabled: preventAddReport,
 						onClick: () =>
-							submit({}, { action: "./new" }),
+							submit(
+								{
+									previousPath:
+										"/drivers/report/medical",
+									previousLabel:
+										"ตารางบันทึกผลการตรวจสารเสพติด",
+								},
+								{ action: "./new" },
+							),
 					},
 				}}
 			/>

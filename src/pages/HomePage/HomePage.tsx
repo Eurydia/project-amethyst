@@ -1,5 +1,5 @@
 import { AttendanceLogTable } from "$components/AttendanceLogTable";
-import { prepareQueryParam } from "$core/query-param";
+import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { KeyboardArrowRightRounded } from "@mui/icons-material";
 import {
 	List,
@@ -9,10 +9,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { FC } from "react";
-import {
-	Link,
-	useLoaderData,
-} from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import { HomePageLoaderData } from "./loader";
 
 const ROUTES = [
@@ -63,19 +60,13 @@ export const HomePage: FC = () => {
 						disablePadding
 					>
 						<ListItemText disableTypography>
-							<Typography
-								component={Link}
-								to={{
-									pathname: route.path,
-									search: prepareQueryParam(
-										"/",
-										"หน้าแรก",
-									),
-								}}
+							<BaseTypographyLink
+								toPage={route.path}
+								currentPageName="หน้าแรก"
 							>
 								<KeyboardArrowRightRounded />
 								{route.label}
-							</Typography>
+							</BaseTypographyLink>
 						</ListItemText>
 					</ListItem>
 				))}

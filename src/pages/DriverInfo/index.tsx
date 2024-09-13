@@ -21,20 +21,5 @@ export const DRIVER_INFO_ROUTES: RouteObject = {
 			element: <EditPage />,
 			loader: editPageLoader,
 		},
-		// {
-		// 	path: "report/general",
-		// 	element: <ReportGeneralPage />,
-		// 	loader: reportGeneralPageLoader,
-		// },
-		// {
-		// 	path: "report/medical",
-		// 	element: <ReportMedicalPage />,
-		// 	loader: reportMedicalPageLoader,
-		// },
-		// {
-		// 	path: "log/operational",
-		// 	element: <LogOperationalPage />,
-		// 	loader: logOperationalPageLoader,
-		// },
 	],
 };

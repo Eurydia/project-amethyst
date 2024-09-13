@@ -25,6 +25,7 @@ export const InfoEditPage: FC = () => {
 		submit(
 			{},
 			{
+				replace: true,
 				action:
 					"/drivers/report/medical/info/" +
 					reportId,
@@ -64,6 +65,7 @@ export const InfoEditPage: FC = () => {
 						onClick: handleSubmit,
 					},
 					cancelButton: {
+						label: "ยกเลิก",
 						onClick: handleReturn,
 					},
 				}}

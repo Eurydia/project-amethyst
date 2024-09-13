@@ -1,22 +1,13 @@
 import {
-	getDriverAll,
 	getOperationLogAll,
-	getPickupRouteAll,
-	getTopicAll,
 	getVehicle,
 	getVehicleReportGeneralAll,
 	getVehicleReportInspectionAll,
 } from "$backend/database/get";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log-model";
+import { VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-general-model";
+import { VEHICLE_REPORT_INSPECTION_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-inspection-model";
 import { TRANSLATION } from "$locale/th";
-import { MultiSelectOption } from "$types/generics";
-import { DriverModelImpl } from "$types/impl/Driver";
-import { PickupRouteModelImpl } from "$types/impl/PickupRoute";
-import {
-	VehicleModelImpl,
-	VehicleReportGeneralModelImpl,
-	VehicleReportInspectionModelImpl,
-} from "$types/impl/Vehicle";
 import { OperationalLogEntry } from "$types/models/OperatonalLog";
 import {
 	VehicleModel,
@@ -45,11 +36,6 @@ export type IndexPageLoaderData = {
 	generalEntries: VehicleReportGeneralEntry[];
 	inspectionEntries: VehicleReportInspectionEntry[];
 	logEntries: OperationalLogEntry[];
-
-	topicMultiSelectOptions: MultiSelectOption[];
-	driverMultiSelectOptions: MultiSelectOption[];
-	vehicleMultiSelectOptions: MultiSelectOption[];
-	routeMultiSelectOptions: MultiSelectOption[];
 };
 export const indexPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -94,7 +80,9 @@ export const indexPageLoader: LoaderFunction =
 				({ vehicle_id }) =>
 					vehicle_id === vehicleId,
 			)
-			.map(VehicleReportGeneralModelImpl.toEntry);
+			.map(
+				VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER.toVehicleReportGeneralEntry,
+			);
 
 		const inspectionReports = (
 			await getVehicleReportInspectionAll()
@@ -104,7 +92,7 @@ export const indexPageLoader: LoaderFunction =
 					vehicle_id === vehicleId,
 			)
 			.map(
-				VehicleReportInspectionModelImpl.toEntry,
+				VEHICLE_REPORT_INSPECTION_MODEL_TRANSFORMER.toVehicleReportInspectionEntry,
 			);
 
 		const logEntries = (
@@ -116,25 +104,6 @@ export const indexPageLoader: LoaderFunction =
 		const inspectionEntries = (
 			await Promise.all(inspectionReports)
 		).filter((entry) => entry !== null);
-
-		const driverMultiSelectOptions = (
-			await getDriverAll()
-		).map(DriverModelImpl.toMultiSelectOption);
-		const routeMultiSelectOptions = (
-			await getPickupRouteAll()
-		).map(
-			PickupRouteModelImpl.toMultiSelectOption,
-		);
-		const topicMultiSelectOptions: MultiSelectOption[] =
-			(await getTopicAll()).map((topic) => ({
-				label: topic,
-				value: topic,
-			}));
-		const vehicleMultiSelectOptions = [
-			VehicleModelImpl.toMultiSelectOption(
-				vehicle,
-			),
-		];
 
 		const galleryDirPath = await join(
 			await appLocalDataDir(),
@@ -158,10 +127,6 @@ export const indexPageLoader: LoaderFunction =
 			logEntries,
 			generalEntries,
 			inspectionEntries,
-			driverMultiSelectOptions,
-			routeMultiSelectOptions,
-			vehicleMultiSelectOptions,
-			topicMultiSelectOptions,
 			galleryDirPath,
 			galleryFileEntries,
 		};

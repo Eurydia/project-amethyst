@@ -1,17 +1,14 @@
-import {
-	MultiSelectOption,
-	TableHeaderDefinition,
-} from "$types/generics";
-import { PickupRouteEntryImpl } from "$types/impl/PickupRoute";
+import { filterItems } from "$core/filter";
+import { TableHeaderDefinition } from "$types/generics";
 import { PickupRouteEntry } from "$types/models/PickupRoute";
 import { Stack, Typography } from "@mui/material";
-import { FC, ReactNode, useState } from "react";
+import { FC, useState } from "react";
 import {
 	Link,
 	useSubmit,
 } from "react-router-dom";
-import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 import { BaseSortableTable } from "./BaseSortableTable";
+import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 
 const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 	[
@@ -22,7 +19,10 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 			render: (item) => (
 				<Typography
 					component={Link}
-					to={"/pickup-routes/info/" + item.id}
+					to={{
+						pathname:
+							"/pickup-routes/info/" + item.id,
+					}}
 				>
 					{item.name}
 				</Typography>
@@ -80,75 +80,59 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
 
 type PickupRouteTableProps = {
 	entries: PickupRouteEntry[];
-	slotProps: {
-		routeMultiSelect: {
-			options: MultiSelectOption[];
-		};
-	};
 };
 export const PickupRouteTable: FC<
 	PickupRouteTableProps
 > = (props) => {
-	const { entries, slotProps } = props;
+	const { entries } = props;
 	const submit = useSubmit();
 
 	const [search, setSearch] = useState("");
-	const [routes, setRoutes] = useState(
-		slotProps.routeMultiSelect.options.map(
-			({ value }) => value,
-		),
+
+	const filteredEntries = filterItems(
+		entries,
+		search,
+		[
+			"name",
+			"vehicles.*.licensePlate",
+			"drivers.*.name",
+			"drivers.*.surname",
+		],
 	);
 
-	const filteredEntries =
-		PickupRouteEntryImpl.filter(
-			entries,
-			routes,
-			search,
-		);
-
-	const formItems: {
-		label: string;
-		value: ReactNode;
-	}[] = [
-		{
-			label: "สายรถ",
-			value: (
-				<BaseInputMultiSelect
-					onChange={setRoutes}
-					options={
-						slotProps.routeMultiSelect.options
-					}
-					selectedOptions={routes}
-				/>
-			),
-		},
-	];
 	return (
-		<BaseSortableTable
-			defaultSortOrder="asc"
-			defaultSortByColumn={0}
-			headers={HEADER_DEFINITION}
-			entries={filteredEntries}
-			slotProps={{
-				searchField: {
-					placeholder:
-						"ค้นหาด้วยสายรถ, เลขทะเบียน, หรือคนขับรถ",
-					value: search,
-					onChange: setSearch,
-				},
-				addButton: {
-					label: "ลงทะเบียนสายรถ",
-					onClick: () =>
-						submit(
-							{},
-							{
-								action: "/pickup-routes/new",
-							},
-						),
-				},
-			}}
-		>
-			{formItems}
-		</BaseSortableTable>
+		<Stack spacing={1}>
+			<BaseSortableTableToolbar
+				slotProps={{
+					searchField: {
+						placeholder:
+							"ค้นหาด้วยสายรถ, เลขทะเบียน, หรือชื่อสกุลคนขับรถ",
+						value: search,
+						onChange: setSearch,
+					},
+					addButton: {
+						label: "เพิ่มสายรถ",
+						onClick: () =>
+							submit(
+								{},
+								{
+									action: "/pickup-routes/new",
+								},
+							),
+					},
+				}}
+			/>
+			<BaseSortableTable
+				defaultSortOrder="asc"
+				defaultSortByColumn={0}
+				headers={HEADER_DEFINITION}
+				entries={filteredEntries}
+				slotProps={{
+					body: {
+						emptyText: "ไม่พบสายรถ",
+					},
+				}}
+			/>
+		</Stack>
 	);
 };

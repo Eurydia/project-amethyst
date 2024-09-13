@@ -1,8 +1,8 @@
+import { filterItems } from "$core/filter";
 import {
 	MultiSelectOption,
 	TableHeaderDefinition,
 } from "$types/generics";
-import { PickupRouteReportEntryImpl } from "$types/impl/PickupRoute";
 import { PickupRouteReportEntry } from "$types/models/PickupRoute";
 import { Typography } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
@@ -118,17 +118,11 @@ export const PickupRouteReportGeneralTable: FC<
 		),
 	);
 
-	const filteredEntries =
-		PickupRouteReportEntryImpl.filter(
-			entries,
-			afterDate,
-			beforeDate,
-			routes,
-			topics,
-			topicMustHaveAll,
-			search,
-		);
-
+	const filteredEntries = filterItems(
+		entries,
+		search,
+		["title", "topics", "routeName"],
+	);
 	const formItems: {
 		label: string;
 		value: ReactNode;

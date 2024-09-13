@@ -8,22 +8,22 @@ import {
 	AttendanceLogModel,
 } from "$types/models/AttendanceLog";
 
-export const AttendanceLogModelImpl = {
-	toEntry: async (log: AttendanceLogModel) => {
+export const ATTENDANCE_LOG_MODEL_TRANSFORMER = {
+	toAttendanceLogEntry: async (
+		log: AttendanceLogModel,
+	) => {
 		const driver = await getDriver(log.driver_id);
-		if (driver === null) {
-			return null;
-		}
 		const vehicle = await getVehicle(
 			log.vehicle_id,
 		);
-		if (vehicle === null) {
-			return null;
-		}
 		const route = await getPickupRoute(
 			log.route_id,
 		);
-		if (route === null) {
+		if (
+			driver === null ||
+			vehicle === null ||
+			route === null
+		) {
 			return null;
 		}
 

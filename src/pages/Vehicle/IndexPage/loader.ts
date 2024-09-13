@@ -1,27 +1,21 @@
 import { getVehicleAll } from "$backend/database/get";
-import { MultiSelectOption } from "$types/generics";
-import { VehicleModelImpl } from "$types/impl/Vehicle";
+import { VEHICLE_MODEL_TRANSFORMER } from "$core/transformers/vehicle-model";
 import { VehicleEntry } from "$types/models/Vehicle";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
-	entries: VehicleEntry[];
-	vehicleMultiSelectOptions: MultiSelectOption[];
+	vehicleEntries: VehicleEntry[];
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
 		const vehicles = await getVehicleAll();
-		const entries = await Promise.all(
-			vehicles.map(VehicleModelImpl.toEntry),
-		);
-		const vehicleMultiSelectOptions =
+		const vehicleEntries = await Promise.all(
 			vehicles.map(
-				VehicleModelImpl.toMultiSelectOption,
-			);
-
+				VEHICLE_MODEL_TRANSFORMER.toVehicleEntry,
+			),
+		);
 		const loaderData: IndexPageLoaderData = {
-			entries,
-			vehicleMultiSelectOptions,
+			vehicleEntries,
 		};
 		return loaderData;
 	};

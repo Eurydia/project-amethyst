@@ -1,20 +1,11 @@
 import {
-	getDriverAll,
 	getOperationLogAll,
 	getPickupRoute,
 	getPickupRouteReportGeneralAll,
-	getTopicAll,
-	getVehicleAll,
 } from "$backend/database/get";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log-model";
+import { PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-report-general-model";
 import { TRANSLATION } from "$locale/th";
-import { MultiSelectOption } from "$types/generics";
-import { DriverModelImpl } from "$types/impl/Driver";
-import {
-	PickupRouteModelImpl,
-	PickupRouteReportModelImpl,
-} from "$types/impl/PickupRoute";
-import { VehicleModelImpl } from "$types/impl/Vehicle";
 import { OperationalLogEntry } from "$types/models/OperatonalLog";
 import {
 	PickupRouteModel,
@@ -30,11 +21,6 @@ export type IndexPageLoaderData = {
 
 	logEntries: OperationalLogEntry[];
 	reportEntries: PickupRouteReportEntry[];
-
-	routeMultiSelectOptions: MultiSelectOption[];
-	vehicleMultiSelectOptions: MultiSelectOption[];
-	driverMultiSelectOptions: MultiSelectOption[];
-	topicMultiSelectOptions: MultiSelectOption[];
 };
 export const indexPageLoader: LoaderFunction =
 	async ({ params }) => {
@@ -63,12 +49,6 @@ export const indexPageLoader: LoaderFunction =
 			);
 		}
 
-		const topicMultiSelectOptions: MultiSelectOption[] =
-			(await getTopicAll()).map((topic) => ({
-				label: topic,
-				value: topic,
-			}));
-
 		const logs = (await getOperationLogAll())
 			.filter(
 				({ route_id }) => route_id === route.id,
@@ -82,7 +62,9 @@ export const indexPageLoader: LoaderFunction =
 			.filter(
 				({ route_id }) => route_id === route.id,
 			)
-			.map(PickupRouteReportModelImpl.toEntry);
+			.map(
+				PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER.toPickupRouteReportGeneralEntry,
+			);
 
 		const reportEntries = (
 			await Promise.all(reports)
@@ -91,28 +73,11 @@ export const indexPageLoader: LoaderFunction =
 			await Promise.all(logs)
 		).filter((entry) => entry !== null);
 
-		const vehicleMultiSelectOptions = (
-			await getVehicleAll()
-		).map(VehicleModelImpl.toMultiSelectOption);
-		const driverMultiSelectOptions = (
-			await getDriverAll()
-		).map(DriverModelImpl.toMultiSelectOption);
-		const routeMultiSelectOptions = [
-			PickupRouteModelImpl.toMultiSelectOption(
-				route,
-			),
-		];
-
 		const loaderData: IndexPageLoaderData = {
 			route,
 
 			logEntries,
 			reportEntries,
-
-			driverMultiSelectOptions,
-			vehicleMultiSelectOptions,
-			routeMultiSelectOptions,
-			topicMultiSelectOptions,
 		};
 
 		return loaderData;

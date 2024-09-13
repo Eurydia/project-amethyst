@@ -1,36 +1,17 @@
-import {
-	getTopicAll,
-	getVehicleAll,
-	getVehicleReportInspectionAll,
-} from "$backend/database/get";
-import { MultiSelectOption } from "$types/generics";
-import {
-	VehicleModelImpl,
-	VehicleReportInspectionModelImpl,
-} from "$types/impl/Vehicle";
+import { getVehicleReportInspectionAll } from "$backend/database/get";
+import { VEHICLE_REPORT_INSPECTION_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-inspection-model";
 import { VehicleReportInspectionEntry } from "$types/models/Vehicle";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
 	reportEntries: VehicleReportInspectionEntry[];
-	topicMultiSelectOptions: MultiSelectOption[];
-	vehicleMultiSelectOptions: MultiSelectOption[];
 };
 export const indexPageLoader: LoaderFunction =
 	async () => {
-		const vehicleMultiSelectOptions = (
-			await getVehicleAll()
-		).map(VehicleModelImpl.toMultiSelectOption);
-		const topicMultiSelectOptions: MultiSelectOption[] =
-			(await getTopicAll()).map((topic) => ({
-				label: topic,
-				value: topic,
-			}));
-
 		const reports = (
 			await getVehicleReportInspectionAll()
 		).map(
-			VehicleReportInspectionModelImpl.toEntry,
+			VEHICLE_REPORT_INSPECTION_MODEL_TRANSFORMER.toVehicleReportInspectionEntry,
 		);
 
 		const reportEntries = (
@@ -38,8 +19,6 @@ export const indexPageLoader: LoaderFunction =
 		).filter((entry) => entry !== null);
 
 		const loaderData: IndexPageLoaderData = {
-			vehicleMultiSelectOptions,
-			topicMultiSelectOptions,
 			reportEntries,
 		};
 		return loaderData;

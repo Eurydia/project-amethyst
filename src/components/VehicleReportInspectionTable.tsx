@@ -1,8 +1,8 @@
+import { filterItems } from "$core/filter";
 import {
 	MultiSelectOption,
 	TableHeaderDefinition,
 } from "$types/generics";
-import { VehicleReportInspectionEntryImpl } from "$types/impl/Vehicle";
 import { VehicleReportInspectionEntry } from "$types/models/Vehicle";
 import { Typography } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
@@ -113,16 +113,16 @@ export const VehicleReportInspectionTable: FC<
 		),
 	);
 
-	const filteredEntries =
-		VehicleReportInspectionEntryImpl.filter(
-			entries,
-			afterDate,
-			beforeDate,
-			vehicles,
-			topics,
-			topicMustHaveAll,
-			search,
-		);
+	const filteredEntries = filterItems(
+		entries,
+		search,
+		[
+			"title",
+			"topics",
+			"vehicleLicensePlate",
+			"inspectionRoundNumber",
+		],
+	);
 
 	const formItems: {
 		label: string;

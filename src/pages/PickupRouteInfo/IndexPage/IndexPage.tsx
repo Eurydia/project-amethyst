@@ -35,11 +35,6 @@ export const IndexPage: FC = () => {
 
 		logEntries,
 		reportEntries,
-
-		driverMultiSelectOptions,
-		vehicleMultiSelectOptions,
-		routeMultiSelectOptions,
-		topicMultiSelectOptions,
 	} = useLoaderData() as IndexPageLoaderData;
 
 	const submit = useSubmit();
@@ -74,16 +69,6 @@ export const IndexPage: FC = () => {
 								{},
 								{ action: "./log/operational" },
 							),
-					},
-					routeMultiSelect: {
-						disabled: true,
-						options: routeMultiSelectOptions,
-					},
-					driverMultiSelect: {
-						options: driverMultiSelectOptions,
-					},
-					vehicleMultiSelect: {
-						options: vehicleMultiSelectOptions,
 					},
 				}}
 			/>

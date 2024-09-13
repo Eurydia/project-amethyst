@@ -4,9 +4,9 @@ import { DriverReportEntry } from "$types/models/Driver";
 import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
-import { Link } from "react-router-dom";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
+import { BaseTypographyLink } from "./BaseTypographyLink";
 
 const DATETIME_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
 	{
@@ -28,12 +28,11 @@ const DRIVER_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
 		compare: (a, b) =>
 			a.driverName.localeCompare(b.driverName),
 		render: (item) => (
-			<Typography
-				component={Link}
-				to={"/drivers/info/" + item.driverId}
+			<BaseTypographyLink
+				toPage={"/drivers/info/" + item.driverId}
 			>
 				{item.driverName} {item.driverSurname}
-			</Typography>
+			</BaseTypographyLink>
 		),
 	};
 
@@ -43,15 +42,14 @@ const TITLE_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
 		compare: (a, b) =>
 			a.title.localeCompare(b.title),
 		render: (item) => (
-			<Typography
-				component={Link}
-				to={
+			<BaseTypographyLink
+				toPage={
 					"/drivers/report/medical/info/" +
 					item.id
 				}
 			>
 				{item.title}
-			</Typography>
+			</BaseTypographyLink>
 		),
 	};
 

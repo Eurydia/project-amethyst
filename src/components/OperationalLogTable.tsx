@@ -4,9 +4,9 @@ import { OperationalLogEntry } from "$types/models/OperatonalLog";
 import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
-import { Link } from "react-router-dom";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
+import { BaseTypographyLink } from "./BaseTypographyLink";
 
 const HEADER_DEFINITIONS: TableHeaderDefinition<OperationalLogEntry>[] =
 	[
@@ -41,24 +41,26 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<OperationalLogEntry>[] =
 			compare: (a, b) =>
 				a.driverName.localeCompare(b.driverName),
 			render: (item) => (
-				<Typography
-					component={Link}
-					to={"/drivers/info/" + item.driverId}
+				<BaseTypographyLink
+					toPage={
+						"/drivers/info/" + item.driverId
+					}
 				>
 					{item.driverName} {item.driverSurname}
-				</Typography>
+				</BaseTypographyLink>
 			),
 		},
 		{
 			label: "เลขทะเบียน",
 			compare: null,
 			render: (item) => (
-				<Typography
-					component={Link}
-					to={"/vehicles/info/" + item.vehicleId}
+				<BaseTypographyLink
+					toPage={
+						"/vehicles/info/" + item.vehicleId
+					}
 				>
 					{item.vehicleLicensePlate}
-				</Typography>
+				</BaseTypographyLink>
 			),
 		},
 		{
@@ -66,14 +68,13 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<OperationalLogEntry>[] =
 			compare: (a, b) =>
 				a.routeName.localeCompare(b.routeName),
 			render: (item) => (
-				<Typography
-					component={Link}
-					to={
+				<BaseTypographyLink
+					toPage={
 						"/pickup-routes/info/" + item.routeId
 					}
 				>
 					{item.routeName}
-				</Typography>
+				</BaseTypographyLink>
 			),
 		},
 	];

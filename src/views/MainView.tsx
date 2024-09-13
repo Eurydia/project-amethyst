@@ -1,3 +1,4 @@
+import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { TypographyTooltip } from "$components/TypographyTooltip";
 import {
 	AirportShuttleRounded,
@@ -25,7 +26,10 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { Link, Outlet } from "react-router-dom";
+import {
+	Outlet,
+	useLocation,
+} from "react-router-dom";
 
 const CLOCK_FORMAT =
 	"HH:mm น., วันddddที่ D MMMM YYYY ";
@@ -59,6 +63,7 @@ const PRIMARY_ROUTES = [
 ];
 
 export const MainView: FC = () => {
+	const location = useLocation();
 	const appBarRef = useRef<HTMLElement | null>(
 		null,
 	);
@@ -97,6 +102,8 @@ export const MainView: FC = () => {
 				variant="outlined"
 				color="default"
 			>
+				{location.pathname}
+				{location.search}
 				<Toolbar
 					variant="dense"
 					sx={{
@@ -126,8 +133,6 @@ export const MainView: FC = () => {
 							(route, index) => (
 								<ListItem
 									key={"route" + index}
-									component={Link}
-									to={route.path}
 									dense
 									disableGutters
 									disablePadding
@@ -136,15 +141,11 @@ export const MainView: FC = () => {
 									}}
 								>
 									<ListItemText disableTypography>
-										<Typography
-											sx={{
-												display: "flex",
-												alignItems: "center",
-												gap: 1,
-											}}
+										<BaseTypographyLink
+											toPage={route.path}
 										>
 											{route.icon} {route.label}
-										</Typography>
+										</BaseTypographyLink>
 									</ListItemText>
 								</ListItem>
 							),

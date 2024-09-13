@@ -1,5 +1,5 @@
 import { getAttendanceLogToday } from "$backend/database/get";
-import { AttendanceLogModelImpl } from "$types/impl/AttendanceLog";
+import { ATTENDANCE_LOG_MODEL_TRANSFORMER } from "$core/transformers/attendance-log-model";
 import { AttendanceLogEntry } from "$types/models/AttendanceLog";
 import { LoaderFunction } from "react-router-dom";
 
@@ -10,7 +10,9 @@ export const homePageLoader: LoaderFunction =
 	async () => {
 		const logs = (
 			await getAttendanceLogToday()
-		).map(AttendanceLogModelImpl.toEntry);
+		).map(
+			ATTENDANCE_LOG_MODEL_TRANSFORMER.toAttendanceLogEntry,
+		);
 
 		const logEntries = (
 			await Promise.all(logs)

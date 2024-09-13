@@ -29,7 +29,6 @@ export const newPageLoader: LoaderFunction =
 		let selectedDriver: DriverModel | null = null;
 		let driver: DriverModel | null = null;
 		let driverSelectOptions: DriverModel[] = [];
-
 		if (queryDriverId !== null) {
 			driver = await getDriver(
 				Number.parseInt(queryDriverId),

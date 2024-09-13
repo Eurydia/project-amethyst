@@ -8,10 +8,8 @@ import {
 import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
-	const {
-		reportEntries,
-		databaseHasNoDriver: databaseIsMissingDriver,
-	} = useLoaderData() as IndexPageLoaderData;
+	const { reportEntries, databaseHasNoDriver } =
+		useLoaderData() as IndexPageLoaderData;
 	const submit = useSubmit();
 
 	return (
@@ -23,12 +21,11 @@ export const IndexPage: FC = () => {
 				entries={reportEntries}
 				slotProps={{
 					addButton: {
-						disabled: databaseIsMissingDriver,
+						disabled: databaseHasNoDriver,
 						onClick: () =>
 							submit(
 								{},
 								{
-									replace: true,
 									action: "./new",
 								},
 							),

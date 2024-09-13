@@ -1,11 +1,9 @@
 import { postOperationalLog } from "$backend/database/post";
 import { OperationalLogForm } from "$components/OperationalLogForm";
 import { OperationalLogFormData } from "$types/models/OperatonalLog";
-import { KeyboardArrowLeftRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
-	Link,
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
@@ -67,13 +65,6 @@ export const NewPage: FC = () => {
 
 	return (
 		<Stack spacing={1}>
-			<Typography
-				component={Link}
-				to={action}
-			>
-				<KeyboardArrowLeftRounded />
-				{backButtonLabel}
-			</Typography>
 			<Typography variant="h1">
 				{heading}
 			</Typography>

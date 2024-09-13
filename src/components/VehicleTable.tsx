@@ -1,17 +1,14 @@
-import {
-	MultiSelectOption,
-	TableHeaderDefinition,
-} from "$types/generics";
-import { VehicleEntryImpl } from "$types/impl/Vehicle";
+import { filterItems } from "$core/filter";
+import { TableHeaderDefinition } from "$types/generics";
 import { VehicleEntry } from "$types/models/Vehicle";
 import { Stack, Typography } from "@mui/material";
-import { FC, ReactNode, useState } from "react";
+import { FC, useState } from "react";
 import {
 	Link,
 	useSubmit,
 } from "react-router-dom";
-import { BaseInputMultiSelect } from "./BaseInputMultiSelect";
 import { BaseSortableTable } from "./BaseSortableTable";
+import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 
 const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
 	[
@@ -79,75 +76,59 @@ const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
 
 type VehicleTableProps = {
 	entries: VehicleEntry[];
-	slotProps: {
-		vehicleMultiSelect: {
-			options: MultiSelectOption[];
-		};
-	};
 };
 export const VehicleTable: FC<
 	VehicleTableProps
 > = (props) => {
-	const { entries, slotProps } = props;
+	const { entries } = props;
 	const submit = useSubmit();
 
 	const [search, setSearch] = useState("");
-	const [selected, setSelected] = useState(
-		slotProps.vehicleMultiSelect.options.map(
-			({ value }) => value,
-		),
-	);
 
-	const filteredEntries = VehicleEntryImpl.filter(
+	const filteredEntries = filterItems(
 		entries,
-		selected,
 		search,
+		[
+			"licensePlate",
+			"routes.*.name",
+			"drivers.*.name",
+			"drivers.*.surname",
+		],
 	);
-
-	const formItems: {
-		label: string;
-		value: ReactNode;
-	}[] = [
-		{
-			label: "ทะเบียนรถ",
-			value: (
-				<BaseInputMultiSelect
-					options={
-						slotProps.vehicleMultiSelect.options
-					}
-					selectedOptions={selected}
-					onChange={setSelected}
-				/>
-			),
-		},
-	];
 
 	return (
-		<BaseSortableTable
-			headers={HEADER_DEFINITION}
-			defaultSortOrder="asc"
-			defaultSortByColumn={0}
-			entries={filteredEntries}
-			slotProps={{
-				searchField: {
-					placeholder:
-						"ค้นหาด้วยทะเบียนรถ, สายรถ, หรือชื่อนามสกุลคนขับรถ",
-					value: search,
-					onChange: setSearch,
-				},
-				addButton: {
-					label: "ลงทะเบียน",
-					onClick: () =>
-						submit(
-							{},
-							{
-								action: "/vehicles/new",
-							},
-						),
-				},
-			}}
-		>
-			{formItems}
-		</BaseSortableTable>
+		<Stack spacing={1}>
+			<BaseSortableTableToolbar
+				slotProps={{
+					searchField: {
+						placeholder:
+							"ค้นหาด้วยทะเบียนรถ, สายรถ, หรือชื่อนามสกุลคนขับรถ",
+						value: search,
+						onChange: setSearch,
+					},
+					addButton: {
+						label: "ลงทะเบียน",
+						onClick: () =>
+							submit(
+								{},
+								{
+									action: "/vehicles/new",
+								},
+							),
+					},
+				}}
+			/>
+			<BaseSortableTable
+				headers={HEADER_DEFINITION}
+				defaultSortOrder="asc"
+				defaultSortByColumn={0}
+				entries={filteredEntries}
+				slotProps={{
+					body: {
+						emptyText: "ไม่พบทะเบียนรถรับส่ง",
+					},
+				}}
+			/>
+		</Stack>
 	);
 };

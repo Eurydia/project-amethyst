@@ -1,14 +1,10 @@
 import { putDriver } from "$backend/database/put";
 import { DriverForm } from "$components/DriverForm";
 import { DriverFormData } from "$types/models/Driver";
-import {
-	KeyboardArrowLeftRounded,
-	SaveRounded,
-} from "@mui/icons-material";
+import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
-	Link,
 	useLoaderData,
 	useSubmit,
 } from "react-router-dom";
@@ -40,30 +36,20 @@ export const EditPage: FC = () => {
 			.finally(handleReturn);
 	};
 
-	const headingMain = "แก้ไขข้อมูลคนขับรถ";
-	const headingSub = `"${driver.name} ${driver.surname}"`;
-
 	return (
 		<Stack spacing={1}>
-			<Typography
-				component={Link}
-				to={action}
-			>
-				<KeyboardArrowLeftRounded />
-				ข้อมูลคนขับรถ
-			</Typography>
 			<Typography variant="h1">
-				{headingMain}
+				{`${driver.name} ${driver.surname}`}
 			</Typography>
 			<Typography variant="h2">
-				{headingSub}
+				{`แบบฟอร์มแก้ไขข้อมูลคนขับรถ`}
 			</Typography>
 			<DriverForm
 				initFormData={initFormData}
 				slotProps={{
 					submitButton: {
 						startIcon: <SaveRounded />,
-						label: "บันทึก",
+						label: "ยืนยันการแก้ไข",
 						onClick: handleSubmit,
 					},
 					cancelButton: {

@@ -74,6 +74,11 @@ export const getVehicleAll = async (): Promise<VehicleModel[]> =>
 		"get_vehicle_all",
 	);
 	
+export const getVehicle = async (vehicleId: number): Promise<VehicleModel|null> => 
+		invoke(
+		   "get_vehicle",{vehicleId}
+	   );
+	   
 //#endregion
 
 //#region Vehicle Report General
@@ -110,6 +115,8 @@ export const getVehicleReportInspection = async (
 //#region Pickup Route
 export const getPickupRouteAll = async ():  Promise<PickupRouteModel[]> => 
 	 invoke("get_pickup_route_all");
+export const getPickupRoute = async (routeId: number):  Promise<PickupRouteModel | null> => 
+	invoke("get_pickup_route", {routeId});
 	
 //#endregion
 

@@ -1,34 +1,43 @@
+import { prepareQueryParam } from "$core/query-param";
 import { DriverModel } from "$types/models/driver";
 import { DriverReportModel } from "$types/models/driver-report";
 import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC } from "react";
+import { Link } from "react-router-dom";
 import { BaseInfoGroup } from "./BaseInfoGroup";
-import { BaseTypographyLink } from "./BaseTypographyLink";
 
-type DriverReportGeneralInfoGroupProps = {
+type DriverReportInfoGroupProps = {
   report: DriverReportModel;
   driver: DriverModel;
   slotProps: {
     editButton: {
+      label: string;
       onClick: () => void;
     };
   };
 };
-export const DriverReportGeneralInfoGroup: FC<
-  DriverReportGeneralInfoGroupProps
+export const DriverReportInfoGroup: FC<
+  DriverReportInfoGroupProps
 > = (props) => {
   const { report, driver, slotProps } = props;
 
   const infoItems = [
     {
-      label: "ผู้ที่ถูกร้องเรียน",
+      label: "คนขับรถ",
       value: (
-        <BaseTypographyLink
-          toPage={"/drivers/info/" + driver.id}
+        <Typography
+          component={Link}
+          to={{
+            pathname: "/drivers/info/" + driver.id,
+            search: prepareQueryParam(
+              "/drivers/report/general/info/" + report.id,
+              "รายละเอียดเรื่องร้องเรียนคนขับรถ",
+            ),
+          }}
         >
           {`${driver.name} ${driver.surname}`}
-        </BaseTypographyLink>
+        </Typography>
       ),
     },
     {
@@ -75,7 +84,7 @@ export const DriverReportGeneralInfoGroup: FC<
     <BaseInfoGroup
       slotProps={{
         editButton: {
-          label: "แก้ไขรายละเอียด",
+          label: slotProps.editButton.label,
           onClick: slotProps.editButton.onClick,
         },
       }}

@@ -1,15 +1,14 @@
 import { DriverModel } from "$types/models/driver";
 import { DriverReportFormData } from "$types/models/driver-report";
+import { DateField, TimeField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
-import { BaseInputDateField } from "./BaseInputDateField";
 import { BaseInputTextField } from "./BaseInputTextField";
-import { BaseInputTimeField } from "./BaseInputTimeField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { DriverInputDriverSelect } from "./DriverInputDriverSelect";
 
-type DriverReportGeneralFormProps = {
+type DriverReportFormProps = {
   initFormData: DriverReportFormData;
 
   slotProps: {
@@ -19,23 +18,21 @@ type DriverReportGeneralFormProps = {
       onClick: (formData: DriverReportFormData) => void;
     };
     cancelButton: {
-      label: string;
       onClick: () => void;
+      label: string;
     };
     driverSelect: {
-      fieldLabel: string;
       options: DriverModel[];
       disabled?: boolean;
     };
     topicComboBox: {
-      label: string;
       options: string[];
     };
   };
 };
-export const DriverReportGeneralForm: FC<
-  DriverReportGeneralFormProps
-> = (props) => {
+export const DriverReportForm: FC<DriverReportFormProps> = (
+  props,
+) => {
   const { initFormData, slotProps } = props;
 
   const [fieldDate, setFieldDate] = useState(
@@ -100,18 +97,34 @@ export const DriverReportGeneralForm: FC<
     {
       label: "เวลา",
       value: (
-        <BaseInputTimeField
+        <TimeField
+          fullWidth
+          formatDensity="spacious"
           value={fieldTime}
-          onChange={setFieldTime}
+          onChange={(value) => {
+            if (value === null) {
+              return;
+            }
+            setFieldTime(value);
+          }}
+          format="HH:mm น."
         />
       ),
     },
     {
       label: "วัน/เดือน/ปี",
       value: (
-        <BaseInputDateField
+        <DateField
+          fullWidth
+          formatDensity="spacious"
           value={fieldDate}
-          onChange={setFieldDate}
+          onChange={(value) => {
+            if (value === null) {
+              return;
+            }
+            setFieldDate(value);
+          }}
+          format="DD/MM/YYYY"
         />
       ),
     },

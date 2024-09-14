@@ -14,7 +14,4 @@ a:hover {
 	color: var(--mui-palette-secondary-dark);
 }
 
-table {
-	overflow-wrap: break-word;
-	word-break: break-all;
-}
+

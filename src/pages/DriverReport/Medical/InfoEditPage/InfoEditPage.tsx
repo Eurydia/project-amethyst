@@ -1,5 +1,6 @@
 import { putDriverReportMedical } from "$backend/database/put";
-import { DriverReportForm } from "$components/DriverReportForm";
+import { DriverReportMedicalTable } from "$components/DriverReportMedicalTable";
+import { DriverReportFormData } from "$types/models/driver-report";
 import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import "dayjs/locale/th";
@@ -7,7 +8,6 @@ import { FC } from "react";
 import { useLoaderData, useSubmit } from "react-router-dom";
 import { toast } from "react-toastify";
 import { InfoPageLoaderData } from "./loader";
-import { DriverReportFormData } from "$types/models/driver-report";
 
 export const InfoEditPage: FC = () => {
   const {
@@ -42,7 +42,7 @@ export const InfoEditPage: FC = () => {
       <Typography variant="h1">
         แก้ไขผลการตรวจสารเสพติด
       </Typography>
-      <DriverReportForm
+      <DriverReportMedicalTable
         initFormData={initFormData}
         slotProps={{
           driverSelect: {

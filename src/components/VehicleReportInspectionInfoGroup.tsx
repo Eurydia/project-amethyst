@@ -1,7 +1,5 @@
-import {
-	VehicleModel,
-	VehicleReportInspectionModel,
-} from "$types/models/vehicle";
+import { VehicleModel } from "$types/models/vehicle";
+import { VehicleReportInspectionModel } from "$types/models/vehicle-report-inspection";
 import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC } from "react";
@@ -93,21 +91,36 @@ export const VehicleReportInspectionInfoGroup: FC<
 			label: "กระจกมองข้าง",
 			value: report.sideview_mirror,
 		},
-		{
-			label: "รายละเอียดเพิ่มเติม",
-			value: report.content || "...",
-		},
-		{
-			label: "หัวข้อที่เกี่ยวข้อง",
-			value:
-				report.topics.length === 0
-					? "ไม่มีหัวข้อที่เกี่ยวข้อง"
-					: report.topics.replaceAll(",", ", "),
-		},
 	].map((item) => ({
 		label: item.label,
 		value: <Typography>{item.value}</Typography>,
 	}));
+
+	infoItems.push({
+		label: "รายละเอียดเพิ่มเติม",
+		value:
+			report.content.trim().length === 0 ? (
+				<Typography fontStyle="italic">
+					ไม่มีรายละเอียดเพิ่มเติม
+				</Typography>
+			) : (
+				<Typography>{report.content}</Typography>
+			),
+	});
+
+	infoItems.push({
+		label: "หัวข้อที่เกี่ยวข้อง",
+		value:
+			report.topics.length === 0 ? (
+				<Typography fontStyle="italic">
+					ไม่มีหัวข้อที่เกี่ยวข้อง
+				</Typography>
+			) : (
+				<Typography>
+					{report.topics.replaceAll(",", ", ")}
+				</Typography>
+			),
+	});
 
 	return (
 		<BaseInfoGroup

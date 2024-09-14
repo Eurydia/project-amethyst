@@ -1,18 +1,18 @@
 import { AttendanceLogModel } from "$types/models/attendance-log";
 import {
 	DriverModel,
-	DriverReportModel,
 } from "$types/models/driver";
+import { DriverReportModel } from "$types/models/driver-report";
 import { OperationalLogModel } from "$types/models/operational-log";
 import {
 	PickupRouteModel,
-	PickupRouteReportModel,
 } from "$types/models/pickup-route";
+import { PickupRouteReportGeneralModel } from "$types/models/pickup-route-report-general";
 import {
 	VehicleModel,
-	VehicleReportGeneralModel,
-	VehicleReportInspectionModel,
 } from "$types/models/vehicle";
+import { VehicleReportGeneralModel } from "$types/models/vehicle-report-general";
+import { VehicleReportInspectionModel } from "$types/models/vehicle-report-inspection";
 import { invoke } from "@tauri-apps/api/tauri";
 
 //#region Topics
@@ -69,18 +69,11 @@ export const getDriverReportMedical = async (
 //#endregion
 
 //#region Vehicle
-export const getVehicleAll = async () => {
-	const entries: VehicleModel[] = await invoke(
+export const getVehicleAll = async (): Promise<VehicleModel[]> => 
+	 invoke(
 		"get_vehicle_all",
 	);
-	return entries;
-};
-export const getVehicle = async (
-	vehicleId: number,
-): Promise<VehicleModel | null> =>
-	invoke("get_vehicle", {
-		vehicleId,
-	});
+	
 //#endregion
 
 //#region Vehicle Report General
@@ -115,27 +108,21 @@ export const getVehicleReportInspection = async (
 //#endregion
 
 //#region Pickup Route
-export const getPickupRouteAll = async () => {
-	const entries: PickupRouteModel[] =
-		await invoke("get_pickup_route_all");
-	return entries;
-};
-export const getPickupRoute = async (
-	routeId: number,
-): Promise<PickupRouteModel | null> =>
-	invoke("get_pickup_route", { routeId });
+export const getPickupRouteAll = async ():  Promise<PickupRouteModel[]> => 
+	 invoke("get_pickup_route_all");
+	
 //#endregion
 
 //#region Pickup Route Report General
 export const getPickupRouteReportGeneralAll =
-	async (): Promise<PickupRouteReportModel[]> =>
+	async (): Promise<PickupRouteReportGeneralModel[]> =>
 		await invoke(
 			"get_pickup_route_report_general_all",
 		);
 
 export const getPickupRouteReportGeneral = async (
 	reportId: number,
-): Promise<PickupRouteReportModel | null> =>
+): Promise<PickupRouteReportGeneralModel | null> =>
 	invoke("get_pickup_route_report_general", {
 		reportId,
 	});

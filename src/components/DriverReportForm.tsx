@@ -1,16 +1,16 @@
 import { DriverModel } from "$types/models/driver";
 import { DriverReportFormData } from "$types/models/driver-report";
-import { DateField, TimeField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
+import { BaseInputDateField } from "./BaseInputDateField";
 import { BaseInputTextField } from "./BaseInputTextField";
+import { BaseInputTimeField } from "./BaseInputTimeField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { DriverInputDriverSelect } from "./DriverInputDriverSelect";
 
 type DriverReportFormProps = {
   initFormData: DriverReportFormData;
-
   slotProps: {
     submitButton: {
       startIcon: ReactNode;
@@ -21,11 +21,26 @@ type DriverReportFormProps = {
       onClick: () => void;
       label: string;
     };
+
+    titleField: {
+      label: string;
+    };
+    contentField: {
+      label: string;
+    };
+    timeField: {
+      label: string;
+    };
+    dateField: {
+      label: string;
+    };
     driverSelect: {
+      label: string;
       options: DriverModel[];
       disabled?: boolean;
     };
     topicComboBox: {
+      label: string;
       options: string[];
     };
   };
@@ -95,41 +110,25 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
     value: ReactNode;
   }[] = [
     {
-      label: "เวลา",
+      label: slotProps.timeField.label,
       value: (
-        <TimeField
-          fullWidth
-          formatDensity="spacious"
+        <BaseInputTimeField
           value={fieldTime}
-          onChange={(value) => {
-            if (value === null) {
-              return;
-            }
-            setFieldTime(value);
-          }}
-          format="HH:mm น."
+          onChange={setFieldTime}
         />
       ),
     },
     {
-      label: "วัน/เดือน/ปี",
+      label: slotProps.dateField.label,
       value: (
-        <DateField
-          fullWidth
-          formatDensity="spacious"
+        <BaseInputDateField
           value={fieldDate}
-          onChange={(value) => {
-            if (value === null) {
-              return;
-            }
-            setFieldDate(value);
-          }}
-          format="DD/MM/YYYY"
+          onChange={setFieldDate}
         />
       ),
     },
     {
-      label: "คนขับรถ",
+      label: slotProps.driverSelect.label,
       value: (
         <DriverInputDriverSelect
           disabled={slotProps.driverSelect.disabled}
@@ -140,7 +139,7 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       ),
     },
     {
-      label: "เรื่อง",
+      label: slotProps.titleField.label,
       value: (
         <BaseInputTextField
           shouldAutoFocus
@@ -152,7 +151,7 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       ),
     },
     {
-      label: "รายละเอียด",
+      label: slotProps.contentField.label,
       value: (
         <BaseInputTextField
           multiline
@@ -165,7 +164,7 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       ),
     },
     {
-      label: "หัวข้อที่เกี่ยวข้อง",
+      label: slotProps.topicComboBox.label,
       value: (
         <BaseInputTopicComboBox
           options={slotProps.topicComboBox.options}

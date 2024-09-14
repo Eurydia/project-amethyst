@@ -23,8 +23,12 @@ export const PageView: FC = () => {
   const _location: Location<{
     from: string;
   }> = useLocation();
-  let label: string | null = null;
-  let path: string | null = null;
+  let label: string = "";
+  let path: string = "";
+  if (_location.state === null) {
+    label = "หน้าแรก";
+    path = "/";
+  }
   switch (_location.state.from) {
     case "/drivers/new":
       label = "Driver list";

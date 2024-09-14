@@ -6,146 +6,128 @@ import { OperationalLogTable } from "$components/OperationalLogTable";
 import { TRANSLATION } from "$locale/th";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
-import {
-	useLoaderData,
-	useSubmit,
-} from "react-router-dom";
+import { useLoaderData, useSubmit } from "react-router-dom";
 import { IndexPageLoaderData } from "./loader";
 
 const TOC_ITEMS = [
-	{
-		label: TRANSLATION.driverInfoGroup,
-		href: "#info",
-	},
-	{
-		label: TRANSLATION.operationalLogTable,
-		href: "#operational-log",
-	},
-	{
-		label: TRANSLATION.driverGeneralReportTable,
-		href: "#general-report",
-	},
-	{
-		label: TRANSLATION.driverMedicalReportTable,
-		href: "#medical-report",
-	},
+  {
+    label: TRANSLATION.driverInfoGroup,
+    href: "#info",
+  },
+  {
+    label: TRANSLATION.operationalLogTable,
+    href: "#operational-log",
+  },
+  {
+    label: TRANSLATION.driverGeneralReportTable,
+    href: "#general-report",
+  },
+  {
+    label: TRANSLATION.driverMedicalReportTable,
+    href: "#medical-report",
+  },
 ];
 
 export const IndexPage: FC = () => {
-	const {
-		databaseHasNoRoute,
-		databaseHasNoVehicle,
-		driver,
-		galleryDirPath,
-		galleryFileEntries,
-		logEntries,
-		generalEntries,
-		medicalEntries,
-	} = useLoaderData() as IndexPageLoaderData;
-	const submit = useSubmit();
+  const {
+    databaseHasNoRoute,
+    databaseHasNoVehicle,
+    driver,
+    galleryDirPath,
+    galleryFileEntries,
+    logEntries,
+    generalEntries,
+    medicalEntries,
+  } = useLoaderData() as IndexPageLoaderData;
+  const submit = useSubmit();
 
-	return (
-		<Stack spacing={1}>
-			<Typography
-				variant="h1"
-				id="info"
-			>
-				{`${driver.name} ${driver.surname}`}
-			</Typography>
-			<BaseTOC>{TOC_ITEMS}</BaseTOC>
-			<Typography variant="h2">
-				{`ข้อมูลคนขับรถ`}
-			</Typography>
-			<DriverInfoGroup
-				driver={driver}
-				slotProps={{
-					editButton: {
-						onClick: () =>
-							submit(
-								{},
-								{
-									action: "./edit",
-								},
-							),
-					},
-					gallery: {
-						dirPath: galleryDirPath,
-						fileEntries: galleryFileEntries,
-					},
-				}}
-			/>
-			<Typography
-				variant="h2"
-				id="operational-log"
-			>
-				{TRANSLATION.operationalLogTable}
-			</Typography>
-			<OperationalLogTable
-				entries={logEntries}
-				slotProps={{
-					addButton: {
-						disabled:
-							databaseHasNoVehicle ||
-							databaseHasNoRoute,
-						onClick: () =>
-							submit(
-								{
-									driverId: driver.id,
-								},
-								{
-									action: "/operational-logs/new",
-								},
-							),
-					},
-				}}
-			/>
-			<Typography
-				variant="h2"
-				id="general-report"
-			>
-				{TRANSLATION.driverGeneralReportTable}
-			</Typography>
-			<DriverReportGeneralTable
-				hideDriverColumn
-				entries={generalEntries}
-				slotProps={{
-					addButton: {
-						onClick: () =>
-							submit(
-								{
-									driverId: driver.id,
-								},
-								{
-									action:
-										"/drivers/report/general/new",
-								},
-							),
-					},
-				}}
-			/>
-			<Typography
-				variant="h2"
-				id="medical-report"
-			>
-				{TRANSLATION.driverMedicalReportTable}
-			</Typography>
-			<DriverReportMedicalTable
-				entries={medicalEntries}
-				slotProps={{
-					addButton: {
-						onClick: () =>
-							submit(
-								{
-									driverId: driver.id,
-								},
-								{
-									action:
-										"/drivers/report/medical/new",
-								},
-							),
-					},
-				}}
-			/>
-		</Stack>
-	);
+  return (
+    <Stack spacing={1}>
+      <Typography variant="h1" id="info">
+        {`${driver.name} ${driver.surname}`}
+      </Typography>
+      <BaseTOC>{TOC_ITEMS}</BaseTOC>
+      <Typography variant="h2">
+        {`ข้อมูลคนขับรถ`}
+      </Typography>
+      <DriverInfoGroup
+        driver={driver}
+        slotProps={{
+          editButton: {
+            onClick: () =>
+              submit(
+                {},
+                {
+                  action: "./edit",
+                },
+              ),
+          },
+          gallery: {
+            dirPath: galleryDirPath,
+            fileEntries: galleryFileEntries,
+          },
+        }}
+      />
+      <Typography variant="h2" id="operational-log">
+        {TRANSLATION.operationalLogTable}
+      </Typography>
+      <OperationalLogTable
+        entries={logEntries}
+        slotProps={{
+          addButton: {
+            disabled:
+              databaseHasNoVehicle || databaseHasNoRoute,
+            onClick: () =>
+              submit(
+                {
+                  driverId: driver.id,
+                },
+                {
+                  action: "/operational-logs/new",
+                },
+              ),
+          },
+        }}
+      />
+      <Typography variant="h2" id="general-report">
+        {TRANSLATION.driverGeneralReportTable}
+      </Typography>
+      <DriverReportGeneralTable
+        hideDriverColumn
+        entries={generalEntries}
+        slotProps={{
+          addButton: {
+            onClick: () =>
+              submit(
+                {
+                  driverId: driver.id,
+                },
+                {
+                  action: "/drivers/report/general/new",
+                },
+              ),
+          },
+        }}
+      />
+      <Typography variant="h2" id="medical-report">
+        {TRANSLATION.driverMedicalReportTable}
+      </Typography>
+      <DriverReportMedicalTable
+        entries={medicalEntries}
+        slotProps={{
+          addButton: {
+            onClick: () =>
+              submit(
+                {
+                  driverId: driver.id,
+                },
+                {
+                  action: "/drivers/report/medical/new",
+                },
+              ),
+          },
+        }}
+      />
+    </Stack>
+  );
 };

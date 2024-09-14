@@ -1,5 +1,5 @@
 import { postDriverReportGeneral } from "$backend/database/post";
-import { DriverReportForm } from "$components/DriverReportMedicalForm";
+import { DriverReportForm } from "$components/DriverReportForm";
 import { DriverReportFormData } from "$types/models/driver-report";
 import {
   AddRounded,
@@ -94,16 +94,30 @@ export const NewPage: FC = () => {
       <DriverReportForm
         initFormData={initFormData}
         slotProps={{
+          dateField: {
+            label: "วัน/เดือน/ปี",
+          },
+          timeField: {
+            label: "เวลา",
+          },
+          titleField: {
+            label: "ชื่อเรื่อง",
+          },
+          contentField: {
+            label: "รายละเอียด",
+          },
           driverSelect: {
+            label: "ผู้ที่ถูกตรวจ",
             disabled: hasSelectedDriver,
             options: driverSelectOptions,
           },
           topicComboBox: {
+            label: "หัวข้อที่เกี่ยว",
             options: topicComboBoxOptions,
           },
           submitButton: {
             startIcon: <AddRounded />,
-            label: `ยืนยัน`,
+            label: `เพิ่ม`,
             onClick: handleSubmit,
           },
           cancelButton: {

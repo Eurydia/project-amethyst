@@ -1,16 +1,20 @@
-import { prepareQueryParam } from "$core/query-param";
 import { DriverModel } from "$types/models/driver";
 import { DriverReportModel } from "$types/models/driver-report";
 import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC } from "react";
-import { Link } from "react-router-dom";
 import { BaseInfoGroup } from "./BaseInfoGroup";
+import { BaseTypographyLink } from "./BaseTypographyLink";
 
 type DriverReportInfoGroupProps = {
   report: DriverReportModel;
   driver: DriverModel;
   slotProps: {
+    driverLabel: string;
+    datetimeLabel: string;
+    titleLabel: string;
+    contentLabel: string;
+    topicLabel: string;
     editButton: {
       label: string;
       onClick: () => void;
@@ -24,24 +28,17 @@ export const DriverReportInfoGroup: FC<
 
   const infoItems = [
     {
-      label: "คนขับรถ",
+      label: slotProps.driverLabel,
       value: (
-        <Typography
-          component={Link}
-          to={{
-            pathname: "/drivers/info/" + driver.id,
-            search: prepareQueryParam(
-              "/drivers/report/general/info/" + report.id,
-              "รายละเอียดเรื่องร้องเรียนคนขับรถ",
-            ),
-          }}
+        <BaseTypographyLink
+          toPage={"/drivers/info/" + driver.id}
         >
           {`${driver.name} ${driver.surname}`}
-        </Typography>
+        </BaseTypographyLink>
       ),
     },
     {
-      label: "ลงบันทึกเมื่อ",
+      label: slotProps.datetimeLabel,
       value: (
         <Typography>
           {dayjs(report.datetime)
@@ -51,11 +48,11 @@ export const DriverReportInfoGroup: FC<
       ),
     },
     {
-      label: "เรื่อง",
+      label: slotProps.titleLabel,
       value: <Typography>{report.title}</Typography>,
     },
     {
-      label: "รายละเอียด",
+      label: slotProps.contentLabel,
       value:
         report.content.trim().length > 0 ? (
           <Typography>{report.content}</Typography>
@@ -66,7 +63,7 @@ export const DriverReportInfoGroup: FC<
         ),
     },
     {
-      label: "หัวข้อที่เกี่ยวข้อง",
+      label: slotProps.topicLabel,
       value:
         report.topics.length > 0 ? (
           <Typography>

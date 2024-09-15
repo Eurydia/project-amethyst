@@ -1,29 +1,29 @@
 export type PickupRouteModel = {
-	id: number;
+  id: number;
 
-	name: string;
-	arrival_time: string;
-	departure_time: string;
+  name: string;
+  arrival_time: string;
+  departure_time: string;
 };
 
 export type PickupRouteEntry = {
-	id: number;
-	name: string;
+  id: number;
+  name: string;
 
-	vehicles: {
-		id: number;
-		licensePlate: string;
-	}[];
+  vehicles: {
+    id: number;
+    licensePlate: string;
+  }[];
 
-	drivers: {
-		id: number;
-		name: string;
-		surname: string;
-	}[];
+  drivers: {
+    id: number;
+    name: string;
+    surname: string;
+  }[];
 };
 
 export type PickupRouteFormData = {
-	name: string;
-	arrivalTime: string;
-	departureTime: string;
+  name: string;
+  arrivalTime: string;
+  departureTime: string;
 };

@@ -40,9 +40,7 @@ const TITLE_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
     label: "ชื่อเรื่อง",
     compare: (a, b) => a.title.localeCompare(b.title),
     render: (item) => (
-      <BaseTypographyLink
-        to={"/drivers/report/general/info/" + item.id}
-      >
+      <BaseTypographyLink to={"./info/" + item.id}>
         {item.title}
       </BaseTypographyLink>
     ),
@@ -100,6 +98,16 @@ export const DriverReportGeneralTable: FC<
     <Stack spacing={1}>
       <BaseSortableTableToolbar
         slotProps={{
+          exportButton: {
+            label: "ดาวน์โหลด",
+            onClick: () => {},
+            disabled: true,
+          },
+          importButton: {
+            label: "อัปโหลด",
+            onClick: () => {},
+            disabled: true,
+          },
           addButton: {
             label: "เพิ่มเรื่องร้องเรียน",
             disabled: slotProps.addButton.disabled,

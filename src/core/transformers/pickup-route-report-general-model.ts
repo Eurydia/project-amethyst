@@ -1,29 +1,28 @@
 import { getPickupRoute } from "$backend/database/get";
+import {} from "$types/models/pickup-route";
 import {
-	PickupRouteReportEntry,
-	PickupRouteReportModel,
-} from "$types/models/pickup-route";
+  PickupRouteReportGeneralEntry,
+  PickupRouteReportGeneralModel,
+} from "$types/models/pickup-route-report-general";
 
 export const PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER =
-	{
-		toPickupRouteReportGeneralEntry: async (
-			report: PickupRouteReportModel,
-		) => {
-			const route = await getPickupRoute(
-				report.route_id,
-			);
-			if (route === null) {
-				return null;
-			}
-			const entry: PickupRouteReportEntry = {
-				datetime: report.datetime,
-				id: report.id,
-				title: report.title,
-				topics: report.topics.split(","),
+  {
+    toPickupRouteReportGeneralEntry: async (
+      report: PickupRouteReportGeneralModel,
+    ) => {
+      const route = await getPickupRoute(report.report_id);
+      if (route === null) {
+        return null;
+      }
+      const entry: PickupRouteReportGeneralEntry = {
+        datetime: report.datetime,
+        id: report.report_id,
+        title: report.title,
+        topics: report.topics.split(","),
 
-				routeId: route.id,
-				routeName: route.name,
-			};
-			return entry;
-		},
-	};
+        routeId: route.id,
+        routeName: route.name,
+      };
+      return entry;
+    },
+  };

@@ -31,7 +31,7 @@ export const DriverReportInfoGroup: FC<
       label: slotProps.driverLabel,
       value: (
         <BaseTypographyLink
-          toPage={"/drivers/info/" + driver.id}
+          to={"/drivers/info/" + driver.id}
         >
           {`${driver.name} ${driver.surname}`}
         </BaseTypographyLink>

@@ -28,7 +28,7 @@ const DRIVER_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
       a.driverName.localeCompare(b.driverName),
     render: (item) => (
       <BaseTypographyLink
-        toPage={"/drivers/info/" + item.driverId}
+        to={"/drivers/info/" + item.driverId}
       >
         {item.driverName} {item.driverSurname}
       </BaseTypographyLink>
@@ -41,7 +41,7 @@ const TITLE_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
     compare: (a, b) => a.title.localeCompare(b.title),
     render: (item) => (
       <BaseTypographyLink
-        toPage={"/drivers/report/medical/info/" + item.id}
+        to={"/drivers/report/medical/info/" + item.id}
       >
         {item.title}
       </BaseTypographyLink>

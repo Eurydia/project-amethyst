@@ -4,20 +4,19 @@ import { PickupRouteEntry } from "$types/models/pickup-route";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
-	routeEntries: PickupRouteEntry[];
+  routeEntries: PickupRouteEntry[];
 };
-export const indexPageLoader: LoaderFunction =
-	async () => {
-		const routes = await getPickupRouteAll();
+export const indexPageLoader: LoaderFunction = async () => {
+  const routes = await getPickupRouteAll();
 
-		const routeEntries = await Promise.all(
-			routes.map(
-				PICKUP_ROUTE_MODEL_TRANSFORMER.toPickupRouteEntry,
-			),
-		);
+  const routeEntries = await Promise.all(
+    routes.map(
+      PICKUP_ROUTE_MODEL_TRANSFORMER.toPickupRouteEntry,
+    ),
+  );
 
-		const loaderData: IndexPageLoaderData = {
-			routeEntries,
-		};
-		return loaderData;
-	};
+  const loaderData: IndexPageLoaderData = {
+    routeEntries,
+  };
+  return loaderData;
+};

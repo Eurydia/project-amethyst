@@ -3,20 +3,17 @@ import { FC, ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 type BaseTypographyLinkProps = {
-	toPage: string;
-	children: ReactNode[] | ReactNode;
+  to: string;
+  children: ReactNode[] | ReactNode;
 };
 export const BaseTypographyLink: FC<
-	BaseTypographyLinkProps
+  BaseTypographyLinkProps
 > = (props) => {
-	const { children, toPage } = props;
+  const { children, to } = props;
 
-	return (
-		<Typography
-			component={Link}
-			to={toPage}
-		>
-			{children}
-		</Typography>
-	);
+  return (
+    <Typography component={Link} to={to}>
+      {children}
+    </Typography>
+  );
 };

@@ -1,4 +1,4 @@
-import { DriverReportInfoGroup } from "$components/DriverReportMedicalInfoGroup";
+import { DriverReportInfoGroup } from "$components/DriverReportInfoGroup";
 import { KeyboardArrowLeftRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import "dayjs/locale/th";

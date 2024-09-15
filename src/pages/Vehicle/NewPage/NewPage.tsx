@@ -5,73 +5,61 @@ import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
-	useLoaderData,
-	useSubmit,
+  useLoaderData,
+  useNavigate,
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
 
 export const NewPage: FC = () => {
-	const { initFormData, vendorSelectOptions } =
-		useLoaderData() as NewPageLoaderData;
-	const submit = useSubmit();
+  const { initFormData, vendorSelectOptions } =
+    useLoaderData() as NewPageLoaderData;
+  const navigate = useNavigate();
 
-	const handleSubmit = (
-		formData: VehicleFormData,
-	) => {
-		postVehicle(formData).then(
-			(vehicleId) => {
-				toast.success("ลงทะเบียนสำเร็จ");
-				submit(
-					{},
-					{
-						replace: true,
-						action: "/vehicles/info/" + vehicleId,
-					},
-				);
-			},
-			() => {
-				toast.error("ลงทะเบียนล้มเหลว");
-				submit(
-					{},
-					{
-						replace: true,
-						action: "/vehicles",
-					},
-				);
-			},
-		);
-	};
+  const handleCancel = () => {
+    navigate("/vehicles", {
+      replace: true,
+    });
+  };
 
-	return (
-		<Stack spacing={1}>
-			<Typography variant="h1">
-				ลงทะเบียนรถรับส่ง
-			</Typography>
-			<VehicleForm
-				initFormData={initFormData}
-				slotProps={{
-					vendorSelect: {
-						options: vendorSelectOptions,
-					},
-					submitButton: {
-						startIcon: <AddRounded />,
-						label: "ลงทะเบียน",
-						onClick: handleSubmit,
-					},
-					cancelButton: {
-						onClick: () => {
-							submit(
-								{},
-								{
-									replace: true,
-									action: "/vehicles",
-								},
-							);
-						},
-					},
-				}}
-			/>
-		</Stack>
-	);
+  const handleSubmit = (formData: VehicleFormData) => {
+    postVehicle(formData).then(
+      (vehicleId) => {
+        toast.success("ลงทะเบียนสำเร็จ");
+        navigate("/vehicles/info/" + vehicleId, {
+          replace: true,
+        });
+      },
+      () => {
+        toast.error("ลงทะเบียนล้มเหลว");
+        handleCancel();
+      },
+    );
+  };
+
+  return (
+    <Stack spacing={1}>
+      <Typography variant="h1">แบบฟอร์ม</Typography>
+      <Typography variant="h2">
+        ลงทะเบียนรถรับส่ง
+      </Typography>
+      <VehicleForm
+        initFormData={initFormData}
+        slotProps={{
+          vendorSelect: {
+            options: vendorSelectOptions,
+          },
+          submitButton: {
+            startIcon: <AddRounded />,
+            label: "เพิ่มรถรับส่ง",
+            onClick: handleSubmit,
+          },
+          cancelButton: {
+            label: "ยกเลิก",
+            onClick: handleCancel,
+          },
+        }}
+      />
+    </Stack>
+  );
 };

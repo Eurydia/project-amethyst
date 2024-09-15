@@ -1,6 +1,5 @@
-import { DriverReportInfoGroup } from "$components/DriverReportGeneralInfoGroup";
+import { DriverReportInfoGroup } from "$components/DriverReportInfoGroup";
 import { Stack, Typography } from "@mui/material";
-import "dayjs/locale/th";
 import { FC } from "react";
 import { useLoaderData, useSubmit } from "react-router-dom";
 import { InfoPageLoaderData } from "./loader";

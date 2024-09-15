@@ -1,5 +1,5 @@
 import { putDriverReportGeneral } from "$backend/database/put";
-import { DriverReportForm } from "$components/DriverReportMedicalForm";
+import { DriverReportForm } from "$components/DriverReportForm";
 import { DriverReportFormData } from "$types/models/driver-report";
 import { SaveRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";

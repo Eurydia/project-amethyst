@@ -6,7 +6,11 @@ import { OperationalLogTable } from "$components/OperationalLogTable";
 import { TRANSLATION } from "$locale/th";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
-import { useLoaderData, useSubmit } from "react-router-dom";
+import {
+  createSearchParams,
+  useLoaderData,
+  useNavigate,
+} from "react-router-dom";
 import { IndexPageLoaderData } from "./loader";
 
 const TOC_ITEMS = [
@@ -39,7 +43,7 @@ export const IndexPage: FC = () => {
     generalEntries,
     medicalEntries,
   } = useLoaderData() as IndexPageLoaderData;
-  const submit = useSubmit();
+  const navigate = useNavigate();
 
   return (
     <Stack spacing={1}>
@@ -54,13 +58,7 @@ export const IndexPage: FC = () => {
         driver={driver}
         slotProps={{
           editButton: {
-            onClick: () =>
-              submit(
-                {},
-                {
-                  action: "./edit",
-                },
-              ),
+            onClick: () => navigate("./edit"),
           },
           gallery: {
             dirPath: galleryDirPath,
@@ -78,13 +76,11 @@ export const IndexPage: FC = () => {
             disabled:
               databaseHasNoVehicle || databaseHasNoRoute,
             onClick: () =>
-              submit(
-                {
-                  driverId: driver.id,
-                },
-                {
-                  action: "/operational-logs/new",
-                },
+              navigate(
+                "/operational-logs/new" +
+                  createSearchParams({
+                    driverId: driver.id.toString(),
+                  }).toString(),
               ),
           },
         }}
@@ -98,13 +94,11 @@ export const IndexPage: FC = () => {
         slotProps={{
           addButton: {
             onClick: () =>
-              submit(
-                {
-                  driverId: driver.id,
-                },
-                {
-                  action: "/drivers/report/general/new",
-                },
+              navigate(
+                "/drivres/report/general/new" +
+                  createSearchParams({
+                    driverId: driver.id.toString(),
+                  }).toString(),
               ),
           },
         }}
@@ -117,13 +111,11 @@ export const IndexPage: FC = () => {
         slotProps={{
           addButton: {
             onClick: () =>
-              submit(
-                {
-                  driverId: driver.id,
-                },
-                {
-                  action: "/drivers/report/medical/new",
-                },
+              navigate(
+                "/drivers/report/medical/new" +
+                  createSearchParams({
+                    driverId: driver.id.toString(),
+                  }).toString(),
               ),
           },
         }}

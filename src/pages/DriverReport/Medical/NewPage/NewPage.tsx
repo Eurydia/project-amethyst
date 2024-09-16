@@ -1,4 +1,5 @@
 import { postDriverReportGeneral } from "$backend/database/post";
+import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { DriverReportForm } from "$components/DriverReportForm";
 import { DriverReportFormData } from "$types/models/driver-report";
 import {
@@ -6,11 +7,10 @@ import {
   KeyboardArrowLeftRounded,
 } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
-import { FC, Fragment, ReactNode } from "react";
+import { FC } from "react";
 import {
-  Link,
   useLoaderData,
-  useSubmit,
+  useNavigate,
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
@@ -23,21 +23,19 @@ export const NewPage: FC = () => {
     initFormData,
   } = useLoaderData() as NewPageLoaderData;
 
-  const submit = useSubmit();
+  const navigate = useNavigate();
 
   const hasSelectedDriver = selectedDriver !== null;
-  const action = hasSelectedDriver
+  const prevPage = hasSelectedDriver
     ? `/drivers/info/` + selectedDriver.id
     : `/drivers/report/medical`;
-
+  const prevPageLabel = hasSelectedDriver
+    ? "ข้อมูลคนขับรถ"
+    : "ตารางบันทึกเรื่องร้องเรียนคนขับรถ";
   const handleCancel = () => {
-    submit(
-      {},
-      {
-        replace: true,
-        action,
-      },
-    );
+    navigate(prevPage, {
+      replace: true,
+    });
   };
 
   const handleSubmit = async (
@@ -46,12 +44,10 @@ export const NewPage: FC = () => {
     postDriverReportGeneral(formData).then(
       (reportId) => {
         toast.success("ลงบันทึกสำเร็จ");
-        submit(
-          {},
+        navigate(
+          "/drivers/report/medical/info/" + reportId,
           {
             replace: true,
-            action:
-              "/drivers/report/medical/info/" + reportId,
           },
         );
       },
@@ -62,35 +58,21 @@ export const NewPage: FC = () => {
     );
   };
 
-  let heading: ReactNode = (
-    <Typography variant="h1">
-      แบบฟอร์มลงบันทึกผลการตรวจสารเสพติด
-    </Typography>
-  );
-  if (hasSelectedDriver) {
-    heading = (
-      <Fragment>
-        <Typography variant="h1">
-          {`${selectedDriver.name} ${selectedDriver.surname}`}
-        </Typography>
-        <Typography variant="h2">
-          แบบฟอร์มลงบันทึกผลการตรวจสารเสพติด
-        </Typography>
-      </Fragment>
-    );
-  }
-
-  const backButtonLabel = hasSelectedDriver
-    ? "ข้อมูลคนขับรถ"
-    : "ตารางบันทึกเรื่องร้องเรียนคนขับรถ";
-
   return (
     <Stack spacing={1}>
-      <Typography component={Link} to={action}>
+      <BaseTypographyLink to={prevPage}>
         <KeyboardArrowLeftRounded />
-        {backButtonLabel}
+        {prevPageLabel}
+      </BaseTypographyLink>
+      <Typography variant="h1">แบบฟอร์ม</Typography>
+      <Typography variant="h2">
+        ลงบันทึกผลการตรวจสารเสพติด
       </Typography>
-      {heading}
+      {hasSelectedDriver && (
+        <Typography variant="h3">
+          {`${selectedDriver.name} ${selectedDriver.surname}`}
+        </Typography>
+      )}
       <DriverReportForm
         initFormData={initFormData}
         slotProps={{

@@ -1,7 +1,11 @@
 import { postVehicle } from "$backend/database/post";
+import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { VehicleForm } from "$components/VehicleForm";
 import { VehicleFormData } from "$types/models/vehicle";
-import { AddRounded } from "@mui/icons-material";
+import {
+  AddRounded,
+  KeyboardArrowLeftRounded,
+} from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -39,6 +43,10 @@ export const NewPage: FC = () => {
 
   return (
     <Stack spacing={1}>
+      <BaseTypographyLink to="/vehicles">
+        <KeyboardArrowLeftRounded />
+        ทะเบียนรถรับส่ง
+      </BaseTypographyLink>
       <Typography variant="h1">แบบฟอร์ม</Typography>
       <Typography variant="h2">
         ลงทะเบียนรถรับส่ง

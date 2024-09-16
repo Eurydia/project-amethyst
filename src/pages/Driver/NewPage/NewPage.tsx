@@ -1,7 +1,11 @@
 import { postDriver } from "$backend/database/post";
+import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { DriverForm } from "$components/DriverForm";
 import { DriverFormData } from "$types/models/driver";
-import { AddRounded } from "@mui/icons-material";
+import {
+  AddRounded,
+  KeyboardArrowLeftRounded,
+} from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -39,6 +43,10 @@ export const NewPage: FC = () => {
 
   return (
     <Stack spacing={1}>
+      <BaseTypographyLink to="/drivers">
+        <KeyboardArrowLeftRounded />
+        รายชื่อคนขับรถ
+      </BaseTypographyLink>
       <Typography variant="h1">แบบฟอร์ม</Typography>
       <Typography variant="h2">ลงทะเบียนคนขับรถ</Typography>
       <DriverForm

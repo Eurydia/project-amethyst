@@ -1,7 +1,11 @@
 import { postPickupRoute } from "$backend/database/post";
+import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { PickupRouteForm } from "$components/PickupRouteForm";
 import { PickupRouteFormData } from "$types/models/pickup-route";
-import { AddRounded } from "@mui/icons-material";
+import {
+  AddRounded,
+  KeyboardArrowLeftRounded,
+} from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -15,6 +19,7 @@ export const NewPage: FC = () => {
   const { initFormData } =
     useLoaderData() as NewPageLoaderData;
   const navigate = useNavigate();
+
   const handleCancel = () => {
     navigate("/pickup-routes", {
       replace: true,
@@ -37,6 +42,10 @@ export const NewPage: FC = () => {
 
   return (
     <Stack spacing={1}>
+      <BaseTypographyLink to="/pickup-routes">
+        <KeyboardArrowLeftRounded />
+        รายชื่อสายรถ
+      </BaseTypographyLink>
       <Typography variant="h1">แบบฟอร์ม</Typography>
       <Typography variant="h2">ลงทะเบียนสายรถ</Typography>
       <PickupRouteForm

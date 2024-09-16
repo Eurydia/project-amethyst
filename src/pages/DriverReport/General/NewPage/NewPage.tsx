@@ -1,10 +1,17 @@
 import { postDriverReportGeneral } from "$backend/database/post";
+import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { DriverReportForm } from "$components/DriverReportForm";
 import { DriverReportFormData } from "$types/models/driver-report";
-import { AddRounded } from "@mui/icons-material";
+import {
+  AddRounded,
+  KeyboardArrowLeftRounded,
+} from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
-import { FC, Fragment } from "react";
-import { useLoaderData, useSubmit } from "react-router-dom";
+import { FC } from "react";
+import {
+  useLoaderData,
+  useNavigate,
+} from "react-router-dom";
 import { toast } from "react-toastify";
 import { NewPageLoaderData } from "./loader";
 
@@ -16,20 +23,20 @@ export const NewPage: FC = () => {
     initFormData,
   } = useLoaderData() as NewPageLoaderData;
 
-  const submit = useSubmit();
-  const hasSelectedDriver = selectedDriver !== null;
+  const navigate = useNavigate();
 
-  const action = hasSelectedDriver
+  const hasSelectedDriver = selectedDriver !== null;
+  const prevPage = hasSelectedDriver
     ? "/drivers/info/" + selectedDriver.id
     : "/drivers/report/general";
+  const prevPageLabel = hasSelectedDriver
+    ? "ข้อมูลคนขับรถ"
+    : "ตารางบันทึกเรื่องร้องเรียนคนขับรถ";
+
   const handleCancel = () => {
-    submit(
-      {},
-      {
-        replace: true,
-        action,
-      },
-    );
+    navigate(prevPage, {
+      replace: true,
+    });
   };
 
   const handleSubmit = async (
@@ -38,12 +45,10 @@ export const NewPage: FC = () => {
     postDriverReportGeneral(formData)
       .then((reportId) => {
         toast.success("ลงบันทึกสำเร็จ");
-        submit(
-          {},
+        navigate(
+          "/drivers/report/general/info/" + reportId,
           {
             replace: true,
-            action:
-              "/drivers/report/general/info/" + reportId,
           },
         );
       })
@@ -52,24 +57,22 @@ export const NewPage: FC = () => {
         handleCancel();
       });
   };
-  const heading = hasSelectedDriver ? (
-    <Fragment>
-      <Typography variant="h1">
-        {`${selectedDriver.name} ${selectedDriver.surname}`}
-      </Typography>
-      <Typography variant="h2">
-        แบบฟอร์มบันทึกเรื่องร้องเรียน
-      </Typography>
-    </Fragment>
-  ) : (
-    <Typography variant="h1">
-      แบบฟอร์มบันทึกเรื่องร้องเรียน
-    </Typography>
-  );
 
   return (
     <Stack spacing={1}>
-      {heading}
+      <BaseTypographyLink to={prevPage}>
+        <KeyboardArrowLeftRounded />
+        {prevPageLabel}
+      </BaseTypographyLink>
+      <Typography variant="h1">แบบฟอร์ม</Typography>
+      <Typography variant="h2">
+        ลงบันทึกเรื่องร้องเรียนคนขับรถ
+      </Typography>
+      {hasSelectedDriver && (
+        <Typography variant="h3">
+          {`${selectedDriver.name} ${selectedDriver.surname}`}
+        </Typography>
+      )}
       <DriverReportForm
         initFormData={initFormData}
         slotProps={{

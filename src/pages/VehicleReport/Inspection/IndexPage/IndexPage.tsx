@@ -1,4 +1,6 @@
+import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { VehicleReportInspectionTable } from "$components/VehicleReportInspectionTable";
+import { KeyboardArrowLeftRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
@@ -15,6 +17,10 @@ export const IndexPage: FC = () => {
 
   return (
     <Stack spacing={1}>
+      <BaseTypographyLink to="/">
+        <KeyboardArrowLeftRounded />
+        หน้าแรก
+      </BaseTypographyLink>
       <Typography variant="h1">
         ตารางบันทึกผลการตรวจสภาพรถ
       </Typography>

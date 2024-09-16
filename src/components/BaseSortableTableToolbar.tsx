@@ -26,14 +26,14 @@ type BaseSortableTableToolbarProps = {
       onClick: () => void;
     };
     importButton: {
-      label: string;
+      label?: string;
       disabled?: boolean;
-      onClick: () => void;
+      onClick?: () => void;
     };
     exportButton: {
-      label: string;
+      label?: string;
       disabled?: boolean;
-      onClick: () => void;
+      onClick?: () => void;
     };
   };
 };

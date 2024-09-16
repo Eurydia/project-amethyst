@@ -88,7 +88,7 @@ export const PickupRouteReportForm: FC<
     Number.isNaN(fieldDate.month()) ||
     Number.isNaN(fieldDate.year());
   const isRouteEmpty = fieldRoute === null;
-  const isTitleEmpty = fieldTitle.trim() === "";
+  const isTitleEmpty = fieldTitle.trim().length === 0;
 
   const isFormIncomplete =
     isRouteEmpty ||

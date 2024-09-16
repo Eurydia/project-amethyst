@@ -70,7 +70,7 @@ export const NewPage: FC = () => {
           submitButton: {
             onClick: handleSubmit,
             startIcon: <AddRounded />,
-            label: "ลงบันทึก",
+            label: "เพิ่มเรื่องร้องเรียน",
           },
           cancelButton: {
             onClick: handleCancle,

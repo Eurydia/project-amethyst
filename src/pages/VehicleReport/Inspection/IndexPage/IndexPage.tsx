@@ -2,44 +2,31 @@ import { VehicleReportInspectionTable } from "$components/VehicleReportInspectio
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
-	useLoaderData,
-	useSubmit,
+  useLoaderData,
+  useNavigate,
 } from "react-router-dom";
 import { IndexPageLoaderData } from "./loader";
 
 export const IndexPage: FC = () => {
-	const {
-		reportEntries,
+  const { reportEntries, databaseHasNoVehicle } =
+    useLoaderData() as IndexPageLoaderData;
 
-		topicMultiSelectOptions,
-		vehicleMultiSelectOptions,
-	} = useLoaderData() as IndexPageLoaderData;
+  const navigate = useNavigate();
 
-	const submit = useSubmit();
-
-	return (
-		<Stack spacing={1}>
-			<Typography variant="h1">
-				ตารางบันทึกผลการตรวจสภาพรถ
-			</Typography>
-			<VehicleReportInspectionTable
-				entries={reportEntries}
-				slotProps={{
-					addButton: {
-						disabled:
-							vehicleMultiSelectOptions.length ===
-							0,
-						onClick: () =>
-							submit({}, { action: "./new" }),
-					},
-					topicMultiSelect: {
-						options: topicMultiSelectOptions,
-					},
-					vehicleMultiSelect: {
-						options: vehicleMultiSelectOptions,
-					},
-				}}
-			/>
-		</Stack>
-	);
+  return (
+    <Stack spacing={1}>
+      <Typography variant="h1">
+        ตารางบันทึกผลการตรวจสภาพรถ
+      </Typography>
+      <VehicleReportInspectionTable
+        entries={reportEntries}
+        slotProps={{
+          addButton: {
+            disabled: databaseHasNoVehicle,
+            onClick: () => navigate("./new"),
+          },
+        }}
+      />
+    </Stack>
+  );
 };

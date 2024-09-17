@@ -13,34 +13,19 @@ type DriverReportFormProps = {
   initFormData: DriverReportFormData;
   slotProps: {
     submitButton: {
-      startIcon: ReactNode;
       label: string;
+      startIcon: ReactNode;
       onClick: (formData: DriverReportFormData) => void;
     };
     cancelButton: {
+      label: string;
       onClick: () => void;
-      label: string;
-    };
-
-    titleField: {
-      label: string;
-    };
-    contentField: {
-      label: string;
-    };
-    timeField: {
-      label: string;
-    };
-    dateField: {
-      label: string;
     };
     driverSelect: {
-      label: string;
       options: DriverModel[];
       disabled?: boolean;
     };
     topicComboBox: {
-      label: string;
       options: string[];
     };
   };
@@ -110,7 +95,7 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
     value: ReactNode;
   }[] = [
     {
-      label: slotProps.timeField.label,
+      label: "เวลา",
       value: (
         <BaseInputTimeField
           value={fieldTime}
@@ -119,7 +104,7 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       ),
     },
     {
-      label: slotProps.dateField.label,
+      label: "วัน/เดือน/ปี",
       value: (
         <BaseInputDateField
           value={fieldDate}
@@ -128,7 +113,7 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       ),
     },
     {
-      label: slotProps.driverSelect.label,
+      label: "คนขับรถ",
       value: (
         <DriverInputDriverSelect
           disabled={slotProps.driverSelect.disabled}
@@ -139,7 +124,7 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       ),
     },
     {
-      label: slotProps.titleField.label,
+      label: "เรื่อง",
       value: (
         <BaseInputTextField
           shouldAutoFocus
@@ -151,7 +136,7 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       ),
     },
     {
-      label: slotProps.contentField.label,
+      label: "รายละเอียด",
       value: (
         <BaseInputTextField
           multiline
@@ -164,7 +149,7 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       ),
     },
     {
-      label: slotProps.topicComboBox.label,
+      label: "หัวข้อที่เกี่ยวข้อง",
       value: (
         <BaseInputTopicComboBox
           options={slotProps.topicComboBox.options}
@@ -180,13 +165,13 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
-          onClick: handleSubmit,
           label: slotProps.submitButton.label,
           startIcon: slotProps.submitButton.startIcon,
+          onClick: handleSubmit,
         },
         cancelButton: {
-          onClick: slotProps.cancelButton.onClick,
           label: slotProps.cancelButton.label,
+          onClick: slotProps.cancelButton.onClick,
         },
       }}
     >

@@ -7,23 +7,22 @@ import { BaseInputTextField } from "./BaseInputTextField";
 
 type PickupRouteFormProps = {
   initFormData: PickupRouteFormData;
-
+  open: boolean;
+  onClose: () => void;
+  title: ReactNode;
   slotProps: {
     submitButton: {
       onClick: (formData: PickupRouteFormData) => void;
       label: string;
       startIcon: ReactNode;
     };
-    cancelButton: {
-      label: string;
-      onClick: () => void;
-    };
   };
 };
 export const PickupRouteForm: FC<PickupRouteFormProps> = (
   props,
 ) => {
-  const { initFormData, slotProps } = props;
+  const { initFormData, title, slotProps, open, onClose } =
+    props;
 
   const [fieldName, setFieldName] = useState(
     initFormData.name,
@@ -38,6 +37,7 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
     if (isFormIncomplete) {
       return;
     }
+
     slotProps.submitButton.onClick({
       name: fieldName.trim().normalize(),
       arrivalTime: fieldArrivalTime.format("HH:mm"),
@@ -62,10 +62,11 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
     value: ReactNode;
   }[] = [
     {
-      label: "ชื่อสายรถ",
+      label: "ชื่อสาย",
       value: (
         <BaseInputTextField
           shouldAutoFocus
+          multiline
           isError={isMissingName}
           value={fieldName}
           placeholder={initFormData.name}
@@ -111,6 +112,9 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
 
   return (
     <BaseForm
+      open={open}
+      onClose={onClose}
+      title={title}
       slotProps={{
         submitButton: {
           label: slotProps.submitButton.label,
@@ -119,8 +123,7 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
           onClick: handleSubmit,
         },
         cancelButton: {
-          label: slotProps.cancelButton.label,
-          onClick: slotProps.cancelButton.onClick,
+          onClick: onClose,
         },
       }}
     >

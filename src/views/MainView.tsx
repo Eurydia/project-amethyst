@@ -28,7 +28,7 @@ import {
 } from "react";
 import { Outlet } from "react-router-dom";
 
-const CLOCK_FORMAT = "HH:mm น., วันddddที่ D MMMM YYYY ";
+const CLOCK_FORMAT = "HH:mm น. วันddddที่ D MMMM YYYY";
 
 const PRIMARY_ROUTES = [
   {

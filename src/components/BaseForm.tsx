@@ -1,63 +1,67 @@
 import { FormalLayout } from "$layouts/FormalLayout";
-import { Grid2 } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Stack,
+} from "@mui/material";
 import { FC, ReactNode } from "react";
-import { TypographyButton } from "./TypographyButton";
 
 type BaseFormProps = {
-	slotProps: {
-		submitButton: {
-			startIcon: ReactNode;
-			disabled: boolean;
-			onClick: () => void;
-
-			label: string;
-		};
-		cancelButton: {
-			label: string;
-			onClick: () => void;
-		};
-	};
-	children: {
-		label: string;
-		value: ReactNode;
-	}[];
+  open: boolean;
+  onClose: () => void;
+  title: ReactNode;
+  slotProps: {
+    submitButton: {
+      startIcon: ReactNode;
+      disabled: boolean;
+      label: string;
+      onClick: () => void;
+    };
+  };
+  children: {
+    label: string;
+    value: ReactNode;
+  }[];
 };
-export const BaseForm: FC<BaseFormProps> = (
-	props,
-) => {
-	const { children, slotProps } = props;
-	return (
-		<Grid2 container>
-			<FormalLayout>{children}</FormalLayout>
-			<Grid2
-				size={{ xs: 12 }}
-				sx={{
-					paddingY: 1,
-					gap: 1,
-					display: "flex",
-					flexDirection: "row",
-					flexWrap: "wrap",
-				}}
-			>
-				<TypographyButton
-					variant="contained"
-					startIcon={
-						slotProps.submitButton.startIcon
-					}
-					onClick={slotProps.submitButton.onClick}
-					disabled={
-						slotProps.submitButton.disabled
-					}
-				>
-					{slotProps.submitButton.label}
-				</TypographyButton>
-				<TypographyButton
-					variant="outlined"
-					onClick={slotProps.cancelButton.onClick}
-				>
-					{slotProps.cancelButton.label}
-				</TypographyButton>
-			</Grid2>
-		</Grid2>
-	);
+export const BaseForm: FC<BaseFormProps> = (props) => {
+  const { title, children, slotProps, onClose, open } =
+    props;
+  return (
+    <Dialog
+      keepMounted
+      disablePortal
+      maxWidth="lg"
+      fullWidth
+      open={open}
+      onClose={onClose}
+    >
+      <DialogTitle component="div">
+        <Stack>{title}</Stack>
+      </DialogTitle>
+      <DialogContent>
+        <FormalLayout>{children}</FormalLayout>
+      </DialogContent>
+      <DialogActions
+        sx={{
+          display: "flex",
+          justifyContent: "flex-start",
+        }}
+      >
+        <Button
+          variant="contained"
+          startIcon={slotProps.submitButton.startIcon}
+          onClick={slotProps.submitButton.onClick}
+          disabled={slotProps.submitButton.disabled}
+        >
+          {slotProps.submitButton.label}
+        </Button>
+        <Button variant="outlined" onClick={onClose}>
+          ยกเลิก
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 };

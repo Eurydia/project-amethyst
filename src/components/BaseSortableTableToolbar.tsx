@@ -2,14 +2,8 @@ import {
   AddRounded,
   FileDownloadRounded,
   FileUploadRounded,
-  SearchRounded,
 } from "@mui/icons-material";
-import {
-  InputAdornment,
-  Stack,
-  TextField,
-  Toolbar,
-} from "@mui/material";
+import { Stack, Toolbar } from "@mui/material";
 import { FC } from "react";
 import { TypographyButton } from "./TypographyButton";
 
@@ -89,7 +83,7 @@ export const BaseSortableTableToolbar: FC<
             </TypographyButton>
           </Stack>
         </Stack>
-        <TextField
+        {/* <TextField
           fullWidth
           autoComplete="off"
           autoCapitalize="off"
@@ -107,7 +101,7 @@ export const BaseSortableTableToolbar: FC<
               ),
             },
           }}
-        />
+        /> */}
       </Stack>
     </Toolbar>
   );

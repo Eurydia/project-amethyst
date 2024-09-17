@@ -4,20 +4,19 @@ import { DriverEntry } from "$types/models/driver";
 import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
-	driverEntries: DriverEntry[];
+  driverEntries: DriverEntry[];
 };
-export const indexPageLoader: LoaderFunction =
-	async () => {
-		const drivers = (await getDriverAll()).map(
-			DRIVER_MODEL_TRANSFORMER.toDriverEntry,
-		);
+export const indexPageLoader: LoaderFunction = async () => {
+  const drivers = (await getDriverAll()).map(
+    DRIVER_MODEL_TRANSFORMER.toDriverEntry,
+  );
 
-		const driverEntries = (
-			await Promise.all(drivers)
-		).filter((entry) => entry !== null);
+  const driverEntries = (await Promise.all(drivers)).filter(
+    (entry) => entry !== null,
+  );
 
-		const loaderData: IndexPageLoaderData = {
-			driverEntries,
-		};
-		return loaderData;
-	};
+  const loaderData: IndexPageLoaderData = {
+    driverEntries,
+  };
+  return loaderData;
+};

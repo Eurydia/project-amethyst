@@ -1,7 +1,8 @@
 import { PickupRouteModel } from "./pickup-route";
 
 export type PickupRouteReportGeneralModel = {
-  report_id: number;
+  id: number;
+  route_id: number;
   datetime: string;
   title: string;
   content: string;

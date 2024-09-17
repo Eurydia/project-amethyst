@@ -3,16 +3,19 @@ import { PickupRouteReportGeneralTable } from "$components/PickupRouteReportGene
 import { KeyboardArrowLeftRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
-import {
-  useLoaderData,
-  useNavigate,
-} from "react-router-dom";
-import { IndexPageLoaderData } from "./loader";
+import { useLoaderData } from "react-router-dom";
+import { PickupRouteReportGeneralIndexPageLoaderData } from "./loader";
 
-export const IndexPage: FC = () => {
-  const { reportEntries, databaseHasNoRoute } =
-    useLoaderData() as IndexPageLoaderData;
-  const navigate = useNavigate();
+export const PickupRouteReportGeneralIndexPage: FC = () => {
+  const {
+    reportEntries,
+    routeSelectOptions,
+    topicComboBoxOptions,
+  } =
+    useLoaderData() as PickupRouteReportGeneralIndexPageLoaderData;
+
+  const databaseHasNoRoute =
+    routeSelectOptions.length === 0;
 
   return (
     <Stack spacing={1}>
@@ -26,9 +29,14 @@ export const IndexPage: FC = () => {
       <PickupRouteReportGeneralTable
         entries={reportEntries}
         slotProps={{
-          addButton: {
-            disabled: databaseHasNoRoute,
-            onClick: () => navigate("./new"),
+          form: {
+            routeSelect: {
+              disabled: databaseHasNoRoute,
+              options: routeSelectOptions,
+            },
+            topicComboBox: {
+              options: topicComboBoxOptions,
+            },
           },
         }}
       />

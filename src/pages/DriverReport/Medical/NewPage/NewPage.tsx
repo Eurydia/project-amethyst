@@ -76,30 +76,16 @@ export const NewPage: FC = () => {
       <DriverReportForm
         initFormData={initFormData}
         slotProps={{
-          dateField: {
-            label: "วัน/เดือน/ปี",
-          },
-          timeField: {
-            label: "เวลา",
-          },
-          titleField: {
-            label: "ชื่อเรื่อง",
-          },
-          contentField: {
-            label: "รายละเอียด",
-          },
           driverSelect: {
-            label: "ผู้ที่ถูกตรวจ",
             disabled: hasSelectedDriver,
             options: driverSelectOptions,
           },
           topicComboBox: {
-            label: "หัวข้อที่เกี่ยว",
             options: topicComboBoxOptions,
           },
           submitButton: {
             startIcon: <AddRounded />,
-            label: `เพิ่ม`,
+            label: `เพิ่มผลตรวจ`,
             onClick: handleSubmit,
           },
           cancelButton: {

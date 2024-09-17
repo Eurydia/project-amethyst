@@ -1,17 +1,12 @@
-import { BaseSortableTable } from "$components/BaseSortableTable";
-import { BaseSortableTableToolbar } from "$components/BaseSortableTableToolbar";
-import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
 import { PickupRouteEntry } from "$types/models/pickup-route";
-import { KeyboardArrowLeftRounded } from "@mui/icons-material";
+import { SearchRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC, useState } from "react";
-import {
-  useLoaderData,
-  useNavigate,
-} from "react-router-dom";
-import { IndexPageLoaderData } from "./loader";
+import { BaseInputTextField } from "./BaseInputTextField";
+import { BaseSortableTable } from "./BaseSortableTable";
+import { BaseTypographyLink } from "./BaseTypographyLink";
 
 const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
   [
@@ -66,12 +61,13 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
     },
   ];
 
-export const IndexPage: FC = () => {
-  const { routeEntries } =
-    useLoaderData() as IndexPageLoaderData;
-
-  const navigate = useNavigate();
-
+type PickupRouteTableProps = {
+  routeEntries: PickupRouteEntry[];
+};
+export const PickupRouteTable: FC<PickupRouteTableProps> = (
+  props,
+) => {
+  const { routeEntries } = props;
   const [search, setSearch] = useState("");
 
   const filteredEntries = filterItems(
@@ -87,48 +83,23 @@ export const IndexPage: FC = () => {
 
   return (
     <Stack spacing={1}>
-      <BaseTypographyLink to="/">
-        <KeyboardArrowLeftRounded />
-        หน้าแรก
-      </BaseTypographyLink>
-      <Typography variant="h1">รายชื่อสายรถ</Typography>
-      <Stack spacing={1}>
-        <BaseSortableTableToolbar
-          slotProps={{
-            exportButton: {
-              label: "ดาวน์โหลด",
-              onClick: () => {},
-              disabled: true,
-            },
-            importButton: {
-              label: "อัพโหลด",
-              onClick: () => {},
-              disabled: true,
-            },
-            searchField: {
-              placeholder:
-                "ค้นหาด้วยสายรถ, เลขทะเบียน, หรือชื่อสกุลคนขับรถ",
-              value: search,
-              onChange: setSearch,
-            },
-            addButton: {
-              label: "เพิ่มสายรถ",
-              onClick: () => navigate("/pickup-routes/new"),
-            },
-          }}
-        />
-        <BaseSortableTable
-          defaultSortOrder="asc"
-          defaultSortByColumn={0}
-          headers={HEADER_DEFINITION}
-          entries={filteredEntries}
-          slotProps={{
-            body: {
-              emptyText: "ไม่พบสายรถ",
-            },
-          }}
-        />
-      </Stack>
+      <BaseInputTextField
+        onChange={setSearch}
+        value={search}
+        placeholder="ค้นหาด้วยสายรถ, เลขทะเบียน, หรือชื่อสกุลคนขับรถ"
+        startIcon={<SearchRounded />}
+      />
+      <BaseSortableTable
+        defaultSortOrder="asc"
+        defaultSortByColumn={0}
+        headers={HEADER_DEFINITION}
+        entries={filteredEntries}
+        slotProps={{
+          body: {
+            emptyText: "ไม่พบสายรถ",
+          },
+        }}
+      />
     </Stack>
   );
 };

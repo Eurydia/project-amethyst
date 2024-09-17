@@ -45,7 +45,7 @@ export const NewPage: FC = () => {
       .then((reportId) => {
         toast.success("ลงบันทึกสำเร็จ");
         navigation(
-          "/vehicles/report/inspection/info" + reportId,
+          "/vehicles/report/inspection/info/" + reportId,
           {
             replace: true,
           },

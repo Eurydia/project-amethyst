@@ -8,8 +8,10 @@ import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { PickupRouteInputSelect } from "./PickupRouteInputSelect";
 
-type PickupRouteReportFormProps = {
+type PickupRouteReportGeneralFormProps = {
   initFormData: PickupRouteReportGeneralFormData;
+  open: boolean;
+  onClose: () => void;
 
   slotProps: {
     submitButton: {
@@ -18,9 +20,6 @@ type PickupRouteReportFormProps = {
       onClick: (
         formData: PickupRouteReportGeneralFormData,
       ) => void;
-    };
-    cancelButton: {
-      onClick: () => void;
     };
     topicComboBox: {
       options: string[];
@@ -31,10 +30,10 @@ type PickupRouteReportFormProps = {
     };
   };
 };
-export const PickupRouteReportForm: FC<
-  PickupRouteReportFormProps
+export const PickupRouteReportGeneralForm: FC<
+  PickupRouteReportGeneralFormProps
 > = (props) => {
-  const { initFormData, slotProps } = props;
+  const { onClose, initFormData, open, slotProps } = props;
 
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime),
@@ -183,6 +182,7 @@ export const PickupRouteReportForm: FC<
 
   return (
     <BaseForm
+      title={undefined}
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
@@ -190,11 +190,9 @@ export const PickupRouteReportForm: FC<
           label: slotProps.submitButton.label,
           onClick: handleSubmit,
         },
-        cancelButton: {
-          label: "ยกเลิก",
-          onClick: slotProps.cancelButton.onClick,
-        },
       }}
+      open={open}
+      onClose={onClose}
     >
       {formItems}
     </BaseForm>

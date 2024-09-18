@@ -6,6 +6,9 @@ import { DriverInputLicenseTypeRadioGroup } from "./DriverInputLicenseTypeRadioG
 
 type DriverFormProps = {
   initFormData: DriverFormData;
+  title: string;
+  open: boolean;
+  onClose: () => void;
 
   slotProps: {
     submitButton: {
@@ -13,14 +16,11 @@ type DriverFormProps = {
       label: string;
       onClick: (formData: DriverFormData) => void;
     };
-    cancelButton: {
-      label: string;
-      onClick: () => void;
-    };
   };
 };
 export const DriverForm: FC<DriverFormProps> = (props) => {
-  const { initFormData, slotProps } = props;
+  const { initFormData, onClose, open, title, slotProps } =
+    props;
 
   const [fieldName, setFieldName] = useState(
     initFormData.name,
@@ -84,7 +84,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       label: "เบอร์ติดต่อ",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.contact || `ไม่มี`}
+          placeholder={initFormData.contact || "ไม่มี"}
           value={fieldContact}
           onChange={setFieldContact}
         />
@@ -103,16 +103,15 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
 
   return (
     <BaseForm
+      onClose={onClose}
+      open={open}
+      title={title}
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
           startIcon: slotProps.submitButton.startIcon,
           label: slotProps.submitButton.label,
           onClick: handleSubmit,
-        },
-        cancelButton: {
-          label: slotProps.cancelButton.label,
-          onClick: slotProps.cancelButton.onClick,
         },
       }}
     >

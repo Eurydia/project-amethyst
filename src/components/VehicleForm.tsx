@@ -8,17 +8,16 @@ import { VehicleInputVendorAutocomplete } from "./VehicleInputVendorAutocomplete
 
 type VehicleFormProps = {
   initFormData: VehicleFormData;
+  open: boolean;
+  onClose: () => void;
+  title: string;
   slotProps: {
     submitButton: {
       label: string;
       startIcon: ReactNode;
       onClick: (formData: VehicleFormData) => void;
     };
-    cancelButton: {
-      label: string;
-      onClick: () => void;
-    };
-    vendorSelect: {
+    vendorComboBox: {
       options: string[];
     };
   };
@@ -26,7 +25,8 @@ type VehicleFormProps = {
 export const VehicleForm: FC<VehicleFormProps> = (
   props,
 ) => {
-  const { initFormData, slotProps } = props;
+  const { initFormData, slotProps, onClose, open, title } =
+    props;
 
   const [fieldLicensePlate, setFieldLicensePlate] =
     useState(initFormData.licensePlate);
@@ -99,7 +99,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
       label: "หจก.",
       value: (
         <VehicleInputVendorAutocomplete
-          options={slotProps.vendorSelect.options}
+          options={slotProps.vendorComboBox.options}
           placeholder={initFormData.vendor}
           value={fieldVendor}
           onChange={setFieldVendor}
@@ -110,16 +110,15 @@ export const VehicleForm: FC<VehicleFormProps> = (
 
   return (
     <BaseForm
+      open={open}
+      onClose={onClose}
+      title={title}
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
           startIcon: slotProps.submitButton.startIcon,
           label: slotProps.submitButton.label,
           onClick: handleSubmit,
-        },
-        cancelButton: {
-          label: slotProps.cancelButton.label,
-          onClick: slotProps.cancelButton.onClick,
         },
       }}
     >

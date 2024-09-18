@@ -8,7 +8,7 @@ import { DriverModel } from "$types/models/driver";
 import { DriverReportEntry } from "$types/models/driver-report";
 import { LoaderFunction } from "react-router-dom";
 
-export type IndexPageLoaderData = {
+export type DriverReportGeneralIndexPageLoaderData = {
   reportEntries: DriverReportEntry[];
   driverSelectOptions: DriverModel[];
   topicComboBoxOptions: string[];
@@ -26,10 +26,11 @@ export const driverReportGeneralIndexPageLoader: LoaderFunction =
     const driverSelectOptions = await getDriverAll();
     const topicComboBoxOptions = await getTopicAll();
 
-    const loaderData: IndexPageLoaderData = {
-      reportEntries,
-      driverSelectOptions,
-      topicComboBoxOptions,
-    };
+    const loaderData: DriverReportGeneralIndexPageLoaderData =
+      {
+        reportEntries,
+        driverSelectOptions,
+        topicComboBoxOptions,
+      };
     return loaderData;
   };

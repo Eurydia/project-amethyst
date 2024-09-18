@@ -22,7 +22,10 @@ import { DriverReportMedicalInfoPage } from "$pages/DriverReportMedicalInfoPage/
 import { driverReportMedicalInfoPageLoader } from "$pages/DriverReportMedicalInfoPage/loader";
 import { ErrorPage } from "$pages/ErrorPage";
 import { HomePage, homePageLoader } from "$pages/HomePage";
-import { OPERATIONAL_LOG_ROUTES } from "$pages/OperationalLog";
+import {
+  OperationalLogIndexPage,
+  operationalLogIndexPageLoader,
+} from "$pages/OperationalLogIndexPage";
 import {
   PickupRouteIndexPage,
   pickupRouteIndexPageLoader,
@@ -78,8 +81,11 @@ export const routes = createBrowserRouter([
         loader: homePageLoader,
       },
 
-      ///////////////////////
-      OPERATIONAL_LOG_ROUTES,
+      {
+        path: "operational-logs",
+        element: <OperationalLogIndexPage />,
+        loader: operationalLogIndexPageLoader,
+      },
 
       {
         path: "pickup-routes",

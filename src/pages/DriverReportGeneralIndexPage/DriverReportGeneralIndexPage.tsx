@@ -2,7 +2,7 @@ import { DriverReportGeneralTable } from "$components/DriverReportGeneralTable";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import { useLoaderData } from "react-router-dom";
-import { IndexPageLoaderData as DriverReportGeneralIndexPageLoaderData } from "./loader";
+import { DriverReportGeneralIndexPageLoaderData } from "./loader";
 
 export const DriverReportGeneralIndexPage: FC = () => {
   const {

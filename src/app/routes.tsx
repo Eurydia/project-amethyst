@@ -2,6 +2,24 @@ import {
   DriverIndexPage,
   driverIndexPageLoader,
 } from "$pages/DriverIndexPage";
+import {
+  DriverInfoPage,
+  driverInfoPageLoader,
+} from "$pages/DriverInfoPage";
+import {
+  DriverReportGeneralIndexPage,
+  driverReportGeneralIndexPageLoader,
+} from "$pages/DriverReportGeneralIndexPage";
+import {
+  DriverReportGeneralInfoPage,
+  driverReportGeneralInfoPageLoader,
+} from "$pages/DriverReportGeneralInfoPage";
+import {
+  DriverReportMedicalIndexPage,
+  driverReportMedicalIndexPageLoader,
+} from "$pages/DriverReportMedicalIndexPage";
+import { DriverReportMedicalInfoPage } from "$pages/DriverReportMedicalInfoPage/DriverReportMedicalInfoPage";
+import { driverReportMedicalInfoPageLoader } from "$pages/DriverReportMedicalInfoPage/loader";
 import { ErrorPage } from "$pages/ErrorPage";
 import { HomePage, homePageLoader } from "$pages/HomePage";
 import { OPERATIONAL_LOG_ROUTES } from "$pages/OperationalLog";
@@ -158,6 +176,41 @@ export const routes = createBrowserRouter([
             index: true,
             element: <DriverIndexPage />,
             loader: driverIndexPageLoader,
+          },
+          {
+            path: "info/:driverId",
+            element: <DriverInfoPage />,
+            loader: driverInfoPageLoader,
+          },
+          {
+            path: "report/general",
+            children: [
+              {
+                index: true,
+                element: <DriverReportGeneralIndexPage />,
+                loader: driverReportGeneralIndexPageLoader,
+              },
+              {
+                path: "info/:reportId",
+                element: <DriverReportGeneralInfoPage />,
+                loader: driverReportGeneralInfoPageLoader,
+              },
+            ],
+          },
+          {
+            path: "report/medical",
+            children: [
+              {
+                index: true,
+                element: <DriverReportMedicalIndexPage />,
+                loader: driverReportMedicalIndexPageLoader,
+              },
+              {
+                path: "info/:reportId",
+                element: <DriverReportMedicalInfoPage />,
+                loader: driverReportMedicalInfoPageLoader,
+              },
+            ],
           },
         ],
       },

@@ -1,12 +1,21 @@
+import { postDriverReportGeneral } from "$backend/database/post";
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
+import { DriverModel } from "$types/models/driver";
 import { DriverReportEntry } from "$types/models/driver-report";
-import { Stack, Typography } from "@mui/material";
+import {
+  AddRounded,
+  SearchRounded,
+} from "@mui/icons-material";
+import { Button, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
+import { useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
+import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseSortableTable } from "./BaseSortableTable";
-import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
+import { DriverReportForm } from "./DriverReportForm";
 
 const DATETIME_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
   {
@@ -61,9 +70,14 @@ type DriverReportGeneralTableProps = {
   hideDriverColumn?: boolean;
   entries: DriverReportEntry[];
   slotProps: {
-    addButton: {
-      disabled?: boolean;
-      onClick: () => void;
+    form: {
+      driverSelect: {
+        disabled?: boolean;
+        options: DriverModel[];
+      };
+      topicComboBox: {
+        options: string[];
+      };
     };
   };
 };
@@ -72,7 +86,9 @@ export const DriverReportGeneralTable: FC<
 > = (props) => {
   const { hideDriverColumn, entries, slotProps } = props;
 
+  const { revalidate } = useRevalidator();
   const [search, setSearch] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
   const filteredEntries = filterItems(entries, search, [
     "title",
     "topics",
@@ -96,29 +112,20 @@ export const DriverReportGeneralTable: FC<
 
   return (
     <Stack spacing={1}>
-      <BaseSortableTableToolbar
-        slotProps={{
-          exportButton: {
-            label: "ดาวน์โหลด",
-            onClick: () => {},
-            disabled: true,
-          },
-          importButton: {
-            label: "อัปโหลด",
-            onClick: () => {},
-            disabled: true,
-          },
-          addButton: {
-            label: "เพิ่มเรื่องร้องเรียน",
-            disabled: slotProps.addButton.disabled,
-            onClick: slotProps.addButton.onClick,
-          },
-          searchField: {
-            placeholder: `ค้นหาด้วยชื่อสกุลคนขับรถ, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง`,
-            value: search,
-            onChange: setSearch,
-          },
-        }}
+      <Stack>
+        <Button
+          variant="contained"
+          onClick={() => setDialogOpen(true)}
+          startIcon={<AddRounded />}
+        >
+          เพิ่มเรื่องร้องเรียน
+        </Button>
+      </Stack>
+      <BaseInputTextField
+        value={search}
+        onChange={setSearch}
+        placeholder="ค้นหาด้วยชื่อสกุลคนขับรถ, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง"
+        startIcon={<SearchRounded />}
       />
       <BaseSortableTable
         defaultSortByColumn={0}
@@ -131,6 +138,43 @@ export const DriverReportGeneralTable: FC<
           },
         }}
       />
+      {slotProps.form.driverSelect.options.length > 0 && (
+        <DriverReportForm
+          initFormData={{
+            datetime: dayjs().format(),
+            driver: slotProps.form.driverSelect.options[0],
+            title: "",
+            content: "",
+            topics: [],
+          }}
+          slotProps={{
+            submitButton: {
+              label: "เพิ่มเรื่องร้องเรียน",
+              startIcon: <AddRounded />,
+              onClick: (formData) =>
+                postDriverReportGeneral(formData)
+                  .then(
+                    () => {
+                      toast.success(
+                        "เพิ่มเรื่องร้องเรียนสำเร็จ",
+                      );
+                      revalidate();
+                    },
+                    () =>
+                      toast.error(
+                        "เพิ่มเรื่องร้องเรียนล้มเหลว",
+                      ),
+                  )
+                  .finally(() => setDialogOpen(false)),
+            },
+            driverSelect: slotProps.form.driverSelect,
+            topicComboBox: slotProps.form.topicComboBox,
+          }}
+          title="เพิ่มเรื่องร้องเรียนคนขับรถ"
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+        />
+      )}
     </Stack>
   );
 };

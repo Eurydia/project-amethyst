@@ -11,15 +11,14 @@ import { DriverInputDriverSelect } from "./DriverInputDriverSelect";
 
 type DriverReportFormProps = {
   initFormData: DriverReportFormData;
+  title: string;
+  open: boolean;
+  onClose: () => void;
   slotProps: {
     submitButton: {
       label: string;
       startIcon: ReactNode;
       onClick: (formData: DriverReportFormData) => void;
-    };
-    cancelButton: {
-      label: string;
-      onClick: () => void;
     };
     driverSelect: {
       options: DriverModel[];
@@ -33,7 +32,8 @@ type DriverReportFormProps = {
 export const DriverReportForm: FC<DriverReportFormProps> = (
   props,
 ) => {
-  const { initFormData, slotProps } = props;
+  const { initFormData, slotProps, onClose, open, title } =
+    props;
 
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime),
@@ -169,11 +169,10 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
           startIcon: slotProps.submitButton.startIcon,
           onClick: handleSubmit,
         },
-        cancelButton: {
-          label: slotProps.cancelButton.label,
-          onClick: slotProps.cancelButton.onClick,
-        },
       }}
+      open={open}
+      onClose={onClose}
+      title={title}
     >
       {formItems}
     </BaseForm>

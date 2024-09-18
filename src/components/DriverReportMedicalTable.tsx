@@ -1,12 +1,21 @@
+import { postDriverReportMedical } from "$backend/database/post";
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
-import { DriverReportEntry } from "$types/models/driver-report";
-import { Stack, Typography } from "@mui/material";
+import { DriverModel } from "$types/models/driver";
+import {
+  DriverReportEntry,
+  DriverReportFormData,
+} from "$types/models/driver-report";
+import { AddRounded } from "@mui/icons-material";
+import { Button, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
+import { useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
+import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseSortableTable } from "./BaseSortableTable";
-import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
+import { DriverReportForm } from "./DriverReportForm";
 
 const DATETIME_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
   {
@@ -64,9 +73,14 @@ type DriverReportMedicalTableProps = {
   entries: DriverReportEntry[];
   hideDriverColumn?: boolean;
   slotProps: {
-    addButton: {
-      disabled?: boolean;
-      onClick: () => void;
+    form: {
+      driverSelect: {
+        options: DriverModel[];
+        disabled?: boolean;
+      };
+      topicComboBox: {
+        options: string[];
+      };
     };
   };
 };
@@ -75,7 +89,9 @@ export const DriverReportMedicalTable: FC<
 > = (props) => {
   const { hideDriverColumn, entries, slotProps } = props;
 
+  const { revalidate } = useRevalidator();
   const [search, setSearch] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const filteredEntries = filterItems(entries, search, [
     "title",
@@ -100,19 +116,19 @@ export const DriverReportMedicalTable: FC<
 
   return (
     <Stack spacing={1}>
-      <BaseSortableTableToolbar
-        slotProps={{
-          addButton: {
-            label: "เพิ่มผลตรวจ",
-            disabled: slotProps.addButton.disabled,
-            onClick: slotProps.addButton.onClick,
-          },
-          searchField: {
-            placeholder: `ค้นหาด้วยชื่อสกุลคนขับรถ, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง`,
-            value: search,
-            onChange: setSearch,
-          },
-        }}
+      <Stack direction="row">
+        <Button
+          variant="contained"
+          startIcon={<AddRounded />}
+          onClick={() => setDialogOpen(true)}
+        >
+          เพิ่มผลตรวจสารเสพติด
+        </Button>
+      </Stack>
+      <BaseInputTextField
+        value={search}
+        onChange={setSearch}
+        placeholder="ค้นหาด้วยชื่อสกุลคนขับรถ, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง"
       />
       <BaseSortableTable
         slotProps={{
@@ -125,6 +141,38 @@ export const DriverReportMedicalTable: FC<
         entries={filteredEntries}
         headers={headers}
       />
+      {slotProps.form.driverSelect.options.length > 0 && (
+        <DriverReportForm
+          initFormData={{
+            title: "",
+            content: "",
+            topics: [],
+            datetime: dayjs().format(),
+            driver: slotProps.form.driverSelect.options[0],
+          }}
+          title="เพิ่มผลตรวจสารถเสพติด"
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          slotProps={{
+            submitButton: {
+              label: "เพิ่มผลตรวจ",
+              startIcon: <AddRounded />,
+              onClick: (formData: DriverReportFormData) =>
+                postDriverReportMedical(formData)
+                  .then(
+                    () => {
+                      toast.success("เพิ่มผลตรวจสำเร็จ");
+                      revalidate();
+                    },
+                    () => toast.error("เพิ่มผลตรวจล้มเหลว"),
+                  )
+                  .finally(() => setDialogOpen(false)),
+            },
+            driverSelect: slotProps.form.driverSelect,
+            topicComboBox: slotProps.form.topicComboBox,
+          }}
+        />
+      )}
     </Stack>
   );
 };

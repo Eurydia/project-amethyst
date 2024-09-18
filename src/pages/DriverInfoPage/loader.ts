@@ -4,6 +4,7 @@ import {
   getDriverReportMedicalAll,
   getOperationLogAll,
   getPickupRouteAll,
+  getTopicAll,
   getVehicleAll,
 } from "$backend/database/get";
 import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report-model";
@@ -12,6 +13,8 @@ import { TRANSLATION } from "$locale/th";
 import { DriverModel } from "$types/models/driver";
 import { DriverReportEntry } from "$types/models/driver-report";
 import { OperationalLogEntry } from "$types/models/operational-log";
+import { PickupRouteModel } from "$types/models/pickup-route";
+import { VehicleModel } from "$types/models/vehicle";
 import { fs } from "@tauri-apps/api";
 import { FileEntry, readDir } from "@tauri-apps/api/fs";
 import {
@@ -21,16 +24,19 @@ import {
 import { json, LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
-  databaseHasNoRoute: boolean;
-  databaseHasNoVehicle: boolean;
   driver: DriverModel;
   galleryDirPath: string;
   galleryFileEntries: FileEntry[];
+
+  vehicleSelectOptions: VehicleModel[];
+  routeSelectOptions: PickupRouteModel[];
+
   logEntries: OperationalLogEntry[];
   generalEntries: DriverReportEntry[];
   medicalEntries: DriverReportEntry[];
+  topicComboBoxOptions: string[];
 };
-export const indexPageLoader: LoaderFunction = async ({
+export const driverInfoPageLoader: LoaderFunction = async ({
   params,
 }) => {
   if (params.driverId === undefined) {
@@ -74,12 +80,6 @@ export const indexPageLoader: LoaderFunction = async ({
     await Promise.all(generalReports)
   ).filter((entry) => entry !== null);
 
-  const vehicles = await getVehicleAll();
-  const routes = await getPickupRouteAll();
-
-  const databaseHasNoVehicle = vehicles.length === 0;
-  const databaseHasNoRoute = routes.length === 0;
-
   const galleryDirPath = await join(
     await appLocalDataDir(),
     "assets",
@@ -104,17 +104,22 @@ export const indexPageLoader: LoaderFunction = async ({
     (entry) => entry !== null,
   );
 
-  const loaderData: IndexPageLoaderData = {
-    databaseHasNoRoute,
-    databaseHasNoVehicle,
+  const vehicleSelectOptions = await getVehicleAll();
+  const routeSelectOptions = await getPickupRouteAll();
+  const topicComboBoxOptions = await getTopicAll();
 
+  const loaderData: IndexPageLoaderData = {
     driver,
-    logEntries,
     galleryDirPath,
     galleryFileEntries,
 
+    logEntries,
     generalEntries,
     medicalEntries,
+
+    routeSelectOptions,
+    vehicleSelectOptions,
+    topicComboBoxOptions,
   };
   return loaderData;
 };

@@ -1,11 +1,7 @@
 import { postPickupRoute } from "$backend/database/post";
 import { PickupRouteForm } from "$components/PickupRouteForm";
 import { PickupRouteTable } from "$components/PickupRouteTable";
-import {
-  AddRounded,
-  DownloadRounded,
-  UploadRounded,
-} from "@mui/icons-material";
+import { AddRounded } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/material";
 import { FC, useState } from "react";
 import {
@@ -20,7 +16,7 @@ export const PickupRouteIndexPage: FC = () => {
     useLoaderData() as PickupRouteIndexPageLoaderData;
   const { revalidate } = useRevalidator();
 
-  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <Stack spacing={1}>
@@ -35,11 +31,11 @@ export const PickupRouteIndexPage: FC = () => {
         <Button
           variant="contained"
           startIcon={<AddRounded />}
-          onClick={() => setAddDialogOpen(true)}
+          onClick={() => setDialogOpen(true)}
         >
           เพิ่มสายรถ
         </Button>
-        <Stack
+        {/* <Stack
           useFlexGap
           direction="row"
           flexWrap="wrap"
@@ -57,14 +53,14 @@ export const PickupRouteIndexPage: FC = () => {
           >
             ExPORT
           </Button>
-        </Stack>
+        </Stack> */}
       </Stack>
       <PickupRouteTable routeEntries={routeEntries} />
       <PickupRouteForm
         title="ลงทะเบียนสายรถ"
-        open={addDialogOpen}
+        open={dialogOpen}
         initFormData={initFormData}
-        onClose={() => setAddDialogOpen(false)}
+        onClose={() => setDialogOpen(false)}
         slotProps={{
           submitButton: {
             label: "เพิ่มสายรถ",
@@ -73,12 +69,12 @@ export const PickupRouteIndexPage: FC = () => {
               postPickupRoute(formData)
                 .then(
                   () => {
-                    toast.success("สำเร็จ");
+                    toast.success("ลงทะเบียนสำเร็จ");
                     revalidate();
                   },
-                  () => toast.error("ล้มเหลว"),
+                  () => toast.error("ลงทะเบียนล้มเหลว"),
                 )
-                .finally(() => setAddDialogOpen(false)),
+                .finally(() => setDialogOpen(false)),
           },
         }}
       />

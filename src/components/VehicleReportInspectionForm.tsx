@@ -1,10 +1,11 @@
 import { VehicleModel } from "$types/models/vehicle";
 import { VehicleReportInspectionFormData } from "$types/models/vehicle-report-inspection";
 import { TextField, TextFieldProps } from "@mui/material";
-import { DateField, TimeField } from "@mui/x-date-pickers";
+import { DateField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
+import { BaseInputTimeField } from "./BaseInputTimeField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { VehicleInputSelect } from "./VehicleInputSelect";
 
@@ -23,6 +24,9 @@ const CustomTextField: FC<TextFieldProps> = (props) => {
 
 type VehicleReportInspectionFormProps = {
   initFormData: VehicleReportInspectionFormData;
+  open: boolean;
+  title: string;
+  onClose: () => void;
 
   slotProps: {
     submitButton: {
@@ -32,23 +36,22 @@ type VehicleReportInspectionFormProps = {
         formData: VehicleReportInspectionFormData,
       ) => void;
     };
-    cancelButton: {
-      label: string;
-      onClick: () => void;
-    };
-    vehicleSelect: {
-      disabled?: boolean;
-      options: VehicleModel[];
-    };
-    topicComboBox: {
-      options: string[];
+    form: {
+      vehicleSelect: {
+        disabled?: boolean;
+        options: VehicleModel[];
+      };
+      topicComboBox: {
+        options: string[];
+      };
     };
   };
 };
 export const VehicleReportInspectionForm: FC<
   VehicleReportInspectionFormProps
 > = (props) => {
-  const { initFormData, slotProps } = props;
+  const { initFormData, title, slotProps, onClose, open } =
+    props;
 
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime),
@@ -154,17 +157,9 @@ export const VehicleReportInspectionForm: FC<
     {
       label: "เวลา",
       value: (
-        <TimeField
-          fullWidth
-          formatDensity="spacious"
+        <BaseInputTimeField
           value={fieldTime}
-          onChange={(value) => {
-            if (value === null) {
-              return;
-            }
-            setFieldTime(value);
-          }}
-          format="HH:mm น."
+          onChange={setFieldTime}
         />
       ),
     },
@@ -189,8 +184,8 @@ export const VehicleReportInspectionForm: FC<
       label: "เลขทะเบียน",
       value: (
         <VehicleInputSelect
-          disabled={slotProps.vehicleSelect.disabled}
-          options={slotProps.vehicleSelect.options}
+          disabled={slotProps.form.vehicleSelect.disabled}
+          options={slotProps.form.vehicleSelect.options}
           value={fieldVehicle}
           onChange={setFieldVehicle}
         />
@@ -337,7 +332,7 @@ export const VehicleReportInspectionForm: FC<
       label: "หัวข้อที่เกี่ยวข้อง",
       value: (
         <BaseInputTopicComboBox
-          options={slotProps.topicComboBox.options}
+          options={slotProps.form.topicComboBox.options}
           values={fieldTopics}
           onChange={setFieldTopics}
         />
@@ -354,11 +349,10 @@ export const VehicleReportInspectionForm: FC<
           label: slotProps.submitButton.label,
           startIcon: slotProps.submitButton.startIcon,
         },
-        cancelButton: {
-          label: slotProps.cancelButton.label,
-          onClick: slotProps.cancelButton.onClick,
-        },
       }}
+      open={open}
+      onClose={onClose}
+      title={title}
     >
       {formItems}
     </BaseForm>

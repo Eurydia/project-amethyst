@@ -1,12 +1,24 @@
+import { postVehicleReportGeneral } from "$backend/database/post";
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
-import { VehicleReportGeneralEntry } from "$types/models/vehicle-report-general";
-import { Stack, Typography } from "@mui/material";
+import { VehicleModel } from "$types/models/vehicle";
+import {
+  VehicleReportGeneralEntry,
+  VehicleReportGeneralFormData,
+} from "$types/models/vehicle-report-general";
+import {
+  AddRounded,
+  SearchRounded,
+} from "@mui/icons-material";
+import { Button, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
+import { useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
+import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseSortableTable } from "./BaseSortableTable";
-import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
+import { VehicleReportGeneralForm } from "./VehicleReportGeneralForm";
 
 const DATETIME_HEADER_DEFINITION: TableHeaderDefinition<VehicleReportGeneralEntry> =
   {
@@ -64,10 +76,14 @@ type VehicleReportGeneralTableProps = {
   hideVehicleColumn?: boolean;
   entries: VehicleReportGeneralEntry[];
   slotProps: {
-    addButton: {
-      label: string;
-      onClick: () => void;
-      disabled?: boolean;
+    form: {
+      vehicleSelect: {
+        disabled?: boolean;
+        options: VehicleModel[];
+      };
+      topicComboBox: {
+        options: string[];
+      };
     };
   };
 };
@@ -76,6 +92,8 @@ export const VehicleReportGeneralTable: FC<
 > = (props) => {
   const { entries, slotProps, hideVehicleColumn } = props;
 
+  const { revalidate } = useRevalidator();
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
 
   const filteredEntries = filterItems(entries, search, [
@@ -100,31 +118,19 @@ export const VehicleReportGeneralTable: FC<
 
   return (
     <Stack spacing={1}>
-      <BaseSortableTableToolbar
-        slotProps={{
-          exportButton: {
-            label: "Export",
-            onClick: () => {},
-            disabled: true,
-          },
-          importButton: {
-            label: "import",
-            onClick: () => {},
-            disabled: true,
-          },
-
-          addButton: {
-            onClick: slotProps.addButton.onClick,
-            disabled: slotProps.addButton.disabled,
-            label: "เพิ่มเรื่องร้องเรียน",
-          },
-          searchField: {
-            placeholder:
-              "ค้นหาด้วยเลขทะเบียน, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง",
-            value: search,
-            onChange: setSearch,
-          },
-        }}
+      <Stack direction="row">
+        <Button
+          variant="contained"
+          onClick={() => setDialogOpen(true)}
+        >
+          เพิ่มเรื่องร้องเรียน
+        </Button>
+      </Stack>
+      <BaseInputTextField
+        startIcon={<SearchRounded />}
+        onChange={setSearch}
+        value={search}
+        placeholder="ค้นหาด้วยเลขทะเบียน, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง"
       />
       <BaseSortableTable
         defaultSortByColumn={0}
@@ -137,6 +143,46 @@ export const VehicleReportGeneralTable: FC<
           },
         }}
       />
+      {slotProps.form.vehicleSelect.options.length > 0 && (
+        <VehicleReportGeneralForm
+          initFormData={{
+            datetime: dayjs().format(),
+            title: "",
+            content: "",
+            topics: [],
+            vehicle:
+              slotProps.form.vehicleSelect.options[0],
+          }}
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          title="ร้องเรียนรถรับส่ง"
+          slotProps={{
+            submitButton: {
+              startIcon: <AddRounded />,
+              label: "เพิ่มเรื่องร้องเรียน",
+              onClick: (
+                formData: VehicleReportGeneralFormData,
+              ) =>
+                postVehicleReportGeneral(formData)
+                  .then(
+                    () => {
+                      toast.success(
+                        "เพิ่มเรื่องร้องเรียนสำเร็จ",
+                      );
+                      revalidate();
+                    },
+                    () =>
+                      toast.error(
+                        "เพิ่มเรื่องร้องเรียนล้มเหลว",
+                      ),
+                  )
+                  .finally(() => setDialogOpen(false)),
+            },
+            topicComboBox: slotProps.form.topicComboBox,
+            vehcleSelect: slotProps.form.vehicleSelect,
+          }}
+        />
+      )}
     </Stack>
   );
 };

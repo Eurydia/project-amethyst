@@ -10,6 +10,9 @@ import { VehicleInputSelect } from "./VehicleInputSelect";
 
 type VehicleReportGeneralFormProps = {
   initFormData: VehicleReportGeneralFormData;
+  open: boolean;
+  onClose: () => void;
+  title: string;
 
   slotProps: {
     submitButton: {
@@ -26,16 +29,13 @@ type VehicleReportGeneralFormProps = {
       options: VehicleModel[];
       disabled?: boolean;
     };
-    cancelButton: {
-      label: string;
-      onClick: () => void;
-    };
   };
 };
 export const VehicleReportGeneralForm: FC<
   VehicleReportGeneralFormProps
 > = (props) => {
-  const { initFormData, slotProps } = props;
+  const { initFormData, slotProps, onClose, open, title } =
+    props;
 
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime),
@@ -170,16 +170,15 @@ export const VehicleReportGeneralForm: FC<
 
   return (
     <BaseForm
+      onClose={onClose}
+      open={open}
+      title={title}
       slotProps={{
         submitButton: {
           startIcon: slotProps.submitButton.startIcon,
           label: slotProps.submitButton.label,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
-        },
-        cancelButton: {
-          label: slotProps.cancelButton.label,
-          onClick: slotProps.cancelButton.onClick,
         },
       }}
     >

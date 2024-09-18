@@ -306,3 +306,22 @@ pub async fn get_attendance_log_today(
         }
     }
 }
+
+#[tauri::command]
+pub async fn get_vehicle_vendor_all(
+    _: tauri::AppHandle,
+    state: tauri::State<'_, crate::AppState>,
+) -> Result<Vec<(String,)>, &'static str> {
+    let query = sqlx::query_as(
+        r#"
+            SELECT DISTINCT vendor FROM vehicles
+            ORDER BY vendor ASC;
+        "#,
+    )
+    .fetch_all(&state.db)
+    .await;
+    match query {
+        Ok(entries) => Ok(entries),
+        Err(_) => Ok(Vec::new()),
+    }
+}

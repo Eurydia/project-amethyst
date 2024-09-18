@@ -25,6 +25,26 @@ import {
   VehicleIndexPage,
   vehicleIndexPageLoader,
 } from "$pages/VehicleIndexPage";
+import {
+  VehicleInfoPage,
+  vehicleInfoPageLoader,
+} from "$pages/VehicleInfoPage";
+import {
+  VehicleReportGeneralIndexPage,
+  vehicleReportGeneralIndexPageLoader,
+} from "$pages/VehicleReportGeneralIndexPage";
+import {
+  VehicleReportGeneralInfoPage,
+  vehicleReportGeneralInfoPageLoader,
+} from "$pages/VehicleReportGeneralInfoPage";
+import {
+  VehicleReportInspectionIndexPage,
+  vehicleReportInspectionIndexPageLoader,
+} from "$pages/VehicleReportInspectionIndexPage";
+import {
+  VehicleReportInspectionInfoPage,
+  vehicleReportInspectionInfoPageLoader,
+} from "$pages/VehicleReportInspectionInfoPage";
 import { MainView } from "$views/MainView";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -87,11 +107,49 @@ export const routes = createBrowserRouter([
             element: <VehicleIndexPage />,
             loader: vehicleIndexPageLoader,
           },
+          {
+            path: "info/:vehicleId",
+            element: <VehicleInfoPage />,
+            loader: vehicleInfoPageLoader,
+          },
+          {
+            path: "report/general",
+            children: [
+              {
+                index: true,
+                element: <VehicleReportGeneralIndexPage />,
+                loader: vehicleReportGeneralIndexPageLoader,
+              },
+              {
+                path: "info/:reportId",
+                element: <VehicleReportGeneralInfoPage />,
+                loader: vehicleReportGeneralInfoPageLoader,
+              },
+            ],
+          },
+          {
+            path: "report/inspection",
+            children: [
+              {
+                index: true,
+                element: (
+                  <VehicleReportInspectionIndexPage />
+                ),
+                loader:
+                  vehicleReportInspectionIndexPageLoader,
+              },
+              {
+                path: "info/:reportId",
+                element: (
+                  <VehicleReportInspectionInfoPage />
+                ),
+                loader:
+                  vehicleReportInspectionInfoPageLoader,
+              },
+            ],
+          },
         ],
       },
-      // VEHICLE_INFO_ROUTES,
-      // VEHICLE_REPORT_GENERAL_ROUTES,
-      // VEHICLE_REPORT_INSPECTION_ROUTES,
 
       {
         path: "drivers",

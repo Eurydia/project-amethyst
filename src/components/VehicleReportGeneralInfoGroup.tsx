@@ -1,73 +1,127 @@
+import { putVehicleReportGeneral } from "$backend/database/put";
+import { FormalLayout } from "$layouts/FormalLayout";
+import { VehicleModel } from "$types/models/vehicle";
+import { VehicleReportGeneralModel } from "$types/models/vehicle-report-general";
 import {
-	VehicleModel,
-	VehicleReportGeneralModel,
-} from "$types/models/vehicle";
-import { Typography } from "@mui/material";
+  EditRounded,
+  SaveRounded,
+} from "@mui/icons-material";
+import { Button, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { FC } from "react";
-import {
-	Link,
-	useSubmit,
-} from "react-router-dom";
-import { BaseInfoGroup } from "./BaseInfoGroup";
+import { FC, useState } from "react";
+import { Link, useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
+import { VehicleReportGeneralForm } from "./VehicleReportGeneralForm";
 
 type VehicleReportGeneralInfoGroupProps = {
-	report: VehicleReportGeneralModel;
-	vehicle: VehicleModel;
+  report: VehicleReportGeneralModel;
+  vehicle: VehicleModel;
+  slotProps: {
+    form: {
+      topicComboBox: {
+        options: string[];
+      };
+    };
+  };
 };
 export const VehicleReportGeneralInfoGroup: FC<
-	VehicleReportGeneralInfoGroupProps
+  VehicleReportGeneralInfoGroupProps
 > = (props) => {
-	const { report, vehicle } = props;
-	const submit = useSubmit();
-	const infoItems = [
-		{
-			label: "วันที่ลงบันทึก",
-			value: dayjs(report.datetime)
-				.locale("th")
-				.format(
-					"HH:mm น. วันddddที่ DD MMMM YYYY",
-				),
-		},
-		{
-			label: "เลขทะเบียน",
-			value: (
-				<Link to={"/vehicles/info/" + vehicle.id}>
-					{vehicle.license_plate}
-				</Link>
-			),
-		},
-		{
-			label: "เรื่อง",
-			value: report.title,
-		},
-		{
-			label: "รายละเอียด",
-			value: report.content,
-		},
-		{
-			label: "หัวข้อที่เกี่ยวข้อง",
-			value:
-				report.topics.length > 0
-					? report.topics.replaceAll(",", ", ")
-					: "ไม่มีหัวข้อที่เกี่ยวข้อง",
-		},
-	].map(({ label, value }) => ({
-		label,
-		value: <Typography>{value}</Typography>,
-	}));
+  const { report, vehicle, slotProps } = props;
+  const { revalidate } = useRevalidator();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-	return (
-		<BaseInfoGroup
-			slotProps={{
-				editButton: {
-					label: "แก้ไขรายละเอียด",
-					onClick: () =>
-						submit({}, { action: "./edit" }),
-				},
-			}}
-		>
-			{infoItems}
-		</BaseInfoGroup>
-	);
+  const infoItems = [
+    {
+      label: "วันที่ลงบันทึก",
+      value: dayjs(report.datetime)
+        .locale("th")
+        .format("HH:mm น. วันddddที่ DD MMMM YYYY"),
+    },
+    {
+      label: "เลขทะเบียน",
+      value: (
+        <Link to={"/vehicles/info/" + vehicle.id}>
+          {vehicle.license_plate}
+        </Link>
+      ),
+    },
+    {
+      label: "เรื่อง",
+      value: report.title,
+    },
+    {
+      label: "รายละเอียด",
+      value: report.content,
+    },
+  ].map(({ label, value }) => ({
+    label,
+    value: <Typography>{value}</Typography>,
+  }));
+
+  infoItems.push({
+    label: "หัวข้อที่เกี่ยวข้อง",
+    value:
+      report.topics.length > 0 ? (
+        <Typography>
+          {report.topics.replaceAll(",", ", ")}
+        </Typography>
+      ) : (
+        <Typography fontStyle="italic">
+          ไม่มีหัวข้อที่เกี่ยวข้อง
+        </Typography>
+      ),
+  });
+
+  return (
+    <Stack spacing={1}>
+      <Button
+        variant="outlined"
+        startIcon={<EditRounded />}
+        onClick={() => setDialogOpen(true)}
+      >
+        แก้ไขข้อมูล
+      </Button>
+      <FormalLayout>{infoItems}</FormalLayout>
+      <VehicleReportGeneralForm
+        initFormData={{
+          datetime: "",
+          title: "",
+          content: "",
+          topics: [],
+          vehicle: {
+            id: 0,
+            license_plate: "",
+            vendor: "",
+            vehicle_class: "",
+            registered_city: "",
+          },
+        }}
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        title="แก้ไขข้อมูลเรื่องร้องเรียนรถรับส่ง"
+        slotProps={{
+          submitButton: {
+            startIcon: <SaveRounded />,
+            label: "บันทึกการเปลี่ยนแปลง",
+            onClick: (formData) =>
+              putVehicleReportGeneral(report.id, formData)
+                .then(
+                  () => {
+                    toast.success("บันทึกสำเร็จ");
+                    revalidate();
+                  },
+                  () => toast.error("บันทึกล้มเหลว"),
+                )
+                .finally(() => setDialogOpen(false)),
+          },
+          topicComboBox: slotProps.form.topicComboBox,
+          vehcleSelect: {
+            options: [vehicle],
+            disabled: true,
+          },
+        }}
+      />
+    </Stack>
+  );
 };

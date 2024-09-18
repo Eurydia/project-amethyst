@@ -62,6 +62,10 @@ export const getDriverReportMedical = async (
 //#endregion
 
 //#region Vehicle
+export const getVehicleVendorAll = async (): Promise<
+  string[]
+> => invoke("get_vehicle_vendor_all");
+
 export const getVehicleAll = async (): Promise<
   VehicleModel[]
 > => invoke("get_vehicle_all");

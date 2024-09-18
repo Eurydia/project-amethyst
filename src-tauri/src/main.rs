@@ -28,6 +28,7 @@ async fn main() -> Result<(), &'static str> {
             get_driver_report_medical,
             get_vehicle_all,
             get_vehicle,
+            get_vehicle_vendor_all,
             get_vehicle_report_general_all,
             get_vehicle_report_general,
             get_vehicle_report_inspection_all,

@@ -1,12 +1,24 @@
+import { postVehicleReportInspection } from "$backend/database/post";
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
-import { VehicleReportInspectionEntry } from "$types/models/vehicle-report-inspection";
-import { Stack, Typography } from "@mui/material";
+import { VehicleModel } from "$types/models/vehicle";
+import {
+  VehicleReportInspectionEntry,
+  VehicleReportInspectionFormData,
+} from "$types/models/vehicle-report-inspection";
+import {
+  AddRounded,
+  SearchRounded,
+} from "@mui/icons-material";
+import { Button, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
+import { useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
+import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseSortableTable } from "./BaseSortableTable";
-import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
+import { VehicleReportInspectionForm } from "./VehicleReportInspectionForm";
 
 const DATETIME_HEADER: TableHeaderDefinition<VehicleReportInspectionEntry> =
   {
@@ -65,9 +77,14 @@ type VehicleReportInspectionTableProps = {
   hideVehicleColumn?: boolean;
   entries: VehicleReportInspectionEntry[];
   slotProps: {
-    addButton: {
-      disabled?: boolean;
-      onClick: () => void;
+    form: {
+      vehicleSelect: {
+        disabled?: boolean;
+        options: VehicleModel[];
+      };
+      topicComboBox: {
+        options: string[];
+      };
     };
   };
 };
@@ -77,6 +94,10 @@ export const VehicleReportInspectionTable: FC<
   const { slotProps, entries, hideVehicleColumn } = props;
 
   const [search, setSearch] = useState("");
+
+  const { revalidate } = useRevalidator();
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   const filteredEntries = filterItems(entries, search, [
     "title",
     "topics",
@@ -96,22 +117,19 @@ export const VehicleReportInspectionTable: FC<
 
   return (
     <Stack spacing={1}>
-      <BaseSortableTableToolbar
-        slotProps={{
-          exportButton: {},
-          importButton: {},
-          addButton: {
-            label: "เพิ่มผลตรวจสภาพรถ",
-            onClick: slotProps.addButton.onClick,
-            disabled: slotProps.addButton.disabled,
-          },
-          searchField: {
-            placeholder:
-              "ค้นหาด้วยเลขทะเบียน, รอบการตรวจ หรือหัวข้อที่เกี่ยวข้อง",
-            value: search,
-            onChange: setSearch,
-          },
-        }}
+      <Stack direction="row">
+        <Button
+          variant="contained"
+          onClick={() => setDialogOpen(true)}
+        >
+          เพิ่มเรื่องร้องเรียน
+        </Button>
+      </Stack>
+      <BaseInputTextField
+        startIcon={<SearchRounded />}
+        onChange={setSearch}
+        value={search}
+        placeholder="ค้นหาด้วยเลขทะเบียน, รอบการตรวจ หรือหัวข้อที่เกี่ยวข้อง"
       />
       <BaseSortableTable
         defaultSortByColumn={0}
@@ -124,6 +142,59 @@ export const VehicleReportInspectionTable: FC<
           },
         }}
       />
+      {slotProps.form.vehicleSelect.options.length > 0 && (
+        <VehicleReportInspectionForm
+          initFormData={{
+            datetime: dayjs().format(),
+            content: "",
+            frame: "",
+            windows: "",
+            frontCamera: "",
+            overheadFan: "",
+            brakeLight: "",
+            headlights: "",
+            turnSignals: "",
+            rearviewMirror: "",
+            sideviewMirror: "",
+            seatbelts: "",
+            seats: "",
+            tires: "",
+            topics: [],
+            vehicle:
+              slotProps.form.vehicleSelect.options[0],
+          }}
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          title="ร้องเรียนรถรับส่ง"
+          slotProps={{
+            submitButton: {
+              startIcon: <AddRounded />,
+              label: "เพิ่มผลการตรวจสภาพ",
+              onClick: (
+                formData: VehicleReportInspectionFormData,
+              ) =>
+                postVehicleReportInspection(formData)
+                  .then(
+                    () => {
+                      toast.success(
+                        "เพิ่มผลการตรวจสภาพสำเร็จ",
+                      );
+                      revalidate();
+                    },
+                    () =>
+                      toast.error(
+                        "เพิ่มผลการตรวจสภาพล้มเหลว",
+                      ),
+                  )
+                  .finally(() => setDialogOpen(false)),
+            },
+            form: {
+              topicComboBox: slotProps.form.topicComboBox,
+              vehicleSelect: slotProps.form.vehicleSelect,
+            },
+          }}
+        />
+      )}
     </Stack>
   );
 };

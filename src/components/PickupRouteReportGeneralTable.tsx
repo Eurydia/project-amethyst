@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import { FC, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
+import { BaseInputFileDropzone } from "./BaseInputFileDropzone";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
@@ -113,12 +114,16 @@ export const PickupRouteReportGeneralTable: FC<
     <Stack spacing={1}>
       <BaseSortableTableToolbar
         slotProps={{
-          importButton: {},
+          importButton: {
+            disabled: databaseHasNotRoute,
+            label: "เพิ่มสายรถจากไฟล์",
+          },
           exportButton: {},
           addButton: {
             label: "เพิ่มเรื่องร้องเรียน",
             disabled: databaseHasNotRoute,
             onClick: () => setDialogOpen(true),
+            reason: "ไม่มีสายรถในระบบ",
           },
           searchField: {
             placeholder:
@@ -170,6 +175,7 @@ export const PickupRouteReportGeneralTable: FC<
           onClose={() => setDialogOpen(false)}
         />
       )}
+      <BaseInputFileDropzone />
     </Stack>
   );
 };

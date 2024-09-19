@@ -15,7 +15,7 @@ type PickupRouteReportInfoGroupProps = {
   report: PickupRouteReportGeneralModel;
   slotProps: {
     form: {
-      topicComboBoxOptions: string[];
+      topicComboBox: { options: string[] };
     };
   };
 };
@@ -91,9 +91,7 @@ export const PickupRouteReportInfoGroup: FC<
                 () => toast.error("บันทึกล้มเหลว"),
               ),
           },
-          topicComboBox: {
-            options: slotProps.form.topicComboBoxOptions,
-          },
+          topicComboBox: slotProps.form.topicComboBox,
           routeSelect: {
             disabled: true,
             options: [route],

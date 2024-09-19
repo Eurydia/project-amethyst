@@ -27,6 +27,7 @@ export type PickupRouteInfoPageLoaderData = {
 };
 export const pickupRouteInfoPageLoader: LoaderFunction =
   async ({ params }) => {
+    console.log(params);
     if (params.routeId === undefined) {
       throw json(
         {},

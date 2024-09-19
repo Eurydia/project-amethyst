@@ -49,6 +49,10 @@ let theme = createTheme(
         },
         styleOverrides: {
           root: { wordBreak: "break-all" },
+          h1: {
+            wordBreak: "keep-all",
+            wordWrap: "normal",
+          },
         },
       },
       MuiInputBase: {

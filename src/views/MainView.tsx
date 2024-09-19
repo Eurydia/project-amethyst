@@ -134,7 +134,13 @@ export const MainView: FC = () => {
               </ListItem>
             ))}
           </List>
-          <Typography>{clock}</Typography>
+          <Typography
+            sx={{
+              wordBreak: "keep-all",
+            }}
+          >
+            {clock}
+          </Typography>
         </Toolbar>
       </AppBar>
       <TypographyTooltip

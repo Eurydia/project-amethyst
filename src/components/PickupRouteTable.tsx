@@ -17,7 +17,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
         <BaseTypographyLink
           to={"/pickup-routes/info/" + item.id}
         >
-          {item.name}
+          {item.name} ({item.id})
         </BaseTypographyLink>
       ),
     },

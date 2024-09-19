@@ -97,8 +97,8 @@ export const routes = createBrowserRouter([
           },
           {
             path: "info/:routeId",
-            loader: pickupRouteInfoPageLoader,
             element: <PickupRouteInfoPage />,
+            loader: pickupRouteInfoPageLoader,
           },
           {
             path: "report/general",

@@ -43,11 +43,7 @@ export const HomePage: FC = () => {
     <Stack spacing={1}>
       <Typography variant="h1">หน้าแรก</Typography>
       <Typography fontWeight="bold">ทางลัด</Typography>
-      <List
-        disablePadding
-        dense
-        sx={{ width: "fit-content" }}
-      >
+      <List disablePadding dense>
         {ROUTES.map((route, index) => (
           <ListItem
             key={"route" + index}
@@ -56,10 +52,7 @@ export const HomePage: FC = () => {
             disablePadding
           >
             <ListItemText disableTypography>
-              <BaseTypographyLink
-                to={route.path}
-                currentPageName="หน้าแรก"
-              >
+              <BaseTypographyLink to={route.path}>
                 <KeyboardArrowRightRounded />
                 {route.label}
               </BaseTypographyLink>

@@ -10,7 +10,7 @@ import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
 import { DriverInputDriverSelect } from "./DriverInputDriverSelect";
-import { PickupRouteInputSelect } from "./PickupRouteInputSelect";
+import { PickupRouteInputPickupRouteSelect } from "./PickupRouteInputPickupRouteSelect";
 import { VehicleInputSelect } from "./VehicleInputSelect";
 
 type OperationalLogFormProps = {
@@ -158,7 +158,7 @@ export const OperationalLogForm: FC<
     {
       label: "สายรถ",
       value: (
-        <PickupRouteInputSelect
+        <PickupRouteInputPickupRouteSelect
           isDisabled={slotProps.routeSelect.disabled}
           options={slotProps.routeSelect.options}
           value={fieldRoute}

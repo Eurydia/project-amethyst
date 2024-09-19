@@ -2,10 +2,15 @@ import {
   AddRounded,
   FileDownloadRounded,
   FileUploadRounded,
+  WarningRounded,
 } from "@mui/icons-material";
-import { Stack, Toolbar } from "@mui/material";
+import {
+  Button,
+  Stack,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import { FC } from "react";
-import { TypographyButton } from "./TypographyButton";
 
 type BaseSortableTableToolbarProps = {
   slotProps: {
@@ -15,9 +20,10 @@ type BaseSortableTableToolbarProps = {
       placeholder: string;
     };
     addButton: {
-      label: string;
       disabled?: boolean;
+      label: string;
       onClick: () => void;
+      reason?: string;
     };
     importButton: {
       label?: string;
@@ -53,55 +59,50 @@ export const BaseSortableTableToolbar: FC<
           alignItems="center"
           width={1}
         >
-          <TypographyButton
-            variant="contained"
-            startIcon={<AddRounded />}
-            onClick={slotProps.addButton.onClick}
-            disabled={slotProps.addButton.disabled}
-          >
-            {slotProps.addButton.label}
-          </TypographyButton>
+          <Stack spacing={1} direction="row">
+            <Button
+              variant="contained"
+              startIcon={<AddRounded />}
+              onClick={slotProps.addButton.onClick}
+              disabled={slotProps.addButton.disabled}
+            >
+              {slotProps.addButton.label}
+            </Button>
+            {slotProps.addButton.disabled && (
+              <Typography
+                color="warning"
+                fontStyle="italic"
+                display="flex"
+                flexDirection="row"
+                gap={1}
+              >
+                <WarningRounded />
+                {slotProps.addButton.reason}
+              </Typography>
+            )}
+          </Stack>
           <Stack
+            useFlexGap
             spacing={1}
             flexWrap="wrap"
             flexDirection="row"
-            useFlexGap
           >
-            <TypographyButton
+            <Button
               variant="outlined"
               startIcon={<FileUploadRounded />}
               onClick={slotProps.importButton.onClick}
             >
               {slotProps.importButton.label}
-            </TypographyButton>
-            <TypographyButton
+            </Button>
+            <Button
               variant="outlined"
               startIcon={<FileDownloadRounded />}
               onClick={slotProps.exportButton.onClick}
             >
               {slotProps.exportButton.label}
-            </TypographyButton>
+            </Button>
           </Stack>
         </Stack>
-        {/* <TextField
-          fullWidth
-          autoComplete="off"
-          autoCapitalize="off"
-          placeholder={slotProps.searchField.placeholder}
-          value={slotProps.searchField.value}
-          onChange={(e) =>
-            slotProps.searchField.onChange(e.target.value)
-          }
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchRounded />
-                </InputAdornment>
-              ),
-            },
-          }}
-        /> */}
       </Stack>
     </Toolbar>
   );

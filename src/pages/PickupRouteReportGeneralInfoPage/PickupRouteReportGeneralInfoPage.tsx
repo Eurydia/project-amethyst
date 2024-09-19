@@ -1,4 +1,4 @@
-import { PickupRouteReportInfoGroup } from "$components/PickupRouteReportInfoGroup";
+import { PickupRouteReportInfoGroup } from "$components/PickupRouteReportGeneralInfoGroup";
 import { Stack, Typography } from "@mui/material";
 import "dayjs/locale/th";
 import { FC } from "react";
@@ -10,17 +10,21 @@ export const PickupRouteReportGeneralInfoPage: FC = () => {
     useLoaderData() as PickupRouteReportGeneralInfoPageLoaderData;
 
   return (
-    <Stack sx={{ gap: 1 }}>
-      <Typography variant="h1">
+    <Stack spacing={1}>
+      <Typography
+        variant="h1"
+        sx={{ wordBreak: "keep-all", wordWrap: "normal" }}
+      >
         เรื่องร้องเรียนสายรถ
       </Typography>
-      <Typography variant="h2">รายละเอียด</Typography>
       <PickupRouteReportInfoGroup
         report={report}
         route={route}
         slotProps={{
           form: {
-            topicComboBoxOptions,
+            topicComboBox: {
+              options: topicComboBoxOptions,
+            },
           },
         }}
       />

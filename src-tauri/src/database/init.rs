@@ -15,6 +15,11 @@ async fn prepare_db_connection_pool(
             let _ = std::fs::File::create(file_path.clone());
         }
 
+        match opener::open(&dir_path) {
+            Ok(_) => {}
+            Err(_) => return Err("Cannot open database directory"),
+        };
+
         let file_path_str = match file_path.to_str() {
             Some(path) => path,
             None => return Err("Cannot convert db file path to string"),

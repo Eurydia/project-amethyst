@@ -220,9 +220,6 @@ export const routes = createBrowserRouter([
           },
         ],
       },
-      // DRIVER_INFO_ROUTES,
-      // DRIVER_REPORT_MEDICAL_ROUTES,
-      // DRIVER_REPORT_GENERAL_ROUTES,
     ],
   },
 ]);

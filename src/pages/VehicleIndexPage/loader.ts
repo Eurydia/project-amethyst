@@ -1,4 +1,7 @@
-import { getVehicleAll } from "$backend/database/get";
+import {
+  getVehicleAll,
+  getVehicleVendorAll,
+} from "$backend/database/get";
 import { VEHICLE_MODEL_TRANSFORMER } from "$core/transformers/vehicle-model";
 import { VehicleEntry } from "$types/models/vehicle";
 import { LoaderFunction } from "react-router-dom";
@@ -16,11 +19,8 @@ export const vehicleIndexPageLoader: LoaderFunction =
       ),
     );
 
-    const vendors = new Set<string>();
-    for (const vehicle of vehicles) {
-      vendors.add(vehicle.vendor);
-    }
-    const vendorComboBoxOptions = [...vendors];
+    const vendorComboBoxOptions =
+      await getVehicleVendorAll();
 
     const loaderData: VehicleIndexPageLoaderData = {
       vehicleEntries,

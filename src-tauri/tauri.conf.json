@@ -69,12 +69,12 @@
 		},
 		"windows": [
 			{
-				"fullscreen": false,
-				"height": 600,
-				"resizable": true,
-				"minHeight": 600,
 				"title": "สมุดบันทึกการเดินรถ",
-				"minWidth": 800,
+				"fullscreen": false,
+				"resizable": true,
+				"minHeight": 300,
+				"minWidth": 400,
+				"height": 600,
 				"width": 800
 			}
 		]

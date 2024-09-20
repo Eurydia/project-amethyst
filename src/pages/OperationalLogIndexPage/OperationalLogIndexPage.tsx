@@ -17,7 +17,7 @@ export const OperationalLogIndexPage: FC = () => {
         ตารางบันทึกประวัติการเดินรถ
       </Typography>
       <OperationalLogTable
-        entries={logEntries}
+        logEntries={logEntries}
         slotProps={{
           form: {
             vehicleSelect: {

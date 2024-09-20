@@ -4,7 +4,12 @@ import { DriverModel } from "$types/models/driver";
 import { OperationalLogEntry } from "$types/models/operational-log";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { VehicleModel } from "$types/models/vehicle";
-import { Stack, Typography } from "@mui/material";
+import {
+  Alert,
+  Collapse,
+  Stack,
+  Typography,
+} from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
 import { BaseSortableTable } from "./BaseSortableTable";
@@ -84,7 +89,7 @@ type OperationalLogTableProps = {
   hideVehicleColumn?: boolean;
   hideRouteColumn?: boolean;
   hideDriverColumn?: boolean;
-  entries: OperationalLogEntry[];
+  logEntries: OperationalLogEntry[];
   slotProps: {
     form: {
       vehicleSelect: {
@@ -106,7 +111,7 @@ export const OperationalLogTable: FC<
   OperationalLogTableProps
 > = (props) => {
   const {
-    entries,
+    logEntries,
     slotProps,
     hideDriverColumn,
     hideRouteColumn,
@@ -115,7 +120,7 @@ export const OperationalLogTable: FC<
 
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const filteredEntries = filterItems(entries, search, [
+  const filteredEntries = filterItems(logEntries, search, [
     "driverName",
     "driverSurname",
     "vehicleLicensePlate",
@@ -143,19 +148,60 @@ export const OperationalLogTable: FC<
   const databaseHasNoRoute =
     slotProps.form.routeSelect.options.length === 0;
 
+  const databaseHasNoLog = logEntries.length === 0;
+  const preventAddLog =
+    databaseHasNoDriver ||
+    databaseHasNoVehicle ||
+    databaseHasNoRoute;
+
   return (
     <Stack spacing={1}>
+      <Collapse in={preventAddLog}>
+        <Alert variant="outlined" severity="warning">
+          <Typography>
+            ไม่สามารถเพิ่มประวัติการเดินรถได้ เพราะว่า
+          </Typography>
+          <ul>
+            {databaseHasNoDriver && (
+              <li>
+                <Typography>
+                  ไม่มีคนขับรถในฐานข้อมูล
+                </Typography>
+              </li>
+            )}
+            {databaseHasNoVehicle && (
+              <li>
+                <Typography>ไม่มีรถ</Typography>
+              </li>
+            )}
+            {databaseHasNoRoute && (
+              <li>
+                <Typography>ไม่มีสายรถ</Typography>
+              </li>
+            )}
+          </ul>
+        </Alert>
+      </Collapse>
       <BaseSortableTableToolbar
         slotProps={{
-          importButton: {},
-          exportButton: {},
+          // TODO: translate
+          importButton: {
+            disabled: preventAddLog,
+            children: "Add log from file",
+            onClick: function (): void {
+              throw new Error("Function not implemented.");
+            },
+          },
+          exportButton: {
+            children: "Export logs",
+            onClick: function (): void {
+              throw new Error("Function not implemented.");
+            },
+          },
           addButton: {
-            disabled:
-              databaseHasNoDriver ||
-              databaseHasNoVehicle ||
-              databaseHasNoRoute,
+            disabled: preventAddLog,
+            children: "เพิ่มประวัติการเดินรถ",
             onClick: () => setDialogOpen(true),
-            label: "เพิ่มประวัติการเดินรถ",
           },
           searchField: {
             placeholder:
@@ -171,8 +217,11 @@ export const OperationalLogTable: FC<
         defaultSortByColumn={0}
         defaultSortOrder="desc"
         slotProps={{
+          // TODO: translate
           body: {
-            emptyText: "ไม่พบประวัติการเดินรถ",
+            emptyText: databaseHasNoLog
+              ? "Database is empty"
+              : "ไม่พบประวัติการเดินรถ",
           },
         }}
       />

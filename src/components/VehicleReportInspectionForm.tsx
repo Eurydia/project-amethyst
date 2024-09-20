@@ -346,7 +346,7 @@ export const VehicleReportInspectionForm: FC<
         submitButton: {
           disabled: isFormIncomplete,
           onClick: handleSubmit,
-          label: slotProps.submitButton.label,
+          children: slotProps.submitButton.label,
           startIcon: slotProps.submitButton.startIcon,
         },
       }}

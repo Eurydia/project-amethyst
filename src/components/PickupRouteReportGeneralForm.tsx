@@ -148,8 +148,8 @@ export const PickupRouteReportGeneralForm: FC<
       label: "เรื่อง",
       value: (
         <BaseInputTextField
-          shouldAutoFocus
-          isError={isTitleEmpty}
+          autoFocus
+          error={isTitleEmpty}
           value={fieldTitle}
           onChange={setFieldTitle}
           placeholder={initFormData.title}
@@ -187,7 +187,7 @@ export const PickupRouteReportGeneralForm: FC<
         submitButton: {
           disabled: isFormIncomplete,
           startIcon: slotProps.submitButton.startIcon,
-          label: slotProps.submitButton.label,
+          children: slotProps.submitButton.label,
           onClick: handleSubmit,
         },
       }}

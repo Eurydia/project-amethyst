@@ -5,39 +5,24 @@ type BaseInputTextFieldProps = {
   multiline?: boolean;
   minRows?: number;
   placeholder?: string;
-  shouldAutoFocus?: boolean;
-  isError?: boolean;
+  autoFocus?: boolean;
+  error?: boolean;
+  helperText?: ReactNode;
   startIcon?: ReactNode;
-  isDisabled?: boolean;
+  disabled?: boolean;
   value: string;
   onChange: (value: string) => void;
 };
 export const BaseInputTextField: FC<
   BaseInputTextFieldProps
 > = (props) => {
-  const {
-    minRows,
-    multiline,
-    isError,
-    onChange,
-    value,
-    isDisabled,
-    placeholder,
-    startIcon,
-    shouldAutoFocus,
-  } = props;
+  const { startIcon, onChange, ...rest } = props;
 
   return (
     <TextField
       fullWidth
-      multiline={multiline}
-      minRows={minRows}
-      error={isError}
-      autoFocus={shouldAutoFocus}
-      placeholder={placeholder}
-      disabled={isDisabled}
-      value={value}
       onChange={(e) => onChange(e.target.value)}
+      {...rest}
       slotProps={{
         input: {
           startAdornment: (

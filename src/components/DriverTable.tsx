@@ -5,16 +5,13 @@ import {
   DriverEntry,
   DriverFormData,
 } from "$types/models/driver";
-import {
-  AddRounded,
-  SearchRounded,
-} from "@mui/icons-material";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
-import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseSortableTable } from "./BaseSortableTable";
+import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
 import { DriverForm } from "./DriverForm";
 
@@ -91,14 +88,39 @@ export const DriverTable: FC<DriverTableProps> = (
     ],
   );
 
+  const databaseHasNoDrivers = driverEntries.length === 0;
+
   return (
     <Stack spacing={1}>
-      <BaseInputTextField
-        startIcon={<SearchRounded />}
-        value={search}
-        onChange={setSearch}
-        placeholder="ค้นหาด้วยชื่อสกุลคนขับรถ, เลขทะเบียน, หรือสายรถ"
+      <BaseSortableTableToolbar
+        slotProps={{
+          searchField: {
+            value: search,
+            onChange: setSearch,
+            placeholder:
+              "ค้นหาด้วยชื่อสกุลคนขับรถ, เลขทะเบียน, หรือสายรถ",
+          },
+          addButton: {
+            // TODO: translate
+            children: "Register driver",
+            onClick: () => setDialogOpen(true),
+          },
+          importButton: {
+            children: "Register from file",
+            onClick: function (): void {
+              throw new Error("Function not implemented.");
+            },
+          },
+          exportButton: {
+            // TODO: translate
+            children: "Export drivers",
+            onClick: function (): void {
+              throw new Error("Function not implemented.");
+            },
+          },
+        }}
       />
+
       <BaseSortableTable
         headers={HEADER_DEFINITIONS}
         defaultSortOrder="asc"
@@ -106,7 +128,10 @@ export const DriverTable: FC<DriverTableProps> = (
         entries={filteredEntries}
         slotProps={{
           body: {
-            emptyText: "ไม่พบคนขับรถ",
+            // TODO: translate
+            emptyText: databaseHasNoDrivers
+              ? "The database has no driver"
+              : "ไม่พบคนขับรถ",
           },
         }}
       />
@@ -128,10 +153,11 @@ export const DriverTable: FC<DriverTableProps> = (
               postDriver(formData)
                 .then(
                   () => {
-                    toast.success("ลงทะเบียนสำเร็จ");
+                    // TODO: translate
+                    toast.success("Success");
                     revalidate();
                   },
-                  () => toast.error("ลงทะเบียนล้มเหลว"),
+                  () => toast.error("Failed"),
                 )
                 .finally(() => setDialogOpen(false)),
           },

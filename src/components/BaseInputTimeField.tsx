@@ -1,27 +1,29 @@
 import { TimeField } from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 
 type BaseInputTimeFieldProps = {
-	value: Dayjs;
-	onChange: (value: Dayjs) => void;
+  value: Dayjs;
+  onChange: (value: Dayjs) => void;
+  helperText?: ReactNode;
 };
 export const BaseInputTimeField: FC<
-	BaseInputTimeFieldProps
+  BaseInputTimeFieldProps
 > = (props) => {
-	const { value, onChange } = props;
-	return (
-		<TimeField
-			fullWidth
-			formatDensity="spacious"
-			value={value}
-			onChange={(next) => {
-				if (next === null) {
-					return;
-				}
-				onChange(next);
-			}}
-			format="HH:mm น."
-		/>
-	);
+  const { value, onChange, helperText } = props;
+  return (
+    <TimeField
+      fullWidth
+      formatDensity="spacious"
+      format="HH:mm น."
+      helperText={helperText}
+      value={value}
+      onChange={(next) => {
+        if (next === null) {
+          return;
+        }
+        onChange(next);
+      }}
+    />
+  );
 };

@@ -5,7 +5,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Stack,
 } from "@mui/material";
 import { FC, ReactNode } from "react";
 
@@ -17,7 +16,7 @@ type BaseFormProps = {
     submitButton: {
       startIcon: ReactNode;
       disabled: boolean;
-      label: string;
+      children: string;
       onClick: () => void;
     };
   };
@@ -31,16 +30,14 @@ export const BaseForm: FC<BaseFormProps> = (props) => {
     props;
   return (
     <Dialog
-      keepMounted
+      disableRestoreFocus
       disablePortal
       maxWidth="lg"
       fullWidth
       open={open}
       onClose={onClose}
     >
-      <DialogTitle component="div">
-        <Stack>{title}</Stack>
-      </DialogTitle>
+      <DialogTitle component="div">{title}</DialogTitle>
       <DialogContent>
         <FormalLayout>{children}</FormalLayout>
       </DialogContent>
@@ -52,12 +49,8 @@ export const BaseForm: FC<BaseFormProps> = (props) => {
       >
         <Button
           variant="contained"
-          startIcon={slotProps.submitButton.startIcon}
-          onClick={slotProps.submitButton.onClick}
-          disabled={slotProps.submitButton.disabled}
-        >
-          {slotProps.submitButton.label}
-        </Button>
+          {...slotProps.submitButton}
+        />
         <Button variant="outlined" onClick={onClose}>
           ยกเลิก
         </Button>

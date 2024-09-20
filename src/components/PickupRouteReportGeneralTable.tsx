@@ -116,11 +116,11 @@ export const PickupRouteReportGeneralTable: FC<
         slotProps={{
           importButton: {
             disabled: databaseHasNotRoute,
-            label: "เพิ่มสายรถจากไฟล์",
+            children: "เพิ่มสายรถจากไฟล์",
           },
           exportButton: {},
           addButton: {
-            label: "เพิ่มเรื่องร้องเรียน",
+            children: "เพิ่มเรื่องร้องเรียน",
             disabled: databaseHasNotRoute,
             onClick: () => setDialogOpen(true),
             reason: "ไม่มีสายรถในระบบ",

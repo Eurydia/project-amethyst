@@ -1,12 +1,23 @@
+import { postPickupRoute } from "$backend/database/post";
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
 import { PickupRouteEntry } from "$types/models/pickup-route";
-import { SearchRounded } from "@mui/icons-material";
-import { Stack, Typography } from "@mui/material";
+import { AddRounded } from "@mui/icons-material";
+import {
+  Alert,
+  AlertTitle,
+  Collapse,
+  Stack,
+  Typography,
+} from "@mui/material";
+import dayjs from "dayjs";
 import { FC, useState } from "react";
-import { BaseInputTextField } from "./BaseInputTextField";
+import { useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
 import { BaseSortableTable } from "./BaseSortableTable";
+import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
+import { PickupRouteForm } from "./PickupRouteForm";
 
 const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
   [
@@ -69,7 +80,8 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
 ) => {
   const { routeEntries } = props;
   const [search, setSearch] = useState("");
-
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const { revalidate } = useRevalidator();
   const filteredEntries = filterItems(
     routeEntries,
     search,
@@ -83,12 +95,43 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
 
   return (
     <Stack spacing={1}>
-      <BaseInputTextField
-        onChange={setSearch}
-        value={search}
-        placeholder="ค้นหาด้วยสายรถ, เลขทะเบียน, หรือชื่อสกุลคนขับรถ"
-        startIcon={<SearchRounded />}
+      <BaseSortableTableToolbar
+        slotProps={{
+          searchField: {
+            placeholder:
+              "ค้นหาด้วยสายรถ, เลขทะเบียน, หรือชื่อสกุลคนขับรถ",
+            value: search,
+            onChange: setSearch,
+          },
+          addButton: {
+            // TODO: translate
+            children: "register route",
+            onClick: () => setDialogOpen(true),
+          },
+          importButton: {
+            children: "register from file",
+            onClick: () => {},
+          },
+          exportButton: {
+            children: "export routes",
+            onClick: () => {},
+          },
+        }}
       />
+      <Collapse
+        in={
+          routeEntries.length === 0 ||
+          filteredEntries.length === 0
+        }
+      >
+        <Alert severity="warning" variant="outlined">
+          <AlertTitle>Warning</AlertTitle>
+          <Typography>
+            The export feature is disabled because no pickup
+            route has been selected to export.
+          </Typography>
+        </Alert>
+      </Collapse>
       <BaseSortableTable
         defaultSortOrder="asc"
         defaultSortByColumn={0}
@@ -96,7 +139,45 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
         entries={filteredEntries}
         slotProps={{
           body: {
-            emptyText: "ไม่พบสายรถ",
+            //TODO: translate
+            emptyText:
+              routeEntries.length === 0
+                ? "No routes registered in the system"
+                : "No matching routes",
+          },
+        }}
+      />
+      <PickupRouteForm
+        //TODO: translate
+        title="Register a new pickup route"
+        open={dialogOpen}
+        initFormData={{
+          arrivalTime: dayjs()
+            .startOf("day")
+            .format("HH:mm"),
+          departureTime: dayjs()
+            .endOf("day")
+            .format("HH:mm"),
+          name: "",
+        }}
+        onClose={() => setDialogOpen(false)}
+        slotProps={{
+          submitButton: {
+            //TODO: translate
+            label: "register",
+            startIcon: <AddRounded />,
+            onClick: (formData) =>
+              postPickupRoute(formData)
+                .then(
+                  () => {
+                    toast.success(
+                      "Registration successful",
+                    );
+                    revalidate();
+                  },
+                  () => toast.error("Registration failed"),
+                )
+                .finally(() => setDialogOpen(false)),
           },
         }}
       />

@@ -1,83 +1,17 @@
-import { postPickupRoute } from "$backend/database/post";
-import { PickupRouteForm } from "$components/PickupRouteForm";
 import { PickupRouteTable } from "$components/PickupRouteTable";
-import { AddRounded } from "@mui/icons-material";
-import { Button, Stack, Typography } from "@mui/material";
-import { FC, useState } from "react";
-import {
-  useLoaderData,
-  useRevalidator,
-} from "react-router-dom";
-import { toast } from "react-toastify";
+import { Stack, Typography } from "@mui/material";
+import { FC } from "react";
+import { useLoaderData } from "react-router-dom";
 import { PickupRouteIndexPageLoaderData } from "./loader";
 
 export const PickupRouteIndexPage: FC = () => {
-  const { routeEntries, initFormData } =
+  const { routeEntries } =
     useLoaderData() as PickupRouteIndexPageLoaderData;
-  const { revalidate } = useRevalidator();
-
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <Stack spacing={1}>
       <Typography variant="h1">รายชื่อสายรถ</Typography>
-      <Stack
-        useFlexGap
-        direction="row"
-        flexWrap="wrap"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <Button
-          variant="contained"
-          startIcon={<AddRounded />}
-          onClick={() => setDialogOpen(true)}
-        >
-          เพิ่มสายรถ
-        </Button>
-        {/* <Stack
-          useFlexGap
-          direction="row"
-          flexWrap="wrap"
-          spacing={1}
-        >
-          <Button
-            variant="outlined"
-            startIcon={<UploadRounded />}
-          >
-            IMPORT
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<DownloadRounded />}
-          >
-            ExPORT
-          </Button>
-        </Stack> */}
-      </Stack>
       <PickupRouteTable routeEntries={routeEntries} />
-      <PickupRouteForm
-        title="ลงทะเบียนสายรถ"
-        open={dialogOpen}
-        initFormData={initFormData}
-        onClose={() => setDialogOpen(false)}
-        slotProps={{
-          submitButton: {
-            label: "เพิ่มสายรถ",
-            startIcon: <AddRounded />,
-            onClick: (formData) =>
-              postPickupRoute(formData)
-                .then(
-                  () => {
-                    toast.success("ลงทะเบียนสำเร็จ");
-                    revalidate();
-                  },
-                  () => toast.error("ลงทะเบียนล้มเหลว"),
-                )
-                .finally(() => setDialogOpen(false)),
-          },
-        }}
-      />
     </Stack>
   );
 };

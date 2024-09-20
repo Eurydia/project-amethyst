@@ -63,7 +63,7 @@ export const DriverInfoPage: FC = () => {
         {TRANSLATION.operationalLogTable}
       </Typography>
       <OperationalLogTable
-        entries={logEntries}
+        logEntries={logEntries}
         slotProps={{
           form: {
             vehicleSelect: {

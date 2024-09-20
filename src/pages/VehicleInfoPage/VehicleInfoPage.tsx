@@ -85,7 +85,7 @@ export const VehicleInfoPage: FC = () => {
         ตารางบันทึกประวัติการเดินรถ
       </Typography>
       <OperationalLogTable
-        entries={logEntries}
+        logEntries={logEntries}
         slotProps={{
           form: {
             vehicleSelect: {

@@ -1,9 +1,11 @@
 import { PickupRouteFormData } from "$types/models/pickup-route";
-import { TimeField } from "@mui/x-date-pickers";
+import { WarningRounded } from "@mui/icons-material";
+import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
+import { BaseInputTimeField } from "./BaseInputTimeField";
 
 type PickupRouteFormProps = {
   initFormData: PickupRouteFormData;
@@ -45,17 +47,17 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
     });
   };
 
-  const isFieldArrivalTimeIncomplete =
+  const isArrivalTimeIncomplete =
     Number.isNaN(fieldArrivalTime.hour()) ||
     Number.isNaN(fieldArrivalTime.minute());
-  const isFieldDepartureTimeIncomplete =
+  const isDepartureTimeIncomplete =
     Number.isNaN(fieldDepartureTime.hour()) ||
     Number.isNaN(fieldDepartureTime.minute());
   const isMissingName = fieldName.trim().normalize() === "";
   const isFormIncomplete =
     isMissingName ||
-    isFieldArrivalTimeIncomplete ||
-    isFieldDepartureTimeIncomplete;
+    isArrivalTimeIncomplete ||
+    isDepartureTimeIncomplete;
 
   const formItems: {
     label: string;
@@ -65,9 +67,17 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
       label: "ชื่อสาย",
       value: (
         <BaseInputTextField
-          shouldAutoFocus
+          autoFocus
           multiline
-          isError={isMissingName}
+          helperText={
+            isMissingName && (
+              <Typography>
+                <WarningRounded />
+                กรุณากรอกชื่อสาย
+              </Typography>
+            )
+          }
+          error={isMissingName}
           value={fieldName}
           placeholder={initFormData.name}
           onChange={setFieldName}
@@ -77,34 +87,37 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
     {
       label: "เวลารับเข้า",
       value: (
-        <TimeField
-          fullWidth
-          format="HH:mm น."
-          formatDensity="spacious"
+        <BaseInputTimeField
           value={fieldArrivalTime}
-          onChange={(value) => {
-            if (value === null) {
-              return;
-            }
-            setFieldArrivalTime(value);
-          }}
+          onChange={setFieldArrivalTime}
+          helperText={
+            // TODO: translate
+            isArrivalTimeIncomplete && (
+              <Typography>
+                <WarningRounded />
+                The arrival time should follow HH:mm format
+              </Typography>
+            )
+          }
         />
       ),
     },
     {
       label: "เวลารับออก",
       value: (
-        <TimeField
-          fullWidth
-          format="HH:mm น."
-          formatDensity="spacious"
+        <BaseInputTimeField
           value={fieldDepartureTime}
-          onChange={(value) => {
-            if (value === null) {
-              return;
-            }
-            setFieldDepartureTime(value);
-          }}
+          onChange={setFieldDepartureTime}
+          helperText={
+            // TODO: translate
+            isDepartureTimeIncomplete && (
+              <Typography>
+                <WarningRounded />
+                The departure time should follow HH:mm
+                format
+              </Typography>
+            )
+          }
         />
       ),
     },
@@ -117,13 +130,10 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
       title={title}
       slotProps={{
         submitButton: {
-          label: slotProps.submitButton.label,
+          children: slotProps.submitButton.label,
           startIcon: slotProps.submitButton.startIcon,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
-        },
-        cancelButton: {
-          onClick: onClose,
         },
       }}
     >

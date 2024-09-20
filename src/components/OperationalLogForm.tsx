@@ -2,13 +2,17 @@ import { postOperationalLog } from "$backend/database/post";
 import { DriverModel } from "$types/models/driver";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { VehicleModel } from "$types/models/vehicle";
-import { AddRounded } from "@mui/icons-material";
-import { DateField } from "@mui/x-date-pickers";
+import {
+  AddRounded,
+  WarningRounded,
+} from "@mui/icons-material";
+import { Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { FC, ReactNode, useState } from "react";
+import { FC, Fragment, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
+import { BaseInputDateField } from "./BaseInputDateField";
 import { DriverInputDriverSelect } from "./DriverInputDriverSelect";
 import { PickupRouteInputPickupRouteSelect } from "./PickupRouteInputPickupRouteSelect";
 import { VehicleInputSelect } from "./VehicleInputSelect";
@@ -74,16 +78,18 @@ export const OperationalLogForm: FC<
       .finally(onClose);
   };
 
-  const isFieldStartDateInvalidValid =
+  const isStartDateInvalid =
     fieldStartDate === null ||
     Number.isNaN(fieldStartDate.date()) ||
     Number.isNaN(fieldStartDate.month()) ||
     Number.isNaN(fieldStartDate.year());
-  const isFieldEndDateInvalidValid =
+  const isEndDateInvalid =
     fieldEndDate === null ||
     Number.isNaN(fieldEndDate.date()) ||
     Number.isNaN(fieldEndDate.month()) ||
     Number.isNaN(fieldEndDate.year());
+  const isEndDateBeforeStartDate =
+    fieldEndDate.isBefore(fieldStartDate);
   const isDriverMissing = fieldDriver === null;
   const isRouteMissing = fieldRoute === null;
   const isVehicleMissing = fieldVehicle === null;
@@ -91,9 +97,9 @@ export const OperationalLogForm: FC<
     isDriverMissing ||
     isRouteMissing ||
     isVehicleMissing ||
-    isFieldStartDateInvalidValid ||
-    isFieldEndDateInvalidValid ||
-    fieldEndDate.isBefore(fieldStartDate);
+    isStartDateInvalid ||
+    isEndDateInvalid ||
+    isEndDateBeforeStartDate;
 
   const formItems: {
     label: string;
@@ -102,34 +108,52 @@ export const OperationalLogForm: FC<
     {
       label: "วันที่เริ่มมีผล",
       value: (
-        <DateField
-          fullWidth
-          format="DD/MM/YYYY"
-          formatDensity="spacious"
+        <BaseInputDateField
           value={fieldStartDate}
-          onChange={(value) => {
-            if (value === null) {
-              return;
-            }
-            setFieldStartDate(value);
-          }}
+          onChange={setFieldStartDate}
+          helperText={
+            // TODO: translate
+            <Fragment>
+              {isStartDateInvalid && (
+                <Typography>
+                  <WarningRounded />
+                  Invalid start date
+                </Typography>
+              )}
+              {isEndDateBeforeStartDate && (
+                <Typography>
+                  <WarningRounded />
+                  End date is before start date
+                </Typography>
+              )}
+            </Fragment>
+          }
         />
       ),
     },
     {
       label: "วันที่สิ้นสุด",
       value: (
-        <DateField
-          fullWidth
-          format="DD/MM/YYYY"
-          formatDensity="spacious"
+        <BaseInputDateField
           value={fieldEndDate}
-          onChange={(value) => {
-            if (value === null) {
-              return;
-            }
-            setFieldEndDate(value);
-          }}
+          onChange={setFieldEndDate}
+          helperText={
+            // TODO: translate
+            <Fragment>
+              {isEndDateInvalid && (
+                <Typography>
+                  <WarningRounded />
+                  Invalid end date
+                </Typography>
+              )}
+              {isEndDateBeforeStartDate && (
+                <Typography>
+                  <WarningRounded />
+                  End date is before start date
+                </Typography>
+              )}
+            </Fragment>
+          }
         />
       ),
     },
@@ -137,10 +161,9 @@ export const OperationalLogForm: FC<
       label: "คนขับรถ",
       value: (
         <DriverInputDriverSelect
-          disabled={slotProps.driverSelect.disabled}
-          options={slotProps.driverSelect.options}
-          value={fieldDriver}
+          {...slotProps.driverSelect}
           onChange={setFieldDriver}
+          value={fieldDriver}
         />
       ),
     },
@@ -148,8 +171,7 @@ export const OperationalLogForm: FC<
       label: "รถรับส่ง",
       value: (
         <VehicleInputSelect
-          disabled={slotProps.vehicleSelect.disabled}
-          options={slotProps.vehicleSelect.options}
+          {...slotProps.vehicleSelect}
           value={fieldVehicle}
           onChange={setFieldVehicle}
         />
@@ -159,8 +181,7 @@ export const OperationalLogForm: FC<
       label: "สายรถ",
       value: (
         <PickupRouteInputPickupRouteSelect
-          isDisabled={slotProps.routeSelect.disabled}
-          options={slotProps.routeSelect.options}
+          {...slotProps.routeSelect}
           value={fieldRoute}
           onChange={setFieldRoute}
         />
@@ -172,13 +193,10 @@ export const OperationalLogForm: FC<
     <BaseForm
       slotProps={{
         submitButton: {
-          label: "ลงบันทึก",
+          children: "ลงบันทึก",
           startIcon: <AddRounded />,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
-        },
-        cancelButton: {
-          onClick: onClose,
         },
       }}
       open={open}

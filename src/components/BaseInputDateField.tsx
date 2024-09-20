@@ -1,27 +1,30 @@
 import { DateField } from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 
 type BaseInputDateFieldProps = {
-	value: Dayjs;
-	onChange: (value: Dayjs) => void;
+  value: Dayjs;
+  onChange: (value: Dayjs) => void;
+  error?: boolean;
+  helperText?: ReactNode;
 };
 export const BaseInputDateField: FC<
-	BaseInputDateFieldProps
+  BaseInputDateFieldProps
 > = (props) => {
-	const { value, onChange } = props;
-	return (
-		<DateField
-			fullWidth
-			formatDensity="spacious"
-			value={value}
-			onChange={(next) => {
-				if (next === null) {
-					return;
-				}
-				onChange(next);
-			}}
-			format="DD/MM/YYYY"
-		/>
-	);
+  const { value, onChange, helperText } = props;
+  return (
+    <DateField
+      fullWidth
+      formatDensity="spacious"
+      format="DD/MM/YYYY"
+      helperText={helperText}
+      value={value}
+      onChange={(next) => {
+        if (next === null) {
+          return;
+        }
+        onChange(next);
+      }}
+    />
+  );
 };

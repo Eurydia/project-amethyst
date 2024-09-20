@@ -1,15 +1,10 @@
 import { getPickupRouteAll } from "$backend/database/get";
 import { PICKUP_ROUTE_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-model";
-import {
-  PickupRouteEntry,
-  PickupRouteFormData,
-} from "$types/models/pickup-route";
-import dayjs from "dayjs";
+import { PickupRouteEntry } from "$types/models/pickup-route";
 import { LoaderFunction } from "react-router-dom";
 
 export type PickupRouteIndexPageLoaderData = {
   routeEntries: PickupRouteEntry[];
-  initFormData: PickupRouteFormData;
 };
 export const pickupRouteIndexPageLoader: LoaderFunction =
   async () => {
@@ -20,15 +15,8 @@ export const pickupRouteIndexPageLoader: LoaderFunction =
       ),
     );
 
-    const initFormData: PickupRouteFormData = {
-      arrivalTime: dayjs().startOf("day").format("HH:mm"),
-      departureTime: dayjs().endOf("day").format("HH:mm"),
-      name: "",
-    };
-
     const loaderData: PickupRouteIndexPageLoaderData = {
       routeEntries,
-      initFormData,
     };
     return loaderData;
   };

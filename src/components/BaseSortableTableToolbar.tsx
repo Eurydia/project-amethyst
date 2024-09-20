@@ -2,15 +2,11 @@ import {
   AddRounded,
   FileDownloadRounded,
   FileUploadRounded,
-  WarningRounded,
+  SearchRounded,
 } from "@mui/icons-material";
-import {
-  Button,
-  Stack,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { FC } from "react";
+import { BaseInputTextField } from "./BaseInputTextField";
 
 type BaseSortableTableToolbarProps = {
   slotProps: {
@@ -21,19 +17,17 @@ type BaseSortableTableToolbarProps = {
     };
     addButton: {
       disabled?: boolean;
-      label: string;
+      children: string;
       onClick: () => void;
-      reason?: string;
     };
     importButton: {
-      label?: string;
       disabled?: boolean;
-      onClick?: () => void;
+      children: string;
+      onClick: () => void;
     };
     exportButton: {
-      label?: string;
-      disabled?: boolean;
-      onClick?: () => void;
+      children: string;
+      onClick: () => void;
     };
   };
 };
@@ -42,68 +36,43 @@ export const BaseSortableTableToolbar: FC<
 > = (props) => {
   const { slotProps } = props;
   return (
-    <Toolbar disableGutters variant="dense">
+    <Stack useFlexGap spacing={1}>
       <Stack
-        width={1}
-        spacing={1}
         useFlexGap
+        spacing={1}
         flexWrap="wrap"
-        alignItems="flex-start"
+        flexDirection="row"
+        justifyContent="space-between"
+        width={1}
       >
+        <Button
+          variant="contained"
+          startIcon={<AddRounded />}
+          {...slotProps.addButton}
+        />
         <Stack
-          spacing={1}
           useFlexGap
+          spacing={1}
           flexWrap="wrap"
           flexDirection="row"
-          justifyContent="space-between"
-          alignItems="center"
-          width={1}
         >
-          <Stack spacing={1} direction="row">
-            <Button
-              variant="contained"
-              startIcon={<AddRounded />}
-              onClick={slotProps.addButton.onClick}
-              disabled={slotProps.addButton.disabled}
-            >
-              {slotProps.addButton.label}
-            </Button>
-            {slotProps.addButton.disabled && (
-              <Typography
-                color="warning"
-                fontStyle="italic"
-                display="flex"
-                flexDirection="row"
-                gap={1}
-              >
-                <WarningRounded />
-                {slotProps.addButton.reason}
-              </Typography>
-            )}
-          </Stack>
-          <Stack
-            useFlexGap
-            spacing={1}
-            flexWrap="wrap"
-            flexDirection="row"
-          >
-            <Button
-              variant="outlined"
-              startIcon={<FileUploadRounded />}
-              onClick={slotProps.importButton.onClick}
-            >
-              {slotProps.importButton.label}
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<FileDownloadRounded />}
-              onClick={slotProps.exportButton.onClick}
-            >
-              {slotProps.exportButton.label}
-            </Button>
-          </Stack>
+          <Button
+            variant="outlined"
+            startIcon={<FileUploadRounded />}
+            {...slotProps.importButton}
+          />
+          <Button
+            variant="outlined"
+            startIcon={<FileDownloadRounded />}
+            {...slotProps.exportButton}
+          />
         </Stack>
       </Stack>
-    </Toolbar>
+      <BaseInputTextField
+        {...slotProps.searchField}
+        autoFocus
+        startIcon={<SearchRounded />}
+      />
+    </Stack>
   );
 };

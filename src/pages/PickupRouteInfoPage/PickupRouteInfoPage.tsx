@@ -65,7 +65,7 @@ export const PickupRouteInfoPage: FC = () => {
       </Typography>
       <OperationalLogTable
         hideRouteColumn
-        entries={logEntries}
+        logEntries={logEntries}
         slotProps={{
           form: {
             vehicleSelect: {

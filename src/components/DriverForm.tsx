@@ -1,4 +1,6 @@
 import { DriverFormData } from "$types/models/driver";
+import { WarningRounded } from "@mui/icons-material";
+import { Typography } from "@mui/material";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
@@ -42,7 +44,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
     slotProps.submitButton.onClick({
       name: fieldName.trim().normalize(),
       surname: fieldSurname.trim().normalize(),
-      contact: fieldContact.trim().normalize(),
+      contact: fieldContact.trim().normalize() || "ไม่มี",
       licenseType: fieldLicenseType,
     });
   };
@@ -61,11 +63,20 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       label: "ชื่อ",
       value: (
         <BaseInputTextField
-          shouldAutoFocus
-          isError={isMissingName}
+          autoFocus
+          error={isMissingName}
           placeholder={initFormData.name}
           value={fieldName}
           onChange={setFieldName}
+          helperText={
+            // TODO: translate
+            isMissingName && (
+              <Typography>
+                <WarningRounded />
+                Required
+              </Typography>
+            )
+          }
         />
       ),
     },
@@ -73,10 +84,19 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       label: "นามสกุล",
       value: (
         <BaseInputTextField
-          isError={isMissingSurname}
+          error={isMissingSurname}
           value={fieldSurname}
           placeholder={initFormData.surname}
           onChange={setFielSurname}
+          helperText={
+            // TODO: translate
+            isMissingName && (
+              <Typography>
+                <WarningRounded />
+                Required
+              </Typography>
+            )
+          }
         />
       ),
     },
@@ -84,7 +104,11 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       label: "เบอร์ติดต่อ",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.contact || "ไม่มี"}
+          placeholder={
+            initFormData.contact.trim().length > 0
+              ? initFormData.contact.trim()
+              : "ไม่มี"
+          }
           value={fieldContact}
           onChange={setFieldContact}
         />
@@ -110,7 +134,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
         submitButton: {
           disabled: isFormIncomplete,
           startIcon: slotProps.submitButton.startIcon,
-          label: slotProps.submitButton.label,
+          children: slotProps.submitButton.label,
           onClick: handleSubmit,
         },
       }}

@@ -5,16 +5,13 @@ import {
   VehicleEntry,
   VehicleFormData,
 } from "$types/models/vehicle";
-import {
-  AddRounded,
-  SearchRounded,
-} from "@mui/icons-material";
+import { AddRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
-import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseSortableTable } from "./BaseSortableTable";
+import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
 import { VehicleForm } from "./VehicleForm";
 
@@ -98,14 +95,31 @@ export const VehicleTable: FC<VehicleTableProps> = (
       "drivers.*.surname",
     ],
   );
-
+  const databaseHasNoVehicle = vehicleEntries.length === 0;
   return (
     <Stack spacing={1}>
-      <BaseInputTextField
-        startIcon={<SearchRounded />}
-        placeholder="ค้นหาด้วยเลขทะเบียน, สายรถ, หรือชื่อสกุลคนขับรถ"
-        onChange={setSearch}
-        value={search}
+      <BaseSortableTableToolbar
+        slotProps={{
+          searchField: {
+            placeholder:
+              "ค้นหาด้วยเลขทะเบียน, สายรถ, หรือชื่อสกุลคนขับรถ",
+            onChange: setSearch,
+            value: search,
+          },
+          addButton: {
+            // TODO: translate
+            children: "Register Vehicle",
+            onClick: () => setDialogOpen(true),
+          },
+          importButton: {
+            children: "Register from file",
+            onClick: () => {},
+          },
+          exportButton: {
+            children: "export vehicles",
+            onClick: () => {},
+          },
+        }}
       />
       <BaseSortableTable
         headers={HEADER_DEFINITION}
@@ -114,7 +128,10 @@ export const VehicleTable: FC<VehicleTableProps> = (
         entries={filteredEntries}
         slotProps={{
           body: {
-            emptyText: "ไม่พบรถรับส่ง",
+            // TODO: translate
+            emptyText: databaseHasNoVehicle
+              ? "Database has no vehicle"
+              : "ไม่พบรถรับส่ง",
           },
         }}
       />
@@ -132,6 +149,7 @@ export const VehicleTable: FC<VehicleTableProps> = (
         onClose={() => setDialogOpen(false)}
         title="ลงทะเบียนรถรับส่ง"
         slotProps={{
+          vendorComboBox: slotProps.form.vendorComboBox,
           submitButton: {
             label: "เพิ่มรถรับส่ง",
             startIcon: <AddRounded />,
@@ -145,9 +163,6 @@ export const VehicleTable: FC<VehicleTableProps> = (
                   () => toast.error("ลงทะเบียนล้มเหลว"),
                 )
                 .finally(() => setDialogOpen(false)),
-          },
-          vendorComboBox: {
-            options: [],
           },
         }}
       />

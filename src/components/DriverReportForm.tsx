@@ -127,11 +127,11 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       label: "เรื่อง",
       value: (
         <BaseInputTextField
-          shouldAutoFocus
+          autoFocus
           onChange={setFieldTitle}
           placeholder={initFormData.title}
           value={fieldTitle}
-          isError={isMissingTitle}
+          error={isMissingTitle}
         />
       ),
     },
@@ -142,7 +142,7 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
           multiline
           minRows={6}
           value={fieldContent}
-          isError={isMissingContent}
+          error={isMissingContent}
           placeholder={initFormData.content}
           onChange={setFieldContent}
         />
@@ -165,7 +165,7 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
-          label: slotProps.submitButton.label,
+          children: slotProps.submitButton.label,
           startIcon: slotProps.submitButton.startIcon,
           onClick: handleSubmit,
         },

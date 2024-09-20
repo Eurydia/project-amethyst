@@ -1,4 +1,6 @@
 import { VehicleFormData } from "$types/models/vehicle";
+import { WarningRounded } from "@mui/icons-material";
+import { Typography } from "@mui/material";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
@@ -69,11 +71,40 @@ export const VehicleForm: FC<VehicleFormProps> = (
       label: "เลขทะเบียน",
       value: (
         <BaseInputTextField
-          shouldAutoFocus
-          isError={missingFieldLicensePlate}
+          autoFocus
+          error={missingFieldLicensePlate}
           value={fieldLicensePlate}
           placeholder={initFormData.licensePlate}
           onChange={setFieldLicensePlate}
+          helperText={
+            // TODO: translate
+            missingFieldLicensePlate && (
+              <Typography>
+                <WarningRounded />
+                Required
+              </Typography>
+            )
+          }
+        />
+      ),
+    },
+    {
+      label: "หจก.",
+      value: (
+        <VehicleInputVendorAutocomplete
+          error={missingFieldVendor}
+          helperText={
+            missingFieldVendor && (
+              <Typography>
+                <WarningRounded />
+                Required
+              </Typography>
+            )
+          }
+          options={slotProps.vendorComboBox.options}
+          placeholder={initFormData.vendor}
+          value={fieldVendor}
+          onChange={setFieldVendor}
         />
       ),
     },
@@ -95,17 +126,6 @@ export const VehicleForm: FC<VehicleFormProps> = (
         />
       ),
     },
-    {
-      label: "หจก.",
-      value: (
-        <VehicleInputVendorAutocomplete
-          options={slotProps.vendorComboBox.options}
-          placeholder={initFormData.vendor}
-          value={fieldVendor}
-          onChange={setFieldVendor}
-        />
-      ),
-    },
   ];
 
   return (
@@ -117,7 +137,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
         submitButton: {
           disabled: isFormIncomplete,
           startIcon: slotProps.submitButton.startIcon,
-          label: slotProps.submitButton.label,
+          children: slotProps.submitButton.label,
           onClick: handleSubmit,
         },
       }}

@@ -1,10 +1,8 @@
-import {
-  getAttendanceLogToday,
-  getDriver,
-  getOperationLogToday,
-  getPickupRoute,
-  getVehicle,
-} from "$backend/database/get";
+import { getAttendanceLogToday } from "$backend/database/get/attendance-logs";
+import { getPickupRoute } from "$backend/database/get/pickup-routes";
+import { getVehicle } from "$backend/database/get/vehicles";
+import { getDriver } from "$backend/database/get/driver";
+import { getOperationLogToday } from "$backend/database/getOperationLogAll";
 import { postAttendanceLog } from "$backend/database/post";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";

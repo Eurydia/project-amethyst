@@ -1,4 +1,4 @@
-import { getPickupRoute } from "$backend/database/get";
+import { getPickupRoute } from "$backend/database/get/pickup-routes";
 import {} from "$types/models/pickup-route";
 import {
   PickupRouteReportGeneralEntry,

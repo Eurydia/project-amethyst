@@ -1,11 +1,9 @@
-import {
-  getDriverAll,
-  getOperationLogAll,
-  getPickupRoute,
-  getPickupRouteReportGeneralAll,
-  getTopicAll,
-  getVehicleAll,
-} from "$backend/database/get";
+import { getPickupRouteReportGeneralAll } from "$backend/database/get/pickup-routes";
+import { getPickupRoute } from "$backend/database/get/pickup-routes";
+import { getVehicleAll } from "$backend/database/get/vehicles";
+import { getDriverAll } from "$backend/database/get/driver";
+import { getOperationLogAll } from "$backend/database/getOperationLogAll";
+import { getTopicAll } from "$backend/database/get/topics";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log-model";
 import { PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-report-general-model";
 import { TRANSLATION } from "$locale/th";

@@ -1,8 +1,6 @@
-import {
-  getPickupRoute,
-  getPickupRouteReportGeneral,
-  getTopicAll,
-} from "$backend/database/get";
+import { getPickupRouteReportGeneral } from "$backend/database/get/pickup-routes";
+import { getPickupRoute } from "$backend/database/get/pickup-routes";
+import { getTopicAll } from "$backend/database/get/topics";
 import { TRANSLATION } from "$locale/th";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { PickupRouteReportGeneralModel } from "$types/models/pickup-route-report-general";

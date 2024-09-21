@@ -1,9 +1,7 @@
-import {
-  getDriverAll,
-  getOperationLogAll,
-  getPickupRouteAll,
-  getVehicleAll,
-} from "$backend/database/get";
+import { getPickupRouteAll } from "$backend/database/get/pickup-routes";
+import { getVehicleAll } from "$backend/database/get/vehicles";
+import { getDriverAll } from "$backend/database/get/driver";
+import { getOperationLogAll } from "$backend/database/getOperationLogAll";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log-model";
 import { DriverModel } from "$types/models/driver";
 import { OperationalLogEntry } from "$types/models/operational-log";

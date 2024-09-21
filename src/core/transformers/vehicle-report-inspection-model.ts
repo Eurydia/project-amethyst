@@ -1,7 +1,5 @@
-import {
-  getVehicle,
-  getVehicleReportInspectionAll,
-} from "$backend/database/get";
+import { getVehicleReportInspectionAll } from "$backend/database/get/vehicle-inspection-reports";
+import { getVehicle } from "$backend/database/get/vehicles";
 import {} from "$types/models/vehicle";
 import {
   VehicleReportInspectionEntry,

@@ -1,4 +1,4 @@
-import { getPickupRouteAll } from "$backend/database/get";
+import { getPickupRouteAll } from "$backend/database/get/pickup-routes";
 import { PICKUP_ROUTE_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-model";
 import { PickupRouteEntry } from "$types/models/pickup-route";
 import { LoaderFunction } from "react-router-dom";

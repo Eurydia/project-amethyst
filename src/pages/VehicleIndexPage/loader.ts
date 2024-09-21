@@ -1,7 +1,5 @@
-import {
-  getVehicleAll,
-  getVehicleVendorAll,
-} from "$backend/database/get";
+import { getVehicleAll } from "$backend/database/get/vehicles";
+import { getVehicleVendorAll } from "$backend/database/get/vehicle-vendors";
 import { VEHICLE_MODEL_TRANSFORMER } from "$core/transformers/vehicle-model";
 import { VehicleEntry } from "$types/models/vehicle";
 import { LoaderFunction } from "react-router-dom";

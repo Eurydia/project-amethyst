@@ -1,8 +1,6 @@
-import {
-  getTopicAll,
-  getVehicleAll,
-  getVehicleReportGeneralAll,
-} from "$backend/database/get";
+import { getVehicleReportGeneralAll } from "$backend/database/get/vehicle-general-reports";
+import { getVehicleAll } from "$backend/database/get/vehicles";
+import { getTopicAll } from "$backend/database/get/topics";
 import { VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-general-model";
 import { VehicleModel } from "$types/models/vehicle";
 import { VehicleReportGeneralEntry } from "$types/models/vehicle-report-general";

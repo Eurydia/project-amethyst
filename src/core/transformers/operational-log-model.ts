@@ -1,8 +1,6 @@
-import {
-  getDriver,
-  getPickupRoute,
-  getVehicle,
-} from "$backend/database/get";
+import { getPickupRoute } from "$backend/database/get/pickup-routes";
+import { getVehicle } from "$backend/database/get/vehicles";
+import { getDriver } from "$backend/database/get/driver";
 import {
   OperationalLogEntry,
   OperationalLogModel,

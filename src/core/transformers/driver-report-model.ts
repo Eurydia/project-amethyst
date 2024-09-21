@@ -1,4 +1,4 @@
-import { getDriver } from "$backend/database/get";
+import { getDriver } from "$backend/database/get/driver";
 import { } from "$types/models/driver";
 import { DriverReportEntry, DriverReportModel } from "$types/models/driver-report";
 

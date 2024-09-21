@@ -1,8 +1,6 @@
-import {
-  getDriverAll,
-  getDriverReportGeneralAll,
-  getTopicAll,
-} from "$backend/database/get";
+import { getDriverReportGeneralAll } from "$backend/database/get/driver-general-reports";
+import { getDriverAll } from "$backend/database/get/driver";
+import { getTopicAll } from "$backend/database/get/topics";
 import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report-model";
 import { DriverModel } from "$types/models/driver";
 import { DriverReportEntry } from "$types/models/driver-report";

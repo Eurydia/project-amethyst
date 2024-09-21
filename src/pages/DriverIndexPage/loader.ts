@@ -1,4 +1,4 @@
-import { getDriverAll } from "$backend/database/get";
+import { getDriverAll } from "$backend/database/get/driver";
 import { DRIVER_MODEL_TRANSFORMER } from "$core/transformers/driver-model";
 import { DriverEntry } from "$types/models/driver";
 import { LoaderFunction } from "react-router-dom";

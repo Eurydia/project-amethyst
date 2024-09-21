@@ -1,9 +1,9 @@
 import {
-  getTopicAll,
-  getVehicle,
   getVehicleReportInspection,
-  getVehicleReportInspectionAll,
-} from "$backend/database/get";
+  getVehicleReportInspectionAll
+} from "$backend/database/get/vehicle-inspection-reports";
+import { getVehicle } from "$backend/database/get/vehicles";
+import { getTopicAll } from "$backend/database/get/topics";
 import { TRANSLATION } from "$locale/th";
 import { VehicleModel } from "$types/models/vehicle";
 import { VehicleReportInspectionModel } from "$types/models/vehicle-report-inspection";

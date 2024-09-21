@@ -1,8 +1,6 @@
-import {
-  getDriver,
-  getDriverReportGeneral,
-  getTopicAll,
-} from "$backend/database/get";
+import { getDriverReportGeneral } from "$backend/database/get/driver-general-reports";
+import { getDriver } from "$backend/database/get/driver";
+import { getTopicAll } from "$backend/database/get/topics";
 import { TRANSLATION } from "$locale/th";
 import { DriverModel } from "$types/models/driver";
 import { DriverReportModel } from "$types/models/driver-report";

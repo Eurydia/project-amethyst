@@ -1,4 +1,4 @@
-import { getVehicle } from "$backend/database/get";
+import { getVehicle } from "$backend/database/get/vehicles";
 import {} from "$types/models/vehicle";
 import {
   VehicleReportGeneralEntry,

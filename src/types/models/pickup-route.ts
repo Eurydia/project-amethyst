@@ -32,5 +32,5 @@ export type PickupRouteExportData = {
   ชื่อสาย: string;
   เวลารับเข้า: string;
   เวลารับออก: string;
-  รหัส: number;
+  เลขรหัส: number;
 };

@@ -1,9 +1,9 @@
-import { getPickupRouteReportGeneralAll } from "$backend/database/get/pickup-routes";
+import { getDriverAll } from "$backend/database/get/drivers";
+import { getOperationLogAll } from "$backend/database/get/operational-logs";
 import { getPickupRoute } from "$backend/database/get/pickup-routes";
-import { getVehicleAll } from "$backend/database/get/vehicles";
-import { getDriverAll } from "$backend/database/get/driver";
-import { getOperationLogAll } from "$backend/database/getOperationLogAll";
+import { getPickupRouteReportGeneralAll } from "$backend/database/get/pickup-routes-general-reports";
 import { getTopicAll } from "$backend/database/get/topics";
+import { getVehicleAll } from "$backend/database/get/vehicles";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log-model";
 import { PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-report-general-model";
 import { TRANSLATION } from "$locale/th";
@@ -23,61 +23,56 @@ export type PickupRouteInfoPageLoaderData = {
   vehicleSelectOptions: VehicleModel[];
   topicComboBoxOptions: string[];
 };
-export const pickupRouteInfoPageLoader: LoaderFunction =
-  async ({ params }) => {
-    console.log(params);
-    if (params.routeId === undefined) {
-      throw json(
-        {},
-        {
-          status: 400,
-          statusText:
-            TRANSLATION.pickupRouteIdIsMissingFromParams,
-        },
-      );
-    }
-    const routeId = Number.parseInt(params.routeId);
-    const route = await getPickupRoute(routeId);
-    if (route === null) {
-      throw json(
-        {},
-        {
-          status: 404,
-          statusText:
-            TRANSLATION.pickupRouteIsMissingFromDatabase,
-        },
-      );
-    }
+export const pickupRouteInfoPageLoader: LoaderFunction = async ({ params }) => {
+  console.log(params);
+  if (params.routeId === undefined) {
+    throw json(
+      {},
+      {
+        status: 400,
+        statusText: TRANSLATION.pickupRouteIdIsMissingFromParams,
+      }
+    );
+  }
+  const routeId = Number.parseInt(params.routeId);
+  const route = await getPickupRoute(routeId);
+  if (route === null) {
+    throw json(
+      {},
+      {
+        status: 404,
+        statusText: TRANSLATION.pickupRouteIsMissingFromDatabase,
+      }
+    );
+  }
 
-    const logs = (await getOperationLogAll())
-      .filter(({ route_id }) => route_id === route.id)
-      .map(
-        OPERATIONAL_LOG_MODEL_TRANSFORMER.toOperationalLogEntry,
-      );
-    const reports = (await getPickupRouteReportGeneralAll())
-      .filter(({ route_id }) => route_id === route.id)
-      .map(
-        PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER.toPickupRouteReportGeneralEntry,
-      );
-
-    const reportEntries = (
-      await Promise.all(reports)
-    ).filter((report) => report !== null);
-    const logEntries = (await Promise.all(logs)).filter(
-      (entry) => entry !== null,
+  const logs = (await getOperationLogAll())
+    .filter(({ route_id }) => route_id === route.id)
+    .map(OPERATIONAL_LOG_MODEL_TRANSFORMER.toOperationalLogEntry);
+  const reports = (await getPickupRouteReportGeneralAll())
+    .filter(({ route_id }) => route_id === route.id)
+    .map(
+      PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER.toPickupRouteReportGeneralEntry
     );
 
-    const driverSelectOptions = await getDriverAll();
-    const vehicleSelectOptions = await getVehicleAll();
-    const topicComboBoxOptions = await getTopicAll();
-    const loaderData: PickupRouteInfoPageLoaderData = {
-      route,
-      topicComboBoxOptions,
-      driverSelectOptions,
-      vehicleSelectOptions,
-      logEntries,
-      reportEntries,
-    };
+  const reportEntries = (await Promise.all(reports)).filter(
+    (report) => report !== null
+  );
+  const logEntries = (await Promise.all(logs)).filter(
+    (entry) => entry !== null
+  );
 
-    return loaderData;
+  const driverSelectOptions = await getDriverAll();
+  const vehicleSelectOptions = await getVehicleAll();
+  const topicComboBoxOptions = await getTopicAll();
+  const loaderData: PickupRouteInfoPageLoaderData = {
+    route,
+    topicComboBoxOptions,
+    driverSelectOptions,
+    vehicleSelectOptions,
+    logEntries,
+    reportEntries,
   };
+
+  return loaderData;
+};

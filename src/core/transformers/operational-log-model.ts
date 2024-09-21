@@ -1,24 +1,18 @@
+import { getDriver } from "$backend/database/get/drivers";
 import { getPickupRoute } from "$backend/database/get/pickup-routes";
 import { getVehicle } from "$backend/database/get/vehicles";
-import { getDriver } from "$backend/database/get/driver";
 import {
   OperationalLogEntry,
   OperationalLogModel,
 } from "$types/models/operational-log";
 
 export const OPERATIONAL_LOG_MODEL_TRANSFORMER = {
-  toOperationalLogEntry: async (
-    log: OperationalLogModel,
-  ) => {
+  toOperationalLogEntry: async (log: OperationalLogModel) => {
     const vehicle = await getVehicle(log.vehicle_id);
     const driver = await getDriver(log.driver_id);
     const route = await getPickupRoute(log.route_id);
 
-    if (
-      vehicle === null ||
-      driver === null ||
-      route === null
-    ) {
+    if (vehicle === null || driver === null || route === null) {
       return null;
     }
 

@@ -1,5 +1,5 @@
-import { getPickupRouteReportGeneralAll } from "$backend/database/get/pickup-routes";
 import { getPickupRouteAll } from "$backend/database/get/pickup-routes";
+import { getPickupRouteReportGeneralAll } from "$backend/database/get/pickup-routes-general-reports";
 import { getTopicAll } from "$backend/database/get/topics";
 import { PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-report-general-model";
 import { PickupRouteModel } from "$types/models/pickup-route";
@@ -13,22 +13,19 @@ export type PickupRouteReportGeneralIndexPageLoaderData = {
 };
 export const pickupRouteReportGeneralIndexPageLoader: LoaderFunction =
   async () => {
-    const reports = (
-      await getPickupRouteReportGeneralAll()
-    ).map(
-      PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER.toPickupRouteReportGeneralEntry,
+    const reports = (await getPickupRouteReportGeneralAll()).map(
+      PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER.toPickupRouteReportGeneralEntry
     );
-    const reportEntries = (
-      await Promise.all(reports)
-    ).filter((entry) => entry !== null);
+    const reportEntries = (await Promise.all(reports)).filter(
+      (entry) => entry !== null
+    );
 
     const routeSelectOptions = await getPickupRouteAll();
     const topicComboBoxOptions = await getTopicAll();
-    const loaderData: PickupRouteReportGeneralIndexPageLoaderData =
-      {
-        reportEntries,
-        routeSelectOptions,
-        topicComboBoxOptions,
-      };
+    const loaderData: PickupRouteReportGeneralIndexPageLoaderData = {
+      reportEntries,
+      routeSelectOptions,
+      topicComboBoxOptions,
+    };
     return loaderData;
   };

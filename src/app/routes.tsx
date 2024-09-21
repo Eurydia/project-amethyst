@@ -1,11 +1,5 @@
-import {
-  DriverIndexPage,
-  driverIndexPageLoader,
-} from "$pages/DriverIndexPage";
-import {
-  DriverInfoPage,
-  driverInfoPageLoader,
-} from "$pages/DriverInfoPage";
+import { DriverIndexPage, driverIndexPageLoader } from "$pages/DriverIndexPage";
+import { DriverInfoPage, driverInfoPageLoader } from "$pages/DriverInfoPage";
 import {
   DriverReportGeneralIndexPage,
   driverReportGeneralIndexPageLoader,
@@ -46,10 +40,7 @@ import {
   VehicleIndexPage,
   vehicleIndexPageLoader,
 } from "$pages/VehicleIndexPage";
-import {
-  VehicleInfoPage,
-  vehicleInfoPageLoader,
-} from "$pages/VehicleInfoPage";
+import { VehicleInfoPage, vehicleInfoPageLoader } from "$pages/VehicleInfoPage";
 import {
   VehicleReportGeneralIndexPage,
   vehicleReportGeneralIndexPageLoader,
@@ -67,9 +58,129 @@ import {
   vehicleReportInspectionInfoPageLoader,
 } from "$pages/VehicleReportInspectionInfoPage";
 import { MainView } from "$views/MainView";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouteObject } from "react-router-dom";
 
-export const routes = createBrowserRouter([
+const DRIVER_ROUTES: RouteObject = {
+  path: "drivers",
+  children: [
+    {
+      index: true,
+      element: <DriverIndexPage />,
+      loader: driverIndexPageLoader,
+    },
+    {
+      path: "info/:driverId",
+      element: <DriverInfoPage />,
+      loader: driverInfoPageLoader,
+    },
+    {
+      path: "report/general",
+      children: [
+        {
+          index: true,
+          element: <DriverReportGeneralIndexPage />,
+          loader: driverReportGeneralIndexPageLoader,
+        },
+        {
+          path: "info/:reportId",
+          element: <DriverReportGeneralInfoPage />,
+          loader: driverReportGeneralInfoPageLoader,
+        },
+      ],
+    },
+    {
+      path: "report/medical",
+      children: [
+        {
+          index: true,
+          element: <DriverReportMedicalIndexPage />,
+          loader: driverReportMedicalIndexPageLoader,
+        },
+        {
+          path: "info/:reportId",
+          element: <DriverReportMedicalInfoPage />,
+          loader: driverReportMedicalInfoPageLoader,
+        },
+      ],
+    },
+  ],
+};
+const PICKUP_ROUTE_ROUTES: RouteObject = {
+  path: "pickup-routes",
+  children: [
+    {
+      index: true,
+      element: <PickupRouteIndexPage />,
+      loader: pickupRouteIndexPageLoader,
+    },
+    {
+      path: "info/:routeId",
+      element: <PickupRouteInfoPage />,
+      loader: pickupRouteInfoPageLoader,
+    },
+    {
+      path: "report/general",
+      children: [
+        {
+          index: true,
+          element: <PickupRouteReportGeneralIndexPage />,
+          loader: pickupRouteReportGeneralIndexPageLoader,
+        },
+        {
+          path: "info/:reportId",
+          element: <PickupRouteReportGeneralInfoPage />,
+          loader: pickupRouteReportGeneralInfoPageLoader,
+        },
+      ],
+    },
+  ],
+};
+const VEHICLE_ROUTES: RouteObject = {
+  path: "vehicles",
+  children: [
+    {
+      index: true,
+      element: <VehicleIndexPage />,
+      loader: vehicleIndexPageLoader,
+    },
+    {
+      path: "info/:vehicleId",
+      element: <VehicleInfoPage />,
+      loader: vehicleInfoPageLoader,
+    },
+    {
+      path: "report/general",
+      children: [
+        {
+          index: true,
+          element: <VehicleReportGeneralIndexPage />,
+          loader: vehicleReportGeneralIndexPageLoader,
+        },
+        {
+          path: "info/:reportId",
+          element: <VehicleReportGeneralInfoPage />,
+          loader: vehicleReportGeneralInfoPageLoader,
+        },
+      ],
+    },
+    {
+      path: "report/inspection",
+      children: [
+        {
+          index: true,
+          element: <VehicleReportInspectionIndexPage />,
+          loader: vehicleReportInspectionIndexPageLoader,
+        },
+        {
+          path: "info/:reportId",
+          element: <VehicleReportInspectionInfoPage />,
+          loader: vehicleReportInspectionInfoPageLoader,
+        },
+      ],
+    },
+  ],
+};
+export const BROWSER_ROUTES = createBrowserRouter([
   {
     path: "/",
     element: <MainView />,
@@ -87,140 +198,9 @@ export const routes = createBrowserRouter([
         loader: operationalLogIndexPageLoader,
       },
 
-      {
-        path: "pickup-routes",
-        children: [
-          {
-            index: true,
-            element: <PickupRouteIndexPage />,
-            loader: pickupRouteIndexPageLoader,
-          },
-          {
-            path: "info/:routeId",
-            element: <PickupRouteInfoPage />,
-            loader: pickupRouteInfoPageLoader,
-          },
-          {
-            path: "report/general",
-            children: [
-              {
-                index: true,
-                element: (
-                  <PickupRouteReportGeneralIndexPage />
-                ),
-                loader:
-                  pickupRouteReportGeneralIndexPageLoader,
-              },
-              {
-                path: "info/:reportId",
-                element: (
-                  <PickupRouteReportGeneralInfoPage />
-                ),
-                loader:
-                  pickupRouteReportGeneralInfoPageLoader,
-              },
-            ],
-          },
-        ],
-      },
-
-      {
-        path: "vehicles",
-        children: [
-          {
-            index: true,
-            element: <VehicleIndexPage />,
-            loader: vehicleIndexPageLoader,
-          },
-          {
-            path: "info/:vehicleId",
-            element: <VehicleInfoPage />,
-            loader: vehicleInfoPageLoader,
-          },
-          {
-            path: "report/general",
-            children: [
-              {
-                index: true,
-                element: <VehicleReportGeneralIndexPage />,
-                loader: vehicleReportGeneralIndexPageLoader,
-              },
-              {
-                path: "info/:reportId",
-                element: <VehicleReportGeneralInfoPage />,
-                loader: vehicleReportGeneralInfoPageLoader,
-              },
-            ],
-          },
-          {
-            path: "report/inspection",
-            children: [
-              {
-                index: true,
-                element: (
-                  <VehicleReportInspectionIndexPage />
-                ),
-                loader:
-                  vehicleReportInspectionIndexPageLoader,
-              },
-              {
-                path: "info/:reportId",
-                element: (
-                  <VehicleReportInspectionInfoPage />
-                ),
-                loader:
-                  vehicleReportInspectionInfoPageLoader,
-              },
-            ],
-          },
-        ],
-      },
-
-      {
-        path: "drivers",
-        children: [
-          {
-            index: true,
-            element: <DriverIndexPage />,
-            loader: driverIndexPageLoader,
-          },
-          {
-            path: "info/:driverId",
-            element: <DriverInfoPage />,
-            loader: driverInfoPageLoader,
-          },
-          {
-            path: "report/general",
-            children: [
-              {
-                index: true,
-                element: <DriverReportGeneralIndexPage />,
-                loader: driverReportGeneralIndexPageLoader,
-              },
-              {
-                path: "info/:reportId",
-                element: <DriverReportGeneralInfoPage />,
-                loader: driverReportGeneralInfoPageLoader,
-              },
-            ],
-          },
-          {
-            path: "report/medical",
-            children: [
-              {
-                index: true,
-                element: <DriverReportMedicalIndexPage />,
-                loader: driverReportMedicalIndexPageLoader,
-              },
-              {
-                path: "info/:reportId",
-                element: <DriverReportMedicalInfoPage />,
-                loader: driverReportMedicalInfoPageLoader,
-              },
-            ],
-          },
-        ],
-      },
+      PICKUP_ROUTE_ROUTES,
+      VEHICLE_ROUTES,
+      DRIVER_ROUTES,
     ],
   },
 ]);

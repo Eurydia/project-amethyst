@@ -9,16 +9,19 @@ import {
 import { FC } from "react";
 import { useDropzone } from "react-dropzone";
 
-type BaseInputFileDropzoneProps = {};
-export const BaseInputFileDropzone: FC<
-  BaseInputFileDropzoneProps
-> = (props) => {
-  const { acceptedFiles, getRootProps, getInputProps } =
-    useDropzone({
-      accept: {
-        "application/vnd.ms-excel": [".csv"],
-      },
-    });
+type BaseInputFileDropzoneProps = {
+  onFileAccepted: (files: File[]) => void;
+};
+export const BaseInputFileDropzone: FC<BaseInputFileDropzoneProps> = (
+  props
+) => {
+  const { onFileAccepted } = props;
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    accept: {
+      "application/vnd.ms-excel": [".csv", ".xls", ".xlsx"],
+    },
+    onDropAccepted: onFileAccepted,
+  });
 
   const acceptedFileItems = acceptedFiles.map((file) => (
     <ListItem key={file.name}>
@@ -46,9 +49,7 @@ export const BaseInputFileDropzone: FC<
         {...getRootProps()}
       >
         <input {...getInputProps()} />
-        <Typography>
-          ลากไฟล์ลงมาวาง หรือคลิกเพื่อเลือกไฟล์
-        </Typography>
+        <Typography>ลากไฟล์ลงมาวาง หรือคลิกเพื่อเลือกไฟล์</Typography>
         <List>{acceptedFileItems}</List>
       </Paper>
     </Box>

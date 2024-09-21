@@ -13,9 +13,7 @@ export const OperationalLogIndexPage: FC = () => {
   } = useLoaderData() as OperationalLogIndexPageLoaderData;
   return (
     <Stack spacing={1}>
-      <Typography variant="h1">
-        ตารางบันทึกประวัติการเดินรถ
-      </Typography>
+      <Typography variant="h1">ตารางบันทึกประวัติการเดินรถ</Typography>
       <OperationalLogTable
         logEntries={logEntries}
         slotProps={{

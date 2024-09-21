@@ -27,3 +27,10 @@ export type PickupRouteFormData = {
   arrivalTime: string;
   departureTime: string;
 };
+
+export type PickupRouteExportData = {
+  ชื่อสาย: string;
+  เวลารับเข้า: string;
+  เวลารับออก: string;
+  รหัส: number;
+};

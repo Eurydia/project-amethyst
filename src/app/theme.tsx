@@ -70,6 +70,11 @@ let theme = createTheme(
           autoComplete: "off",
         },
       },
+      MuiDialog: {
+        defaultProps: {
+          fullScreen: true,
+        },
+      },
       MuiButton: {
         defaultProps: {
           disableElevation: true,

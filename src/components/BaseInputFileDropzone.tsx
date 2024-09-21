@@ -1,4 +1,11 @@
-import { Box, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { FC } from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -14,9 +21,11 @@ export const BaseInputFileDropzone: FC<
     });
 
   const acceptedFileItems = acceptedFiles.map((file) => (
-    <li key={file.name}>
-      {file.name} - {file.size} bytes
-    </li>
+    <ListItem key={file.name}>
+      <ListItemText>
+        {file.name} - {file.size} bytes
+      </ListItemText>
+    </ListItem>
   ));
 
   return (
@@ -30,6 +39,7 @@ export const BaseInputFileDropzone: FC<
           borderWidth: 4,
           borderStyle: "dashed",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -39,8 +49,8 @@ export const BaseInputFileDropzone: FC<
         <Typography>
           ลากไฟล์ลงมาวาง หรือคลิกเพื่อเลือกไฟล์
         </Typography>
+        <List>{acceptedFileItems}</List>
       </Paper>
-      <ul>{acceptedFileItems}</ul>
     </Box>
   );
 };

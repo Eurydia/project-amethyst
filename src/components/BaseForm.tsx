@@ -29,14 +29,7 @@ export const BaseForm: FC<BaseFormProps> = (props) => {
   const { title, children, slotProps, onClose, open } =
     props;
   return (
-    <Dialog
-      disableRestoreFocus
-      disablePortal
-      maxWidth="lg"
-      fullWidth
-      open={open}
-      onClose={onClose}
-    >
+    <Dialog open={open} onClose={onClose}>
       <DialogTitle component="div">{title}</DialogTitle>
       <DialogContent>
         <FormalLayout>{children}</FormalLayout>

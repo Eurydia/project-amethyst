@@ -140,10 +140,7 @@ export const VehicleTable: FC<VehicleTableProps> = (
           licensePlate: "",
           registeredCity: "",
           vehicleClass: "",
-          vendor:
-            slotProps.form.vendorComboBox.options.length > 0
-              ? slotProps.form.vendorComboBox.options[0]
-              : "",
+          vendor: "",
         }}
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}

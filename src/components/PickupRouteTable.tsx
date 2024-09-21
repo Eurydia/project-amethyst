@@ -1,12 +1,19 @@
+import { getPickupRoute } from "$backend/database/get";
 import { postPickupRoute } from "$backend/database/post";
 import { filterItems } from "$core/filter";
+import { PICKUP_ROUTE_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-model";
 import { TableHeaderDefinition } from "$types/generics";
 import { PickupRouteEntry } from "$types/models/pickup-route";
 import { AddRounded } from "@mui/icons-material";
 import {
   Alert,
   AlertTitle,
+  Button,
   Collapse,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Stack,
   Typography,
 } from "@mui/material";
@@ -14,6 +21,8 @@ import dayjs from "dayjs";
 import { FC, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
+import * as XLSX from "xlsx";
+import { BaseInputFileDropzone } from "./BaseInputFileDropzone";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
@@ -79,8 +88,12 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
   props,
 ) => {
   const { routeEntries } = props;
+
   const [search, setSearch] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [formDialogOpen, setFormDialogOpen] =
+    useState(false);
+  const [importDialogOpen, setImportDialogOpen] =
+    useState(false);
   const { revalidate } = useRevalidator();
   const filteredEntries = filterItems(
     routeEntries,
@@ -106,15 +119,41 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
           addButton: {
             // TODO: translate
             children: "register route",
-            onClick: () => setDialogOpen(true),
+            onClick: () => setFormDialogOpen(true),
           },
           importButton: {
             children: "register from file",
-            onClick: () => {},
+            onClick: () => setImportDialogOpen(true),
           },
           exportButton: {
             children: "export routes",
-            onClick: () => {},
+            onClick: async () => {
+              // TODO: translate work sheet name
+
+              const routes = await Promise.all(
+                filteredEntries
+                  .map((entry) => entry.id)
+                  .map((routeId) =>
+                    getPickupRoute(routeId),
+                  ),
+              );
+              const exportedRoutes = routes
+                .filter((route) => route !== null)
+                .map(
+                  PICKUP_ROUTE_MODEL_TRANSFORMER.toPickupRouteExportData,
+                );
+              const worksheet =
+                XLSX.utils.json_to_sheet(exportedRoutes);
+
+              const workbook = XLSX.utils.book_new();
+              XLSX.utils.book_append_sheet(
+                workbook,
+                worksheet,
+                "routes",
+              );
+
+              XLSX.writeFile(workbook, "routes.xlsx");
+            },
           },
         }}
       />
@@ -150,17 +189,17 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
       <PickupRouteForm
         //TODO: translate
         title="Register a new pickup route"
-        open={dialogOpen}
+        open={formDialogOpen}
         initFormData={{
+          name: "",
           arrivalTime: dayjs()
             .startOf("day")
             .format("HH:mm"),
           departureTime: dayjs()
             .endOf("day")
             .format("HH:mm"),
-          name: "",
         }}
-        onClose={() => setDialogOpen(false)}
+        onClose={() => setFormDialogOpen(false)}
         slotProps={{
           submitButton: {
             //TODO: translate
@@ -177,10 +216,34 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
                   },
                   () => toast.error("Registration failed"),
                 )
-                .finally(() => setDialogOpen(false)),
+                .finally(() => setFormDialogOpen(false)),
           },
         }}
       />
+      <Dialog
+        maxWidth="lg"
+        fullWidth
+        open={importDialogOpen}
+        onClose={() => setImportDialogOpen(false)}
+      >
+        <DialogTitle>
+          {/* TODO: translate */}
+          Register drivers from file
+        </DialogTitle>
+        <DialogContent>
+          <BaseInputFileDropzone />
+        </DialogContent>
+        <DialogActions>
+          {/* TODO: translate */}
+          <Button variant="contained">Add</Button>
+          <Button
+            variant="outlined"
+            onClick={() => setImportDialogOpen(false)}
+          >
+            cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Stack>
   );
 };

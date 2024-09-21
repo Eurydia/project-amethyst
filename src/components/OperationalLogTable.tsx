@@ -157,6 +157,7 @@ export const OperationalLogTable: FC<
   return (
     <Stack spacing={1}>
       <Collapse in={preventAddLog}>
+        {/* TODO: Translate */}
         <Alert variant="outlined" severity="warning">
           <Typography>
             ไม่สามารถเพิ่มประวัติการเดินรถได้ เพราะว่า
@@ -165,7 +166,7 @@ export const OperationalLogTable: FC<
             {databaseHasNoDriver && (
               <li>
                 <Typography>
-                  ไม่มีคนขับรถในฐานข้อมูล
+                  No driver present in database
                 </Typography>
               </li>
             )}

@@ -19,16 +19,16 @@
 		"@mui/x-date-pickers": "^7.12.1",
 		"@tauri-apps/api": "^1.6.0",
 		"@types/node": "^22.5.3",
+		"ajv": "^8.17.1",
 		"dayjs": "^1.11.12",
-		"faker": "^5.5.3",
 		"match-sorter": "^6.3.4",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-dropzone": "^14.2.3",
-		"react-router-dom": "^6.26.0"
+		"react-router-dom": "^6.26.0",
+		"xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
 	},
 	"devDependencies": {
-		"@faker-js/faker": "^8.4.1",
 		"@tauri-apps/cli": "^1.6.1",
 		"@types/react": "^18.2.15",
 		"@types/react-dom": "^18.2.7",

@@ -1,11 +1,4 @@
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
 import { FC } from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -18,7 +11,7 @@ export const BaseInputFileDropzone: FC<BaseInputFileDropzoneProps> = (
   const { onFileAccepted } = props;
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: {
-      "application/vnd.ms-excel": [".csv", ".xls", ".xlsx"],
+      "application/vnd.ms-excel": [".xls", ".xlsx"],
     },
     onDropAccepted: onFileAccepted,
   });
@@ -32,26 +25,30 @@ export const BaseInputFileDropzone: FC<BaseInputFileDropzoneProps> = (
   ));
 
   return (
-    <Box>
-      <Paper
-        variant="outlined"
-        sx={{
-          padding: 4,
-          width: 1,
-          minHeight: 400,
-          borderWidth: 4,
-          borderStyle: "dashed",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        {...getRootProps()}
+    <Paper
+      variant="outlined"
+      sx={{
+        padding: 4,
+        width: 1,
+        minHeight: 400,
+        borderWidth: 4,
+        borderStyle: "dashed",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        {...getRootProps({
+          className: "dropzone",
+          style: { backgroundColor: "gray" },
+        })}
       >
         <input {...getInputProps()} />
         <Typography>ลากไฟล์ลงมาวาง หรือคลิกเพื่อเลือกไฟล์</Typography>
         <List>{acceptedFileItems}</List>
-      </Paper>
-    </Box>
+      </div>
+    </Paper>
   );
 };

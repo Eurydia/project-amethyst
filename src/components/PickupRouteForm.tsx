@@ -1,50 +1,78 @@
+/** @format */
+
+import { usePostPickupRoute } from "$hooks/usePostPickupRoute";
+import { usePutPickupRoute } from "$hooks/usePutPickupRoute";
 import { PickupRouteFormData } from "$types/models/pickup-route";
-import { WarningRounded } from "@mui/icons-material";
+import { AddRounded, SaveRounded, WarningRounded } from "@mui/icons-material";
 import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
+import { useRevalidator } from "react-router-dom";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseInputTimeField } from "./BaseInputTimeField";
 
-type PickupRouteFormProps = {
-  initFormData: PickupRouteFormData;
-  open: boolean;
-  onClose: () => void;
-  title: ReactNode;
-  slotProps: {
-    submitButton: {
-      onClick: (formData: PickupRouteFormData) => void;
-      label: string;
-      startIcon: ReactNode;
+type PickupRouteFormProps =
+  | {
+      editing: true;
+      open: boolean;
+      onClose: () => void;
+      routeId: number;
+      initFormData: PickupRouteFormData;
+    }
+  | {
+      editing?: false | undefined;
+      open: boolean;
+      onClose: () => void;
     };
-  };
-};
-export const PickupRouteForm: FC<PickupRouteFormProps> = (
-  props,
-) => {
-  const { initFormData, title, slotProps, open, onClose } =
-    props;
+export const PickupRouteForm: FC<PickupRouteFormProps> = (props) => {
+  const { onClose, open, editing } = props;
 
-  const [fieldName, setFieldName] = useState(
-    initFormData.name,
-  );
+  let initFormData: PickupRouteFormData;
+  let title = "";
+  let submitButtonStartIcon: ReactNode;
+  let submitButtonLabel = "";
+  if (editing) {
+    title = "Edit Pickup Route details"; // TODO: translate
+    submitButtonLabel = "Save"; // TODO: translate
+    submitButtonStartIcon = <SaveRounded />;
+    initFormData = props.initFormData;
+  } else {
+    title = "Register pickup route"; // TODO: translate
+    submitButtonLabel = "Add"; // TODO: translate
+    submitButtonStartIcon = <AddRounded />;
+    initFormData = {
+      name: "",
+      arrivalTime: dayjs().startOf("day").format("HH:mm"),
+      departureTime: dayjs().endOf("day").format("HH:mm"),
+    };
+  }
+  const [fieldName, setFieldName] = useState(initFormData.name);
   const [fieldArrivalTime, setFieldArrivalTime] = useState(
-    dayjs(initFormData.arrivalTime, "HH:mm"),
+    dayjs(initFormData.arrivalTime, "HH:mm")
   );
-  const [fieldDepartureTime, setFieldDepartureTime] =
-    useState(dayjs(initFormData.departureTime, "HH:mm"));
+  const [fieldDepartureTime, setFieldDepartureTime] = useState(
+    dayjs(initFormData.departureTime, "HH:mm")
+  );
+  const { revalidate } = useRevalidator();
+  const putRoute = usePutPickupRoute();
+  const postRoute = usePostPickupRoute();
 
   const handleSubmit = () => {
     if (isFormIncomplete) {
       return;
     }
-
-    slotProps.submitButton.onClick({
+    const formData: PickupRouteFormData = {
       name: fieldName.trim().normalize(),
       arrivalTime: fieldArrivalTime.format("HH:mm"),
       departureTime: fieldDepartureTime.format("HH:mm"),
-    });
+    };
+
+    if (editing) {
+      putRoute(props.routeId, formData).finally(revalidate);
+    } else {
+      postRoute(formData).finally(revalidate);
+    }
   };
 
   const isArrivalTimeIncomplete =
@@ -55,9 +83,7 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
     Number.isNaN(fieldDepartureTime.minute());
   const isMissingName = fieldName.trim().normalize() === "";
   const isFormIncomplete =
-    isMissingName ||
-    isArrivalTimeIncomplete ||
-    isDepartureTimeIncomplete;
+    isMissingName || isArrivalTimeIncomplete || isDepartureTimeIncomplete;
 
   const formItems: {
     label: string;
@@ -73,7 +99,8 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
             isMissingName && (
               <Typography>
                 <WarningRounded />
-                กรุณากรอกชื่อสาย
+                Route must have a name
+                {/* TODO: translate */}
               </Typography>
             )
           }
@@ -91,11 +118,11 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
           value={fieldArrivalTime}
           onChange={setFieldArrivalTime}
           helperText={
-            // TODO: translate
             isArrivalTimeIncomplete && (
               <Typography>
                 <WarningRounded />
                 The arrival time should follow HH:mm format
+                {/* TODO: Translate */}
               </Typography>
             )
           }
@@ -109,12 +136,11 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
           value={fieldDepartureTime}
           onChange={setFieldDepartureTime}
           helperText={
-            // TODO: translate
             isDepartureTimeIncomplete && (
               <Typography>
                 <WarningRounded />
-                The departure time should follow HH:mm
-                format
+                The departure time should follow HH:mm format
+                {/* TODO: Translate */}
               </Typography>
             )
           }
@@ -130,8 +156,8 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
       title={title}
       slotProps={{
         submitButton: {
-          children: slotProps.submitButton.label,
-          startIcon: slotProps.submitButton.startIcon,
+          children: submitButtonLabel,
+          startIcon: submitButtonStartIcon,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
         },

@@ -1,3 +1,5 @@
+/** @format */
+
 import { DriverFormData } from "$types/models/driver";
 import { DriverReportFormData } from "$types/models/driver-report";
 import { PickupRouteFormData } from "$types/models/pickup-route";
@@ -8,92 +10,86 @@ import { VehicleReportInspectionFormData } from "$types/models/vehicle-report-in
 import { invoke } from "@tauri-apps/api/tauri";
 
 //#region Attendance log
-export const putAttendanceLog = async ({
-  id,
-  actualArrivalDatetime,
-  actualDepartureDatetime,
+export const tauriPutAttendanceLog = async ({
+	id,
+	actualArrivalDatetime,
+	actualDepartureDatetime,
 }: {
-  id: number;
-  actualArrivalDatetime: string | null;
-  actualDepartureDatetime: string | null;
+	id: number;
+	actualArrivalDatetime: string | null;
+	actualDepartureDatetime: string | null;
 }) => {
-  invoke("put_attendance_log", {
-    id,
-    actualArrivalDatetime,
-    actualDepartureDatetime,
-  });
+	invoke("put_attendance_log", {
+		id,
+		actualArrivalDatetime,
+		actualDepartureDatetime,
+	});
 };
 //#endregion
 
 //#region Driver
-export const putDriver = async (
-  id: number,
-  driver: DriverFormData,
+export const tauriPutDriver = async (id: number, driver: DriverFormData) =>
+	invoke("put_driver", {
+		id,
+		...driver,
+	});
+export const tauriPutDriverReportGeneral = async (
+	id: number,
+	report: DriverReportFormData
 ) =>
-  invoke("put_driver", {
-    id,
-    ...driver,
-  });
-export const putDriverReportGeneral = async (
-  id: number,
-  report: DriverReportFormData,
+	invoke("put_driver_report_general", {
+		id,
+		...report,
+	});
+export const tauriPutDriverReportMedical = async (
+	id: number,
+	report: DriverReportFormData
 ) =>
-  invoke("put_driver_report_general", {
-    id,
-    ...report,
-  });
-export const putDriverReportMedical = async (
-  id: number,
-  report: DriverReportFormData,
-) =>
-  invoke("put_driver_report_medical", {
-    id,
-    ...report,
-  });
+	invoke("put_driver_report_medical", {
+		id,
+		...report,
+	});
 //#endregion
 
 //#region Pickup Route
-export const putPickupRoute = async (
-  id: number,
-  route: PickupRouteFormData,
+export const tauriPutPickupRoute = async (
+	id: number,
+	route: PickupRouteFormData
 ) =>
-  invoke("put_pickup_route", {
-    id,
-    ...route,
-  });
-export const putPickupRouteReportGeneral = async (
-  id: number,
-  report: PickupRouteReportGeneralFormData,
+	invoke("put_pickup_route", {
+		id,
+		...route,
+	});
+export const tauriPutPickupRouteReportGeneral = async (
+	id: number,
+	report: PickupRouteReportGeneralFormData
 ) =>
-  invoke("put_pickup_route_report_general", {
-    id,
-    ...report,
-  });
+	invoke("put_pickup_route_report_general", {
+		id,
+		...report,
+	});
 //#endregion
 
 //#region Vehicle
-export const putVehicle = async (
-  id: number,
-  vehicle: VehicleFormData,
+export const tauriPutVehicle = async (id: number, vehicle: VehicleFormData) =>
+	invoke("put_vehicle", {
+		id,
+		...vehicle,
+	});
+export const tauriPutVehicleReportGeneral = async (
+	id: number,
+	report: VehicleReportGeneralFormData
 ) =>
-  invoke("put_vehicle", {
-    id,
-    ...vehicle,
-  });
-export const putVehicleReportGeneral = async (
-  id: number,
-  report: VehicleReportGeneralFormData,
+	invoke("put_vehicle_report_general", {
+		id,
+		...report,
+	});
+export const tauriPutVehicleReportInspection = async (
+	id: number,
+	report: VehicleReportInspectionFormData
 ) =>
-  invoke("put_vehicle_report_general", {
-    id,
-    ...report,
-  });
-export const putVehicleReportInspection = async (
-  id: number,
-  report: VehicleReportInspectionFormData,
-) =>
-  invoke("put_vehicle_report_inspection", {
-    id,
-    ...report,
-  });
+	invoke("put_vehicle_report_inspection", {
+		id,
+		...report,
+	});
 //#endregion

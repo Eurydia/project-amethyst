@@ -4,12 +4,7 @@ import { DriverModel } from "$types/models/driver";
 import { OperationalLogEntry } from "$types/models/operational-log";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { VehicleModel } from "$types/models/vehicle";
-import {
-  Alert,
-  Collapse,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Alert, Collapse, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
 import { BaseSortableTable } from "./BaseSortableTable";
@@ -20,70 +15,49 @@ import { OperationalLogForm } from "./OperationalLogForm";
 const STARTDATE_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> =
   {
     label: "เริ่มมีผล",
-    compare: (a, b) =>
-      dayjs(a.startDate).unix() - dayjs(b.startDate).unix(),
+    compare: (a, b) => dayjs(a.startDate).unix() - dayjs(b.startDate).unix(),
     render: (item) => (
       <Typography>
-        {dayjs(item.startDate)
-          .locale("th")
-          .format("DD MMMM YYYY")}
+        {dayjs(item.startDate).locale("th").format("DD MMMM YYYY")}
       </Typography>
     ),
   };
-const ENDDATE_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> =
-  {
-    label: "สิ้นสุด",
-    compare: (a, b) =>
-      dayjs(a.endDate).unix() - dayjs(b.endDate).unix(),
-    render: (item) => (
-      <Typography>
-        {dayjs(item.endDate)
-          .locale("th")
-          .format("DD MMMM YYYY")}
-      </Typography>
-    ),
-  };
-const DRIVER_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> =
-  {
-    label: "คนขับรถ",
-    compare: (a, b) =>
-      a.driverName.localeCompare(b.driverName),
-    render: (item) => (
-      <BaseTypographyLink
-        to={"/drivers/info/" + item.driverId}
-      >
-        {item.driverName} {item.driverSurname}
-      </BaseTypographyLink>
-    ),
-  };
-const VEHICLE_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> =
-  {
-    label: "เลขทะเบียน",
-    compare: (a, b) =>
-      a.vehicleLicensePlate.localeCompare(
-        b.vehicleLicensePlate,
-      ),
-    render: (item) => (
-      <BaseTypographyLink
-        to={"/vehicles/info/" + item.vehicleId}
-      >
-        {item.vehicleLicensePlate}
-      </BaseTypographyLink>
-    ),
-  };
-const ROUTE_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> =
-  {
-    label: "สายรถ",
-    compare: (a, b) =>
-      a.routeName.localeCompare(b.routeName),
-    render: (item) => (
-      <BaseTypographyLink
-        to={"/pickup-routes/info/" + item.routeId}
-      >
-        {item.routeName}
-      </BaseTypographyLink>
-    ),
-  };
+const ENDDATE_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> = {
+  label: "สิ้นสุด",
+  compare: (a, b) => dayjs(a.endDate).unix() - dayjs(b.endDate).unix(),
+  render: (item) => (
+    <Typography>
+      {dayjs(item.endDate).locale("th").format("DD MMMM YYYY")}
+    </Typography>
+  ),
+};
+const DRIVER_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> = {
+  label: "คนขับรถ",
+  compare: (a, b) => a.driverName.localeCompare(b.driverName),
+  render: (item) => (
+    <BaseTypographyLink to={"/drivers/info/" + item.driverId}>
+      {item.driverName} {item.driverSurname}
+    </BaseTypographyLink>
+  ),
+};
+const VEHICLE_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> = {
+  label: "เลขทะเบียน",
+  compare: (a, b) => a.vehicleLicensePlate.localeCompare(b.vehicleLicensePlate),
+  render: (item) => (
+    <BaseTypographyLink to={"/vehicles/info/" + item.vehicleId}>
+      {item.vehicleLicensePlate}
+    </BaseTypographyLink>
+  ),
+};
+const ROUTE_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> = {
+  label: "สายรถ",
+  compare: (a, b) => a.routeName.localeCompare(b.routeName),
+  render: (item) => (
+    <BaseTypographyLink to={"/pickup-routes/info/" + item.routeId}>
+      {item.routeName}
+    </BaseTypographyLink>
+  ),
+};
 
 type OperationalLogTableProps = {
   hideVehicleColumn?: boolean;
@@ -107,9 +81,7 @@ type OperationalLogTableProps = {
     };
   };
 };
-export const OperationalLogTable: FC<
-  OperationalLogTableProps
-> = (props) => {
+export const OperationalLogTable: FC<OperationalLogTableProps> = (props) => {
   const {
     logEntries,
     slotProps,
@@ -127,10 +99,7 @@ export const OperationalLogTable: FC<
     "routeName",
   ]);
 
-  const headers = [
-    STARTDATE_HEADER_DEFINITION,
-    ENDDATE_HEADER_DEFINITION,
-  ];
+  const headers = [STARTDATE_HEADER_DEFINITION, ENDDATE_HEADER_DEFINITION];
   if (!hideDriverColumn) {
     headers.push(DRIVER_HEADER_DEFINITION);
   }
@@ -141,33 +110,25 @@ export const OperationalLogTable: FC<
     headers.push(ROUTE_HEADER_DEFINITION);
   }
 
-  const databaseHasNoDriver =
-    slotProps.form.driverSelect.options.length === 0;
+  const databaseHasNoDriver = slotProps.form.driverSelect.options.length === 0;
   const databaseHasNoVehicle =
     slotProps.form.vehicleSelect.options.length === 0;
-  const databaseHasNoRoute =
-    slotProps.form.routeSelect.options.length === 0;
+  const databaseHasNoRoute = slotProps.form.routeSelect.options.length === 0;
 
   const databaseHasNoLog = logEntries.length === 0;
   const preventAddLog =
-    databaseHasNoDriver ||
-    databaseHasNoVehicle ||
-    databaseHasNoRoute;
+    databaseHasNoDriver || databaseHasNoVehicle || databaseHasNoRoute;
 
   return (
     <Stack spacing={1}>
       <Collapse in={preventAddLog}>
         {/* TODO: Translate */}
         <Alert variant="outlined" severity="warning">
-          <Typography>
-            ไม่สามารถเพิ่มประวัติการเดินรถได้ เพราะว่า
-          </Typography>
+          <Typography>ไม่สามารถเพิ่มประวัติการเดินรถได้ เพราะว่า</Typography>
           <ul>
             {databaseHasNoDriver && (
               <li>
-                <Typography>
-                  No driver present in database
-                </Typography>
+                <Typography>No driver present in database</Typography>
               </li>
             )}
             {databaseHasNoVehicle && (
@@ -189,7 +150,7 @@ export const OperationalLogTable: FC<
           importButton: {
             disabled: preventAddLog,
             children: "Add log from file",
-            onClick: function (): void {
+            onFileSelect: function (): void {
               throw new Error("Function not implemented.");
             },
           },
@@ -205,8 +166,7 @@ export const OperationalLogTable: FC<
             onClick: () => setDialogOpen(true),
           },
           searchField: {
-            placeholder:
-              "ค้นหาด้วยชื่อสกุลคนขับรถ, เลขทะเบียน, หรือสายรถ",
+            placeholder: "ค้นหาด้วยชื่อสกุลคนขับรถ, เลขทะเบียน, หรือสายรถ",
             value: search,
             onChange: setSearch,
           },
@@ -226,15 +186,13 @@ export const OperationalLogTable: FC<
           },
         }}
       />
-      {!databaseHasNoDriver &&
-        !databaseHasNoVehicle &&
-        !databaseHasNoRoute && (
-          <OperationalLogForm
-            open={dialogOpen}
-            slotProps={slotProps.form}
-            onClose={() => setDialogOpen(false)}
-          />
-        )}
+      {!databaseHasNoDriver && !databaseHasNoVehicle && !databaseHasNoRoute && (
+        <OperationalLogForm
+          open={dialogOpen}
+          slotProps={slotProps.form}
+          onClose={() => setDialogOpen(false)}
+        />
+      )}
     </Stack>
   );
 };

@@ -3,7 +3,7 @@ import { DriverInfoGroup } from "$components/DriverInfoGroup";
 import { DriverReportGeneralTable } from "$components/DriverReportGeneralTable";
 import { DriverReportMedicalTable } from "$components/DriverReportMedicalTable";
 import { OperationalLogTable } from "$components/OperationalLogTable";
-import { TRANSLATION } from "$locale/th";
+import { TH_LOCALE } from "$locale/th";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import { useLoaderData } from "react-router-dom";
@@ -11,19 +11,19 @@ import { IndexPageLoaderData as DriverInfoPageLoaderData } from "./loader";
 
 const TOC_ITEMS = [
   {
-    label: TRANSLATION.driverInfoGroup,
+    label: TH_LOCALE.driverInfoGroup,
     href: "#info",
   },
   {
-    label: TRANSLATION.operationalLogTable,
+    label: TH_LOCALE.operationalLogTable,
     href: "#operational-log",
   },
   {
-    label: TRANSLATION.driverGeneralReportTable,
+    label: TH_LOCALE.driverGeneralReportTable,
     href: "#general-report",
   },
   {
-    label: TRANSLATION.driverMedicalReportTable,
+    label: TH_LOCALE.driverMedicalReportTable,
     href: "#medical-report",
   },
 ];
@@ -60,7 +60,7 @@ export const DriverInfoPage: FC = () => {
         }}
       />
       <Typography variant="h2" id="operational-log">
-        {TRANSLATION.operationalLogTable}
+        {TH_LOCALE.operationalLogTable}
       </Typography>
       <OperationalLogTable
         logEntries={logEntries}
@@ -80,7 +80,7 @@ export const DriverInfoPage: FC = () => {
         }}
       />
       <Typography variant="h2" id="general-report">
-        {TRANSLATION.driverGeneralReportTable}
+        {TH_LOCALE.driverGeneralReportTable}
       </Typography>
       <DriverReportGeneralTable
         hideDriverColumn
@@ -98,7 +98,7 @@ export const DriverInfoPage: FC = () => {
         }}
       />
       <Typography variant="h2" id="medical-report">
-        {TRANSLATION.driverMedicalReportTable}
+        {TH_LOCALE.driverMedicalReportTable}
       </Typography>
       <DriverReportMedicalTable
         hideDriverColumn

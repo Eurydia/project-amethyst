@@ -3,7 +3,7 @@ import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { OperationalLogTable } from "$components/OperationalLogTable";
 import { PickupRouteInfoGroup } from "$components/PickupRouteInfoGroup";
 import { PickupRouteReportGeneralTable } from "$components/PickupRouteReportGeneralTable";
-import { TRANSLATION } from "$locale/th";
+import { TH_LOCALE } from "$locale/th";
 import { KeyboardArrowLeftRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
@@ -19,7 +19,7 @@ const TOC_ITEMS: {
     href: "#info",
   },
   {
-    label: TRANSLATION.operationalLogTable,
+    label: TH_LOCALE.operationalLogTable,
     href: "#operational-log",
   },
   {
@@ -61,7 +61,7 @@ export const PickupRouteInfoPage: FC = () => {
       </Typography>
       <PickupRouteInfoGroup route={route} />
       <Typography variant="h2" id="operational-log">
-        {TRANSLATION.operationalLogTable}
+        {TH_LOCALE.operationalLogTable}
       </Typography>
       <OperationalLogTable
         hideRouteColumn

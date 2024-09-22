@@ -1,22 +1,24 @@
-import { getDriverAll } from "$backend/database/get/drivers";
+/** @format */
+
+import { tauriGetDriverAll } from "$backend/database/get/drivers";
 import { DRIVER_MODEL_TRANSFORMER } from "$core/transformers/driver-model";
 import { DriverEntry } from "$types/models/driver";
 import { LoaderFunction } from "react-router-dom";
 
 export type DriverIndexPageLoaderData = {
-  driverEntries: DriverEntry[];
+	driverEntries: DriverEntry[];
 };
 export const driverIndexPageLoader: LoaderFunction = async () => {
-  const drivers = (await getDriverAll()).map(
-    DRIVER_MODEL_TRANSFORMER.toDriverEntry
-  );
+	const drivers = (await tauriGetDriverAll()).map(
+		DRIVER_MODEL_TRANSFORMER.toDriverEntry
+	);
 
-  const driverEntries = (await Promise.all(drivers)).filter(
-    (entry) => entry !== null
-  );
+	const driverEntries = (await Promise.all(drivers)).filter(
+		(entry) => entry !== null
+	);
 
-  const loaderData: DriverIndexPageLoaderData = {
-    driverEntries,
-  };
-  return loaderData;
+	const loaderData: DriverIndexPageLoaderData = {
+		driverEntries,
+	};
+	return loaderData;
 };

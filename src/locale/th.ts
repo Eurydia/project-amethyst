@@ -1,4 +1,4 @@
-export const TRANSLATION = {
+export const TH_LOCALE = {
   errorNoPickupRouteInDatabase: "",
   errorNoVehicleInDatabase: "",
   errorNoDriverInDatabase: "",
@@ -80,15 +80,12 @@ export const TRANSLATION = {
   errorDriverIsMissingFromDatabase:
     "ไม่สามารถแสดงหน้าที่ต้องการได้ เนื่องจากไม่พบข้อมูลคนขับรถที่ต้องการฐานข้อมูล (Cannot find driver with given ID)",
 
-  driverTableSearch:
-    "ค้นหาด้วยชื่อ, นามสกุล, หรือเบอร์ติดต่อ",
+  driverTableSearch: "ค้นหาด้วยชื่อ, นามสกุล, หรือเบอร์ติดต่อ",
 
-  driverSelectSearch:
-    "ค้นหาด้วยชื่อ, นามสกุล, หรือเบอร์ติดต่อ",
+  driverSelectSearch: "ค้นหาด้วยชื่อ, นามสกุล, หรือเบอร์ติดต่อ",
 
   driver: "คนขับรถ",
-  driverGeneralReportTable:
-    "ตารางบันทึกเรื่องร้องเรียนคนขับรถ",
+  driverGeneralReportTable: "ตารางบันทึกเรื่องร้องเรียนคนขับรถ",
   driverMedicalReportTable: "ตารางบันทึกผลการตรวจสารเสพติด",
   postDriverGeneralReport: "ลงบันทึกเรื่องร้องเรียนคนขับรถ",
   postDriverMedicalReport: "ลงบันทึกผลการตรวจสารเสพติด",
@@ -108,6 +105,5 @@ export const TRANSLATION = {
 
   driverEditInfo: "แก้ไขข้อมูลคนขับรถ",
   infoOf: (label: string) => `ข้อมูลของ "${label}"`,
-  editInfoOf: (label: string) =>
-    `แก้ไขข้อมูลของ "${label}"`,
+  editInfoOf: (label: string) => `แก้ไขข้อมูลของ "${label}"`,
 };

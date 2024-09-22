@@ -1,10 +1,12 @@
+/** @format */
+
 import { FormalLayout } from "$layouts/FormalLayout";
 import {
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
+  Stack,
 } from "@mui/material";
 import { FC, ReactNode } from "react";
 
@@ -26,28 +28,35 @@ type BaseFormProps = {
   }[];
 };
 export const BaseForm: FC<BaseFormProps> = (props) => {
-  const { title, children, slotProps, onClose, open } =
-    props;
+  const { title, children, slotProps, onClose, open } = props;
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+    >
       <DialogTitle component="div">{title}</DialogTitle>
       <DialogContent>
-        <FormalLayout>{children}</FormalLayout>
+        <Stack spacing={1}>
+          <FormalLayout>{children}</FormalLayout>
+          <Stack
+            useFlexGap
+            direction="row"
+            flexWrap="wrap"
+            spacing={1}
+          >
+            <Button
+              variant="contained"
+              {...slotProps.submitButton}
+            />
+            <Button
+              variant="outlined"
+              onClick={onClose}
+            >
+              ยกเลิก
+            </Button>
+          </Stack>
+        </Stack>
       </DialogContent>
-      <DialogActions
-        sx={{
-          display: "flex",
-          justifyContent: "flex-start",
-        }}
-      >
-        <Button
-          variant="contained"
-          {...slotProps.submitButton}
-        />
-        <Button variant="outlined" onClick={onClose}>
-          ยกเลิก
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

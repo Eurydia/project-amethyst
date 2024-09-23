@@ -1,26 +1,23 @@
+/** @format */
+
+import { usePostPickupRouteReportGeneral } from "$hooks/usePostPickupRouteReportGeneral";
+import { usePutPickupRouteReportGeneral } from "$hooks/usePutPickupRouteReportGeneral";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { PickupRouteReportGeneralFormData } from "$types/models/pickup-route-report-general";
+import { AddRounded, SaveRounded } from "@mui/icons-material";
 import { DateField, TimeField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
+import { useRevalidator } from "react-router-dom";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { PickupRouteInputPickupRouteSelect } from "./PickupRouteInputPickupRouteSelect";
 
 type PickupRouteReportGeneralFormProps = {
-  initFormData: PickupRouteReportGeneralFormData;
   open: boolean;
   onClose: () => void;
-
   slotProps: {
-    submitButton: {
-      startIcon: ReactNode;
-      label: string;
-      onClick: (
-        formData: PickupRouteReportGeneralFormData,
-      ) => void;
-    };
     topicComboBox: {
       options: string[];
     };
@@ -29,31 +26,53 @@ type PickupRouteReportGeneralFormProps = {
       disabled?: boolean;
     };
   };
-};
+} & (
+  | {
+      editing: true;
+      reportId: number;
+      initFormData: PickupRouteReportGeneralFormData;
+    }
+  | {
+      editing?: false | undefined;
+    }
+);
 export const PickupRouteReportGeneralForm: FC<
   PickupRouteReportGeneralFormProps
 > = (props) => {
-  const { onClose, initFormData, open, slotProps } = props;
+  const { onClose, open, slotProps, editing } = props;
 
-  const [fieldDate, setFieldDate] = useState(
-    dayjs(initFormData.datetime),
-  );
-  const [fieldTime, setFieldTime] = useState(
-    dayjs(initFormData.datetime),
-  );
-  const [fieldTitle, setFieldTitle] = useState(
-    initFormData.title,
-  );
-  const [fieldContent, setFieldContent] = useState(
-    initFormData.content,
-  );
-  const [fieldTopics, setFieldTopics] = useState(
-    initFormData.topics,
-  );
-  const [fieldRoute, setFieldRoute] = useState(
-    initFormData.route,
-  );
+  let initFormData: PickupRouteReportGeneralFormData;
+  let submitButtonLabel: string;
+  let submitButtonStartIcon: ReactNode;
+  let title: string;
+  if (editing) {
+    title = "Edit route report details"; // TODO: translate
+    submitButtonLabel = "Save changes"; // TODO: translate
+    initFormData = props.initFormData;
+    submitButtonStartIcon = <SaveRounded />;
+  } else {
+    title = "Create new route report"; // TODO: translate
+    submitButtonLabel = "Create"; // TODO: translate
+    initFormData = {
+      datetime: dayjs().format(),
+      route: slotProps.routeSelect.options[0],
+      content: "",
+      title: "",
+      topics: [],
+    };
+    submitButtonStartIcon = <AddRounded />;
+  }
 
+  const [fieldDate, setFieldDate] = useState(dayjs(initFormData.datetime));
+  const [fieldTime, setFieldTime] = useState(dayjs(initFormData.datetime));
+  const [fieldTitle, setFieldTitle] = useState(initFormData.title);
+  const [fieldContent, setFieldContent] = useState(initFormData.content);
+  const [fieldTopics, setFieldTopics] = useState(initFormData.topics);
+  const [fieldRoute, setFieldRoute] = useState(initFormData.route);
+
+  const { revalidate } = useRevalidator();
+  const postReport = usePostPickupRouteReportGeneral();
+  const putReport = usePutPickupRouteReportGeneral();
   const handleSubmit = async () => {
     if (isFormIncomplete) {
       return;
@@ -67,31 +86,35 @@ export const PickupRouteReportGeneralForm: FC<
       .format();
 
     const formData: PickupRouteReportGeneralFormData = {
+      route: fieldRoute,
       content: fieldContent.normalize().trim(),
       datetime: datetime,
       title: fieldTitle.normalize().trim(),
       topics: fieldTopics
-        .map((topic) => topic.trim().normalize())
-        .filter((topic) => topic.length > 0),
-      route: fieldRoute,
+        .map((topic) => topic.normalize().trim())
+        .filter((topic) => topic.trim().length > 0),
     };
 
-    slotProps.submitButton.onClick(formData);
+    if (editing) {
+      putReport(props.reportId, formData).finally(revalidate).then(onClose);
+    } else {
+      postReport(formData).finally(revalidate).then(onClose);
+    }
   };
 
   const isTimeInvalid =
-    Number.isNaN(fieldTime.hour()) ||
-    Number.isNaN(fieldTime.minute());
+    Number.isNaN(fieldTime.hour()) || Number.isNaN(fieldTime.minute());
   const isDateInvalid =
     Number.isNaN(fieldDate.date()) ||
     Number.isNaN(fieldDate.month()) ||
     Number.isNaN(fieldDate.year());
   const isRouteEmpty = fieldRoute === null;
   const isTitleEmpty = fieldTitle.trim().length === 0;
-
+  const isContentEmpty = fieldContent.trim().length === 0;
   const isFormIncomplete =
     isRouteEmpty ||
     isTitleEmpty ||
+    isContentEmpty ||
     isTimeInvalid ||
     isDateInvalid;
 
@@ -162,6 +185,7 @@ export const PickupRouteReportGeneralForm: FC<
         <BaseInputTextField
           multiline
           minRows={6}
+          error={isContentEmpty}
           placeholder={initFormData.content}
           value={fieldContent}
           onChange={setFieldContent}
@@ -182,12 +206,12 @@ export const PickupRouteReportGeneralForm: FC<
 
   return (
     <BaseForm
-      title={undefined}
+      title={title}
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
-          startIcon: slotProps.submitButton.startIcon,
-          children: slotProps.submitButton.label,
+          startIcon: submitButtonStartIcon,
+          children: submitButtonLabel,
           onClick: handleSubmit,
         },
       }}

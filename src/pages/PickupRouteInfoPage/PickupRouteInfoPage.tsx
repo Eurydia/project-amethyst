@@ -1,3 +1,5 @@
+/** @format */
+
 import { BaseTOC } from "$components/BaseTOC";
 import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { OperationalLogTable } from "$components/OperationalLogTable";
@@ -19,7 +21,7 @@ const TOC_ITEMS: {
     href: "#info",
   },
   {
-    label: TH_LOCALE.operationalLogTable,
+    label: "Operational logs", // TODO: translate
     href: "#operational-log",
   },
   {
@@ -56,11 +58,17 @@ export const PickupRouteInfoPage: FC = () => {
         {route.name}
       </Typography>
       <BaseTOC>{TOC_ITEMS}</BaseTOC>
-      <Typography variant="h2" id="info">
+      <Typography
+        variant="h2"
+        id="info"
+      >
         ข้อมูลสายรถ
       </Typography>
       <PickupRouteInfoGroup route={route} />
-      <Typography variant="h2" id="operational-log">
+      <Typography
+        variant="h2"
+        id="operational-log"
+      >
         {TH_LOCALE.operationalLogTable}
       </Typography>
       <OperationalLogTable
@@ -81,12 +89,15 @@ export const PickupRouteInfoPage: FC = () => {
           },
         }}
       />
-      <Typography variant="h2" id="report-general">
+      <Typography
+        variant="h2"
+        id="report-general"
+      >
         ตารางบันทึกเรื่องร้องเรียนสายรถ
       </Typography>
       <PickupRouteReportGeneralTable
         hideRouteColumn
-        entries={reportEntries}
+        reportEntries={reportEntries}
         slotProps={{
           form: {
             routeSelect: {

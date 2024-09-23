@@ -1,3 +1,5 @@
+/** @format */
+
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
 import { DriverModel } from "$types/models/driver";
@@ -123,7 +125,10 @@ export const OperationalLogTable: FC<OperationalLogTableProps> = (props) => {
     <Stack spacing={1}>
       <Collapse in={preventAddLog}>
         {/* TODO: Translate */}
-        <Alert variant="outlined" severity="warning">
+        <Alert
+          variant="outlined"
+          severity="warning"
+        >
           <Typography>ไม่สามารถเพิ่มประวัติการเดินรถได้ เพราะว่า</Typography>
           <ul>
             {databaseHasNoDriver && (

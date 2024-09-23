@@ -6,27 +6,27 @@ import { useCallback } from "react";
 import { toast } from "react-toastify";
 
 type Options = {
-	successMessage?: string;
-	errorMessage?: string;
+  successMessage?: string;
+  errorMessage?: string;
 };
 
 export const usePutPickupRoute = (options?: Options) => {
-	let successMessage = "Update route success"; // TODO: translate
-	if (options !== undefined && options.successMessage !== undefined) {
-		successMessage = options.successMessage;
-	}
-	let errorMessage = "Update route failed"; // TODO: translate
-	if (options !== undefined && options.errorMessage !== undefined) {
-		errorMessage = options.errorMessage;
-	}
+  let successMessage = "Update route success"; // TODO: translate
+  if (options !== undefined && options.successMessage !== undefined) {
+    successMessage = options.successMessage;
+  }
+  let errorMessage = "Update route failed"; // TODO: translate
+  if (options !== undefined && options.errorMessage !== undefined) {
+    errorMessage = options.errorMessage;
+  }
 
-	const putRoute = useCallback(
-		(routeId: number, formData: PickupRouteFormData) =>
-			tauriPutPickupRoute(routeId, formData).then(
-				() => toast.success(successMessage),
-				() => toast.error(errorMessage)
-			),
-		[errorMessage, successMessage]
-	);
-	return putRoute;
+  const putRoute = useCallback(
+    (routeId: number, formData: PickupRouteFormData) =>
+      tauriPutPickupRoute(routeId, formData).then(
+        () => toast.success(successMessage),
+        () => toast.error(errorMessage)
+      ),
+    [errorMessage, successMessage]
+  );
+  return putRoute;
 };

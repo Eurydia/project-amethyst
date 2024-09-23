@@ -17,8 +17,8 @@ type PickupRouteFormProps =
       editing: true;
       open: boolean;
       onClose: () => void;
-      routeId: number;
       initFormData: PickupRouteFormData;
+      routeId: number;
     }
   | {
       editing?: false | undefined;
@@ -29,9 +29,9 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (props) => {
   const { onClose, open, editing } = props;
 
   let initFormData: PickupRouteFormData;
-  let title = "";
+  let title: string;
+  let submitButtonLabel: string;
   let submitButtonStartIcon: ReactNode;
-  let submitButtonLabel = "";
   if (editing) {
     title = "Edit Pickup Route details"; // TODO: translate
     submitButtonLabel = "Save"; // TODO: translate
@@ -69,9 +69,9 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (props) => {
     };
 
     if (editing) {
-      putRoute(props.routeId, formData).finally(revalidate);
+      putRoute(props.routeId, formData).finally(revalidate).then(onClose);
     } else {
-      postRoute(formData).finally(revalidate);
+      postRoute(formData).finally(revalidate).then(onClose);
     }
   };
 

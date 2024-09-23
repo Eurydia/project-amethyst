@@ -16,12 +16,13 @@ type BaseFormProps = {
   title: ReactNode;
   slotProps: {
     submitButton: {
-      startIcon: ReactNode;
+      children: ReactNode;
+      startIcon?: ReactNode;
       disabled: boolean;
-      children: string;
       onClick: () => void;
     };
   };
+  // children: ReactNode | ReactNode[];
   children: {
     label: string;
     value: ReactNode;
@@ -29,6 +30,7 @@ type BaseFormProps = {
 };
 export const BaseForm: FC<BaseFormProps> = (props) => {
   const { title, children, slotProps, onClose, open } = props;
+
   return (
     <Dialog
       open={open}

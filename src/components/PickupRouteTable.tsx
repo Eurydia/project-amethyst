@@ -1,8 +1,8 @@
 /** @format */
 
 import { filterItems } from "$core/filter";
-import { useExportPickupRoutes } from "$hooks/useExportPickupRoutes";
-import { useImportPickupRoutes } from "$hooks/useImportPickupRoutes";
+import { useExportPickupRoute } from "$hooks/useExportPickupRoute";
+import { useImportPickupRoute } from "$hooks/useImportPickupRoute";
 import { TableHeaderDefinition } from "$types/generics";
 import { PickupRouteEntry } from "$types/models/pickup-route";
 import { Stack, Typography } from "@mui/material";
@@ -69,8 +69,8 @@ type PickupRouteTableProps = {
 export const PickupRouteTable: FC<PickupRouteTableProps> = (props) => {
   const { routeEntries } = props;
 
-  const importRoutes = useImportPickupRoutes();
-  const exportRoutes = useExportPickupRoutes();
+  const importRoute = useImportPickupRoute();
+  const exportRoute = useExportPickupRoute();
 
   const { revalidate } = useRevalidator();
 
@@ -82,6 +82,8 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (props) => {
     "drivers.*.name",
     "drivers.*.surname",
   ]);
+
+  const databaseHasNoRoute = routeEntries.length === 0;
 
   return (
     <Stack spacing={1}>
@@ -98,11 +100,11 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (props) => {
           },
           importButton: {
             children: "register from file", // TODO: translate
-            onFileSelect: (file) => importRoutes(file).finally(revalidate),
+            onFileSelect: (file) => importRoute(file).finally(revalidate),
           },
           exportButton: {
             children: "export routes", // TODO: translate
-            onClick: () => exportRoutes(filteredEntries),
+            onClick: () => exportRoute(filteredEntries),
           },
         }}
       />
@@ -110,13 +112,12 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (props) => {
         defaultSortOrder="asc"
         defaultSortByColumn={0}
         headers={HEADER_DEFINITION}
-        entries={filteredEntries}
+        entries={routeEntries}
         slotProps={{
           body: {
-            emptyText:
-              routeEntries.length === 0
-                ? "No routes registered in the system"
-                : "No matching routes", //TODO: translate
+            emptyText: databaseHasNoRoute
+              ? "No routes registered in the system"
+              : "No matching routes",
           },
         }}
       />

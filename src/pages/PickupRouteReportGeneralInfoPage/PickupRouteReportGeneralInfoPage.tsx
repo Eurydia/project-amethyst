@@ -1,6 +1,9 @@
-import { PickupRouteReportInfoGroup } from "$components/PickupRouteReportGeneralInfoGroup";
+/** @format */
+
+import { BaseTypographyLink } from "$components/BaseTypographyLink";
+import { PickupRouteReportGeneralInfoGroup } from "$components/PickupRouteReportGeneralInfoGroup";
+import { KeyboardArrowLeftRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
-import "dayjs/locale/th";
 import { FC } from "react";
 import { useLoaderData } from "react-router-dom";
 import { PickupRouteReportGeneralInfoPageLoaderData } from "./loader";
@@ -11,13 +14,13 @@ export const PickupRouteReportGeneralInfoPage: FC = () => {
 
   return (
     <Stack spacing={1}>
-      <Typography
-        variant="h1"
-        sx={{ wordBreak: "keep-all", wordWrap: "normal" }}
-      >
-        เรื่องร้องเรียนสายรถ
-      </Typography>
-      <PickupRouteReportInfoGroup
+      <BaseTypographyLink to="/pickup-routes/report/general/">
+        <KeyboardArrowLeftRounded />
+        ตารางบันทึกเรื่องร้องเรียนสายรถ
+      </BaseTypographyLink>
+      <Typography variant="h1">{route.name}</Typography>
+      <Typography variant="h2">ข้อมูลเรื่องร้องเรียนสายรถ</Typography>
+      <PickupRouteReportGeneralInfoGroup
         report={report}
         route={route}
         slotProps={{

@@ -1,7 +1,7 @@
 /** @format */
 
 import { filterItems } from "$core/filter";
-import { useExportPickupRoute } from "$hooks/useExportPickupRoute";
+import { useExportWorkbook } from "$hooks/useExportPickupRoute";
 import { useImportPickupRoute } from "$hooks/useImportPickupRoute";
 import { TableHeaderDefinition } from "$types/generics";
 import { PickupRouteEntry } from "$types/models/pickup-route";
@@ -70,7 +70,7 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (props) => {
   const { routeEntries } = props;
 
   const importRoute = useImportPickupRoute();
-  const exportRoute = useExportPickupRoute();
+  const exportRoute = useExportWorkbook();
 
   const { revalidate } = useRevalidator();
 

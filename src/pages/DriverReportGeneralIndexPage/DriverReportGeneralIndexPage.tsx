@@ -5,12 +5,18 @@ import { useLoaderData } from "react-router-dom";
 import { DriverReportGeneralIndexPageLoaderData } from "./loader";
 
 export const DriverReportGeneralIndexPage: FC = () => {
-  const { reportEntries, driverSelectOptions, topicComboBoxOptions } =
+  const {
+    reportEntries,
+    driverSelectOptions,
+    topicComboBoxOptions,
+  } =
     useLoaderData() as DriverReportGeneralIndexPageLoaderData;
 
   return (
     <Stack spacing={1}>
-      <Typography variant="h1">ตารางบันทึกเรื่องร้องเรียนคนขับรถ</Typography>
+      <Typography variant="h1">
+        ตารางบันทึกเรื่องร้องเรียนคนขับรถ
+      </Typography>
       <DriverReportGeneralTable
         entries={reportEntries}
         slotProps={{

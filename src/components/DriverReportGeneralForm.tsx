@@ -1,7 +1,12 @@
+import { tauriPostDriverReportGeneral } from "$backend/database/post";
+import { tauriPutDriverReportGeneral } from "$backend/database/put";
 import { DriverModel } from "$types/models/driver";
 import { DriverReportFormData } from "$types/models/driver-report";
+import { SaveRounded } from "@mui/icons-material";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
+import { useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
 import { BaseInputDateField } from "./BaseInputDateField";
 import { BaseInputTextField } from "./BaseInputTextField";
@@ -9,50 +14,98 @@ import { BaseInputTimeField } from "./BaseInputTimeField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { DriverInputDriverSelect } from "./DriverInputDriverSelect";
 
-type DriverReportFormProps = {
-  initFormData: DriverReportFormData;
-  title: string;
+type DriverReportGeneralFormPostProps = {
+  editing?: false | undefined;
   open: boolean;
   onClose: () => void;
   slotProps: {
-    submitButton: {
-      label: string;
-      startIcon: ReactNode;
-      onClick: (formData: DriverReportFormData) => void;
-    };
     driverSelect: {
-      options: DriverModel[];
       disabled?: boolean;
+      options: DriverModel[];
     };
     topicComboBox: {
       options: string[];
     };
   };
 };
-export const DriverReportForm: FC<DriverReportFormProps> = (
-  props,
-) => {
-  const { initFormData, slotProps, onClose, open, title } =
-    props;
+
+type DriverReportGeneralFormPutProps = {
+  editing: true;
+  open: boolean;
+  onClose: () => void;
+  slotProps: {
+    driverSelect: {
+      disabled?: boolean;
+      options: DriverModel[];
+    };
+    topicComboBox: {
+      options: string[];
+    };
+  };
+
+  reportId: number;
+  initFormData: DriverReportFormData;
+};
+
+type DriverReportGeneralFormProps =
+  | DriverReportGeneralFormPostProps
+  | DriverReportGeneralFormPutProps;
+export const DriverReportGeneralForm: FC<
+  DriverReportGeneralFormProps
+> = (props) => {
+  const { slotProps, onClose, open, editing } = props;
+
+  let title: string;
+  let initFormData: DriverReportFormData;
+  let submitButtonLabel: string;
+  let submitButtonStartIcon: ReactNode;
+  if (editing) {
+    title = "Edit report"; // TODO: translate
+    initFormData = props.initFormData;
+    submitButtonLabel = "Save changes"; // TODO: translate
+    submitButtonStartIcon = <SaveRounded />;
+  } else {
+    title = "Add new report"; // TODO: translate
+    initFormData = {
+      datetime: dayjs().format(),
+      title: "",
+      content: "",
+      topics: [],
+      driver: slotProps.driverSelect.options[0],
+    };
+    submitButtonLabel = "Post report"; // TODO: translate
+    submitButtonStartIcon = <SaveRounded />;
+  }
 
   const [fieldDate, setFieldDate] = useState(
-    dayjs(initFormData.datetime),
+    dayjs(initFormData.datetime)
   );
   const [fieldTime, setFieldTime] = useState(
-    dayjs(initFormData.datetime),
+    dayjs(initFormData.datetime)
   );
   const [fieldTitle, setFieldTitle] = useState(
-    initFormData.title,
+    initFormData.title
   );
   const [fieldContent, setFieldContent] = useState(
-    initFormData.content,
+    initFormData.content
   );
   const [fieldTopics, setFieldTopics] = useState(
-    initFormData.topics,
+    initFormData.topics
   );
   const [fieldDriver, setFieldDriver] = useState(
-    initFormData.driver,
+    initFormData.driver
   );
+
+  const { revalidate } = useRevalidator();
+
+  const clearForm = () => {
+    setFieldDate(dayjs());
+    setFieldTime(dayjs());
+    setFieldTitle("");
+    setFieldContent("");
+    setFieldTopics([]);
+    setFieldDriver(slotProps.driverSelect.options[0]);
+  };
 
   const handleSubmit = async () => {
     if (isFormIncomplete) {
@@ -66,16 +119,54 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       .set("millisecond", fieldTime.millisecond())
       .format();
 
-    slotProps.submitButton.onClick({
+    const formData: DriverReportFormData = {
       driver: fieldDriver,
-      content: fieldContent.normalize().trim(),
-      title: fieldTitle.normalize().trim(),
+
       topics: fieldTopics
         .map((topic) => topic.trim().normalize())
         .filter((topic) => topic.length > 0),
+      content: fieldContent.normalize().trim(),
+      title: fieldTitle.normalize().trim(),
 
       datetime,
-    });
+    };
+    if (editing) {
+      tauriPutDriverReportGeneral(props.reportId, formData)
+        .then(
+          () => {
+            toast.success(
+              "Report updated" // TODO: translate
+            );
+            revalidate();
+          },
+          () =>
+            toast.error(
+              "Failed to update report" // TODO: translate
+            )
+        )
+        .finally(() => {
+          clearForm();
+          onClose();
+        });
+    } else {
+      tauriPostDriverReportGeneral(formData)
+        .then(
+          () => {
+            toast.success(
+              "Report posted" // TODO: translate
+            );
+            revalidate();
+          },
+          () =>
+            toast.error(
+              "Failed to post report" // TODO: translate
+            )
+        )
+        .finally(() => {
+          clearForm();
+          onClose();
+        });
+    }
   };
 
   const isMissingTime =
@@ -116,8 +207,7 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       label: "คนขับรถ",
       value: (
         <DriverInputDriverSelect
-          disabled={slotProps.driverSelect.disabled}
-          options={slotProps.driverSelect.options}
+          {...slotProps.driverSelect}
           value={fieldDriver}
           onChange={setFieldDriver}
         />
@@ -165,8 +255,8 @@ export const DriverReportForm: FC<DriverReportFormProps> = (
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
-          children: slotProps.submitButton.label,
-          startIcon: slotProps.submitButton.startIcon,
+          children: submitButtonLabel,
+          startIcon: submitButtonStartIcon,
           onClick: handleSubmit,
         },
       }}

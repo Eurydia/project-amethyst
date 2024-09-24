@@ -1,52 +1,130 @@
+import { tauriPostDriver } from "$backend/database/post";
+import { tauriPutDriver } from "$backend/database/put";
 import { DriverFormData } from "$types/models/driver";
-import { WarningRounded } from "@mui/icons-material";
+import {
+  AddRounded,
+  SaveRounded,
+  WarningRounded,
+} from "@mui/icons-material";
 import { Typography } from "@mui/material";
 import { FC, ReactNode, useState } from "react";
+import { useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
 import { DriverInputLicenseTypeRadioGroup } from "./DriverInputLicenseTypeRadioGroup";
 
-type DriverFormProps = {
-  initFormData: DriverFormData;
-  title: string;
+type DriverFormPostProps = {
+  editing?: false | undefined;
   open: boolean;
   onClose: () => void;
-
-  slotProps: {
-    submitButton: {
-      startIcon: ReactNode;
-      label: string;
-      onClick: (formData: DriverFormData) => void;
-    };
-  };
 };
+
+type DriverFormPutProps = {
+  editing: true;
+  open: boolean;
+  driverId: number;
+  initFormData: DriverFormData;
+  onClose: () => void;
+};
+
+type DriverFormProps =
+  | DriverFormPostProps
+  | DriverFormPutProps;
+
 export const DriverForm: FC<DriverFormProps> = (props) => {
-  const { initFormData, onClose, open, title, slotProps } =
-    props;
+  const { onClose, open, editing } = props;
+
+  let title: string;
+  let initFormData: DriverFormData;
+  let submitButtonLabel: string;
+  let submitButtonStartIcon: ReactNode;
+  if (editing) {
+    title = "Edit driver info"; // TODO: translate
+    initFormData = props.initFormData;
+    submitButtonLabel = "Save"; // TODO: translate
+    submitButtonStartIcon = <SaveRounded />;
+  } else {
+    title = "Add new driver"; // TODO: translate
+    initFormData = {
+      name: "",
+      surname: "",
+      contact: "",
+      licenseType: "",
+    };
+    submitButtonLabel = "Add driver"; // TODO: translate
+    submitButtonStartIcon = <AddRounded />;
+  }
 
   const [fieldName, setFieldName] = useState(
-    initFormData.name,
+    initFormData.name
   );
   const [fieldSurname, setFielSurname] = useState(
-    initFormData.surname,
+    initFormData.surname
   );
   const [fieldContact, setFieldContact] = useState(
-    initFormData.contact,
+    initFormData.contact
   );
   const [fieldLicenseType, setFieldLicenseType] = useState(
-    initFormData.licenseType,
+    initFormData.licenseType
   );
+
+  const { revalidate } = useRevalidator();
+  const resetForm = () => {
+    setFieldName(initFormData.name);
+    setFielSurname(initFormData.surname);
+    setFieldContact(initFormData.contact);
+    setFieldLicenseType(initFormData.licenseType);
+  };
 
   const handleSubmit = () => {
     if (isFormIncomplete) {
       return;
     }
-    slotProps.submitButton.onClick({
+    const contact = fieldContact.trim().normalize();
+    const formData: DriverFormData = {
       name: fieldName.trim().normalize(),
       surname: fieldSurname.trim().normalize(),
-      contact: fieldContact.trim().normalize() || "ไม่มี",
+      contact: contact.length > 0 ? contact : "ไม่มี",
       licenseType: fieldLicenseType,
-    });
+    };
+    if (editing) {
+      tauriPutDriver(props.driverId, formData)
+        .then(
+          () => {
+            toast.success(
+              "Driver info updated" // TODO: translate
+            );
+            revalidate();
+          },
+          () =>
+            toast.error(
+              "Failed to update driver info" // TODO: translate
+            )
+        )
+        .finally(() => {
+          resetForm();
+          onClose();
+        });
+    } else {
+      tauriPostDriver(formData)
+        .then(
+          () => {
+            toast.success(
+              "Driver added" // TODO: translate
+            );
+            revalidate();
+          },
+          () =>
+            toast.error(
+              "Failed to add driver" // TODO: translate
+            )
+        )
+        .finally(() => {
+          resetForm();
+          onClose();
+        });
+    }
   };
 
   const isMissingName = fieldName.trim().normalize() === "";
@@ -69,11 +147,13 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
           value={fieldName}
           onChange={setFieldName}
           helperText={
-            // TODO: translate
             isMissingName && (
               <Typography>
                 <WarningRounded />
                 Required
+                {/* 
+                 TODO: translate
+                 */}
               </Typography>
             )
           }
@@ -133,8 +213,8 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
-          startIcon: slotProps.submitButton.startIcon,
-          children: slotProps.submitButton.label,
+          startIcon: submitButtonStartIcon,
+          children: submitButtonLabel,
           onClick: handleSubmit,
         },
       }}

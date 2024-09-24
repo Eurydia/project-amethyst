@@ -1,20 +1,14 @@
 import { FormalLayout } from "$layouts/FormalLayout";
 import { DriverModel } from "$types/models/driver";
-import {
-  DriverReportFormData,
-  DriverReportModel,
-} from "$types/models/driver-report";
-import {
-  AddRounded,
-  SaveRounded,
-} from "@mui/icons-material";
+import { DriverReportModel } from "$types/models/driver-report";
+import { AddRounded } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
 import { BaseTypographyLink } from "./BaseTypographyLink";
-import { DriverReportForm } from "./DriverReportForm";
+import { DriverReportMedicalForm } from "./DriverReportMedicalForm";
 
-type DriverReportInfoGroupProps = {
+type DriverReportMedicalInfoGroupProps = {
   report: DriverReportModel;
   driver: DriverModel;
   slotProps: {
@@ -22,16 +16,11 @@ type DriverReportInfoGroupProps = {
       topicComboBox: {
         options: string[];
       };
-      submitButton: {
-        onClick: (
-          formData: DriverReportFormData,
-        ) => Promise<any>;
-      };
     };
   };
 };
-export const DriverReportInfoGroup: FC<
-  DriverReportInfoGroupProps
+export const DriverReportMedicalInfoGroup: FC<
+  DriverReportMedicalInfoGroupProps
 > = (props) => {
   const { report, driver, slotProps } = props;
 
@@ -98,7 +87,9 @@ export const DriverReportInfoGroup: FC<
         แก้ไขข้อมูล
       </Button>
       <FormalLayout>{infoItems}</FormalLayout>
-      <DriverReportForm
+      <DriverReportMedicalForm
+        editing
+        reportId={report.id}
         initFormData={{
           datetime: report.datetime,
           title: report.title,
@@ -106,18 +97,9 @@ export const DriverReportInfoGroup: FC<
           topics: report.topics.split(","),
           driver,
         }}
-        title="แก้ไขเรื่องข้อมูลร้องเรียนคนขับรถ"
         open={dialogOpen}
         onClose={() => setDialogOpen(true)}
         slotProps={{
-          submitButton: {
-            label: "บันทึกการเปลี่ยนแปลง",
-            startIcon: <SaveRounded />,
-            onClick: (formData) =>
-              slotProps.form.submitButton
-                .onClick(formData)
-                .finally(() => setDialogOpen(false)),
-          },
           driverSelect: {
             options: [driver],
             disabled: true,

@@ -29,8 +29,8 @@ export type PickupRouteFormData = {
 };
 
 export type PickupRouteExportData = {
+  เลขรหัส: number;
   ชื่อสาย: string;
   เวลารับเข้า: string;
   เวลารับออก: string;
-  เลขรหัส: number;
 };

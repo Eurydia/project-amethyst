@@ -1,16 +1,16 @@
-/** @format */
-
-import { usePostPickupRouteReportGeneral } from "$hooks/usePostPickupRouteReportGeneral";
-import { usePutPickupRouteReportGeneral } from "$hooks/usePutPickupRouteReportGeneral";
+import { tauriPostPickupRouteReportGeneral } from "$backend/database/post";
+import { tauriPutPickupRouteReportGeneral } from "$backend/database/put";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { PickupRouteReportGeneralFormData } from "$types/models/pickup-route-report-general";
 import { AddRounded, SaveRounded } from "@mui/icons-material";
-import { DateField, TimeField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
+import { BaseInputDateField } from "./BaseInputDateField";
 import { BaseInputTextField } from "./BaseInputTextField";
+import { BaseInputTimeField } from "./BaseInputTimeField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { PickupRouteInputPickupRouteSelect } from "./PickupRouteInputPickupRouteSelect";
 
@@ -48,11 +48,12 @@ export const PickupRouteReportGeneralForm: FC<
   if (editing) {
     title = "Edit route report details"; // TODO: translate
     submitButtonLabel = "Save changes"; // TODO: translate
-    initFormData = props.initFormData;
     submitButtonStartIcon = <SaveRounded />;
+    initFormData = props.initFormData;
   } else {
     title = "Create new route report"; // TODO: translate
     submitButtonLabel = "Create"; // TODO: translate
+    submitButtonStartIcon = <AddRounded />;
     initFormData = {
       datetime: dayjs().format(),
       route: slotProps.routeSelect.options[0],
@@ -60,7 +61,6 @@ export const PickupRouteReportGeneralForm: FC<
       title: "",
       topics: [],
     };
-    submitButtonStartIcon = <AddRounded />;
   }
 
   const [fieldDate, setFieldDate] = useState(dayjs(initFormData.datetime));
@@ -71,8 +71,16 @@ export const PickupRouteReportGeneralForm: FC<
   const [fieldRoute, setFieldRoute] = useState(initFormData.route);
 
   const { revalidate } = useRevalidator();
-  const postReport = usePostPickupRouteReportGeneral();
-  const putReport = usePutPickupRouteReportGeneral();
+
+  const clearForm = () => {
+    setFieldDate(dayjs(initFormData.datetime));
+    setFieldTime(dayjs(initFormData.datetime));
+    setFieldTitle(initFormData.title);
+    setFieldContent(initFormData.content);
+    setFieldTopics(initFormData.topics);
+    setFieldRoute(initFormData.route);
+  };
+
   const handleSubmit = async () => {
     if (isFormIncomplete) {
       return;
@@ -96,9 +104,42 @@ export const PickupRouteReportGeneralForm: FC<
     };
 
     if (editing) {
-      putReport(props.reportId, formData).finally(revalidate).then(onClose);
+      tauriPutPickupRouteReportGeneral(props.reportId, formData)
+        .then(
+          () => {
+            toast.success(
+              "Route report updated successfully" // TODO: translate
+            );
+            revalidate();
+          },
+          () =>
+            toast.error(
+              "Failed to update route report" // TODO: translate
+            )
+        )
+        .finally(() => {
+          clearForm();
+          onClose();
+        });
     } else {
-      postReport(formData).finally(revalidate).then(onClose);
+      tauriPostPickupRouteReportGeneral(formData)
+        .then(
+          () => {
+            toast.success(
+              "Route report created successfully" // TODO: translate
+            );
+            revalidate();
+          },
+          () =>
+            toast.error(
+              "Failed to create route report"
+              // TODO: translate
+            )
+        )
+        .finally(() => {
+          clearForm();
+          onClose();
+        });
     }
   };
 
@@ -125,34 +166,18 @@ export const PickupRouteReportGeneralForm: FC<
     {
       label: "เวลา",
       value: (
-        <TimeField
-          fullWidth
-          formatDensity="spacious"
+        <BaseInputTimeField
           value={fieldTime}
-          onChange={(value) => {
-            if (value === null) {
-              return;
-            }
-            setFieldTime(value);
-          }}
-          format="HH:mm น."
+          onChange={setFieldTime}
         />
       ),
     },
     {
       label: "วัน/เดือน/ปี",
       value: (
-        <DateField
-          fullWidth
-          formatDensity="spacious"
+        <BaseInputDateField
           value={fieldDate}
-          onChange={(value) => {
-            if (value === null) {
-              return;
-            }
-            setFieldDate(value);
-          }}
-          format="DD/MM/YYYY"
+          onChange={setFieldDate}
         />
       ),
     },

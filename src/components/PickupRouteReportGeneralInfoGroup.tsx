@@ -77,7 +77,10 @@ export const PickupRouteReportGeneralInfoGroup: FC<
           content: report.content,
           datetime: report.datetime,
           title: report.title,
-          topics: report.topics.split(","),
+          topics: report.topics
+            .split(",")
+            .map((topic) => topic.trim().normalize())
+            .filter((topic) => topic.trim().length > 0),
         }}
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}

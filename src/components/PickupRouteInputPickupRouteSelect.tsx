@@ -39,7 +39,10 @@ export const PickupRouteInputPickupRouteSelect: FC<
       getOptionKey={(option) => option.id}
       getOptionLabel={(option) => option.name}
       renderOption={({ key, ...rest }, option) => (
-        <ListItem key={key} {...rest}>
+        <ListItem
+          key={key}
+          {...rest}
+        >
           <ListItemText disableTypography>
             <Typography>{option.name}</Typography>
           </ListItemText>

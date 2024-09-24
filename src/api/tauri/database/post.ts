@@ -12,48 +12,56 @@ import { VehicleReportInspectionFormData } from "$types/models/vehicle-report-in
 import { tauri } from "@tauri-apps/api";
 
 //#region Operational Log
-export const tauriPostAttendanceLog = async (log: AttendanceLogFormData) =>
-	tauri.invoke("post_attendance_log", log);
+export const tauriPostAttendanceLog = async (
+  log: AttendanceLogFormData
+) => tauri.invoke("post_attendance_log", log);
 //#endregion
 
 //#region Operational Log
-export const tauriPostOperationalLog = async (log: OperationalLogFormData) =>
-	tauri.invoke("post_operational_log", log);
+export const tauriPostOperationalLog = async (
+  log: OperationalLogFormData
+) => tauri.invoke("post_operational_log", log);
 //#endregion
 
 //#region Driver
 export const tauriPostDriver = async (
-	driver: DriverFormData
+  driver: DriverFormData
 ): Promise<number> => tauri.invoke("post_driver", driver);
 
 export const tauriPostDriverReportGeneral = async (
-	report: DriverReportFormData
-): Promise<number> => tauri.invoke("post_driver_report_general", report);
+  report: DriverReportFormData
+): Promise<number> =>
+  tauri.invoke("post_driver_report_general", report);
 
 export const tauriPostDriverReportMedical = async (
-	report: DriverReportFormData
-): Promise<number> => tauri.invoke("post_driver_report_medical", report);
+  report: DriverReportFormData
+): Promise<number> =>
+  tauri.invoke("post_driver_report_medical", report);
 //#endregion
 
 //#region Pickup Route
-export const tuariPostPickupRoute = async (
-	route: PickupRouteFormData
-): Promise<number> => tauri.invoke("post_pickup_route", route);
+export const tauriPostPickupRoute = async (
+  route: PickupRouteFormData
+): Promise<number> =>
+  tauri.invoke("post_pickup_route", route);
 
 export const tauriPostPickupRouteReportGeneral = async (
-	report: PickupRouteReportGeneralFormData
-): Promise<number> => tauri.invoke("post_pickup_route_report_general", report);
+  report: PickupRouteReportGeneralFormData
+): Promise<number> =>
+  tauri.invoke("post_pickup_route_report_general", report);
 //#endregion
 
 //#region Vehicle
 export const tauriPostVehicle = async (
-	vehicle: VehicleFormData
+  vehicle: VehicleFormData
 ): Promise<number> => tauri.invoke("post_vehicle", vehicle);
 
 export const tauriPostVehicleReportGeneral = async (
-	report: VehicleReportGeneralFormData
-): Promise<number> => tauri.invoke("post_vehicle_report_general", report);
+  report: VehicleReportGeneralFormData
+): Promise<number> =>
+  tauri.invoke("post_vehicle_report_general", report);
 export const tauriPostVehicleReportInspection = async (
-	report: VehicleReportInspectionFormData
-): Promise<number> => tauri.invoke("post_vehicle_report_inspection", report);
+  report: VehicleReportInspectionFormData
+): Promise<number> =>
+  tauri.invoke("post_vehicle_report_inspection", report);
 //#endregion

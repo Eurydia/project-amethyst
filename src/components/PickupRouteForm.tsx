@@ -1,13 +1,16 @@
-/** @format */
-
-import { usePostPickupRoute } from "$hooks/usePostPickupRoute";
-import { usePutPickupRoute } from "$hooks/usePutPickupRoute";
+import { tauriPostPickupRoute } from "$backend/database/post";
+import { tauriPutPickupRoute } from "$backend/database/put";
 import { PickupRouteFormData } from "$types/models/pickup-route";
-import { AddRounded, SaveRounded, WarningRounded } from "@mui/icons-material";
+import {
+  AddRounded,
+  SaveRounded,
+  WarningRounded,
+} from "@mui/icons-material";
 import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseInputTimeField } from "./BaseInputTimeField";
@@ -25,7 +28,10 @@ type PickupRouteFormProps =
       open: boolean;
       onClose: () => void;
     };
-export const PickupRouteForm: FC<PickupRouteFormProps> = (props) => {
+
+export const PickupRouteForm: FC<PickupRouteFormProps> = (
+  props
+) => {
   const { onClose, open, editing } = props;
 
   let initFormData: PickupRouteFormData;
@@ -47,16 +53,26 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (props) => {
       departureTime: dayjs().endOf("day").format("HH:mm"),
     };
   }
-  const [fieldName, setFieldName] = useState(initFormData.name);
+  const [fieldName, setFieldName] = useState(
+    initFormData.name
+  );
   const [fieldArrivalTime, setFieldArrivalTime] = useState(
     dayjs(initFormData.arrivalTime, "HH:mm")
   );
-  const [fieldDepartureTime, setFieldDepartureTime] = useState(
-    dayjs(initFormData.departureTime, "HH:mm")
-  );
+  const [fieldDepartureTime, setFieldDepartureTime] =
+    useState(dayjs(initFormData.departureTime, "HH:mm"));
+
   const { revalidate } = useRevalidator();
-  const putRoute = usePutPickupRoute();
-  const postRoute = usePostPickupRoute();
+
+  const clearForm = () => {
+    setFieldName(initFormData.name);
+    setFieldArrivalTime(
+      dayjs(initFormData.arrivalTime, "HH:mm")
+    );
+    setFieldDepartureTime(
+      dayjs(initFormData.departureTime, "HH:mm")
+    );
+  };
 
   const handleSubmit = () => {
     if (isFormIncomplete) {
@@ -69,9 +85,23 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (props) => {
     };
 
     if (editing) {
-      putRoute(props.routeId, formData).finally(revalidate).then(onClose);
+      tauriPutPickupRoute(props.routeId, formData)
+        .then(
+          () => {
+            toast.success("Route updated successfully");
+            revalidate();
+          }, // TODO: translate
+          () => toast.error("Failed to update route") // TODO: translate
+        )
+        .finally(() => {
+          clearForm();
+          onClose();
+        });
     } else {
-      postRoute(formData).finally(revalidate).then(onClose);
+      tauriPostPickupRoute(formData).finally(() => {
+        clearForm();
+        onClose();
+      });
     }
   };
 
@@ -83,7 +113,9 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (props) => {
     Number.isNaN(fieldDepartureTime.minute());
   const isMissingName = fieldName.trim().normalize() === "";
   const isFormIncomplete =
-    isMissingName || isArrivalTimeIncomplete || isDepartureTimeIncomplete;
+    isMissingName ||
+    isArrivalTimeIncomplete ||
+    isDepartureTimeIncomplete;
 
   const formItems: {
     label: string;
@@ -139,7 +171,8 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (props) => {
             isDepartureTimeIncomplete && (
               <Typography>
                 <WarningRounded />
-                The departure time should follow HH:mm format
+                The departure time should follow HH:mm
+                format
                 {/* TODO: Translate */}
               </Typography>
             )

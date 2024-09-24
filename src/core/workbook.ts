@@ -1,13 +1,13 @@
 import XLSX from "xlsx";
 
 type ExportOptions<
-  Entry extends Object,
-  ExportData extends Object
+  In extends Object,
+  Out extends Object
 > = {
   workbookName: string;
   worksheetName: string;
-  header: (keyof ExportData)[];
-  transformer: (data: Entry) => Promise<ExportData | null>;
+  header: (keyof Out)[];
+  transformer: (data: In) => Promise<Out | null>;
 };
 export const exportWorkbook = async <
   In extends Object,
@@ -42,11 +42,9 @@ export const exportWorkbook = async <
   XLSX.writeFile(workbook, workbookName + ".xlsx");
 };
 
-type ImportOptions<T extends Object> = {
-  transformer:
-    | ((data: unknown) => Promise<T | null>)
-    | ((data: unknown) => T | null);
-  action: (data: T) => Promise<any>;
+type ImportOptions<In extends Object> = {
+  transformer: (data: unknown) => Promise<In | null>;
+  action: (data: In) => Promise<any>;
   cleanup: (() => Promise<any>) | (() => void);
 };
 export const importWorkbook = async <T extends Object>(

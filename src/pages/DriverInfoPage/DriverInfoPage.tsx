@@ -45,11 +45,16 @@ export const DriverInfoPage: FC = () => {
 
   return (
     <Stack spacing={1}>
-      <Typography variant="h1" id="info">
+      <Typography variant="h1">
         {`${driver.name} ${driver.surname}`}
       </Typography>
       <BaseTOC>{TOC_ITEMS}</BaseTOC>
-      <Typography variant="h2">ข้อมูลคนขับรถ</Typography>
+      <Typography
+        variant="h2"
+        id="info"
+      >
+        ข้อมูลคนขับรถ
+      </Typography>
       <DriverInfoGroup
         driver={driver}
         slotProps={{
@@ -59,7 +64,10 @@ export const DriverInfoPage: FC = () => {
           },
         }}
       />
-      <Typography variant="h2" id="operational-log">
+      <Typography
+        variant="h2"
+        id="operational-log"
+      >
         {TH_LOCALE.operationalLogTable}
       </Typography>
       <OperationalLogTable
@@ -79,7 +87,10 @@ export const DriverInfoPage: FC = () => {
           },
         }}
       />
-      <Typography variant="h2" id="general-report">
+      <Typography
+        variant="h2"
+        id="general-report"
+      >
         {TH_LOCALE.driverGeneralReportTable}
       </Typography>
       <DriverReportGeneralTable
@@ -88,8 +99,8 @@ export const DriverInfoPage: FC = () => {
         slotProps={{
           form: {
             driverSelect: {
-              disabled: true,
               options: [driver],
+              disabled: true,
             },
             topicComboBox: {
               options: topicComboBoxOptions,
@@ -97,7 +108,10 @@ export const DriverInfoPage: FC = () => {
           },
         }}
       />
-      <Typography variant="h2" id="medical-report">
+      <Typography
+        variant="h2"
+        id="medical-report"
+      >
         {TH_LOCALE.driverMedicalReportTable}
       </Typography>
       <DriverReportMedicalTable
@@ -106,8 +120,8 @@ export const DriverInfoPage: FC = () => {
         slotProps={{
           form: {
             driverSelect: {
-              options: [driver],
               disabled: true,
+              options: [driver],
             },
             topicComboBox: {
               options: topicComboBoxOptions,

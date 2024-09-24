@@ -7,7 +7,8 @@ import { useLoaderData } from "react-router-dom";
 import { DriverIndexPageLoaderData } from "./loader";
 
 export const DriverIndexPage: FC = () => {
-  const { driverEntries } = useLoaderData() as DriverIndexPageLoaderData;
+  const { driverEntries } =
+    useLoaderData() as DriverIndexPageLoaderData;
 
   return (
     <Stack spacing={1}>

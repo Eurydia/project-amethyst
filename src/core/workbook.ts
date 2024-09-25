@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import XLSX from "xlsx";
 
 type ExportOptions<
@@ -23,23 +24,29 @@ export const exportWorkbook = async <
     transformer,
   } = options;
 
-  const transformedEntries = await Promise.all(
-    entries.map(transformer)
-  );
-  const exportData = transformedEntries.filter(
-    (entry) => entry !== null
-  );
+  const data = (
+    await Promise.all(entries.map(transformer))
+  ).filter((entry) => entry !== null);
 
-  const worksheet = XLSX.utils.json_to_sheet(exportData, {
+  const worksheet = XLSX.utils.json_to_sheet(data, {
     header: header.map((key) => key.toString()),
   });
+
+  const timestamp = dayjs()
+    .locale("th")
+    .format("DD MMMM YYYY");
+
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(
     workbook,
     worksheet,
     worksheetName
   );
-  XLSX.writeFile(workbook, workbookName + ".xlsx");
+
+  XLSX.writeFile(
+    workbook,
+    `${workbookName} (${timestamp}).xlsx`
+  );
 };
 
 type ImportOptions<In extends Object> = {
@@ -62,5 +69,5 @@ export const importWorkbook = async <T extends Object>(
     await Promise.all(data.map(transformer))
   ).filter((entry) => entry !== null);
 
-  Promise.all(entries.map(action)).finally(cleanup);
+  await Promise.all(entries.map(action)).finally(cleanup);
 };

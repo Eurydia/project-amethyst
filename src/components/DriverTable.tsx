@@ -1,5 +1,3 @@
-/** @format */
-
 import { tauriGetDriver } from "$backend/database/get/drivers";
 import { tauriPostDriver } from "$backend/database/post";
 import { filterItems } from "$core/filter";
@@ -20,7 +18,6 @@ import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
 import { DriverForm } from "./DriverForm";
-
 const HEADER_DEFINITIONS: TableHeaderDefinition<DriverEntry>[] =
   [
     {
@@ -126,10 +123,10 @@ export const DriverTable: FC<DriverTableProps> = (
     importWorkbook(file, {
       action: tauriPostDriver,
       transformer: importTransformer,
-      cleanup: window.location.reload,
+      cleanup: revalidate,
     });
 
-  const handleExport = () =>
+  const handleExport = async () =>
     exportWorkbook(filteredEntries, {
       header: [
         "id",
@@ -141,7 +138,12 @@ export const DriverTable: FC<DriverTableProps> = (
       transformer: exportTransfomer,
       workbookName: "drivers",
       worksheetName: "Drivers",
-    });
+    }).then(
+      () => {},
+      (err) => {
+        console.error(err);
+      }
+    );
 
   const databaseHasNoDrivers = driverEntries.length === 0;
 

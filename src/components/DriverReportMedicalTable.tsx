@@ -128,7 +128,11 @@ export const DriverReportMedicalTable: FC<
       <BaseSortableTable
         slotProps={{
           body: {
-            emptyText: `ไม่พบผลการตรวจสารเสพติด`,
+            emptyText:
+              // TODO: Translate
+              entries.length === 0
+                ? "No medical report in database"
+                : `ไม่พบผลการตรวจสารเสพติด`,
           },
         }}
         defaultSortByColumn={0}

@@ -75,7 +75,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
     },
   ];
 
-const importTransformer = (data: unknown) => {
+const importTransformer = async (data: unknown) => {
   const entry = data as PickupRouteExportData;
   const name = entry["ชื่อสาย"].trim().normalize();
   const arrivalTime = dayjs(entry["เวลารับเข้า"], "HH:mm");
@@ -138,7 +138,7 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
       transformer: importTransformer,
     });
 
-  const handleExport = () =>
+  const handleExport = async () => {
     exportWorkbook(filteredEntries, {
       header: [
         "เลขรหัส",
@@ -150,6 +150,7 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
       workbookName: "Routes", // TODO: translate
       worksheetName: "Routes", // TODO: translate
     });
+  };
 
   const databaseHasNoRoute = routeEntries.length === 0;
 

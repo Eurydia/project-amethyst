@@ -22,14 +22,14 @@ type BaseFormProps = {
       onClick: () => void;
     };
   };
-  // children: ReactNode | ReactNode[];
   children: {
     label: string;
     value: ReactNode;
   }[];
 };
 export const BaseForm: FC<BaseFormProps> = (props) => {
-  const { title, children, slotProps, onClose, open } = props;
+  const { title, children, slotProps, onClose, open } =
+    props;
 
   return (
     <Dialog

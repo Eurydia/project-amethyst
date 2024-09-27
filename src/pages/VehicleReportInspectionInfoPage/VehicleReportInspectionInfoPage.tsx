@@ -17,7 +17,10 @@ export const VehicleReportInspectionInfoPage: FC = () => {
   return (
     <Stack spacing={1}>
       <Typography variant="h1">
-        {`ผลการตรวจสภาพรถรอบที่ ${inspectionRoundNumber} ของ "${vehicle.license_plate}"`}
+        {vehicle.license_plate}
+      </Typography>
+      <Typography variant="h2">
+        {`ผลการตรวจสภาพรถรอบที่ ${inspectionRoundNumber}`}
       </Typography>
       <VehicleReportInspectionInfoGroup
         report={report}

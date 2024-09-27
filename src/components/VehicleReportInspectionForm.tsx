@@ -1,5 +1,9 @@
 import { VehicleModel } from "$types/models/vehicle";
 import { VehicleReportInspectionFormData } from "$types/models/vehicle-report-inspection";
+import {
+  AddRounded,
+  SaveRounded,
+} from "@mui/icons-material";
 import { TextField, TextFieldProps } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -22,20 +26,11 @@ const CustomTextField: FC<TextFieldProps> = (props) => {
   );
 };
 
-type VehicleReportInspectionFormProps = {
-  initFormData: VehicleReportInspectionFormData;
+type VehicleReportInspectionPostFormProps = {
+  editing: false;
   open: boolean;
-  title: string;
   onClose: () => void;
-
   slotProps: {
-    submitButton: {
-      label: string;
-      startIcon: ReactNode;
-      onClick: (
-        formData: VehicleReportInspectionFormData,
-      ) => void;
-    };
     form: {
       vehicleSelect: {
         disabled?: boolean;
@@ -47,61 +42,141 @@ type VehicleReportInspectionFormProps = {
     };
   };
 };
+
+type VehicleReportInspectionPutFormProps = {
+  reportId: number;
+  initFormData: VehicleReportInspectionFormData;
+
+  editing: true;
+  open: boolean;
+  onClose: () => void;
+  slotProps: {
+    form: {
+      vehicleSelect: {
+        disabled?: boolean;
+        options: VehicleModel[];
+      };
+      topicComboBox: {
+        options: string[];
+      };
+    };
+  };
+};
+
+type VehicleReportInspectionFormProps =
+  | VehicleReportInspectionPostFormProps
+  | VehicleReportInspectionPutFormProps;
 export const VehicleReportInspectionForm: FC<
   VehicleReportInspectionFormProps
 > = (props) => {
-  const { initFormData, title, slotProps, onClose, open } =
-    props;
+  const { slotProps, onClose, open, editing } = props;
+
+  let title: string;
+  let submitButtonLabel: string;
+  let submitButtonStartIcon: ReactNode;
+  let initFormData: VehicleReportInspectionFormData;
+  if (editing) {
+    title = "Edit info"; // TODO: Replace with translation
+    submitButtonLabel = "Save changes"; // TODO: Replace with translation
+    submitButtonStartIcon = <SaveRounded />;
+    initFormData = props.initFormData;
+  } else {
+    title = "Add new info"; // TODO: Replace with translation
+    submitButtonLabel = "Submit"; // TODO: Replace with translation
+    submitButtonStartIcon = <AddRounded />;
+    initFormData = {
+      datetime: "",
+      content: "",
+      topics: [],
+      vehicle: slotProps.form.vehicleSelect.options[0],
+      frontCamera: "",
+      overheadFan: "",
+      windows: "",
+      frame: "",
+      seatbelts: "",
+      seats: "",
+      headlights: "",
+      turnSignals: "",
+      brakeLight: "",
+      rearviewMirror: "",
+      sideviewMirror: "",
+      tires: "",
+    };
+  }
 
   const [fieldDate, setFieldDate] = useState(
-    dayjs(initFormData.datetime),
+    dayjs(initFormData.datetime)
   );
   const [fieldTime, setFieldTime] = useState(
-    dayjs(initFormData.datetime),
+    dayjs(initFormData.datetime)
   );
   const [fieldContent, setFieldContent] = useState(
-    initFormData.content,
+    initFormData.content
   );
   const [fieldBodyFrame, setFieldBodyFrame] = useState(
-    initFormData.frame,
+    initFormData.frame
   );
   const [fieldWindows, setFieldWindows] = useState(
-    initFormData.windows,
+    initFormData.windows
   );
   const [fieldFrontCam, setFieldFrontCam] = useState(
-    initFormData.frontCamera,
+    initFormData.frontCamera
   );
   const [fieldFanOverhead, setFieldFanOverhead] = useState(
-    initFormData.overheadFan,
+    initFormData.overheadFan
   );
   const [fieldBrakeLight, setFieldBrakeLight] = useState(
-    initFormData.brakeLight,
+    initFormData.brakeLight
   );
   const [fieldHeadlights, setFieldHeadlights] = useState(
-    initFormData.headlights,
+    initFormData.headlights
   );
   const [fieldTurnSignals, setFieldTurnSignals] = useState(
-    initFormData.turnSignals,
+    initFormData.turnSignals
   );
   const [fieldMirrorRearview, setFieldMirrorRearview] =
     useState(initFormData.rearviewMirror);
   const [fieldMirrorSideview, setFieldMirrorSideview] =
     useState(initFormData.sideviewMirror);
   const [fieldSeatbelts, setFieldSeatbelts] = useState(
-    initFormData.seatbelts,
+    initFormData.seatbelts
   );
   const [fieldSeats, setFieldSeats] = useState(
-    initFormData.seats,
+    initFormData.seats
   );
   const [fieldTires, setFieldTires] = useState(
-    initFormData.tires,
+    initFormData.tires
   );
   const [fieldTopics, setFieldTopics] = useState(
-    initFormData.topics,
+    initFormData.topics
   );
   const [fieldVehicle, setFieldVehicle] = useState(
-    initFormData.vehicle,
+    initFormData.vehicle
   );
+
+  const  post = 
+
+  const clearForm = () => {
+    setFieldDate(dayjs());
+    setFieldTime(dayjs());
+    setFieldContent("");
+    setFieldBodyFrame("");
+    setFieldWindows("");
+    setFieldFrontCam("");
+    setFieldFanOverhead("");
+    setFieldBrakeLight("");
+    setFieldHeadlights("");
+    setFieldTurnSignals("");
+    setFieldMirrorRearview("");
+    setFieldMirrorSideview("");
+    setFieldSeatbelts("");
+    setFieldSeats("");
+    setFieldTires("");
+    setFieldTopics([]);
+    setFieldVehicle(
+      slotProps.form.vehicleSelect.options[0]
+    );
+  };
 
   const handleSubmit = async () => {
     if (isFormIncomplete) {
@@ -143,6 +218,9 @@ export const VehicleReportInspectionForm: FC<
       seats: fieldSeats.normalize().trim() || "ปกติ",
       tires: fieldTires.normalize().trim() || "ปกติ",
     };
+
+    if (editing) {
+    }
 
     slotProps.submitButton.onClick(formData);
   };
@@ -346,8 +424,8 @@ export const VehicleReportInspectionForm: FC<
         submitButton: {
           disabled: isFormIncomplete,
           onClick: handleSubmit,
-          children: slotProps.submitButton.label,
-          startIcon: slotProps.submitButton.startIcon,
+          children: submitButtonLabel,
+          startIcon: submitButtonStartIcon,
         },
       }}
       open={open}

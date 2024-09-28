@@ -1,24 +1,18 @@
 /** @format */
 
-import { tauriPutVehicleReportInspection } from "$backend/database/put";
 import { FormalLayout } from "$layouts/FormalLayout";
 import { VehicleModel } from "$types/models/vehicle";
 import { VehicleReportInspectionModel } from "$types/models/vehicle-report-inspection";
-import {
-  EditRounded,
-  SaveRounded,
-} from "@mui/icons-material";
+import { EditRounded } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
-import { Link, useRevalidator } from "react-router-dom";
-import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 import { VehicleReportInspectionForm } from "./VehicleReportInspectionForm";
 
 type VehicleReportInspectionInfoGroupProps = {
   report: VehicleReportInspectionModel;
   vehicle: VehicleModel;
-  inspectionRoundNumber: number;
   slotProps: {
     form: {
       topicComboBox: {
@@ -30,20 +24,10 @@ type VehicleReportInspectionInfoGroupProps = {
 export const VehicleReportInspectionInfoGroup: FC<
   VehicleReportInspectionInfoGroupProps
 > = (props) => {
-  const {
-    report,
-    inspectionRoundNumber,
-    vehicle,
-    slotProps,
-  } = props;
-  const { revalidate } = useRevalidator();
+  const { report, vehicle, slotProps } = props;
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const infoItems = [
-    {
-      label: "รอบการตรวจสภาพ",
-      value: inspectionRoundNumber,
-    },
     {
       label: "วันที่ลงบันทึก",
       value: dayjs(report.datetime)
@@ -148,6 +132,8 @@ export const VehicleReportInspectionInfoGroup: FC<
       </Button>
       <FormalLayout>{infoItems}</FormalLayout>
       <VehicleReportInspectionForm
+        editing
+        reportId={report.id}
         initFormData={{
           datetime: report.datetime,
           content: report.content,
@@ -167,31 +153,8 @@ export const VehicleReportInspectionInfoGroup: FC<
           tires: report.tires,
         }}
         open={dialogOpen}
-        title="แก้ไขข้อมูลการตรวจสภาพรถ"
         onClose={() => setDialogOpen(false)}
         slotProps={{
-          submitButton: {
-            label: "บันทึกการเปลี่ยนแปลง",
-            startIcon: <SaveRounded />,
-            onClick: (formData) =>
-              tauriPutVehicleReportInspection(
-                report.id,
-                formData
-              )
-                .then(
-                  () => {
-                    toast.success(
-                      "บันทึกการเปลี่ยนแปลงสำเร็จ"
-                    );
-                    revalidate();
-                  },
-                  () =>
-                    toast.error(
-                      "บันทึกการเปลี่ยนแปลงล้มเหลว"
-                    )
-                )
-                .finally(() => setDialogOpen(false)),
-          },
           form: {
             vehicleSelect: {
               disabled: true,

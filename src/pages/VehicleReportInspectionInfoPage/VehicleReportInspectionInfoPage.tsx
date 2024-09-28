@@ -25,7 +25,6 @@ export const VehicleReportInspectionInfoPage: FC = () => {
       <VehicleReportInspectionInfoGroup
         report={report}
         vehicle={vehicle}
-        inspectionRoundNumber={inspectionRoundNumber}
         slotProps={{
           form: {
             topicComboBox: {

@@ -1,30 +1,20 @@
+import { tauriPostVehicleReportInspection } from "$backend/database/post";
+import { tauriPutVehicleReportInspection } from "$backend/database/put";
 import { VehicleModel } from "$types/models/vehicle";
 import { VehicleReportInspectionFormData } from "$types/models/vehicle-report-inspection";
 import {
   AddRounded,
   SaveRounded,
 } from "@mui/icons-material";
-import { TextField, TextFieldProps } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
+import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
+import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseInputTimeField } from "./BaseInputTimeField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { VehicleInputSelect } from "./VehicleInputSelect";
-
-const CustomTextField: FC<TextFieldProps> = (props) => {
-  const { placeholder, ...rest } = props;
-  return (
-    <TextField
-      {...rest}
-      multiline
-      fullWidth
-      minRows={2}
-      placeholder={placeholder || "ปกติ"}
-    />
-  );
-};
 
 type VehicleReportInspectionPostFormProps = {
   editing: false;
@@ -154,8 +144,6 @@ export const VehicleReportInspectionForm: FC<
     initFormData.vehicle
   );
 
-  const  post = 
-
   const clearForm = () => {
     setFieldDate(dayjs());
     setFieldTime(dayjs());
@@ -220,9 +208,35 @@ export const VehicleReportInspectionForm: FC<
     };
 
     if (editing) {
+      tauriPutVehicleReportInspection(
+        props.reportId,
+        formData
+      )
+        .then(
+          () =>
+            toast.success(
+              "Edit form success" // TODO: Translate
+            ),
+          () => toast.error("Failed")
+        )
+        .finally(() => {
+          clearForm();
+          onClose();
+        });
+    } else {
+      tauriPostVehicleReportInspection(formData)
+        .then(
+          () =>
+            toast.success(
+              "Post form success" // TODO: Translate
+            ),
+          () => toast.error("Failed")
+        )
+        .finally(() => {
+          clearForm();
+          onClose();
+        });
     }
-
-    slotProps.submitButton.onClick(formData);
   };
 
   const isVehicleEmpty = fieldVehicle === null;
@@ -272,136 +286,159 @@ export const VehicleReportInspectionForm: FC<
     {
       label: "กล้องหน้ารถ",
       value: (
-        <CustomTextField
+        <BaseInputTextField
+          placeholder={initFormData.frontCamera || "ปกติ"}
+          multiline
+          minRows={2}
           value={fieldFrontCam}
-          onChange={(e) => setFieldFrontCam(e.target.value)}
+          onChange={setFieldFrontCam}
         />
       ),
     },
     {
       label: "เข็มขัดนิรภัย",
       value: (
-        <CustomTextField
+        <BaseInputTextField
+          placeholder={initFormData.seatbelts || "ปกติ"}
+          multiline
+          minRows={2}
           value={fieldSeatbelts}
-          onChange={(e) =>
-            setFieldSeatbelts(e.target.value)
-          }
+          onChange={setFieldSeatbelts}
         />
       ),
     },
     {
       label: "ที่นั่งและเบาะ",
       value: (
-        <CustomTextField
+        <BaseInputTextField
+          placeholder={initFormData.seats || "ปกติ"}
+          multiline
+          minRows={2}
           value={fieldSeats}
-          onChange={(e) => setFieldSeats(e.target.value)}
+          onChange={setFieldSeats}
         />
       ),
     },
     {
       label: "พัดลม",
       value: (
-        <CustomTextField
+        <BaseInputTextField
+          placeholder={initFormData.overheadFan || "ปกติ"}
+          multiline
+          minRows={2}
           value={fieldFanOverhead}
-          onChange={(e) =>
-            setFieldFanOverhead(e.target.value)
-          }
+          onChange={setFieldFanOverhead}
         />
       ),
     },
     {
       label: "หน้าต่าง",
       value: (
-        <CustomTextField
+        <BaseInputTextField
+          placeholder={initFormData.windows || "ปกติ"}
+          multiline
+          minRows={2}
           value={fieldWindows}
-          onChange={(e) => setFieldWindows(e.target.value)}
+          onChange={setFieldWindows}
         />
       ),
     },
     {
       label: "ไฟหน้า",
       value: (
-        <CustomTextField
+        <BaseInputTextField
+          placeholder={initFormData.headlights || "ปกติ"}
+          multiline
+          minRows={2}
           value={fieldHeadlights}
-          onChange={(e) =>
-            setFieldHeadlights(e.target.value)
-          }
+          onChange={setFieldHeadlights}
         />
       ),
     },
     {
       label: "ไฟเบรค",
       value: (
-        <CustomTextField
+        <BaseInputTextField
+          placeholder={initFormData.brakeLight || "ปกติ"}
+          multiline
+          minRows={2}
           value={fieldBrakeLight}
-          onChange={(e) =>
-            setFieldBrakeLight(e.target.value)
-          }
+          onChange={setFieldBrakeLight}
         />
       ),
     },
     {
       label: "ไฟเลี้ยว",
       value: (
-        <CustomTextField
+        <BaseInputTextField
+          placeholder={initFormData.turnSignals || "ปกติ"}
+          multiline
+          minRows={2}
           value={fieldTurnSignals}
-          onChange={(e) =>
-            setFieldTurnSignals(e.target.value)
-          }
+          onChange={setFieldTurnSignals}
         />
       ),
     },
     {
       label: "ตัวรถ",
       value: (
-        <CustomTextField
+        <BaseInputTextField
+          placeholder={initFormData.frame || "ปกติ"}
+          multiline
+          minRows={2}
           value={fieldBodyFrame}
-          onChange={(e) =>
-            setFieldBodyFrame(e.target.value)
-          }
+          onChange={setFieldBodyFrame}
         />
       ),
     },
     {
       label: "กระจกมองหลัง",
       value: (
-        <CustomTextField
-          value={fieldMirrorRearview}
-          onChange={(e) =>
-            setFieldMirrorRearview(e.target.value)
+        <BaseInputTextField
+          placeholder={
+            initFormData.rearviewMirror || "ปกติ"
           }
+          multiline
+          minRows={2}
+          value={fieldMirrorRearview}
+          onChange={setFieldMirrorRearview}
         />
       ),
     },
     {
       label: "กระจกมองข้าง",
       value: (
-        <CustomTextField
-          value={fieldMirrorSideview}
-          onChange={(e) =>
-            setFieldMirrorSideview(e.target.value)
+        <BaseInputTextField
+          placeholder={
+            initFormData.sideviewMirror || "ปกติ"
           }
+          multiline
+          minRows={2}
+          value={fieldMirrorSideview}
+          onChange={setFieldMirrorSideview}
         />
       ),
     },
     {
       label: "ยางและล้อ",
       value: (
-        <CustomTextField
+        <BaseInputTextField
+          placeholder={initFormData.tires || "ปกติ"}
+          multiline
+          minRows={2}
           value={fieldTires}
-          onChange={(e) => setFieldTires(e.target.value)}
+          onChange={setFieldTires}
         />
       ),
     },
     {
       label: "รายละเอียดเพิ่มเติม",
       value: (
-        <TextField
-          fullWidth
+        <BaseInputTextField
           multiline
           minRows={6}
           value={fieldContent}
-          onChange={(e) => setFieldContent(e.target.value)}
+          onChange={setFieldContent}
           placeholder={initFormData.content}
         />
       ),
@@ -423,9 +460,9 @@ export const VehicleReportInspectionForm: FC<
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
-          onClick: handleSubmit,
           children: submitButtonLabel,
           startIcon: submitButtonStartIcon,
+          onClick: handleSubmit,
         },
       }}
       open={open}

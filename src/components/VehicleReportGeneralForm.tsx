@@ -1,27 +1,24 @@
+import { tauriPostVehicleReportGeneral } from "$backend/database/post";
+import { tauriPutVehicleReportGeneral } from "$backend/database/put";
 import { VehicleModel } from "$types/models/vehicle";
 import { VehicleReportGeneralFormData } from "$types/models/vehicle-report-general";
-import { DateField, TimeField } from "@mui/x-date-pickers";
+import { SaveRounded } from "@mui/icons-material";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
+import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
+import { BaseInputDateField } from "./BaseInputDateField";
 import { BaseInputTextField } from "./BaseInputTextField";
+import { BaseInputTimeField } from "./BaseInputTimeField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { VehicleInputSelect } from "./VehicleInputSelect";
 
-type VehicleReportGeneralFormProps = {
-  initFormData: VehicleReportGeneralFormData;
+type VehicleReportGeneralPostFormProps = {
+  editing: false;
   open: boolean;
   onClose: () => void;
-  title: string;
 
   slotProps: {
-    submitButton: {
-      startIcon: ReactNode;
-      label: string;
-      onClick: (
-        formData: VehicleReportGeneralFormData,
-      ) => void;
-    };
     topicComboBox: {
       options: string[];
     };
@@ -31,30 +28,80 @@ type VehicleReportGeneralFormProps = {
     };
   };
 };
+
+type VehicleReportGeneralPutFormProps = {
+  editing: true;
+  open: boolean;
+  onClose: () => void;
+  reportId: number;
+  initFormData: VehicleReportGeneralFormData;
+
+  slotProps: {
+    topicComboBox: {
+      options: string[];
+    };
+    vehcleSelect: {
+      options: VehicleModel[];
+      disabled?: boolean;
+    };
+  };
+};
+
+type VehicleReportGeneralFormProps =
+  | VehicleReportGeneralPostFormProps
+  | VehicleReportGeneralPutFormProps;
 export const VehicleReportGeneralForm: FC<
   VehicleReportGeneralFormProps
 > = (props) => {
-  const { initFormData, slotProps, onClose, open, title } =
-    props;
-
+  const { editing, slotProps, onClose, open } = props;
+  let submitButtonLabel: string;
+  let submitButtonStartIcon: ReactNode;
+  let title: string;
+  let initFormData: VehicleReportGeneralFormData;
+  if (editing) {
+    submitButtonLabel = "Save"; // TODO: translate
+    submitButtonStartIcon = <SaveRounded />;
+    title = "Edit Report"; // TODO: translate
+    initFormData = props.initFormData;
+  } else {
+    submitButtonLabel = "Create"; // TODO: translate
+    submitButtonStartIcon = <SaveRounded />;
+    title = "New Report"; // TODO: translate
+    initFormData = {
+      datetime: dayjs().format(),
+      content: "",
+      title: "",
+      topics: [],
+      vehicle: slotProps.vehcleSelect.options[0],
+    };
+  }
   const [fieldDate, setFieldDate] = useState(
-    dayjs(initFormData.datetime),
+    dayjs(initFormData.datetime)
   );
   const [fieldTime, setFieldTime] = useState(
-    dayjs(initFormData.datetime),
+    dayjs(initFormData.datetime)
   );
   const [fieldTitle, setFieldTitle] = useState(
-    initFormData.title,
+    initFormData.title
   );
   const [fieldContent, setFieldContent] = useState(
-    initFormData.content,
+    initFormData.content
   );
   const [fieldTopics, setFieldTopics] = useState(
-    initFormData.topics,
+    initFormData.topics
   );
   const [fieldVehicle, setFieldVehicle] = useState(
-    initFormData.vehicle,
+    initFormData.vehicle
   );
+
+  const clearForm = () => {
+    setFieldDate(dayjs());
+    setFieldTime(dayjs());
+    setFieldTitle("");
+    setFieldContent("");
+    setFieldTopics([]);
+    setFieldVehicle(slotProps.vehcleSelect.options[0]);
+  };
 
   const handleSubmit = () => {
     if (isFormIncomplete) {
@@ -68,7 +115,7 @@ export const VehicleReportGeneralForm: FC<
       .set("millisecond", fieldTime.millisecond())
       .format();
 
-    slotProps.submitButton.onClick({
+    const formData: VehicleReportGeneralFormData = {
       content: fieldContent.normalize().trim(),
       datetime: datetime,
       title: fieldTitle.normalize().trim(),
@@ -76,7 +123,29 @@ export const VehicleReportGeneralForm: FC<
         .map((topic) => topic.normalize().trim())
         .filter((topic) => topic.length > 0),
       vehicle: fieldVehicle,
-    });
+    };
+
+    if (editing) {
+      tauriPutVehicleReportGeneral(props.reportId, formData)
+        .then(
+          () => toast.success("Save success"), // TODO: translate
+          () => toast.error("Save failed") // TODO: translate
+        )
+        .finally(() => {
+          clearForm();
+          onClose();
+        });
+    } else {
+      tauriPostVehicleReportGeneral(formData)
+        .then(
+          () => toast.success("Save success"), // TODO: translate
+          () => toast.error("Save failed") // TODO: translate
+        )
+        .finally(() => {
+          clearForm();
+          onClose();
+        });
+    }
   };
 
   const isVehicleEmpty = fieldVehicle === null;
@@ -90,34 +159,18 @@ export const VehicleReportGeneralForm: FC<
     {
       label: "เวลา",
       value: (
-        <TimeField
-          fullWidth
-          formatDensity="spacious"
+        <BaseInputTimeField
           value={fieldTime}
-          onChange={(value) => {
-            if (value === null) {
-              return;
-            }
-            setFieldTime(value);
-          }}
-          format="HH:mm น."
+          onChange={setFieldTime}
         />
       ),
     },
     {
       label: "วัน/เดือน/ปี",
       value: (
-        <DateField
-          fullWidth
-          formatDensity="spacious"
+        <BaseInputDateField
           value={fieldDate}
-          onChange={(value) => {
-            if (value === null) {
-              return;
-            }
-            setFieldDate(value);
-          }}
-          format="DD/MM/YYYY"
+          onChange={setFieldDate}
         />
       ),
     },
@@ -125,8 +178,7 @@ export const VehicleReportGeneralForm: FC<
       label: "รถรับส่ง",
       value: (
         <VehicleInputSelect
-          disabled={slotProps.vehcleSelect.disabled}
-          options={slotProps.vehcleSelect.options}
+          {...slotProps.vehcleSelect}
           value={fieldVehicle}
           onChange={setFieldVehicle}
         />
@@ -160,7 +212,7 @@ export const VehicleReportGeneralForm: FC<
       label: "หัวข้อที่เกี่ยวข้อง",
       value: (
         <BaseInputTopicComboBox
-          options={slotProps.topicComboBox.options}
+          {...slotProps.topicComboBox}
           values={fieldTopics}
           onChange={setFieldTopics}
         />
@@ -175,8 +227,8 @@ export const VehicleReportGeneralForm: FC<
       title={title}
       slotProps={{
         submitButton: {
-          startIcon: slotProps.submitButton.startIcon,
-          children: slotProps.submitButton.label,
+          startIcon: submitButtonStartIcon,
+          children: submitButtonLabel,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
         },

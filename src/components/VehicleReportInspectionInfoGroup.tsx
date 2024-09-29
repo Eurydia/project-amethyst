@@ -1,5 +1,3 @@
-/** @format */
-
 import { FormalLayout } from "$layouts/FormalLayout";
 import { VehicleModel } from "$types/models/vehicle";
 import { VehicleReportInspectionModel } from "$types/models/vehicle-report-inspection";

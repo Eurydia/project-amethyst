@@ -8,32 +8,43 @@ import { VehicleClassRadioGroup } from "./VehicleClassRadioGroup";
 import { VehicleCitySelect } from "./VehicleInputCitySelect";
 import { VehicleInputVendorAutocomplete } from "./VehicleInputVendorAutocomplete";
 
-type VehicleFormProps = {
-  initFormData: VehicleFormData;
+type VehiclePostFormProps = {
+  editing: false;
   open: boolean;
   onClose: () => void;
-  title: string;
   slotProps: {
-    submitButton: {
-      label: string;
-      startIcon: ReactNode;
-      onClick: (formData: VehicleFormData) => void;
-    };
     vendorComboBox: {
       options: string[];
     };
   };
 };
+
+type VehiclePutFormProps = {
+  editing: true;
+  vehicleId: number;
+  initFormData: VehicleFormData;
+  open: boolean;
+  onClose: () => void;
+  slotProps: {
+    vendorComboBox: {
+      options: string[];
+    };
+  };
+};
+
+type VehicleFormProps<Mode extends boolean | undefined> =
+  Mode extends true
+    ? VehiclePutFormProps
+    : VehiclePostFormProps;
 export const VehicleForm: FC<VehicleFormProps> = (
-  props,
+  props
 ) => {
-  const { initFormData, slotProps, onClose, open, title } =
-    props;
+  const { slotProps, onClose, open } = props;
 
   const [fieldLicensePlate, setFieldLicensePlate] =
     useState(initFormData.licensePlate);
   const [fieldVendor, setFieldVendor] = useState(
-    initFormData.vendor,
+    initFormData.vendor
   );
   const [fieldRegisteredCity, setFieldRegisteredCity] =
     useState(initFormData.registeredCity);

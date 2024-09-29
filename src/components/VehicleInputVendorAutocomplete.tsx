@@ -35,7 +35,10 @@ export const VehicleInputVendorAutocomplete: FC<
       value={value}
       onChange={(_, newValue) => onChange(newValue)}
       renderInput={(params) => (
-        <TextField {...params} {...rest} />
+        <TextField
+          {...params}
+          {...rest}
+        />
       )}
       renderOption={(props, option) => (
         <ListItem {...props}>
@@ -52,7 +55,7 @@ export const VehicleInputVendorAutocomplete: FC<
         const items = filterItems(
           options,
           state.inputValue,
-          undefined,
+          undefined
         );
 
         if (

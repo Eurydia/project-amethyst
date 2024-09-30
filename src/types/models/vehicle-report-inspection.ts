@@ -1,3 +1,5 @@
+import { VehicleModel } from "./vehicle";
+
 export type VehicleReportInspectionModel = {
   id: number;
   vehicle_id: number;
@@ -21,8 +23,8 @@ export type VehicleReportInspectionModel = {
 
 export type VehicleReportInspectionFormData = Omit<
   VehicleReportInspectionModel,
-  "id"
->;
+  "id" | "vehicle_id" | "topics"
+> & { vehicle: VehicleModel; topics: string[] };
 
 export type VehicleReportInspectionEntry = {
   id: number;

@@ -1,12 +1,14 @@
 /** @format */
 
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
-import {} from "$types/models/vehicle";
+import { VehicleModel } from "$types/models/vehicle";
 import {
   VehicleReportGeneralEntry,
   VehicleReportGeneralExportData,
+  VehicleReportGeneralFormData,
   VehicleReportGeneralModel,
 } from "$types/models/vehicle-report-general";
+import dayjs from "dayjs";
 
 export const VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER = {
   toEntry: async (report: VehicleReportGeneralModel) => {
@@ -54,5 +56,29 @@ export const VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER = {
       vehicle_license_plate: vehicle.license_plate,
     };
     return exportData;
+  },
+
+  toFormData: (
+    report: VehicleReportGeneralModel | undefined,
+    vehicle: VehicleModel
+  ) => {
+    let formData: VehicleReportGeneralFormData = {
+      datetime: dayjs().format(),
+      title: "",
+      content: "",
+      topics: [],
+      vehicle,
+    };
+    if (report !== undefined) {
+      formData = {
+        ...report,
+        topics: report.topics
+          .split(",")
+          .map((topic) => topic.trim().normalize())
+          .filter((topic) => topic.length > 0),
+        vehicle,
+      };
+    }
+    return formData;
   },
 };

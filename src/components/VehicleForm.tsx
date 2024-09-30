@@ -1,5 +1,6 @@
+import { tauriPostVehicle } from "$backend/database/post";
+import { tauriPutVehicle } from "$backend/database/put";
 import { VEHICLE_MODEL_TRANSFORMER } from "$core/transformers/vehicle";
-import { useVehicleFormActions } from "$hooks/useVehicleFormActions";
 import {
   VehicleFormData,
   VehicleModel,
@@ -9,13 +10,15 @@ import {
   SaveRounded,
 } from "@mui/icons-material";
 import { FC, ReactNode, useState } from "react";
+import { useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
 import { VehicleInputRegisteredCity } from "./VehicleInputRegisteredCity";
 import { VehicleInputVehicleClass } from "./VehicleInputVehicleClass";
 import { VehicleInputVendor } from "./VehicleInputVendor";
 
-interface VehiclePostFormProps {
+type VehiclePostFormProps = {
   editing: false;
   open: boolean;
   onClose: () => void;
@@ -24,9 +27,9 @@ interface VehiclePostFormProps {
       options: string[];
     };
   };
-}
+};
 
-interface VehiclePutFormProps {
+type VehiclePutFormProps = {
   editing: true;
   vehicle: VehicleModel;
   open: boolean;
@@ -36,7 +39,7 @@ interface VehiclePutFormProps {
       options: string[];
     };
   };
-}
+};
 type VehicleFormProps =
   | VehiclePostFormProps
   | VehiclePutFormProps;
@@ -71,7 +74,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
   const [fieldVehicleClass, setFieldVehicleClass] =
     useState(initFormData.vehicleClass);
 
-  const [handlePut, handlePost] = useVehicleFormActions();
+  const { revalidate } = useRevalidator();
 
   const handleClear = () => {
     setFieldLicensePlate(initFormData.licensePlate);
@@ -103,15 +106,32 @@ export const VehicleForm: FC<VehicleFormProps> = (
     };
 
     if (editing) {
-      handlePut(props.vehicle, formData, () => {
-        handleClear();
-        onClose();
-      });
+      tauriPutVehicle(props.vehicle.id, formData)
+        .then(
+          () => {
+            toast.success("Vehicle updated"); // TODO: translate
+            revalidate();
+          },
+          () => toast.error("Failed to update vehicle")
+        )
+        .finally(() => {
+          handleClear();
+          onClose();
+        });
     } else {
-      handlePost(formData, () => {
-        handleClear();
-        onClose();
-      });
+      tauriPostVehicle(formData)
+        // TODO: translate
+        .then(
+          () => {
+            toast.success("Vehicle updated"); // TODO: translate
+            revalidate();
+          },
+          () => toast.error("Failed to update vehicle")
+        )
+        .finally(() => {
+          handleClear();
+          onClose();
+        });
     }
   };
 

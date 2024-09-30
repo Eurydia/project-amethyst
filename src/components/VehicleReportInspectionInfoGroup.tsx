@@ -131,25 +131,7 @@ export const VehicleReportInspectionInfoGroup: FC<
       <FormalLayout>{infoItems}</FormalLayout>
       <VehicleReportInspectionForm
         editing
-        reportId={report.id}
-        initFormData={{
-          datetime: report.datetime,
-          content: report.content,
-          topics: [],
-          vehicle,
-          front_camera: report.front_camera,
-          overhead_fan: report.overhead_fan,
-          windows: report.windows,
-          frame: report.frame,
-          seatbelts: report.seatbelts,
-          seats: report.seats,
-          headlights: report.headlights,
-          turn_signals: report.turn_signals,
-          brake_light: report.brake_light,
-          rearview_mirror: report.rearview_mirror,
-          sideview_mirror: report.sideview_mirror,
-          tires: report.tires,
-        }}
+        report={report}
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         slotProps={{

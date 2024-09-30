@@ -2,12 +2,14 @@
 
 import { tauriGetVehicleReportInspectionAll } from "$backend/database/get/vehicle-inspection-reports";
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
-import {} from "$types/models/vehicle";
+import { VehicleModel } from "$types/models/vehicle";
 import {
   VehicleReportInpsectionExportData,
   VehicleReportInspectionEntry,
+  VehicleReportInspectionFormData,
   VehicleReportInspectionModel,
 } from "$types/models/vehicle-report-inspection";
+import dayjs from "dayjs";
 
 export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
   toEntry: async (report: VehicleReportInspectionModel) => {
@@ -60,5 +62,41 @@ export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
       vehicle_license_plate: vehicle.license_plate,
     };
     return exportData;
+  },
+
+  toFormData: (
+    report: VehicleReportInspectionModel | undefined,
+    vehicle: VehicleModel
+  ) => {
+    let formData: VehicleReportInspectionFormData = {
+      vehicle,
+      datetime: dayjs().format(),
+      content: "",
+      topics: [],
+      front_camera: "",
+      overhead_fan: "",
+      windows: "",
+      seatbelts: "",
+      seats: "",
+      headlights: "",
+      turn_signals: "",
+      brake_light: "",
+      frame: "",
+      rearview_mirror: "",
+      sideview_mirror: "",
+      tires: "",
+    };
+    if (report !== undefined) {
+      formData = {
+        ...report,
+        topics: report.topics
+          .split(",")
+          .map((topic) => topic.trim().normalize())
+          .filter((topic) => topic.length > 0),
+        vehicle,
+      };
+    }
+
+    return formData;
   },
 };

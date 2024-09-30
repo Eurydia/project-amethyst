@@ -1,10 +1,18 @@
 import { tauriPostVehicleReportGeneral } from "$backend/database/post";
 import { tauriPutVehicleReportGeneral } from "$backend/database/put";
+import { VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-general";
 import { VehicleModel } from "$types/models/vehicle";
-import { VehicleReportGeneralFormData } from "$types/models/vehicle-report-general";
-import { SaveRounded } from "@mui/icons-material";
+import {
+  VehicleReportGeneralFormData,
+  VehicleReportGeneralModel,
+} from "$types/models/vehicle-report-general";
+import {
+  AddRounded,
+  SaveRounded,
+} from "@mui/icons-material";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
+import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
 import { BaseInputDateField } from "./BaseInputDateField";
@@ -33,8 +41,7 @@ type VehicleReportGeneralPutFormProps = {
   editing: true;
   open: boolean;
   onClose: () => void;
-  reportId: number;
-  initFormData: VehicleReportGeneralFormData;
+  report: VehicleReportGeneralModel;
 
   slotProps: {
     topicComboBox: {
@@ -54,26 +61,25 @@ export const VehicleReportGeneralForm: FC<
   VehicleReportGeneralFormProps
 > = (props) => {
   const { editing, slotProps, onClose, open } = props;
-  let submitButtonLabel: string;
-  let submitButtonStartIcon: ReactNode;
-  let title: string;
-  let initFormData: VehicleReportGeneralFormData;
+
+  // TODO: translate
+  let submitButtonLabel = "Add";
+  let submitButtonStartIcon = <AddRounded />;
+  let title = "Add vehicle report";
+  let initFormData =
+    VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER.toFormData(
+      undefined,
+      slotProps.vehcleSelect.options[0]
+    );
   if (editing) {
-    submitButtonLabel = "Save"; // TODO: translate
+    submitButtonLabel = "Save";
     submitButtonStartIcon = <SaveRounded />;
-    title = "Edit Report"; // TODO: translate
-    initFormData = props.initFormData;
-  } else {
-    submitButtonLabel = "Create"; // TODO: translate
-    submitButtonStartIcon = <SaveRounded />;
-    title = "New Report"; // TODO: translate
-    initFormData = {
-      datetime: dayjs().format(),
-      content: "",
-      title: "",
-      topics: [],
-      vehicle: slotProps.vehcleSelect.options[0],
-    };
+    title = "Edit Report";
+    initFormData =
+      VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER.toFormData(
+        props.report,
+        slotProps.vehcleSelect.options[0]
+      );
   }
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime)
@@ -93,6 +99,7 @@ export const VehicleReportGeneralForm: FC<
   const [fieldVehicle, setFieldVehicle] = useState(
     initFormData.vehicle
   );
+  const { revalidate } = useRevalidator();
 
   const clearForm = () => {
     setFieldDate(dayjs());
@@ -116,8 +123,8 @@ export const VehicleReportGeneralForm: FC<
       .format();
 
     const formData: VehicleReportGeneralFormData = {
+      datetime,
       content: fieldContent.normalize().trim(),
-      datetime: datetime,
       title: fieldTitle.normalize().trim(),
       topics: fieldTopics
         .map((topic) => topic.normalize().trim())
@@ -126,10 +133,16 @@ export const VehicleReportGeneralForm: FC<
     };
 
     if (editing) {
-      tauriPutVehicleReportGeneral(props.reportId, formData)
+      tauriPutVehicleReportGeneral(
+        props.report.id,
+        formData
+      )
         .then(
-          () => toast.success("Save success"), // TODO: translate
-          () => toast.error("Save failed") // TODO: translate
+          () => {
+            toast.success("Save success");
+            revalidate();
+          },
+          () => toast.error("Save failed")
         )
         .finally(() => {
           clearForm();
@@ -138,8 +151,11 @@ export const VehicleReportGeneralForm: FC<
     } else {
       tauriPostVehicleReportGeneral(formData)
         .then(
-          () => toast.success("Save success"), // TODO: translate
-          () => toast.error("Save failed") // TODO: translate
+          () => {
+            toast.success("Save success");
+            revalidate();
+          },
+          () => toast.error("Save failed")
         )
         .finally(() => {
           clearForm();

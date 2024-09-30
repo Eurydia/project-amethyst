@@ -1,16 +1,22 @@
 import { tauriPostVehicleReportInspection } from "$backend/database/post";
 import { tauriPutVehicleReportInspection } from "$backend/database/put";
+import { VEHICLE_REPORT_INSPECTION_TRANSFORMER } from "$core/transformers/vehicle-report-inspection";
 import { VehicleModel } from "$types/models/vehicle";
-import { VehicleReportInspectionFormData } from "$types/models/vehicle-report-inspection";
+import {
+  VehicleReportInspectionFormData,
+  VehicleReportInspectionModel,
+} from "$types/models/vehicle-report-inspection";
 import {
   AddRounded,
   SaveRounded,
 } from "@mui/icons-material";
-import { DateField } from "@mui/x-date-pickers";
+import { replaceInvalidDateByNull } from "@mui/x-date-pickers/internals";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
+import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
+import { BaseInputDateField } from "./BaseInputDateField";
 import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseInputTimeField } from "./BaseInputTimeField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
@@ -34,8 +40,7 @@ type VehicleReportInspectionPostFormProps = {
 };
 
 type VehicleReportInspectionPutFormProps = {
-  reportId: number;
-  initFormData: VehicleReportInspectionFormData;
+  report: VehicleReportInspectionModel;
 
   editing: true;
   open: boolean;
@@ -61,39 +66,25 @@ export const VehicleReportInspectionForm: FC<
 > = (props) => {
   const { slotProps, onClose, open, editing } = props;
 
-  let title: string;
-  let submitButtonLabel: string;
-  let submitButtonStartIcon: ReactNode;
-  let initFormData: VehicleReportInspectionFormData;
+  // TODO:  translate
+  let title: string = "Add new info";
+  let submitButtonLabel: string = "Submit";
+  let submitButtonStartIcon: ReactNode = <AddRounded />;
+  let initFormData =
+    VEHICLE_REPORT_INSPECTION_TRANSFORMER.toFormData(
+      undefined,
+      slotProps.form.vehicleSelect.options[0]
+    );
   if (editing) {
-    title = "Edit info"; // TODO: Replace with translation
-    submitButtonLabel = "Save changes"; // TODO: Replace with translation
+    title = "Edit info";
+    submitButtonLabel = "Save changes";
     submitButtonStartIcon = <SaveRounded />;
-    initFormData = props.initFormData;
-  } else {
-    title = "Add new info"; // TODO: Replace with translation
-    submitButtonLabel = "Submit"; // TODO: Replace with translation
-    submitButtonStartIcon = <AddRounded />;
-    initFormData = {
-      datetime: "",
-      content: "",
-      topics: [],
-      vehicle: slotProps.form.vehicleSelect.options[0],
-      front_camera: "",
-      overhead_fan: "",
-      windows: "",
-      frame: "",
-      seatbelts: "",
-      seats: "",
-      headlights: "",
-      turn_signals: "",
-      brake_light: "",
-      rearview_mirror: "",
-      sideview_mirror: "",
-      tires: "",
-    };
+    initFormData =
+      VEHICLE_REPORT_INSPECTION_TRANSFORMER.toFormData(
+        props.report,
+        slotProps.form.vehicleSelect.options[0]
+      );
   }
-
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime)
   );
@@ -143,6 +134,7 @@ export const VehicleReportInspectionForm: FC<
   const [fieldVehicle, setFieldVehicle] = useState(
     initFormData.vehicle
   );
+  const { revalidate } = useRevalidator();
 
   const clearForm = () => {
     setFieldDate(dayjs());
@@ -179,7 +171,7 @@ export const VehicleReportInspectionForm: FC<
       .format();
 
     const formData: VehicleReportInspectionFormData = {
-      datetime: datetime,
+      datetime,
       vehicle: fieldVehicle,
       content: fieldContent.normalize().trim(),
       topics: fieldTopics
@@ -209,15 +201,15 @@ export const VehicleReportInspectionForm: FC<
 
     if (editing) {
       tauriPutVehicleReportInspection(
-        props.reportId,
+        props.report.id,
         formData
       )
         .then(
-          () =>
-            toast.success(
-              "Edit form success" // TODO: Translate
-            ),
-          () => toast.error("Failed")
+          () => {
+            toast.success("Save success");
+            revalidate();
+          },
+          () => toast.error("Save failed")
         )
         .finally(() => {
           clearForm();
@@ -226,11 +218,11 @@ export const VehicleReportInspectionForm: FC<
     } else {
       tauriPostVehicleReportInspection(formData)
         .then(
-          () =>
-            toast.success(
-              "Post form success" // TODO: Translate
-            ),
-          () => toast.error("Failed")
+          () => {
+            toast.success("Save success");
+            replaceInvalidDateByNull;
+          },
+          () => toast.error("Save failed")
         )
         .finally(() => {
           clearForm();
@@ -258,17 +250,9 @@ export const VehicleReportInspectionForm: FC<
     {
       label: "วัน/เดือน/ปี",
       value: (
-        <DateField
-          fullWidth
-          formatDensity="spacious"
+        <BaseInputDateField
           value={fieldDate}
-          onChange={(value) => {
-            if (value === null) {
-              return;
-            }
-            setFieldDate(value);
-          }}
-          format="DD/MM/YYYY"
+          onChange={setFieldDate}
         />
       ),
     },

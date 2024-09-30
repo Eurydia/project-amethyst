@@ -135,7 +135,7 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
     importWorkbook(file, {
       action: tauriPostPickupRoute,
       cleanup: revalidate,
-      transformer: importTransformer,
+      validator: importTransformer,
     });
 
   const handleExport = async () => {
@@ -147,7 +147,7 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
         "เวลารับออก",
       ],
       transformer: exportTransformer,
-      workbookName: "Routes", // TODO: translate
+      name: "Routes", // TODO: translate
       worksheetName: "Routes", // TODO: translate
     });
   };

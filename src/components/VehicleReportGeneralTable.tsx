@@ -1,13 +1,22 @@
+import { tauriGetVehicleReportGeneral } from "$backend/database/get/vehicle-general-reports";
+import { tauriPostVehicleReportGeneral } from "$backend/database/post";
 import { filterItems } from "$core/filter";
+import { VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-general";
+import { VEHICLE_REPORT_GENERAL_VALIDATOR } from "$core/validators/vehicle-report-general";
+import {
+  exportWorkbook,
+  importWorkbook,
+} from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
 import { VehicleModel } from "$types/models/vehicle";
 import { VehicleReportGeneralEntry } from "$types/models/vehicle-report-general";
-import { SearchRounded } from "@mui/icons-material";
-import { Button, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
-import { BaseInputTextField } from "./BaseInputTextField";
+import { useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
 import { BaseSortableTable } from "./BaseSortableTable";
+import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
 import { VehicleReportGeneralForm } from "./VehicleReportGeneralForm";
 
@@ -28,14 +37,14 @@ const VEHICLE_HEADER_DEFINITION: TableHeaderDefinition<VehicleReportGeneralEntry
   {
     label: "เลขทะเบียน",
     compare: (a, b) =>
-      a.vehicleLicensePlate.localeCompare(
-        b.vehicleLicensePlate
+      a.vehicle_license_plate.localeCompare(
+        b.vehicle_license_plate
       ),
     render: (item) => (
       <BaseTypographyLink
-        to={"/vehicles/info/" + item.vehicleId}
+        to={"/vehicles/info/" + item.vehicle_id}
       >
-        {item.vehicleLicensePlate}
+        {item.vehicle_license_plate}
       </BaseTypographyLink>
     ),
   };
@@ -91,6 +100,40 @@ export const VehicleReportGeneralTable: FC<
   const [dialogOpen, setDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
 
+  const { revalidate } = useRevalidator();
+
+  const handleImport = (file: File) => {
+    importWorkbook(file, {
+      validator: VEHICLE_REPORT_GENERAL_VALIDATOR.validate,
+      action: tauriPostVehicleReportGeneral,
+    }).then(
+      // TODO: translate
+      () => {
+        toast.success("Imported");
+        revalidate();
+      },
+      () => toast.error("Import failed")
+    );
+  };
+  const handleExport = async () => {
+    const reportReqs = filteredEntries.map((entry) =>
+      tauriGetVehicleReportGeneral(entry.id)
+    );
+    const reports = (await Promise.all(reportReqs)).filter(
+      (report) => report !== null
+    );
+
+    exportWorkbook(reports, {
+      name: "vehicle general report",
+      header: [],
+      transformer:
+        VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER.toExportData,
+    }).then(
+      () => toast.success("Exported"),
+      () => toast.error("Export failed")
+    );
+  };
+
   const filteredEntries = filterItems(entries, search, [
     "title",
     "topics",
@@ -110,22 +153,36 @@ export const VehicleReportGeneralTable: FC<
       TOPIC_HEADER_DEFINITION,
     ];
   }
+  const databaseHasNoVehicle =
+    slotProps.form.vehicleSelect.options.length === 0;
+  const databaseIsEmpty = entries.length === 0;
 
   return (
     <Stack spacing={1}>
-      <Stack direction="row">
-        <Button
-          variant="contained"
-          onClick={() => setDialogOpen(true)}
-        >
-          เพิ่มเรื่องร้องเรียน
-        </Button>
-      </Stack>
-      <BaseInputTextField
-        startIcon={<SearchRounded />}
-        onChange={setSearch}
-        value={search}
-        placeholder="ค้นหาด้วยเลขทะเบียน, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง"
+      <BaseSortableTableToolbar
+        slotProps={{
+          searchField: {
+            placeholder:
+              "ค้นหาด้วยเลขทะเบียน, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง",
+            value: search,
+            onChange: setSearch,
+          },
+          addButton: {
+            // TODO: translate
+            disabled: databaseHasNoVehicle,
+            children: "Add report",
+            onClick: () => setDialogOpen(true),
+          },
+          importButton: {
+            disabled: databaseHasNoVehicle,
+            children: "Import from file",
+            onFileSelect: handleImport,
+          },
+          exportButton: {
+            children: "Export data",
+            onClick: handleExport,
+          },
+        }}
       />
       <BaseSortableTable
         defaultSortByColumn={0}
@@ -135,10 +192,9 @@ export const VehicleReportGeneralTable: FC<
         slotProps={{
           body: {
             // TODO: translate
-            emptyText:
-              entries.length === 0
-                ? "Database is empty"
-                : "ไม่พบเรื่องร้องเรียน",
+            emptyText: databaseIsEmpty
+              ? "Database is empty"
+              : "ไม่พบเรื่องร้องเรียน",
           },
         }}
       />
@@ -148,27 +204,6 @@ export const VehicleReportGeneralTable: FC<
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
           slotProps={{
-            // submitButton: {
-            //   startIcon: <AddRounded />,
-            //   label: "เพิ่มเรื่องร้องเรียน",
-            //   onClick: (
-            //     formData: VehicleReportGeneralFormData
-            //   ) =>
-            //     tauriPostVehicleReportGeneral(formData)
-            //       .then(
-            //         () => {
-            //           toast.success(
-            //             "เพิ่มเรื่องร้องเรียนสำเร็จ"
-            //           );
-            //           revalidate();
-            //         },
-            //         () =>
-            //           toast.error(
-            //             "เพิ่มเรื่องร้องเรียนล้มเหลว"
-            //           )
-            //       )
-            //       .finally(() => setDialogOpen(false)),
-            // },
             topicComboBox: slotProps.form.topicComboBox,
             vehcleSelect: slotProps.form.vehicleSelect,
           }}

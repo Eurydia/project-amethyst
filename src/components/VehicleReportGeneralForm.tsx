@@ -11,7 +11,7 @@ import { BaseInputDateField } from "./BaseInputDateField";
 import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseInputTimeField } from "./BaseInputTimeField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
-import { VehicleInputSelect } from "./VehicleInputSelect";
+import { VehicleInputVehicle } from "./VehicleInputVehicle";
 
 type VehicleReportGeneralPostFormProps = {
   editing: false;
@@ -177,7 +177,7 @@ export const VehicleReportGeneralForm: FC<
     {
       label: "รถรับส่ง",
       value: (
-        <VehicleInputSelect
+        <VehicleInputVehicle
           {...slotProps.vehcleSelect}
           value={fieldVehicle}
           onChange={setFieldVehicle}

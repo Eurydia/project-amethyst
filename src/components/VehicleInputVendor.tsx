@@ -1,4 +1,5 @@
 import { filterItems } from "$core/filter";
+import { WarningRounded } from "@mui/icons-material";
 import {
   Autocomplete,
   ListItem,
@@ -6,23 +7,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { FC, ReactNode } from "react";
+import { FC } from "react";
 
-type VehicleInputVendorAutocompleteProps = {
+type VehicleInputVendorProps = {
   options: string[];
   value: string;
-  onChange: (value: string) => void;
-  placeholder: string;
-  helperText?: ReactNode;
   error?: boolean;
+  onChange: (value: string) => void;
 };
-export const VehicleInputVendorAutocomplete: FC<
-  VehicleInputVendorAutocompleteProps
+export const VehicleInputVendor: FC<
+  VehicleInputVendorProps
 > = (props) => {
-  const { onChange, options, value, ...rest } = props;
-
+  const { onChange, options, value, error } = props;
   const optionSet = new Set(options);
-
   return (
     <Autocomplete
       freeSolo
@@ -37,7 +34,16 @@ export const VehicleInputVendorAutocomplete: FC<
       renderInput={(params) => (
         <TextField
           {...params}
-          {...rest}
+          error={error}
+          helperText={
+            // TODO: translate
+            error && (
+              <Typography>
+                <WarningRounded />
+                Required
+              </Typography>
+            )
+          }
         />
       )}
       renderOption={(props, option) => (

@@ -14,7 +14,7 @@ import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
 import { BaseInputTimeField } from "./BaseInputTimeField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
-import { VehicleInputSelect } from "./VehicleInputSelect";
+import { VehicleInputVehicle } from "./VehicleInputVehicle";
 
 type VehicleReportInspectionPostFormProps = {
   editing: false;
@@ -79,17 +79,17 @@ export const VehicleReportInspectionForm: FC<
       content: "",
       topics: [],
       vehicle: slotProps.form.vehicleSelect.options[0],
-      frontCamera: "",
-      overheadFan: "",
+      front_camera: "",
+      overhead_fan: "",
       windows: "",
       frame: "",
       seatbelts: "",
       seats: "",
       headlights: "",
-      turnSignals: "",
-      brakeLight: "",
-      rearviewMirror: "",
-      sideviewMirror: "",
+      turn_signals: "",
+      brake_light: "",
+      rearview_mirror: "",
+      sideview_mirror: "",
       tires: "",
     };
   }
@@ -110,24 +110,24 @@ export const VehicleReportInspectionForm: FC<
     initFormData.windows
   );
   const [fieldFrontCam, setFieldFrontCam] = useState(
-    initFormData.frontCamera
+    initFormData.front_camera
   );
   const [fieldFanOverhead, setFieldFanOverhead] = useState(
-    initFormData.overheadFan
+    initFormData.overhead_fan
   );
   const [fieldBrakeLight, setFieldBrakeLight] = useState(
-    initFormData.brakeLight
+    initFormData.brake_light
   );
   const [fieldHeadlights, setFieldHeadlights] = useState(
     initFormData.headlights
   );
   const [fieldTurnSignals, setFieldTurnSignals] = useState(
-    initFormData.turnSignals
+    initFormData.turn_signals
   );
   const [fieldMirrorRearview, setFieldMirrorRearview] =
-    useState(initFormData.rearviewMirror);
+    useState(initFormData.rearview_mirror);
   const [fieldMirrorSideview, setFieldMirrorSideview] =
-    useState(initFormData.sideviewMirror);
+    useState(initFormData.sideview_mirror);
   const [fieldSeatbelts, setFieldSeatbelts] = useState(
     initFormData.seatbelts
   );
@@ -187,19 +187,19 @@ export const VehicleReportInspectionForm: FC<
         .filter((topic) => topic.length > 0),
       frame: fieldBodyFrame.normalize().trim() || "ปกติ",
       windows: fieldWindows.normalize().trim() || "ปกติ",
-      frontCamera:
+      front_camera:
         fieldFrontCam.normalize().trim() || "ปกติ",
-      overheadFan:
+      overhead_fan:
         fieldFanOverhead.normalize().trim() || "ปกติ",
-      brakeLight:
+      brake_light:
         fieldBrakeLight.normalize().trim() || "ปกติ",
       headlights:
         fieldHeadlights.normalize().trim() || "ปกติ",
-      turnSignals:
+      turn_signals:
         fieldTurnSignals.normalize().trim() || "ปกติ",
-      rearviewMirror:
+      rearview_mirror:
         fieldMirrorRearview.normalize().trim() || "ปกติ",
-      sideviewMirror:
+      sideview_mirror:
         fieldMirrorSideview.normalize().trim() || "ปกติ",
       seatbelts:
         fieldSeatbelts.normalize().trim() || "ปกติ",
@@ -275,7 +275,7 @@ export const VehicleReportInspectionForm: FC<
     {
       label: "เลขทะเบียน",
       value: (
-        <VehicleInputSelect
+        <VehicleInputVehicle
           disabled={slotProps.form.vehicleSelect.disabled}
           options={slotProps.form.vehicleSelect.options}
           value={fieldVehicle}
@@ -287,7 +287,7 @@ export const VehicleReportInspectionForm: FC<
       label: "กล้องหน้ารถ",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.frontCamera || "ปกติ"}
+          placeholder={initFormData.front_camera || "ปกติ"}
           multiline
           minRows={2}
           value={fieldFrontCam}
@@ -323,7 +323,7 @@ export const VehicleReportInspectionForm: FC<
       label: "พัดลม",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.overheadFan || "ปกติ"}
+          placeholder={initFormData.overhead_fan || "ปกติ"}
           multiline
           minRows={2}
           value={fieldFanOverhead}
@@ -359,7 +359,7 @@ export const VehicleReportInspectionForm: FC<
       label: "ไฟเบรค",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.brakeLight || "ปกติ"}
+          placeholder={initFormData.brake_light || "ปกติ"}
           multiline
           minRows={2}
           value={fieldBrakeLight}
@@ -371,7 +371,7 @@ export const VehicleReportInspectionForm: FC<
       label: "ไฟเลี้ยว",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.turnSignals || "ปกติ"}
+          placeholder={initFormData.turn_signals || "ปกติ"}
           multiline
           minRows={2}
           value={fieldTurnSignals}
@@ -396,7 +396,7 @@ export const VehicleReportInspectionForm: FC<
       value: (
         <BaseInputTextField
           placeholder={
-            initFormData.rearviewMirror || "ปกติ"
+            initFormData.rearview_mirror || "ปกติ"
           }
           multiline
           minRows={2}
@@ -410,7 +410,7 @@ export const VehicleReportInspectionForm: FC<
       value: (
         <BaseInputTextField
           placeholder={
-            initFormData.sideviewMirror || "ปกติ"
+            initFormData.sideview_mirror || "ปกติ"
           }
           multiline
           minRows={2}

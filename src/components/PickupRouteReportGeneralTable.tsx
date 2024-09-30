@@ -177,12 +177,12 @@ export const PickupRouteReportGeneralTable: FC<
     importWorkbook(file, {
       action: tauriPostPickupRouteReportGeneral,
       cleanup: revalidate,
-      transformer: importTransformer,
+      validator: importTransformer,
     });
 
   const handleExport = () =>
     exportWorkbook(filteredEntries, {
-      workbookName: "route general reports", // TODO: translate
+      name: "route general reports", // TODO: translate
       worksheetName: "general reports", // TODO: translate
       header: [
         "รหัสสายรถ",

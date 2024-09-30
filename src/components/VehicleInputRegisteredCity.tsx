@@ -2,7 +2,7 @@ import { filterItems } from "$core/filter";
 import { Autocomplete, TextField } from "@mui/material";
 import { FC, useEffect } from "react";
 
-const OPTIONS: string[] = [
+export const VEHICLE_REGISTERED_CITY_OPTIONS: string[] = [
   "กระบี่",
   "กรุงเทพมหานคร",
   "กาญจนบุรี",
@@ -82,20 +82,20 @@ const OPTIONS: string[] = [
   "อุบลราชธานี",
 ];
 
-type VehicleCitySelectProps = {
+type VehicleInputRegisteredCityProps = {
   value: string;
   onChange: (value: string) => void;
 };
-export const VehicleCitySelect: FC<
-  VehicleCitySelectProps
+export const VehicleInputRegisteredCity: FC<
+  VehicleInputRegisteredCityProps
 > = (props) => {
   const { onChange, value } = props;
 
   useEffect(() => {
-    if (value.trim().length === 0) {
-      onChange(OPTIONS[0]);
+    if (value.normalize().trim().length < 0) {
+      onChange(VEHICLE_REGISTERED_CITY_OPTIONS[0]);
     }
-  }, []);
+  }, [value]);
 
   return (
     <Autocomplete
@@ -104,19 +104,15 @@ export const VehicleCitySelect: FC<
       disableListWrap
       disabledItemsFocusable
       fullWidth
-      options={OPTIONS}
+      options={VEHICLE_REGISTERED_CITY_OPTIONS}
       value={value}
       getOptionLabel={(option) => option}
       getOptionKey={(option) => option}
       onChange={(_, newValue) => onChange(newValue)}
       renderInput={(params) => <TextField {...params} />}
-      filterOptions={(options, state) => {
-        return filterItems(
-          options,
-          state.inputValue,
-          undefined
-        );
-      }}
+      filterOptions={(options, state) =>
+        filterItems(options, state.inputValue, undefined)
+      }
     />
   );
 };

@@ -1,14 +1,21 @@
-import { VehicleFormData } from "$types/models/vehicle";
-import { WarningRounded } from "@mui/icons-material";
-import { Typography } from "@mui/material";
+import { VEHICLE_MODEL_TRANSFORMER } from "$core/transformers/vehicle";
+import { useVehicleFormActions } from "$hooks/useVehicleFormActions";
+import {
+  VehicleFormData,
+  VehicleModel,
+} from "$types/models/vehicle";
+import {
+  AddRounded,
+  SaveRounded,
+} from "@mui/icons-material";
 import { FC, ReactNode, useState } from "react";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
-import { VehicleClassRadioGroup } from "./VehicleClassRadioGroup";
-import { VehicleCitySelect } from "./VehicleInputCitySelect";
-import { VehicleInputVendorAutocomplete } from "./VehicleInputVendorAutocomplete";
+import { VehicleInputRegisteredCity } from "./VehicleInputRegisteredCity";
+import { VehicleInputVehicleClass } from "./VehicleInputVehicleClass";
+import { VehicleInputVendor } from "./VehicleInputVendor";
 
-type VehiclePostFormProps = {
+interface VehiclePostFormProps {
   editing: false;
   open: boolean;
   onClose: () => void;
@@ -17,12 +24,11 @@ type VehiclePostFormProps = {
       options: string[];
     };
   };
-};
+}
 
-type VehiclePutFormProps = {
+interface VehiclePutFormProps {
   editing: true;
-  vehicleId: number;
-  initFormData: VehicleFormData;
+  vehicle: VehicleModel;
   open: boolean;
   onClose: () => void;
   slotProps: {
@@ -30,16 +36,30 @@ type VehiclePutFormProps = {
       options: string[];
     };
   };
-};
-
-type VehicleFormProps<Mode extends boolean | undefined> =
-  Mode extends true
-    ? VehiclePutFormProps
-    : VehiclePostFormProps;
+}
+type VehicleFormProps =
+  | VehiclePostFormProps
+  | VehiclePutFormProps;
 export const VehicleForm: FC<VehicleFormProps> = (
   props
 ) => {
-  const { slotProps, onClose, open } = props;
+  const { editing, slotProps, onClose, open } = props;
+
+  // TODO: translate
+  let submitButtonLabel: string = "Create";
+  let submitButtonStartIcon: ReactNode = <AddRounded />;
+  let title: string = "Register vehicle";
+  let initFormData: VehicleFormData =
+    VEHICLE_MODEL_TRANSFORMER.toFormData(undefined);
+  if (editing) {
+    // TODO: translate
+    submitButtonLabel = "Save";
+    submitButtonStartIcon = <SaveRounded />;
+    title = "Edit Vehicle";
+    initFormData = VEHICLE_MODEL_TRANSFORMER.toFormData(
+      props.vehicle
+    );
+  }
 
   const [fieldLicensePlate, setFieldLicensePlate] =
     useState(initFormData.licensePlate);
@@ -51,24 +71,54 @@ export const VehicleForm: FC<VehicleFormProps> = (
   const [fieldVehicleClass, setFieldVehicleClass] =
     useState(initFormData.vehicleClass);
 
+  const [handlePut, handlePost] = useVehicleFormActions();
+
+  const handleClear = () => {
+    setFieldLicensePlate(initFormData.licensePlate);
+    setFieldVendor(initFormData.vendor);
+    setFieldRegisteredCity(initFormData.registeredCity);
+    setFieldVehicleClass(initFormData.vehicleClass);
+  };
+
+  const _licensePlate = fieldLicensePlate
+    .trim()
+    .normalize();
+  const _vendor = fieldVendor.trim().normalize();
+  const _registeredCity = fieldRegisteredCity
+    .trim()
+    .normalize();
+  const _vehicleClass = fieldVehicleClass
+    .trim()
+    .normalize();
+
   const handleSubmit = () => {
     if (isFormIncomplete) {
       return;
     }
-    slotProps.submitButton.onClick({
-      licensePlate: fieldLicensePlate.normalize().trim(),
-      vendor: fieldVendor,
-      registeredCity: fieldRegisteredCity,
-      vehicleClass: fieldVehicleClass,
-    });
+    const formData: VehicleFormData = {
+      licensePlate: _licensePlate,
+      vendor: _vendor,
+      registeredCity: _registeredCity,
+      vehicleClass: _vehicleClass,
+    };
+
+    if (editing) {
+      handlePut(props.vehicle, formData, () => {
+        handleClear();
+        onClose();
+      });
+    } else {
+      handlePost(formData, () => {
+        handleClear();
+        onClose();
+      });
+    }
   };
 
-  const missingFieldLicensePlate =
-    fieldLicensePlate.trim().normalize() === "";
+  const missingFieldLicensePlate = _licensePlate.length < 1;
   const missingFieldRegisteredCity =
-    fieldRegisteredCity.trim().normalize() === "";
-  const missingFieldVendor =
-    fieldVendor.trim().normalize() === "";
+    _registeredCity.length < 1;
+  const missingFieldVendor = _vendor.length < 1;
   const isFormIncomplete =
     missingFieldLicensePlate ||
     missingFieldRegisteredCity ||
@@ -85,35 +135,17 @@ export const VehicleForm: FC<VehicleFormProps> = (
           autoFocus
           error={missingFieldLicensePlate}
           value={fieldLicensePlate}
-          placeholder={initFormData.licensePlate}
           onChange={setFieldLicensePlate}
-          helperText={
-            // TODO: translate
-            missingFieldLicensePlate && (
-              <Typography>
-                <WarningRounded />
-                Required
-              </Typography>
-            )
-          }
+          errorText="Required" // TODO: translate
         />
       ),
     },
     {
       label: "หจก.",
       value: (
-        <VehicleInputVendorAutocomplete
+        <VehicleInputVendor
           error={missingFieldVendor}
-          helperText={
-            missingFieldVendor && (
-              <Typography>
-                <WarningRounded />
-                Required
-              </Typography>
-            )
-          }
           options={slotProps.vendorComboBox.options}
-          placeholder={initFormData.vendor}
           value={fieldVendor}
           onChange={setFieldVendor}
         />
@@ -122,7 +154,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
     {
       label: "ประเภทรถ",
       value: (
-        <VehicleClassRadioGroup
+        <VehicleInputVehicleClass
           value={fieldVehicleClass}
           onChange={setFieldVehicleClass}
         />
@@ -131,7 +163,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
     {
       label: "จังหวัดที่จดทะเบียน",
       value: (
-        <VehicleCitySelect
+        <VehicleInputRegisteredCity
           value={fieldRegisteredCity}
           onChange={setFieldRegisteredCity}
         />
@@ -142,13 +174,13 @@ export const VehicleForm: FC<VehicleFormProps> = (
   return (
     <BaseForm
       open={open}
-      onClose={onClose}
       title={title}
+      onClose={onClose}
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
-          startIcon: slotProps.submitButton.startIcon,
-          children: slotProps.submitButton.label,
+          startIcon: submitButtonStartIcon,
+          children: submitButtonLabel,
           onClick: handleSubmit,
         },
       }}

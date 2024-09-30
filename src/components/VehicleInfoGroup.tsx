@@ -4,7 +4,6 @@ import { EditRounded } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/material";
 import { FileEntry } from "@tauri-apps/api/fs";
 import { FC, useState } from "react";
-import { useRevalidator } from "react-router-dom";
 import { BaseGallery } from "./BaseGallery";
 import { VehicleForm } from "./VehicleForm";
 
@@ -24,7 +23,6 @@ export const VehicleInfoGroup: FC<VehicleInfoGroupProps> = (
   props
 ) => {
   const { vehicle, slotProps } = props;
-  const { revalidate } = useRevalidator();
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const infoItems = [
@@ -74,12 +72,7 @@ export const VehicleInfoGroup: FC<VehicleInfoGroupProps> = (
       <FormalLayout>{infoItems}</FormalLayout>
       <VehicleForm
         editing
-        initFormData={{
-          licensePlate: vehicle.license_plate,
-          registeredCity: vehicle.registered_city,
-          vehicleClass: vehicle.vehicle_class,
-          vendor: vehicle.vendor,
-        }}
+        vehicle={vehicle}
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         slotProps={{

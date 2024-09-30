@@ -5,8 +5,7 @@ type ExportOptions<
   In extends Object,
   Out extends Object
 > = {
-  workbookName: string;
-  worksheetName: string;
+  name: string;
   header: (keyof Out)[];
   transformer: (data: In) => Promise<Out | null>;
 };
@@ -17,12 +16,7 @@ export const exportWorkbook = async <
   entries: In[],
   options: ExportOptions<In, Out>
 ) => {
-  const {
-    workbookName,
-    worksheetName,
-    header,
-    transformer,
-  } = options;
+  const { name, header, transformer } = options;
 
   const data = (
     await Promise.all(entries.map(transformer))
@@ -36,29 +30,23 @@ export const exportWorkbook = async <
     .locale("th")
     .format("DD MMMM YYYY");
 
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(
-    workbook,
-    worksheet,
-    worksheetName
-  );
+  const workbookName = `${name} (${timestamp}).xlsx`;
 
-  XLSX.writeFile(
-    workbook,
-    `${workbookName} (${timestamp}).xlsx`
-  );
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, name);
+
+  XLSX.writeFile(workbook, workbookName);
 };
 
 type ImportOptions<In extends Object> = {
-  transformer: (data: unknown) => Promise<In | null>;
+  validator: (data: unknown) => Promise<In | null>;
   action: (data: In) => Promise<any>;
-  cleanup: (() => Promise<any>) | (() => void);
 };
 export const importWorkbook = async <T extends Object>(
   file: File,
   options: ImportOptions<T>
 ) => {
-  const { cleanup, transformer, action } = options;
+  const { validator, action } = options;
 
   const buffer = await file.arrayBuffer();
   const workbook = XLSX.read(buffer);
@@ -66,8 +54,8 @@ export const importWorkbook = async <T extends Object>(
 
   const data = XLSX.utils.sheet_to_json(sheet);
   const entries = (
-    await Promise.all(data.map(transformer))
+    await Promise.all(data.map(validator))
   ).filter((entry) => entry !== null);
 
-  await Promise.all(entries.map(action)).finally(cleanup);
+  await Promise.all(entries.map(action));
 };

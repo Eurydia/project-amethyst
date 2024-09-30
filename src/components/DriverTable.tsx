@@ -122,7 +122,7 @@ export const DriverTable: FC<DriverTableProps> = (
   const handleImport = (file: File) =>
     importWorkbook(file, {
       action: tauriPostDriver,
-      transformer: importTransformer,
+      validator: importTransformer,
       cleanup: revalidate,
     });
 
@@ -136,7 +136,7 @@ export const DriverTable: FC<DriverTableProps> = (
         "licenseType",
       ],
       transformer: exportTransfomer,
-      workbookName: "drivers",
+      name: "drivers",
       worksheetName: "Drivers",
     }).then(
       () => {},

@@ -64,7 +64,10 @@ export const VehicleInfoPage: FC = () => {
         {vehicle.license_plate}
       </Typography>
       <BaseTOC>{TOC_ITEMS}</BaseTOC>
-      <Typography variant="h2" id="info">
+      <Typography
+        variant="h2"
+        id="info"
+      >
         ข้อมูลรถรับส่ง
       </Typography>
       <VehicleInfoGroup
@@ -81,7 +84,10 @@ export const VehicleInfoPage: FC = () => {
           },
         }}
       />
-      <Typography variant="h2" id="operational-log">
+      <Typography
+        variant="h2"
+        id="operational-log"
+      >
         ตารางบันทึกประวัติการเดินรถ
       </Typography>
       <OperationalLogTable
@@ -101,7 +107,10 @@ export const VehicleInfoPage: FC = () => {
           },
         }}
       />
-      <Typography variant="h2" id="general-report">
+      <Typography
+        variant="h2"
+        id="general-report"
+      >
         ตารางบันทึกเรื่องร้องเรียนรถรับส่ง
       </Typography>
       <VehicleReportGeneralTable
@@ -118,7 +127,10 @@ export const VehicleInfoPage: FC = () => {
           },
         }}
       />
-      <Typography variant="h2" id="inspection-report">
+      <Typography
+        variant="h2"
+        id="inspection-report"
+      >
         ตารางบันทึกผลการตรวจสภาพรถ
       </Typography>
       <VehicleReportInspectionTable

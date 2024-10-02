@@ -1,47 +1,31 @@
-import { VEHICLE_REGISTERED_CITY_OPTIONS } from "$components/VehicleInputRegisteredCity";
-import { Validator } from "$types/generics";
 import {
-  VehicleExportData,
-  VehicleFormData,
-} from "$types/models/vehicle";
+  CITIES,
+  KNOWN_VEHICLE_CLASSES,
+} from "$core/constants";
+import { VehicleFormData } from "$types/models/vehicle";
+import { z } from "zod";
 
-export const VEHICLE_VALIDATOR: Validator<VehicleFormData> =
-  {
-    validate: async (data: unknown) => {
-      const _data = data as VehicleExportData;
+const schema = z.object({
+  license_plate: z.string().min(1),
+  vendor: z.string().min(1),
+  vehicle_class: z.enum(KNOWN_VEHICLE_CLASSES),
+  registered_city: z.enum(CITIES),
+});
 
-      const vehicleClasses = new Set(["รถตู้", "รถบัส"]);
-      const vehicleClass = _data.vehicle_class
-        .toString()
-        .normalize()
-        .trim();
+export const VEHICLE_VALIDATOR = {
+  validate: async (data: unknown) => {
+    if (!schema.safeParse(data).success) {
+      return null;
+    }
 
-      if (!vehicleClasses.has(vehicleClass)) {
-        return null;
-      }
+    const data_ = data as z.infer<typeof schema>;
 
-      const registeredCity = _data.registered_city
-        .toString()
-        .normalize()
-        .trim();
-
-      if (
-        !VEHICLE_REGISTERED_CITY_OPTIONS.includes(
-          registeredCity
-        )
-      ) {
-        return null;
-      }
-
-      const formData: VehicleFormData = {
-        licensePlate: _data.license_plate
-          .toString()
-          .normalize()
-          .trim(),
-        vendor: _data.vendor.toString().normalize().trim(),
-        vehicleClass: _data.vehicle_class,
-        registeredCity: "",
-      };
-      return formData;
-    },
-  };
+    const formData: VehicleFormData = {
+      license_plate: data_.license_plate.normalize().trim(),
+      vendor: data_.vendor.normalize().trim(),
+      vehicle_class: data_.vehicle_class,
+      registered_city: data_.registered_city,
+    };
+    return formData;
+  },
+};

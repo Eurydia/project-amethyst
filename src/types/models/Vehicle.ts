@@ -1,5 +1,3 @@
-import { SnakeCaseToCamelCase } from "$types/generics";
-
 export type VehicleModel = {
   id: number;
 
@@ -9,9 +7,7 @@ export type VehicleModel = {
   registered_city: string;
 };
 
-export type VehicleFormData = SnakeCaseToCamelCase<
-  Omit<VehicleModel, "id">
->;
+export type VehicleFormData = Omit<VehicleModel, "id">;
 
 export type VehicleEntry = {
   id: number;

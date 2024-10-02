@@ -71,13 +71,7 @@ export const DriverInfoGroup: FC<DriverInfoGroupProps> = (
       <FormalLayout>{infoItems}</FormalLayout>
       <DriverForm
         editing
-        driverId={driver.id}
-        initFormData={{
-          name: driver.name,
-          surname: driver.surname,
-          contact: driver.contact,
-          licenseType: driver.license_type,
-        }}
+        driver={driver}
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
       />

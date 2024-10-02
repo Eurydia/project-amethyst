@@ -1,8 +1,15 @@
 import { tauriPostDriverReportGeneral } from "$backend/database/post";
 import { tauriPutDriverReportGeneral } from "$backend/database/put";
+import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report";
 import { DriverModel } from "$types/models/driver";
-import { DriverReportFormData } from "$types/models/driver-report";
-import { SaveRounded } from "@mui/icons-material";
+import {
+  DriverReportFormData,
+  DriverReportModel,
+} from "$types/models/driver-report";
+import {
+  AddRounded,
+  SaveRounded,
+} from "@mui/icons-material";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
@@ -30,6 +37,8 @@ type DriverReportGeneralFormPostProps = {
 };
 
 type DriverReportGeneralFormPutProps = {
+  report: DriverReportModel;
+
   editing: true;
   open: boolean;
   onClose: () => void;
@@ -42,9 +51,6 @@ type DriverReportGeneralFormPutProps = {
       options: string[];
     };
   };
-
-  reportId: number;
-  initFormData: DriverReportFormData;
 };
 
 type DriverReportGeneralFormProps =
@@ -55,25 +61,22 @@ export const DriverReportGeneralForm: FC<
 > = (props) => {
   const { slotProps, onClose, open, editing } = props;
 
-  let title: string;
-  let initFormData: DriverReportFormData;
-  let submitButtonLabel: string;
-  let submitButtonStartIcon: ReactNode;
+  let title = "Add new report"; // TODO: translate
+  let initFormData =
+    DRIVER_REPORT_MODEL_TRANSFORMER.toFormData(
+      undefined,
+      slotProps.driverSelect.options[0]
+    );
+  let submitButtonLabel = "Post report"; // TODO: translate
+  let submitButtonStartIcon = <AddRounded />;
   if (editing) {
     title = "Edit report"; // TODO: translate
-    initFormData = props.initFormData;
+    initFormData =
+      DRIVER_REPORT_MODEL_TRANSFORMER.toFormData(
+        props.report,
+        slotProps.driverSelect.options[0]
+      );
     submitButtonLabel = "Save changes"; // TODO: translate
-    submitButtonStartIcon = <SaveRounded />;
-  } else {
-    title = "Add new report"; // TODO: translate
-    initFormData = {
-      datetime: dayjs().format(),
-      title: "",
-      content: "",
-      topics: [],
-      driver: slotProps.driverSelect.options[0],
-    };
-    submitButtonLabel = "Post report"; // TODO: translate
     submitButtonStartIcon = <SaveRounded />;
   }
 
@@ -120,18 +123,16 @@ export const DriverReportGeneralForm: FC<
       .format();
 
     const formData: DriverReportFormData = {
+      datetime,
       driver: fieldDriver,
-
       topics: fieldTopics
         .map((topic) => topic.trim().normalize())
         .filter((topic) => topic.length > 0),
       content: fieldContent.normalize().trim(),
       title: fieldTitle.normalize().trim(),
-
-      datetime,
     };
     if (editing) {
-      tauriPutDriverReportGeneral(props.reportId, formData)
+      tauriPutDriverReportGeneral(props.report.id, formData)
         .then(
           () => {
             toast.success(

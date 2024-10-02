@@ -1,26 +1,25 @@
-import { tauriGetVehicle } from "$backend/database/get/vehicles";
-import { VehicleReportGeneralFormData } from "$types/models/vehicle-report-general";
+import { tauriGetDriver } from "$backend/database/get/drivers";
+import { DriverReportFormData } from "$types/models/driver-report";
 import dayjs from "dayjs";
 import { z } from "zod";
 
 const schema = z.object({
-  vehicle_id: z.number().int(),
+  driver_id: z.number().int(),
   datetime: z.string(),
   title: z.string().min(1),
   content: z.string(),
   topics: z.string(),
 });
 
-export const VEHICLE_REPORT_GENERAL_VALIDATOR = {
+export const DRIVER_REPORT_VALIDATOR = {
   validate: async (data: unknown) => {
     if (!schema.safeParse(data).success) {
       return null;
     }
 
     const data_ = data as z.infer<typeof schema>;
-
-    const vehicle = await tauriGetVehicle(data_.vehicle_id);
-    if (vehicle === null) {
+    const driver = await tauriGetDriver(data_.driver_id);
+    if (driver === null) {
       return null;
     }
 
@@ -28,12 +27,11 @@ export const VEHICLE_REPORT_GENERAL_VALIDATOR = {
     if (!datetime.isValid()) {
       return null;
     }
-
-    const formData: VehicleReportGeneralFormData = {
-      vehicle,
-      datetime: datetime.format(),
+    const formData: DriverReportFormData = {
+      driver,
       title: data_.title.normalize().trim(),
-      content: data_.content.trim().normalize(),
+      datetime: datetime.format(),
+      content: data_.content.normalize().trim(),
       topics: data_.topics
         .split(",")
         .map((topic) => topic.trim().normalize())

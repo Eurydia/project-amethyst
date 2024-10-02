@@ -1,3 +1,4 @@
+import { KNOWN_VEHICLE_CLASSES } from "$core/constants";
 import {
   FormControlLabel,
   Radio,
@@ -17,7 +18,7 @@ export const VehicleInputVehicleClass: FC<
 
   useEffect(() => {
     if (value.trim().normalize().length < 1) {
-      onChange("รถตู้");
+      onChange(KNOWN_VEHICLE_CLASSES[0]);
     }
   }, [value]);
 
@@ -27,16 +28,14 @@ export const VehicleInputVehicleClass: FC<
       value={value}
       onChange={(_, value) => onChange(value)}
     >
-      <FormControlLabel
-        value="รถตู้"
-        control={<Radio />}
-        label={<Typography>รถตู้</Typography>}
-      />
-      <FormControlLabel
-        value="รถบัส"
-        control={<Radio />}
-        label={<Typography>รถบัส</Typography>}
-      />
+      {KNOWN_VEHICLE_CLASSES.map((vClass, index) => (
+        <FormControlLabel
+          key={"option" + index}
+          value={vClass}
+          control={<Radio />}
+          label={<Typography>{vClass}</Typography>}
+        />
+      ))}
     </RadioGroup>
   );
 };

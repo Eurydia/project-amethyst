@@ -1,83 +1,72 @@
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
-import { Validator } from "$types/generics";
-import {
-  VehicleReportInpsectionExportData,
-  VehicleReportInspectionFormData,
-} from "$types/models/vehicle-report-inspection";
+import { VehicleReportInspectionFormData } from "$types/models/vehicle-report-inspection";
 import dayjs from "dayjs";
+import { z } from "zod";
 
-export const VEHICLE_REPORT_INSPECTION_VALIDATOR: Validator<VehicleReportInspectionFormData> =
-  {
-    validate: async (data: unknown) => {
-      const _data =
-        data as VehicleReportInpsectionExportData;
+const schema = z.object({
+  vehicle_id: z.number().int(),
+  datetime: z.string(),
+  topics: z.string(),
+  content: z.string(),
+  front_camera: z.string(),
+  overhead_fan: z.string(),
+  windows: z.string(),
+  seatbelts: z.string(),
+  seats: z.string(),
+  headlights: z.string(),
+  turn_signals: z.string(),
+  brake_light: z.string(),
+  frame: z.string(),
+  rearview_mirror: z.string(),
+  sideview_mirror: z.string(),
+  tires: z.string(),
+});
 
-      const vehicle = await tauriGetVehicle(
-        _data.vehicle_id
-      );
-      if (vehicle === null) {
-        return null;
-      }
+export const VEHICLE_REPORT_INSPECTION_VALIDATOR = {
+  validate: async (data: unknown) => {
+    if (!schema.safeParse(data).success) {
+      return null;
+    }
 
-      const datetime = dayjs(_data.datetime);
-      if (!datetime.isValid()) {
-        return null;
-      }
+    const data_ = data as z.infer<typeof schema>;
 
-      const formData: VehicleReportInspectionFormData = {
-        vehicle_id: vehicle.id,
-        datetime: datetime.format(),
+    const vehicle = await tauriGetVehicle(data_.vehicle_id);
+    if (vehicle === null) {
+      return null;
+    }
 
-        topics: _data.topics
-          .split(",")
-          .map((topic) => topic.trim().normalize())
-          .filter((topic) => topic.length > 0)
-          .join(","),
+    const datetime = dayjs(data_.datetime);
+    if (!datetime.isValid()) {
+      return null;
+    }
 
-        content: _data.content
-          .toString()
-          .trim()
-          .normalize(),
-        front_camera: _data.front_camera
-          .toString()
-          .trim()
-          .normalize(),
-        overhead_fan: _data.overhead_fan
-          .toString()
-          .trim()
-          .normalize(),
-        windows: _data.windows
-          .toString()
-          .trim()
-          .normalize(),
-        seatbelts: _data.seatbelts
-          .toString()
-          .trim()
-          .normalize(),
-        seats: _data.seats.toString().trim().normalize(),
-        headlights: _data.headlights
-          .toString()
-          .trim()
-          .normalize(),
-        turn_signals: _data.turn_signals
-          .toString()
-          .trim()
-          .normalize(),
-        brake_light: _data.brake_light
-          .toString()
-          .trim()
-          .normalize(),
-        frame: _data.frame.toString().trim().normalize(),
-        rearview_mirror: _data.rearview_mirror
-          .toString()
-          .trim()
-          .normalize(),
-        sideview_mirror: _data.sideview_mirror
-          .toString()
-          .trim()
-          .normalize(),
-        tires: _data.tires.toString().trim().normalize(),
-      };
-      return formData;
-    },
-  };
+    const formData: VehicleReportInspectionFormData = {
+      vehicle,
+      datetime: datetime.format(),
+
+      content: data_.content.trim().normalize(),
+      topics: data_.topics
+        .split(",")
+        .map((topic) => topic.trim().normalize())
+        .filter((topic) => topic.length > 0),
+
+      front_camera: data_.front_camera.trim().normalize(),
+      overhead_fan: data_.overhead_fan.trim().normalize(),
+      windows: data_.windows.trim().normalize(),
+      seatbelts: data_.seatbelts.trim().normalize(),
+      seats: data_.seats.trim().normalize(),
+      headlights: data_.headlights.trim().normalize(),
+      turn_signals: data_.turn_signals.trim().normalize(),
+      brake_light: data_.brake_light.trim().normalize(),
+      frame: data_.frame.trim().normalize(),
+      rearview_mirror: data_.rearview_mirror
+        .trim()
+        .normalize(),
+      sideview_mirror: data_.sideview_mirror
+        .trim()
+        .normalize(),
+      tires: data_.tires.trim().normalize(),
+    };
+    return formData;
+  },
+};

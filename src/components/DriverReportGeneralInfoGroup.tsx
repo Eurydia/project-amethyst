@@ -89,14 +89,7 @@ export const DriverReportGeneralInfoGroup: FC<
       <FormalLayout>{infoItems}</FormalLayout>
       <DriverReportGeneralForm
         editing
-        reportId={report.id}
-        initFormData={{
-          datetime: report.datetime,
-          title: report.title,
-          content: report.content,
-          topics: report.topics.split(","),
-          driver,
-        }}
+        report={report}
         open={dialogOpen}
         onClose={() => setDialogOpen(true)}
         slotProps={{

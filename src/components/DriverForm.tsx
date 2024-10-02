@@ -1,18 +1,20 @@
 import { tauriPostDriver } from "$backend/database/post";
 import { tauriPutDriver } from "$backend/database/put";
-import { DriverFormData } from "$types/models/driver";
+import { DRIVER_MODEL_TRANSFORMER } from "$core/transformers/driver";
+import {
+  DriverFormData,
+  DriverModel,
+} from "$types/models/driver";
 import {
   AddRounded,
   SaveRounded,
-  WarningRounded,
 } from "@mui/icons-material";
-import { Typography } from "@mui/material";
 import { FC, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
 import { BaseInputTextField } from "./BaseInputTextField";
-import { DriverInputLicenseTypeRadioGroup } from "./DriverInputLicenseTypeRadioGroup";
+import { DriverInputLicenseType } from "./DriverInputLicenseType";
 
 type DriverFormPostProps = {
   editing?: false | undefined;
@@ -21,10 +23,10 @@ type DriverFormPostProps = {
 };
 
 type DriverFormPutProps = {
+  driver: DriverModel;
+
   editing: true;
   open: boolean;
-  driverId: number;
-  initFormData: DriverFormData;
   onClose: () => void;
 };
 
@@ -35,25 +37,19 @@ type DriverFormProps =
 export const DriverForm: FC<DriverFormProps> = (props) => {
   const { onClose, open, editing } = props;
 
-  let title: string;
-  let initFormData: DriverFormData;
-  let submitButtonLabel: string;
-  let submitButtonStartIcon: ReactNode;
+  // TODO: translate
+  let title = "Add new driver";
+  let initFormData =
+    DRIVER_MODEL_TRANSFORMER.toFormData(undefined);
+  let submitButtonLabel = "Add driver";
+  let submitButtonStartIcon = <AddRounded />;
   if (editing) {
-    title = "Edit driver info"; // TODO: translate
-    initFormData = props.initFormData;
+    title = "Edit driver info";
     submitButtonLabel = "Save"; // TODO: translate
     submitButtonStartIcon = <SaveRounded />;
-  } else {
-    title = "Add new driver"; // TODO: translate
-    initFormData = {
-      name: "",
-      surname: "",
-      contact: "",
-      licenseType: "",
-    };
-    submitButtonLabel = "Add driver"; // TODO: translate
-    submitButtonStartIcon = <AddRounded />;
+    initFormData = DRIVER_MODEL_TRANSFORMER.toFormData(
+      props.driver
+    );
   }
 
   const [fieldName, setFieldName] = useState(
@@ -89,18 +85,14 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       licenseType: fieldLicenseType,
     };
     if (editing) {
-      tauriPutDriver(props.driverId, formData)
+      tauriPutDriver(props.driver.id, formData)
         .then(
+          // TODO: translate
           () => {
-            toast.success(
-              "Driver info updated" // TODO: translate
-            );
+            toast.success("Driver info updated");
             revalidate();
           },
-          () =>
-            toast.error(
-              "Failed to update driver info" // TODO: translate
-            )
+          () => toast.error("Failed to update driver info")
         )
         .finally(() => {
           resetForm();
@@ -146,17 +138,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
           placeholder={initFormData.name}
           value={fieldName}
           onChange={setFieldName}
-          helperText={
-            isMissingName && (
-              <Typography>
-                <WarningRounded />
-                Required
-                {/* 
-                 TODO: translate
-                 */}
-              </Typography>
-            )
-          }
+          errorText="Required" // TODO: translate
         />
       ),
     },
@@ -168,15 +150,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
           value={fieldSurname}
           placeholder={initFormData.surname}
           onChange={setFielSurname}
-          helperText={
-            // TODO: translate
-            isMissingName && (
-              <Typography>
-                <WarningRounded />
-                Required
-              </Typography>
-            )
-          }
+          errorText="Required" // TODO: translate
         />
       ),
     },
@@ -185,9 +159,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       value: (
         <BaseInputTextField
           placeholder={
-            initFormData.contact.trim().length > 0
-              ? initFormData.contact.trim()
-              : "ไม่มี"
+            initFormData.contact.trim() || "ไม่มี"
           }
           value={fieldContact}
           onChange={setFieldContact}
@@ -197,7 +169,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
     {
       label: "ประเภทใบขับขี่",
       value: (
-        <DriverInputLicenseTypeRadioGroup
+        <DriverInputLicenseType
           value={fieldLicenseType}
           onChange={setFieldLicenseType}
         />

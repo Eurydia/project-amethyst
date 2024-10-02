@@ -1,44 +1,45 @@
 {
-	"name": "project-amethyst",
-	"private": true,
-	"version": "0.1.1",
-	"type": "module",
-	"scripts": {
-		"dev": "vite",
-		"build": "tsc && vite build",
-		"preview": "vite preview",
-		"tauri": "tauri"
-	},
-	"dependencies": {
-		"@emotion/react": "^11.13.0",
-		"@emotion/styled": "^11.13.0",
-		"@fontsource/roboto": "^5.0.14",
-		"@fontsource/sarabun": "^5.0.21",
-		"@mui/icons-material": "^6.0.0",
-		"@mui/material": "^6.0.0",
-		"@mui/x-date-pickers": "^7.12.1",
-		"@tauri-apps/api": "^1.6.0",
-		"@types/node": "^22.5.3",
-		"dayjs": "^1.11.12",
-		"match-sorter": "^6.3.4",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
-		"react-dropzone": "^14.2.3",
-		"react-router-dom": "^6.26.0",
-		"xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
-	},
-	"devDependencies": {
-		"@tauri-apps/cli": "^1.6.1",
-		"@types/react": "^18.2.15",
-		"@types/react-dom": "^18.2.7",
-		"@vitejs/plugin-react": "^4.2.1",
-		"eslint": "^8.57.0",
-		"eslint-config-react-app": "^7.0.1",
-		"eslint-plugin-react-hooks": "^4.6.2",
-		"moment": "^2.30.1",
-		"react-toastify": "^10.0.5",
-		"typescript": "^5.2.2",
-		"vite": "^5.4.6",
-		"vite-tsconfig-paths": "^5.0.1"
-	}
+  "name": "project-amethyst",
+  "private": true,
+  "version": "0.1.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@fontsource/roboto": "^5.0.14",
+    "@fontsource/sarabun": "^5.0.21",
+    "@mui/icons-material": "^6.0.0",
+    "@mui/material": "^6.0.0",
+    "@mui/x-date-pickers": "^7.12.1",
+    "@tauri-apps/api": "^1.6.0",
+    "@types/node": "^22.5.3",
+    "dayjs": "^1.11.12",
+    "match-sorter": "^6.3.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
+    "react-router-dom": "^6.26.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.6.1",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-config-react-app": "^7.0.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "moment": "^2.30.1",
+    "react-toastify": "^10.0.5",
+    "typescript": "^5.2.2",
+    "vite": "^5.4.6",
+    "vite-tsconfig-paths": "^5.0.1"
+  }
 }

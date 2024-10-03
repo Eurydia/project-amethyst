@@ -64,7 +64,6 @@ export const DriverReportGeneralForm: FC<
   let title = "ร้องเรียนคนขับรถ";
   let initFormData =
     DRIVER_REPORT_MODEL_TRANSFORMER.toFormData(
-      undefined,
       slotProps.driverSelect.options[0]
     );
   let submitButtonLabel = "เพิ่ม";
@@ -73,8 +72,8 @@ export const DriverReportGeneralForm: FC<
     title = "แก้ไขข้อมูลเรื่องร้องเรียน";
     initFormData =
       DRIVER_REPORT_MODEL_TRANSFORMER.toFormData(
-        props.report,
-        slotProps.driverSelect.options[0]
+        slotProps.driverSelect.options[0],
+        props.report
       );
     submitButtonLabel = "บันทึก";
     submitButtonStartIcon = <SaveRounded />;
@@ -102,11 +101,11 @@ export const DriverReportGeneralForm: FC<
   const { revalidate } = useRevalidator();
 
   const clearForm = () => {
-    setFieldDate(dayjs());
-    setFieldTime(dayjs());
-    setFieldTitle("");
-    setFieldContent("");
-    setFieldTopics([]);
+    setFieldDate(dayjs(initFormData.datetime));
+    setFieldTime(dayjs(initFormData.datetime));
+    setFieldTitle(initFormData.title);
+    setFieldContent(initFormData.content);
+    setFieldTopics(initFormData.topics);
     setFieldDriver(slotProps.driverSelect.options[0]);
   };
 
@@ -131,33 +130,31 @@ export const DriverReportGeneralForm: FC<
       content: fieldContent.normalize().trim(),
       title: fieldTitle.normalize().trim(),
     };
+    let action = tauriPostDriverReportGeneral(
+      formData
+    ).then(
+      () => {
+        toast.success("เพิ่มสำเร็จ");
+        revalidate();
+      },
+      () => toast.error("เพิ่มล้มเหลว")
+    );
     if (editing) {
-      tauriPutDriverReportGeneral(props.report.id, formData)
-        .then(
-          () => {
-            toast.success("บันทึกสำเร็จ");
-            revalidate();
-          },
-          () => toast.error("บันทึกล้มเหลว")
-        )
-        .finally(() => {
-          clearForm();
-          onClose();
-        });
-    } else {
-      tauriPostDriverReportGeneral(formData)
-        .then(
-          () => {
-            toast.success("เพิ่มสำเร็จ");
-            revalidate();
-          },
-          () => toast.error("เพิ่มล้มเหลว")
-        )
-        .finally(() => {
-          clearForm();
-          onClose();
-        });
+      action = tauriPutDriverReportGeneral(
+        props.report.id,
+        formData
+      ).then(
+        () => {
+          toast.success("บันทึกสำเร็จ");
+          revalidate();
+        },
+        () => toast.error("บันทึกล้มเหลว")
+      );
     }
+    await action.finally(() => {
+      clearForm();
+      onClose();
+    });
   };
 
   const isMissingTime =

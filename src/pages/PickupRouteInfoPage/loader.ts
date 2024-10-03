@@ -53,9 +53,7 @@ export const pickupRouteInfoPageLoader: LoaderFunction =
 
     const logs = (await tauriGetOperationLogAll())
       .filter(({ route_id }) => route_id === route.id)
-      .map(
-        OPERATIONAL_LOG_MODEL_TRANSFORMER.toOperationalLogEntry
-      );
+      .map(OPERATIONAL_LOG_MODEL_TRANSFORMER.toEntry);
     const reports = (
       await tauriGetPickupRouteReportGeneralAll()
     )

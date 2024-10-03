@@ -36,12 +36,12 @@ export type VehicleReportGeneralEntry = {
 };
 
 export type VehicleReportGeneralExportData = {
-  หมายเลขเรื่องร้องเรียน: number;
+  รหัส: number;
   วันที่ลงบันทึก: string;
   เรื่อง: string;
   รายละเอียด: string;
   หัวข้อที่เกี่ยวข้อง: string;
 
-  หมายเลขรถรับส่ง: number;
+  รหัสรถรับส่ง: number;
   เลขทะเบียน: string;
 };

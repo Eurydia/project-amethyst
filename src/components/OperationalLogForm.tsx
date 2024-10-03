@@ -67,8 +67,8 @@ export const OperationalLogForm: FC<
       driver: fieldDriver,
       route: fieldRoute,
       vehicle: fieldVehicle,
-      startDate: fieldStartDate.startOf("day").format(),
-      endDate: fieldEndDate.endOf("day").format(),
+      start_date: fieldStartDate.startOf("day").format(),
+      end_date: fieldEndDate.endOf("day").format(),
     })
       .then(
         () => {

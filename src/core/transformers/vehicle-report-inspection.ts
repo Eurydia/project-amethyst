@@ -1,6 +1,3 @@
-/** @format */
-
-import { tauriGetVehicleReportInspectionAll } from "$backend/database/get/vehicle-inspection-reports";
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
 import { VehicleModel } from "$types/models/vehicle";
 import {
@@ -20,23 +17,8 @@ export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
       return null;
     }
 
-    const reports = (
-      await tauriGetVehicleReportInspectionAll()
-    )
-      .filter(({ vehicle_id }) => vehicle_id === vehicle.id)
-      .toReversed();
-
-    let count = 0;
-    for (const report of reports) {
-      if (report.vehicle_id === vehicle.id) {
-        count++;
-      }
-      if (report.id === report.id) {
-        break;
-      }
-    }
     const entry: VehicleReportInspectionEntry = {
-      inspection_round_number: count,
+      inspection_round_number: 0, // FIXME
 
       id: report.id,
       datetime: report.datetime,
@@ -58,8 +40,27 @@ export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
       return null;
     }
     const exportData: VehicleReportInpsectionExportData = {
-      ...report,
-      vehicle_license_plate: vehicle.license_plate,
+      รหัสรถรับส่ง: vehicle.id,
+      เลขทะเบียน: vehicle.license_plate,
+      รหัส: report.id,
+      รอบการตรวจสภาพ: 0, // FIXME
+      วันที่ลงบันทึก: dayjs(report.datetime)
+        .locale("th")
+        .format(),
+      หมายเหตุ: report.content,
+      หัวข้อที่เกี่ยวข้อง: report.topics,
+      กล้องหน้ารถ: report.front_camera,
+      พัดลม: report.overhead_fan,
+      หน้าต่าง: report.windows,
+      เข็มขัดนิรภัย: report.seatbelts,
+      เบาะและที่นั่ง: report.seats,
+      ไฟหน้า: report.headlights,
+      ไฟเลี้ยว: report.turn_signals,
+      ไฟเบรค: report.brake_light,
+      ตัวรถ: report.frame,
+      กระจกมองข้าง: report.sideview_mirror,
+      กระจกมองหลัง: report.rearview_mirror,
+      ยางและล้อ: report.tires,
     };
     return exportData;
   },

@@ -10,16 +10,15 @@ import {
 
 export const DRIVER_MODEL_TRANSFORMER = {
   toEntry: async (driver: DriverModel) => {
+    const logs = (await tauriGetOperationLogToday()).filter(
+      ({ driver_id }) => driver_id === driver.id
+    );
     const routeIds = new Set<number>();
     const vehicleIds = new Set<number>();
-
-    (await tauriGetOperationLogToday())
-      .filter(({ driver_id }) => driver_id === driver.id)
-      .forEach(({ vehicle_id, route_id }) => {
-        routeIds.add(route_id);
-        vehicleIds.add(vehicle_id);
-      });
-
+    for (const log of logs) {
+      routeIds.add(log.route_id);
+      vehicleIds.add(log.vehicle_id);
+    }
     const vehicles = (
       await Promise.all(
         [...vehicleIds].map(tauriGetVehicle)
@@ -80,5 +79,6 @@ export const DRIVER_MODEL_TRANSFORMER = {
       เบอร์ติดต่อ: driver.contact,
       ประเภทใบขับขี่: driver.license_type,
     };
+    return exportData;
   },
 };

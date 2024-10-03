@@ -28,8 +28,8 @@ export const DRIVER_REPORT_MODEL_TRANSFORMER = {
   },
 
   toFormData: (
-    report: DriverReportModel | undefined,
-    driver: DriverModel
+    driver: DriverModel,
+    report: DriverReportModel | undefined = undefined
   ) => {
     let formData: DriverReportFormData = {
       datetime: dayjs().format(),
@@ -39,13 +39,19 @@ export const DRIVER_REPORT_MODEL_TRANSFORMER = {
       topics: [],
     };
     if (report !== undefined) {
+      let datetime = dayjs(report.datetime);
+      if (!datetime.isValid()) {
+        datetime = dayjs();
+      }
       formData = {
-        ...report,
+        driver,
+        datetime: datetime.format(),
+        title: report.title.trim().normalize(),
+        content: report.content.trim().normalize(),
         topics: report.topics
           .split(",")
           .map((topic) => topic.trim().normalize())
           .filter((topic) => topic.length > 0),
-        driver,
       };
     }
     return formData;
@@ -56,13 +62,11 @@ export const DRIVER_REPORT_MODEL_TRANSFORMER = {
     if (driver === null) {
       return null;
     }
-
     const exportData: DriverReportExportData = {
       รหัสคนขับ: driver.id,
       ชื่อคนขับรถ: driver.name,
       นามสกุลคนขับรถ: driver.surname,
       รหัส: report.id,
-      // TODO: Should format datetime to human-readable format
       วันที่ลงบันทึก: report.datetime,
       เรื่อง: report.title,
       รายละเอียด: report.content,

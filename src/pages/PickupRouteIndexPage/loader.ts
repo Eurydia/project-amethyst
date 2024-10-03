@@ -6,16 +6,17 @@ import { PickupRouteEntry } from "$types/models/pickup-route";
 import { LoaderFunction } from "react-router-dom";
 
 export type PickupRouteIndexPageLoaderData = {
-	routeEntries: PickupRouteEntry[];
+  routeEntries: PickupRouteEntry[];
 };
-export const pickupRouteIndexPageLoader: LoaderFunction = async () => {
-	const routes = await tauriGetPickupRouteAll();
-	const routeEntries = await Promise.all(
-		routes.map(PICKUP_ROUTE_MODEL_TRANSFORMER.toPickupRouteEntry)
-	);
+export const pickupRouteIndexPageLoader: LoaderFunction =
+  async () => {
+    const routes = await tauriGetPickupRouteAll();
+    const routeEntries = await Promise.all(
+      routes.map(PICKUP_ROUTE_MODEL_TRANSFORMER.toEntry)
+    );
 
-	const loaderData: PickupRouteIndexPageLoaderData = {
-		routeEntries,
-	};
-	return loaderData;
-};
+    const loaderData: PickupRouteIndexPageLoaderData = {
+      routeEntries,
+    };
+    return loaderData;
+  };

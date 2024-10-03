@@ -67,9 +67,7 @@ export const vehicleInfoPageLoader: LoaderFunction =
 
     const logs = (await tauriGetOperationLogAll())
       .filter(({ vehicle_id }) => vehicle_id === vehicleId)
-      .map(
-        OPERATIONAL_LOG_MODEL_TRANSFORMER.toOperationalLogEntry
-      );
+      .map(OPERATIONAL_LOG_MODEL_TRANSFORMER.toEntry);
     const generalReports = (
       await tauriGetVehicleReportGeneralAll()
     )

@@ -22,18 +22,18 @@ export type OperationalLogModel = z.infer<
 
 export type OperationalLogEntry = {
   id: number;
-  driverId: number;
-  driverName: string;
-  driverSurname: string;
+  driver_id: number;
+  driver_name: string;
+  driver_surname: string;
 
-  vehicleId: number;
-  vehicleLicensePlate: string;
+  vehicle_id: number;
+  vehicle_license_plate: string;
 
-  routeId: number;
-  routeName: string;
+  route_id: number;
+  route_name: string;
 
-  startDate: string;
-  endDate: string;
+  start_date: string;
+  end_date: string;
 };
 
 export type OperationalLogFormData = {
@@ -41,8 +41,8 @@ export type OperationalLogFormData = {
   vehicle: VehicleModel;
   route: PickupRouteModel;
 
-  startDate: string;
-  endDate: string;
+  start_date: string;
+  end_date: string;
 };
 
 export type OperationalLogExportData = {

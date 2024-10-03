@@ -46,10 +46,10 @@ export type VehicleReportInspectionEntry = {
 };
 
 export type VehicleReportInpsectionExportData = {
-  หมายเลขรถรับส่ง: number;
+  รหัสรถรับส่ง: number;
   เลขทะเบียน: string;
 
-  หมายเลขผลตรวจสภาพ: number;
+  รหัส: number;
   รอบการตรวจสภาพ: number;
 
   วันที่ลงบันทึก: string;

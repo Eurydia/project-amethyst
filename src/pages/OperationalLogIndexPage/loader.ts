@@ -12,26 +12,30 @@ import { VehicleModel } from "$types/models/vehicle";
 import { LoaderFunction } from "react-router-dom";
 
 export type OperationalLogIndexPageLoaderData = {
-	driverSelectOptions: DriverModel[];
-	vehicleSelectOptions: VehicleModel[];
-	routeSelectOptions: PickupRouteModel[];
-	logEntries: OperationalLogEntry[];
+  driverSelectOptions: DriverModel[];
+  vehicleSelectOptions: VehicleModel[];
+  routeSelectOptions: PickupRouteModel[];
+  logEntries: OperationalLogEntry[];
 };
-export const operationalLogIndexPageLoader: LoaderFunction = async () => {
-	const driverSelectOptions = await tauriGetDriverAll();
-	const vehicleSelectOptions = await tauriGetVehicleAll();
-	const routeSelectOptions = await tauriGetPickupRouteAll();
+export const operationalLogIndexPageLoader: LoaderFunction =
+  async () => {
+    const driverSelectOptions = await tauriGetDriverAll();
+    const vehicleSelectOptions = await tauriGetVehicleAll();
+    const routeSelectOptions =
+      await tauriGetPickupRouteAll();
 
-	const logs = (await tauriGetOperationLogAll()).map(
-		OPERATIONAL_LOG_MODEL_TRANSFORMER.toOperationalLogEntry
-	);
-	const logEntries = (await Promise.all(logs)).filter((log) => log !== null);
+    const logs = (await tauriGetOperationLogAll()).map(
+      OPERATIONAL_LOG_MODEL_TRANSFORMER.toEntry
+    );
+    const logEntries = (await Promise.all(logs)).filter(
+      (log) => log !== null
+    );
 
-	const loaderData: OperationalLogIndexPageLoaderData = {
-		logEntries,
-		driverSelectOptions,
-		routeSelectOptions,
-		vehicleSelectOptions,
-	};
-	return loaderData;
-};
+    const loaderData: OperationalLogIndexPageLoaderData = {
+      logEntries,
+      driverSelectOptions,
+      routeSelectOptions,
+      vehicleSelectOptions,
+    };
+    return loaderData;
+  };

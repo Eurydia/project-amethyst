@@ -1,9 +1,12 @@
 import { tauriGetPickupRoute } from "$backend/database/get/pickup-routes";
+import { PickupRouteModel } from "$types/models/pickup-route";
 import {
   PickupRouteReportGeneralEntry,
   PickupRouteReportGeneralExportData,
+  PickupRouteReportGeneralFormData,
   PickupRouteReportGeneralModel,
 } from "$types/models/pickup-route-report-general";
+import dayjs from "dayjs";
 
 export const PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER =
   {
@@ -17,13 +20,18 @@ export const PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER =
         return null;
       }
       const entry: PickupRouteReportGeneralEntry = {
-        datetime: report.datetime,
         id: report.id,
-        title: report.title,
-        topics: report.topics.split(","),
+        datetime: dayjs(report.datetime)
+          .locale("th")
+          .format("YYYY-MM-DD HH:mm:ss"),
+        title: report.title.trim().normalize(),
+        topics: report.topics
+          .split(",")
+          .map((topic) => topic.trim().normalize())
+          .filter((topic) => topic.length > 0),
 
         routeId: route.id,
-        routeName: route.name,
+        routeName: route.name.trim().normalize(),
       };
       return entry;
     },
@@ -49,5 +57,32 @@ export const PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER =
         หัวข้อที่เกี่ยวข้อง: report.topics,
       };
       return data;
+    },
+
+    toFormData: (
+      report: PickupRouteReportGeneralModel | undefined,
+      route: PickupRouteModel
+    ) => {
+      let formData: PickupRouteReportGeneralFormData = {
+        route,
+        datetime: dayjs().format(),
+        title: "",
+        content: "",
+        topics: [],
+      };
+      if (report === undefined) {
+        return formData;
+      }
+      formData = {
+        content: report.content.trim().normalize(),
+        datetime: dayjs(report.datetime).format(),
+        title: report.title.trim().normalize(),
+        topics: report.topics
+          .split(",")
+          .map((topic) => topic.trim().normalize())
+          .filter((topic) => topic.length > 0),
+        route,
+      };
+      return formData;
     },
   };

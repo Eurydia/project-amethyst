@@ -6,17 +6,17 @@ import {
   PickupRouteExportData,
   PickupRouteModel,
 } from "$types/models/pickup-route";
+import dayjs from "dayjs";
 
 export const PICKUP_ROUTE_MODEL_TRANSFORMER = {
-  toPickupRouteEntry: async (route: PickupRouteModel) => {
-    const logs = await tauriGetOperationLogToday();
+  toEntry: async (route: PickupRouteModel) => {
+    const logs = (await tauriGetOperationLogToday()).filter(
+      (log) => log.route_id === route.id
+    );
 
     const driverIds = new Set<number>();
     const vehicleIds = new Set<number>();
     for (const log of logs) {
-      if (log.route_id !== route.id) {
-        continue;
-      }
       driverIds.add(log.driver_id);
       vehicleIds.add(log.vehicle_id);
     }
@@ -50,12 +50,16 @@ export const PICKUP_ROUTE_MODEL_TRANSFORMER = {
     return entry;
   },
 
-  toPickupRouteExportData: (route: PickupRouteModel) => {
+  toExportData: (route: PickupRouteModel) => {
     const data: PickupRouteExportData = {
-      ชื่อสาย: route.name,
       เลขรหัส: route.id,
-      เวลารับเข้า: route.arrival_time,
-      เวลารับออก: route.departure_time,
+      ชื่อสาย: route.name,
+      เวลารับเข้า: dayjs(route.arrival_time)
+        .locale("th")
+        .format("HH:mm น."),
+      เวลารับออก: dayjs(route.departure_time)
+        .locale("th")
+        .format("HH:mm น."),
     };
     return data;
   },

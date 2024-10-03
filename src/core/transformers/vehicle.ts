@@ -9,7 +9,7 @@ import {
 } from "$types/models/vehicle";
 
 export const VEHICLE_MODEL_TRANSFORMER = {
-  toExportData: async (vehicle: VehicleModel) => {
+  toExportData: (vehicle: VehicleModel) => {
     const exportData: VehicleExportData = {
       เลขทะเบียน: vehicle.license_plate,
       จังหวัดที่จดทะเบียน: vehicle.registered_city,
@@ -75,7 +75,6 @@ export const VEHICLE_MODEL_TRANSFORMER = {
     if (vehicle === undefined) {
       return formData;
     }
-
     formData = {
       licensePlate: vehicle.license_plate
         .trim()

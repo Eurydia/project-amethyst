@@ -1,5 +1,24 @@
-import { pickupRouteReportGeneralModelSchema } from "$types/models/pickup-route-report-general";
+import {
+  PickupRouteReportGeneralModel,
+  pickupRouteReportGeneralModelSchema,
+} from "$types/models/pickup-route-report-general";
 import { tauri } from "@tauri-apps/api";
+
+const _prepare = (
+  report: PickupRouteReportGeneralModel
+) => {
+  const _r: PickupRouteReportGeneralModel = {
+    ...report,
+    title: report.title.trim().normalize(),
+    content: report.content.trim().normalize(),
+    topics: report.topics
+      .split(",")
+      .map((topic) => topic.trim().normalize())
+      .filter((topic) => topic.length > 0)
+      .join(","),
+  };
+  return _r;
+};
 
 export const tauriGetPickupRouteReportGeneralAll =
   async () => {
@@ -9,7 +28,7 @@ export const tauriGetPickupRouteReportGeneralAll =
     const r = pickupRouteReportGeneralModelSchema
       .array()
       .safeParse(reports);
-    return r.success ? r.data : [];
+    return (r.success ? r.data : []).map(_prepare);
   };
 export const tauriGetPickupRouteReportGeneral = async (
   reportId: number
@@ -22,5 +41,5 @@ export const tauriGetPickupRouteReportGeneral = async (
   );
   const r =
     pickupRouteReportGeneralModelSchema.safeParse(report);
-  return r.success ? r.data : null;
+  return r.success ? _prepare(r.data) : null;
 };

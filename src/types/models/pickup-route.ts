@@ -32,8 +32,8 @@ export type PickupRouteEntry = {
 
 export type PickupRouteFormData = {
   name: string;
-  arrivalTime: string;
-  departureTime: string;
+  arrival_time: string;
+  departure_time: string;
 };
 
 export const pickupRouteExportDataSchema = z

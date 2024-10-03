@@ -1,12 +1,23 @@
-/** @format */
-
-import { vehicleModelSchema } from "$types/models/vehicle";
+import {
+  VehicleModel,
+  vehicleModelSchema,
+} from "$types/models/vehicle";
 import { tauri } from "@tauri-apps/api";
 
+const _prepare = (vehicle: VehicleModel) => {
+  const _r: VehicleModel = {
+    id: vehicle.id,
+    license_plate: vehicle.license_plate.trim().normalize(),
+    vendor: vehicle.vendor.trim().normalize(),
+    registered_city: vehicle.registered_city,
+    vehicle_class: vehicle.vehicle_class,
+  };
+  return _r;
+};
 export const tauriGetVehicleAll = async () => {
   const vehicles = await tauri.invoke("get_vehicle_all");
   const r = vehicleModelSchema.array().safeParse(vehicles);
-  return r.success ? r.data : [];
+  return (r.success ? r.data : []).map(_prepare);
 };
 
 export const tauriGetVehicle = async (
@@ -16,5 +27,5 @@ export const tauriGetVehicle = async (
     vehicleId,
   });
   const r = vehicleModelSchema.safeParse(vehicle);
-  return r.success ? r.data : null;
+  return r.success ? _prepare(r.data) : null;
 };

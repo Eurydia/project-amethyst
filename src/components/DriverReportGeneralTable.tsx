@@ -1,5 +1,3 @@
-/** @format */
-
 import { tauriGetDriverReportGeneral } from "$backend/database/get/driver-general-reports";
 import { filterItems } from "$core/filter";
 import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report";
@@ -109,12 +107,14 @@ export const DriverReportGeneralTable: FC<
   }
 
   const handleExport = async () => {
-    const reqs = filteredEntries.map((entry) =>
-      tauriGetDriverReportGeneral(entry.id)
-    );
-    const reports = (await Promise.all(reqs)).filter(
-      (report) => report !== null
-    );
+    const reports = (
+      await Promise.all(
+        filteredEntries.map((entry) =>
+          tauriGetDriverReportGeneral(entry.id)
+        )
+      )
+    ).filter((report) => report !== null);
+
     exportWorkbook(reports, {
       header: [], // FIXME,
       name: "เรื่องร้องเรียนคนขับรถ",

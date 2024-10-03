@@ -59,14 +59,7 @@ export const DRIVER_MODEL_TRANSFORMER = {
       license_type: "",
     };
     if (driver !== undefined) {
-      formData = {
-        name: driver.name.trim().normalize(),
-        surname: driver.surname.trim().normalize(),
-        contact: driver.contact.trim().normalize(),
-        license_type: driver.license_type
-          .trim()
-          .normalize(),
-      };
+      formData = driver;
     }
     return formData;
   },

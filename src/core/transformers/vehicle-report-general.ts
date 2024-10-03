@@ -69,16 +69,21 @@ export const VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER = {
       topics: [],
       vehicle,
     };
-    if (report !== undefined) {
-      formData = {
-        ...report,
-        topics: report.topics
-          .split(",")
-          .map((topic) => topic.trim().normalize())
-          .filter((topic) => topic.length > 0),
-        vehicle,
-      };
+
+    if (report === undefined) {
+      return formData;
     }
+    let datetime = dayjs(report.datetime);
+    if (!datetime.isValid()) {
+      datetime = dayjs();
+    }
+    formData = {
+      vehicle,
+      datetime: datetime.locale("th").format(),
+      topics: report.topics.split(","),
+      content: report.content,
+      title: report.title,
+    };
     return formData;
   },
 };

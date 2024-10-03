@@ -3,7 +3,7 @@
 import { tauriGetPickupRouteAll } from "$backend/database/get/pickup-routes";
 import { tauriGetPickupRouteReportGeneralAll } from "$backend/database/get/pickup-routes-general-reports";
 import { tauriGetTopicAll } from "$backend/database/get/topics";
-import { PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-report-general-model";
+import { PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-report-general";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { PickupRouteReportGeneralEntry } from "$types/models/pickup-route-report-general";
 import { LoaderFunction } from "react-router-dom";

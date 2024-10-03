@@ -4,6 +4,7 @@ import { tauriGetVehicle } from "$backend/database/get/vehicles";
 import {
   PickupRouteEntry,
   PickupRouteExportData,
+  PickupRouteFormData,
   PickupRouteModel,
 } from "$types/models/pickup-route";
 import dayjs from "dayjs";
@@ -13,7 +14,6 @@ export const PICKUP_ROUTE_MODEL_TRANSFORMER = {
     const logs = (await tauriGetOperationLogToday()).filter(
       (log) => log.route_id === route.id
     );
-
     const driverIds = new Set<number>();
     const vehicleIds = new Set<number>();
     for (const log of logs) {
@@ -62,5 +62,17 @@ export const PICKUP_ROUTE_MODEL_TRANSFORMER = {
         .format("HH:mm น."),
     };
     return data;
+  },
+
+  toFormData: (route: PickupRouteModel | undefined) => {
+    let formData: PickupRouteFormData = {
+      name: "",
+      arrival_time: dayjs().startOf("day").format("HH:mm"),
+      departure_time: dayjs().endOf("day").format("HH:mm"),
+    };
+    if (route !== undefined) {
+      formData = route;
+    }
+    return formData;
   },
 };

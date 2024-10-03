@@ -68,12 +68,12 @@ export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
   toFormData: (
     report: VehicleReportInspectionModel | undefined,
     vehicle: VehicleModel
-  ) => {
+  ): VehicleReportInspectionFormData => {
     let formData: VehicleReportInspectionFormData = {
       vehicle,
-      datetime: dayjs().format(),
-      content: "",
+      datetime: dayjs().locale("th").format(),
       topics: [],
+      content: "",
       front_camera: "",
       overhead_fan: "",
       windows: "",
@@ -87,17 +87,20 @@ export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
       sideview_mirror: "",
       tires: "",
     };
-    if (report !== undefined) {
-      formData = {
-        ...report,
-        topics: report.topics
-          .split(",")
-          .map((topic) => topic.trim().normalize())
-          .filter((topic) => topic.length > 0),
-        vehicle,
-      };
+    if (report === undefined) {
+      return formData;
     }
 
+    let datetime = dayjs(report.datetime);
+    if (!datetime.isValid()) {
+      datetime = dayjs();
+    }
+    formData = {
+      ...report,
+      vehicle,
+      datetime: datetime.locale("th").format(),
+      topics: report.topics.split(","),
+    };
     return formData;
   },
 };

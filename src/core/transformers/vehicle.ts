@@ -61,8 +61,6 @@ export const VEHICLE_MODEL_TRANSFORMER = {
     return entry;
   },
 
-  // Transform a VehicleModel to a VehicleFormData
-  // Returns the "default" VehicleFormData if vehicle is undefined
   toFormData: (
     vehicle: VehicleModel | undefined = undefined
   ): VehicleFormData => {
@@ -75,18 +73,7 @@ export const VEHICLE_MODEL_TRANSFORMER = {
     if (vehicle === undefined) {
       return formData;
     }
-    formData = {
-      licensePlate: vehicle.license_plate
-        .trim()
-        .normalize(),
-      registeredCity: vehicle.registered_city
-        .trim()
-        .normalize(),
-      vendor: vehicle.vendor.trim().normalize(),
-      vehicleClass: vehicle.vehicle_class
-        .trim()
-        .normalize(),
-    };
+    formData = vehicle;
     return formData;
   },
 };

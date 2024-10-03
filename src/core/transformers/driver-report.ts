@@ -44,14 +44,10 @@ export const DRIVER_REPORT_MODEL_TRANSFORMER = {
         datetime = dayjs();
       }
       formData = {
+        ...report,
         driver,
         datetime: datetime.format(),
-        title: report.title.trim().normalize(),
-        content: report.content.trim().normalize(),
-        topics: report.topics
-          .split(",")
-          .map((topic) => topic.trim().normalize())
-          .filter((topic) => topic.length > 0),
+        topics: report.topics.split(","),
       };
     }
     return formData;

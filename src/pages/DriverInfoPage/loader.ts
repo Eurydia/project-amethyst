@@ -8,7 +8,7 @@ import { tauriGetPickupRouteAll } from "$backend/database/get/pickup-routes";
 import { tauriGetTopicAll } from "$backend/database/get/topics";
 import { tauriGetVehicleAll } from "$backend/database/get/vehicles";
 import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report";
-import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log-model";
+import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
 import { TH_LOCALE } from "$locale/th";
 import { DriverModel } from "$types/models/driver";
 import { DriverReportEntry } from "$types/models/driver-report";

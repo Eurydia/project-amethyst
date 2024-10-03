@@ -4,5 +4,7 @@ import { z } from "zod";
 export const tauriGetTopicAll = async () => {
   const topics = await tauri.invoke("get_topic_all");
   const r = z.string().array().safeParse(topics);
-  return r.success ? r.data : [];
+  return (r.success ? r.data : [])
+    .map((topic) => topic.trim().normalize())
+    .filter((topic) => topic.length > 0);
 };

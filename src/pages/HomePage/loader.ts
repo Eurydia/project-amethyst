@@ -1,7 +1,7 @@
 /** @format */
 
 import { tauriGetAttendanceLogToday } from "$backend/database/get/attendance-logs";
-import { ATTENDANCE_LOG_MODEL_TRANSFORMER } from "$core/transformers/attendance-log-model";
+import { ATTENDANCE_LOG_MODEL_TRANSFORMER } from "$core/transformers/attendance-log";
 import { AttendanceLogEntry } from "$types/models/attendance-log";
 import { LoaderFunction } from "react-router-dom";
 

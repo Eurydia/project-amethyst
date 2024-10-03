@@ -85,8 +85,8 @@ const importTransformer = async (data: unknown) => {
   }
   const formData: PickupRouteFormData = {
     name,
-    arrivalTime: arrivalTime.format("HH:mm"),
-    departureTime: departureTime.format("HH:mm"),
+    arrival_time: arrivalTime.format("HH:mm"),
+    departure_time: departureTime.format("HH:mm"),
   };
   return formData;
 };

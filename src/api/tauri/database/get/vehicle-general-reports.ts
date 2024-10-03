@@ -1,5 +1,22 @@
-import { vehicleReportGeneralModelSchema } from "$types/models/vehicle-report-general";
+import {
+  VehicleReportGeneralModel,
+  vehicleReportGeneralModelSchema,
+} from "$types/models/vehicle-report-general";
 import { tauri } from "@tauri-apps/api";
+
+const _prepare = (report: VehicleReportGeneralModel) => {
+  const _r: VehicleReportGeneralModel = {
+    ...report,
+    title: report.title.trim().normalize(),
+    content: report.content.trim().normalize(),
+    topics: report.topics
+      .split(",")
+      .map((topic) => topic.trim().normalize())
+      .filter((topic) => topic.length > 0)
+      .join(","),
+  };
+  return _r;
+};
 
 export const tauriGetVehicleReportGeneralAll = async () => {
   const reports = await tauri.invoke(
@@ -8,7 +25,7 @@ export const tauriGetVehicleReportGeneralAll = async () => {
   const r = vehicleReportGeneralModelSchema
     .array()
     .safeParse(reports);
-  return r.success ? r.data : [];
+  return (r.success ? r.data : []).map(_prepare);
 };
 export const tauriGetVehicleReportGeneral = async (
   reportId: number
@@ -21,5 +38,5 @@ export const tauriGetVehicleReportGeneral = async (
   );
   const r =
     vehicleReportGeneralModelSchema.safeParse(report);
-  return r.success ? r.data : null;
+  return r.success ? _prepare(r.data) : null;
 };

@@ -8,7 +8,7 @@ import { tauriGetVehicleReportGeneralAll } from "$backend/database/get/vehicle-g
 import { tauriGetVehicleReportInspectionAll } from "$backend/database/get/vehicle-inspection-reports";
 import { tauriGetVehicleVendorAll } from "$backend/database/get/vehicle-vendors";
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
-import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log-model";
+import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
 import { VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-general";
 import { VEHICLE_REPORT_INSPECTION_TRANSFORMER } from "$core/transformers/vehicle-report-inspection-model";
 import { TH_LOCALE } from "$locale/th";

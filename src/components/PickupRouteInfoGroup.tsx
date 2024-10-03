@@ -11,7 +11,9 @@ import { PickupRouteForm } from "./PickupRouteForm";
 type PickupRouteInfoGroupProps = {
   route: PickupRouteModel;
 };
-export const PickupRouteInfoGroup: FC<PickupRouteInfoGroupProps> = (props) => {
+export const PickupRouteInfoGroup: FC<
+  PickupRouteInfoGroupProps
+> = (props) => {
   const { route } = props;
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -23,11 +25,15 @@ export const PickupRouteInfoGroup: FC<PickupRouteInfoGroupProps> = (props) => {
     },
     {
       label: "Arrival time", // TODO: translate
-      value: dayjs(route.arrival_time, "HH:mm").format("HH:mm น."),
+      value: dayjs(route.arrival_time, "HH:mm").format(
+        "HH:mm น."
+      ),
     },
     {
       label: "Departure time", // TODO: translate
-      value: dayjs(route.departure_time, "HH:mm").format("HH:mm น."),
+      value: dayjs(route.departure_time, "HH:mm").format(
+        "HH:mm น."
+      ),
     },
   ].map(({ label, value }) => ({
     label,
@@ -49,8 +55,8 @@ export const PickupRouteInfoGroup: FC<PickupRouteInfoGroupProps> = (props) => {
         routeId={route.id}
         initFormData={{
           name: route.name,
-          arrivalTime: route.arrival_time,
-          departureTime: route.departure_time,
+          arrival_time: route.arrival_time,
+          departure_time: route.departure_time,
         }}
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}

@@ -73,14 +73,14 @@ export const PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER =
       if (report === undefined) {
         return formData;
       }
+      let datetime = dayjs(report.datetime);
+      if (!datetime.isValid()) {
+        datetime = dayjs();
+      }
       formData = {
-        content: report.content.trim().normalize(),
-        datetime: dayjs(report.datetime).format(),
-        title: report.title.trim().normalize(),
-        topics: report.topics
-          .split(",")
-          .map((topic) => topic.trim().normalize())
-          .filter((topic) => topic.length > 0),
+        ...report,
+        datetime: datetime.format(),
+        topics: report.topics.split(","),
         route,
       };
       return formData;

@@ -49,28 +49,28 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
     submitButtonStartIcon = <AddRounded />;
     initFormData = {
       name: "",
-      arrivalTime: dayjs().startOf("day").format("HH:mm"),
-      departureTime: dayjs().endOf("day").format("HH:mm"),
+      arrival_time: dayjs().startOf("day").format("HH:mm"),
+      departure_time: dayjs().endOf("day").format("HH:mm"),
     };
   }
   const [fieldName, setFieldName] = useState(
     initFormData.name
   );
   const [fieldArrivalTime, setFieldArrivalTime] = useState(
-    dayjs(initFormData.arrivalTime, "HH:mm")
+    dayjs(initFormData.arrival_time, "HH:mm")
   );
   const [fieldDepartureTime, setFieldDepartureTime] =
-    useState(dayjs(initFormData.departureTime, "HH:mm"));
+    useState(dayjs(initFormData.departure_time, "HH:mm"));
 
   const { revalidate } = useRevalidator();
 
   const clearForm = () => {
     setFieldName(initFormData.name);
     setFieldArrivalTime(
-      dayjs(initFormData.arrivalTime, "HH:mm")
+      dayjs(initFormData.arrival_time, "HH:mm")
     );
     setFieldDepartureTime(
-      dayjs(initFormData.departureTime, "HH:mm")
+      dayjs(initFormData.departure_time, "HH:mm")
     );
   };
 
@@ -80,8 +80,8 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
     }
     const formData: PickupRouteFormData = {
       name: fieldName.trim().normalize(),
-      arrivalTime: fieldArrivalTime.format("HH:mm"),
-      departureTime: fieldDepartureTime.format("HH:mm"),
+      arrival_time: fieldArrivalTime.format("HH:mm"),
+      departure_time: fieldDepartureTime.format("HH:mm"),
     };
 
     if (editing) {

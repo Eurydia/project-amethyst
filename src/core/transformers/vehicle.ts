@@ -11,10 +11,10 @@ import {
 export const VEHICLE_MODEL_TRANSFORMER = {
   toExportData: async (vehicle: VehicleModel) => {
     const exportData: VehicleExportData = {
-      license_plate: vehicle.license_plate,
-      registered_city: vehicle.registered_city,
-      vendor: vehicle.vendor,
-      vehicle_class: vehicle.vehicle_class,
+      เลขทะเบียน: vehicle.license_plate,
+      จังหวัดที่จดทะเบียน: vehicle.registered_city,
+      หจก: vehicle.vendor,
+      ประเภทรถ: vehicle.vehicle_class,
     };
     return exportData;
   },

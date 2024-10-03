@@ -1,11 +1,19 @@
-export type DriverModel = {
-  id: number;
+import { KNOWN_LICENSE_TYPES } from "$core/constants";
+import { z } from "zod";
 
-  name: string;
-  surname: string;
-  contact: string;
-  license_type: string;
-};
+export const driverModelSchema = z
+  .object({
+    id: z.number().int().min(1),
+
+    name: z.string().min(1),
+    surname: z.string().min(1),
+    contact: z.string(),
+    license_type: z.enum(KNOWN_LICENSE_TYPES),
+  })
+  .required()
+  .passthrough();
+
+export type DriverModel = z.infer<typeof driverModelSchema>;
 
 export type DriverEntry = {
   id: number;
@@ -27,14 +35,19 @@ export type DriverFormData = {
   name: string;
   surname: string;
   contact: string;
-  licenseType: string;
+  license_type: string;
 };
 
-// TODO: rename properties
-export type DriverExportData = {
-  id: number;
-  name: string;
-  surname: string;
-  contact: string;
-  licenseType: string;
-};
+export const driverExportDataSchema = z
+  .object({
+    ชื่อ: z.string().min(1),
+    นามสกุล: z.string().min(1),
+    เบอร์ติดต่อ: z.string(),
+    ประเภทใบขับขี่: z.enum(KNOWN_LICENSE_TYPES),
+  })
+  .passthrough()
+  .required();
+
+export type DriverExportData = z.infer<
+  typeof driverExportDataSchema
+>;

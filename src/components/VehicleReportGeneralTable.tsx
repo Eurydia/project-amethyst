@@ -1,19 +1,13 @@
 import { tauriGetVehicleReportGeneral } from "$backend/database/get/vehicle-general-reports";
-import { tauriPostVehicleReportGeneral } from "$backend/database/post";
 import { filterItems } from "$core/filter";
 import { VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-general";
-import { VEHICLE_REPORT_GENERAL_VALIDATOR } from "$core/validators/vehicle-report-general";
-import {
-  exportWorkbook,
-  importWorkbook,
-} from "$core/workbook";
+import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
 import { VehicleModel } from "$types/models/vehicle";
 import { VehicleReportGeneralEntry } from "$types/models/vehicle-report-general";
 import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
-import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
@@ -100,21 +94,6 @@ export const VehicleReportGeneralTable: FC<
   const [dialogOpen, setDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const { revalidate } = useRevalidator();
-
-  const handleImport = (file: File) => {
-    importWorkbook(file, {
-      validator: VEHICLE_REPORT_GENERAL_VALIDATOR.validate,
-      action: tauriPostVehicleReportGeneral,
-    }).then(
-      // TODO: translate
-      () => {
-        toast.success("Imported");
-        revalidate();
-      },
-      () => toast.error("Import failed")
-    );
-  };
   const handleExport = async () => {
     const reportReqs = filteredEntries.map((entry) =>
       tauriGetVehicleReportGeneral(entry.id)
@@ -126,7 +105,15 @@ export const VehicleReportGeneralTable: FC<
     // TODO: translate
     exportWorkbook(reports, {
       name: "vehicle general report",
-      header: [],
+      header: {
+        หมายเลขเรื่องร้องเรียน: "",
+        วันที่ลงบันทึก: "",
+        เรื่อง: "",
+        รายละเอียด: "",
+        หัวข้อที่เกี่ยวข้อง: "",
+        หมายเลขรถรับส่ง: "",
+        เลขทะเบียน: "",
+      }, // FIXME
       transformer:
         VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER.toExportData,
     }).then(
@@ -175,9 +162,9 @@ export const VehicleReportGeneralTable: FC<
             onClick: () => setDialogOpen(true),
           },
           importButton: {
-            disabled: databaseHasNoVehicle,
+            disabled: true,
             children: "Import from file",
-            onFileSelect: handleImport,
+            onFileSelect: () => {},
           },
           exportButton: {
             children: "Export data",

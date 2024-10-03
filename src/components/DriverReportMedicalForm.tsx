@@ -1,21 +1,12 @@
-import { tauriPostDriverReportGeneral } from "$backend/database/post";
-import { tauriPutDriverReportGeneral } from "$backend/database/put";
 import { DriverModel } from "$types/models/driver";
-import { DriverReportFormData } from "$types/models/driver-report";
-import { SaveRounded } from "@mui/icons-material";
+import {
+  DriverReportModel
+} from "$types/models/driver-report";
 import dayjs from "dayjs";
-import { FC, ReactNode, useState } from "react";
-import { useRevalidator } from "react-router-dom";
-import { toast } from "react-toastify";
-import { BaseForm } from "./BaseForm";
-import { BaseInputDateField } from "./BaseInputDateField";
-import { BaseInputTextField } from "./BaseInputTextField";
-import { BaseInputTimeField } from "./BaseInputTimeField";
-import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
-import { DriverInputDriverSelect } from "./DriverInputDriverSelect";
+import { FC } from "react";
 
 type DriverReportMedicalFormPostProps = {
-  editing?: false | undefined;
+  editing: false;
   open: boolean;
   onClose: () => void;
   slotProps: {
@@ -30,6 +21,8 @@ type DriverReportMedicalFormPostProps = {
 };
 
 type DriverReportMedicalFormPutProps = {
+  report: DriverReportModel;
+
   editing: true;
   open: boolean;
   onClose: () => void;
@@ -42,9 +35,6 @@ type DriverReportMedicalFormPutProps = {
       options: string[];
     };
   };
-
-  reportId: number;
-  initFormData: DriverReportFormData;
 };
 
 type DriverReportMedicalFormProps =
@@ -55,28 +45,22 @@ export const DriverReportMedicalForm: FC<
 > = (props) => {
   const { slotProps, onClose, open, editing } = props;
 
-  let title: string;
-  let initFormData: DriverReportFormData;
-  let submitButtonLabel: string;
-  let submitButtonStartIcon: ReactNode;
+  let title = "Add new report"; // TODO: translate
+  let initFormData = {
+    datetime: dayjs().format(),
+    title: "",
+    content: "",
+    topics: [],
+    driver: slotProps.driverSelect.options[0],
+  };
+  let submitButtonLabel = "Post report"; // TODO: translate
+  let ` submitButtonStartIcon = <SaveRounded />;
   if (editing) {
     title = "Edit report"; // TODO: translate
     initFormData = props.initFormData;
     submitButtonLabel = "Save changes"; // TODO: translate
     submitButtonStartIcon = <SaveRounded />;
-  } else {
-    title = "Add new report"; // TODO: translate
-    initFormData = {
-      datetime: dayjs().format(),
-      title: "",
-      content: "",
-      topics: [],
-      driver: slotProps.driverSelect.options[0],
-    };
-    submitButtonLabel = "Post report"; // TODO: translate
-    submitButtonStartIcon = <SaveRounded />;
   }
-
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime)
   );

@@ -61,22 +61,22 @@ export const DriverReportGeneralForm: FC<
 > = (props) => {
   const { slotProps, onClose, open, editing } = props;
 
-  let title = "Add new report"; // TODO: translate
+  let title = "ร้องเรียนคนขับรถ";
   let initFormData =
     DRIVER_REPORT_MODEL_TRANSFORMER.toFormData(
       undefined,
       slotProps.driverSelect.options[0]
     );
-  let submitButtonLabel = "Post report"; // TODO: translate
+  let submitButtonLabel = "เพิ่ม";
   let submitButtonStartIcon = <AddRounded />;
   if (editing) {
-    title = "Edit report"; // TODO: translate
+    title = "แก้ไขข้อมูลเรื่องร้องเรียน";
     initFormData =
       DRIVER_REPORT_MODEL_TRANSFORMER.toFormData(
         props.report,
         slotProps.driverSelect.options[0]
       );
-    submitButtonLabel = "Save changes"; // TODO: translate
+    submitButtonLabel = "บันทึก";
     submitButtonStartIcon = <SaveRounded />;
   }
 
@@ -135,15 +135,10 @@ export const DriverReportGeneralForm: FC<
       tauriPutDriverReportGeneral(props.report.id, formData)
         .then(
           () => {
-            toast.success(
-              "Report updated" // TODO: translate
-            );
+            toast.success("บันทึกสำเร็จ");
             revalidate();
           },
-          () =>
-            toast.error(
-              "Failed to update report" // TODO: translate
-            )
+          () => toast.error("บันทึกล้มเหลว")
         )
         .finally(() => {
           clearForm();
@@ -153,15 +148,10 @@ export const DriverReportGeneralForm: FC<
       tauriPostDriverReportGeneral(formData)
         .then(
           () => {
-            toast.success(
-              "Report posted" // TODO: translate
-            );
+            toast.success("เพิ่มสำเร็จ");
             revalidate();
           },
-          () =>
-            toast.error(
-              "Failed to post report" // TODO: translate
-            )
+          () => toast.error("เพิ่มล้มเหลว")
         )
         .finally(() => {
           clearForm();
@@ -223,6 +213,7 @@ export const DriverReportGeneralForm: FC<
           placeholder={initFormData.title}
           value={fieldTitle}
           error={isMissingTitle}
+          errorText="ต้องกรอกชื่อเรื่อง"
         />
       ),
     },

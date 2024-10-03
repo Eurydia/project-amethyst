@@ -1,16 +1,15 @@
 /** @format */
 
-import { tauriPostDriverReportGeneral } from "$backend/database/post";
+import { tauriGetDriverReportGeneral } from "$backend/database/get/driver-general-reports";
 import { filterItems } from "$core/filter";
-import { DRIVER_REPORT_VALIDATOR } from "$core/validators/driver-report";
-import { importWorkbook } from "$core/workbook";
+import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report";
+import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
 import { DriverModel } from "$types/models/driver";
 import { DriverReportEntry } from "$types/models/driver-report";
 import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
-import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
@@ -109,23 +108,23 @@ export const DriverReportGeneralTable: FC<
     ];
   }
 
-  const { revalidate } = useRevalidator();
-
-  const handleImport = async (file: File) => {
-    importWorkbook(file, {
-      validator: DRIVER_REPORT_VALIDATOR.validate,
-      action: tauriPostDriverReportGeneral,
+  const handleExport = async () => {
+    const reqs = filteredEntries.map((entry) =>
+      tauriGetDriverReportGeneral(entry.id)
+    );
+    const reports = (await Promise.all(reqs)).filter(
+      (report) => report !== null
+    );
+    exportWorkbook(reports, {
+      header: [], // FIXME,
+      name: "เรื่องร้องเรียนคนขับรถ",
+      transformer:
+        DRIVER_REPORT_MODEL_TRANSFORMER.toExportData,
     }).then(
-      // TODO: translate
-      () => {
-        toast.success("imported");
-        revalidate();
-      },
-      () => toast.error("import failed")
+      () => toast.success("ดาวน์โหลดสำเร็จ"),
+      () => toast.error("ดา่วน์โหลดล้มเหลว")
     );
   };
-
-  const handleExport = () => {};
 
   const databaseIsEmpty = entries.length === 0;
   const databaseHasNoDriver =
@@ -147,16 +146,13 @@ export const DriverReportGeneralTable: FC<
             onClick: () => setDialogOpen(true),
           },
           importButton: {
-            children: "Import", // TODO: translate
-            onFileSelect: function (file: File): void {
-              throw new Error("Function not implemented.");
-            },
+            disabled: true,
+            children: "นำเข้าข้อมูล",
+            onFileSelect: () => {},
           },
           exportButton: {
-            children: "",
-            onClick: function (): void {
-              throw new Error("Function not implemented.");
-            },
+            children: "ดาวน์โหลดสำเนา",
+            onClick: handleExport,
           },
         }}
       />
@@ -167,10 +163,9 @@ export const DriverReportGeneralTable: FC<
         headers={headers}
         slotProps={{
           body: {
-            // TODO: translate
             emptyText: databaseIsEmpty
-              ? "Database is empty"
-              : `ไม่พบเรื่องร้องเรียน`,
+              ? "ฐานข้อมูลว่าง"
+              : "ไม่พบเรื่องร้องเรียนที่ค้นหา",
           },
         }}
       />

@@ -1,3 +1,4 @@
+import { KNOWN_LICENSE_TYPES } from "$core/constants";
 import {
   FormControlLabel,
   Radio,
@@ -16,8 +17,8 @@ export const DriverInputLicenseType: FC<
   const { value, onChange } = props;
 
   useEffect(() => {
-    if (value.trim().length === 0) {
-      onChange("ท.1");
+    if (value.trim().length < 1) {
+      onChange(KNOWN_LICENSE_TYPES[0]);
     }
   }, []);
 
@@ -27,16 +28,14 @@ export const DriverInputLicenseType: FC<
       value={value}
       onChange={(_, value) => onChange(value)}
     >
-      <FormControlLabel
-        value="ท.1"
-        control={<Radio />}
-        label={<Typography>ท.1 (รถตู้)</Typography>}
-      />
-      <FormControlLabel
-        value="ท.2"
-        control={<Radio />}
-        label={<Typography>ท.2 (รถบัส)</Typography>}
-      />
+      {KNOWN_LICENSE_TYPES.map((lTypes, index) => (
+        <FormControlLabel
+          key={"option" + index}
+          value={lTypes}
+          control={<Radio />}
+          label={<Typography>{lTypes}</Typography>}
+        />
+      ))}
     </RadioGroup>
   );
 };

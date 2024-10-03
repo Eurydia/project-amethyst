@@ -46,14 +46,14 @@ export const VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER = {
     }
 
     const exportData: VehicleReportGeneralExportData = {
-      content: report.content,
-      datetime: report.datetime,
-      id: report.id,
-      title: report.title,
-      topics: report.topics,
+      รายละเอียด: report.content,
+      วันที่ลงบันทึก: report.datetime,
+      หมายเลขเรื่องร้องเรียน: report.id,
+      เรื่อง: report.title,
+      หัวข้อที่เกี่ยวข้อง: report.topics,
 
-      vehicle_id: vehicle.id,
-      vehicle_license_plate: vehicle.license_plate,
+      หมายเลขรถรับส่ง: vehicle.id,
+      เลขทะเบียน: vehicle.license_plate,
     };
     return exportData;
   },

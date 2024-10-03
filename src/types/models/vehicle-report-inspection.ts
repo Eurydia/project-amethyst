@@ -1,30 +1,40 @@
+import { z } from "zod";
 import { VehicleModel } from "./vehicle";
 
-export type VehicleReportInspectionModel = {
-  id: number;
-  vehicle_id: number;
-  datetime: string;
-  content: string;
-  topics: string;
+export const vehicleReportInspectionModelSchema = z
+  .object({
+    id: z.number().min(1),
+    vehicle_id: z.number().min(1),
+    datetime: z.string().datetime(),
+    content: z.string(),
+    topics: z.string(),
 
-  front_camera: string;
-  overhead_fan: string;
-  windows: string;
-  seatbelts: string;
-  seats: string;
-  headlights: string;
-  turn_signals: string;
-  brake_light: string;
-  frame: string;
-  rearview_mirror: string;
-  sideview_mirror: string;
-  tires: string;
-};
+    front_camera: z.string(),
+    overhead_fan: z.string(),
+    windows: z.string(),
+    seatbelts: z.string(),
+    seats: z.string(),
+    headlights: z.string(),
+    turn_signals: z.string(),
+    brake_light: z.string(),
+    frame: z.string(),
+    rearview_mirror: z.string(),
+    sideview_mirror: z.string(),
+    tires: z.string(),
+  })
+  .passthrough()
+  .required();
+
+export type VehicleReportInspectionModel = z.infer<
+  typeof vehicleReportInspectionModelSchema
+>;
 
 export type VehicleReportInspectionFormData = Omit<
   VehicleReportInspectionModel,
-  "id" | "vehicle_id" | "topics"
-> & { vehicle: VehicleModel; topics: string[] };
+  "id" | "vehicle_id"
+> & {
+  vehicle: VehicleModel;
+};
 
 export type VehicleReportInspectionEntry = {
   id: number;
@@ -35,8 +45,27 @@ export type VehicleReportInspectionEntry = {
   topics: string[];
 };
 
-// TODO: rename attributes
-export type VehicleReportInpsectionExportData =
-  VehicleReportInspectionModel & {
-    vehicle_license_plate: string;
-  };
+export type VehicleReportInpsectionExportData = {
+  หมายเลขรถรับส่ง: number;
+  เลขทะเบียน: string;
+
+  หมายเลขผลตรวจสภาพ: number;
+  รอบการตรวจสภาพ: number;
+
+  วันที่ลงบันทึก: string;
+  หมายเหตุ: string;
+  หัวข้อที่เกี่ยวข้อง: string;
+
+  กล้องหน้ารถ: string;
+  พัดลม: string;
+  หน้าต่าง: string;
+  เข็มขัดนิรภัย: string;
+  เบาะและที่นั่ง: string;
+  ไฟหน้า: string;
+  ไฟเลี้ยว: string;
+  ไฟเบรค: string;
+  ตัวรถ: string;
+  กระจกมองข้าง: string;
+  กระจกมองหลัง: string;
+  ยางและล้อ: string;
+};

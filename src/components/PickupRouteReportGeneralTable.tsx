@@ -1,22 +1,16 @@
 import { tauriGetPickupRoute } from "$backend/database/get/pickup-routes";
 import { tauriGetPickupRouteReportGeneral } from "$backend/database/get/pickup-routes-general-reports";
-import { tauriPostPickupRouteReportGeneral } from "$backend/database/post";
 import { filterItems } from "$core/filter";
-import {
-  exportWorkbook,
-  importWorkbook,
-} from "$core/workbook";
+import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import {
   PickupRouteReportGeneralEntry,
   PickupRouteReportGeneralExportData,
-  PickupRouteReportGeneralFormData,
 } from "$types/models/pickup-route-report-general";
 import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
-import { useRevalidator } from "react-router-dom";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
@@ -93,27 +87,6 @@ type PickupRouteReportGeneralTableProps = {
   };
 };
 
-const importTransformer = async (entry: unknown) => {
-  const data = entry as PickupRouteReportGeneralExportData;
-  const route = await tauriGetPickupRoute(
-    data["รหัสสายรถ"]
-  );
-  if (route === null) {
-    return null;
-  }
-  const formData: PickupRouteReportGeneralFormData = {
-    route,
-    datetime: data["วันที่ลงบันทึก"],
-    title: data["เรื่อง"],
-    content: data["รายละเอียด"],
-    topics: data["หัวข้อที่เกี่ยวข้อง"]
-      .split(",")
-      .map((topic) => topic.trim().normalize())
-      .filter((topic) => topic.trim().length > 0),
-  };
-  return formData;
-};
-
 const exportTransformer = async (
   entry: PickupRouteReportGeneralEntry
 ) => {
@@ -149,8 +122,6 @@ export const PickupRouteReportGeneralTable: FC<
   const [dialogOpen, setDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const { revalidate } = useRevalidator();
-
   const databaseHasNoRoute =
     slotProps.form.routeSelect.options.length === 0;
   const filteredEntries = filterItems(
@@ -173,13 +144,6 @@ export const PickupRouteReportGeneralTable: FC<
     ];
   }
 
-  const handleImport = (file: File) =>
-    importWorkbook(file, {
-      action: tauriPostPickupRouteReportGeneral,
-      cleanup: revalidate,
-      validator: importTransformer,
-    });
-
   const handleExport = () =>
     exportWorkbook(filteredEntries, {
       name: "route general reports", // TODO: translate
@@ -192,7 +156,7 @@ export const PickupRouteReportGeneralTable: FC<
         "เรื่อง",
         "รายละเอียด",
         "หัวข้อที่เกี่ยวข้อง",
-      ],
+      ], // FIXME
       transformer: exportTransformer,
     });
 
@@ -212,8 +176,9 @@ export const PickupRouteReportGeneralTable: FC<
             onClick: () => setDialogOpen(true),
           },
           importButton: {
+            disabled: true,
             children: "import reports", // TODO: translate
-            onFileSelect: handleImport,
+            onFileSelect: () => {},
           },
           exportButton: {
             children: "export reports", // TODO: translate

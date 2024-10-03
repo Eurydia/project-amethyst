@@ -37,15 +37,14 @@ type DriverFormProps =
 export const DriverForm: FC<DriverFormProps> = (props) => {
   const { onClose, open, editing } = props;
 
-  // TODO: translate
-  let title = "Add new driver";
+  let title = "ลงทะเบียนคนขับรถ";
   let initFormData =
     DRIVER_MODEL_TRANSFORMER.toFormData(undefined);
-  let submitButtonLabel = "Add driver";
+  let submitButtonLabel = "เพิ่ม";
   let submitButtonStartIcon = <AddRounded />;
   if (editing) {
-    title = "Edit driver info";
-    submitButtonLabel = "Save"; // TODO: translate
+    title = "แก้ไขข้อมูลคนขับรถ";
+    submitButtonLabel = "บันทึก";
     submitButtonStartIcon = <SaveRounded />;
     initFormData = DRIVER_MODEL_TRANSFORMER.toFormData(
       props.driver
@@ -62,7 +61,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
     initFormData.contact
   );
   const [fieldLicenseType, setFieldLicenseType] = useState(
-    initFormData.licenseType
+    initFormData.license_type
   );
 
   const { revalidate } = useRevalidator();
@@ -70,7 +69,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
     setFieldName(initFormData.name);
     setFielSurname(initFormData.surname);
     setFieldContact(initFormData.contact);
-    setFieldLicenseType(initFormData.licenseType);
+    setFieldLicenseType(initFormData.license_type);
   };
 
   const handleSubmit = () => {
@@ -81,18 +80,17 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
     const formData: DriverFormData = {
       name: fieldName.trim().normalize(),
       surname: fieldSurname.trim().normalize(),
-      contact: contact.length > 0 ? contact : "ไม่มี",
-      licenseType: fieldLicenseType,
+      contact: contact.trim().normalize() || "ไม่มี",
+      license_type: fieldLicenseType,
     };
     if (editing) {
       tauriPutDriver(props.driver.id, formData)
         .then(
-          // TODO: translate
           () => {
-            toast.success("Driver info updated");
+            toast.success("บันทึกสำเร็จ");
             revalidate();
           },
-          () => toast.error("Failed to update driver info")
+          () => toast.error("บันทึกล้มเหลว")
         )
         .finally(() => {
           resetForm();
@@ -102,15 +100,10 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       tauriPostDriver(formData)
         .then(
           () => {
-            toast.success(
-              "Driver added" // TODO: translate
-            );
+            toast.success("เพิ่มสำเร็จ");
             revalidate();
           },
-          () =>
-            toast.error(
-              "Failed to add driver" // TODO: translate
-            )
+          () => toast.error("เพิ่มล้มเหลว")
         )
         .finally(() => {
           resetForm();
@@ -138,7 +131,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
           placeholder={initFormData.name}
           value={fieldName}
           onChange={setFieldName}
-          errorText="Required" // TODO: translate
+          errorText="ต้องกรองชื่อคนขับรถ"
         />
       ),
     },
@@ -150,7 +143,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
           value={fieldSurname}
           placeholder={initFormData.surname}
           onChange={setFielSurname}
-          errorText="Required" // TODO: translate
+          errorText="ต้องกรองนามสกุลคนขชับรถ"
         />
       ),
     },
@@ -159,7 +152,8 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       value: (
         <BaseInputTextField
           placeholder={
-            initFormData.contact.trim() || "ไม่มี"
+            initFormData.contact.trim().normalize() ||
+            "ไม่มี"
           }
           value={fieldContact}
           onChange={setFieldContact}

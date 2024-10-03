@@ -1,15 +1,21 @@
-/** @format */
-
+import { z } from "zod";
 import { PickupRouteModel } from "./pickup-route";
 
-export type PickupRouteReportGeneralModel = {
-  id: number;
-  route_id: number;
-  datetime: string;
-  title: string;
-  content: string;
-  topics: string;
-};
+export const pickupRouteReportGeneralModelSchema = z
+  .object({
+    id: z.number().int().min(1),
+    route_id: z.number().int().min(1),
+    datetime: z.string(),
+    title: z.string().min(1),
+    content: z.string(),
+    topics: z.string(),
+  })
+  .passthrough()
+  .required();
+
+export type PickupRouteReportGeneralModel = z.infer<
+  typeof pickupRouteReportGeneralModelSchema
+>;
 
 export type PickupRouteReportGeneralEntry = {
   datetime: string;
@@ -29,7 +35,6 @@ export type PickupRouteReportGeneralFormData = {
 };
 
 export type PickupRouteReportGeneralExportData = {
-  // TODO: rename properties
   ชื่อสายรถ: string;
   รหัสสายรถ: number;
 

@@ -1,3 +1,5 @@
+/** @format */
+
 import { tauriGetDriver } from "$backend/database/get/drivers";
 import { DriverModel } from "$types/models/driver";
 import {

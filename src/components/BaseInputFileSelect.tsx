@@ -3,13 +3,18 @@ import { FC, useRef } from "react";
 import { Fragment } from "react/jsx-runtime";
 
 type BaseInputFileSelectProps = {
+  disabled?: boolean;
   children: string;
   startIcon?: React.ReactNode;
   onFileSelect: (file: File) => void;
 };
-export const BaseInputFileSelect: FC<BaseInputFileSelectProps> = (props) => {
+export const BaseInputFileSelect: FC<
+  BaseInputFileSelectProps
+> = (props) => {
   const { onFileSelect, ...rest } = props;
-  const fileSelectRef = useRef<HTMLInputElement | null>(null);
+  const fileSelectRef = useRef<HTMLInputElement | null>(
+    null
+  );
 
   return (
     <Fragment>

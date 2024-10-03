@@ -1,4 +1,3 @@
-import { tauriGetDriver } from "$backend/database/get/drivers";
 import { tauriPostDriver } from "$backend/database/post";
 import { filterItems } from "$core/filter";
 import {
@@ -6,11 +5,7 @@ import {
   importWorkbook,
 } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
-import {
-  DriverEntry,
-  DriverExportData,
-  DriverFormData,
-} from "$types/models/driver";
+import { DriverEntry } from "$types/models/driver";
 import { Stack, Typography } from "@mui/material";
 import { FC, useState } from "react";
 import { useRevalidator } from "react-router-dom";
@@ -69,34 +64,6 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverEntry>[] =
     },
   ];
 
-const importTransformer = async (data: unknown) => {
-  const entry = data as DriverExportData;
-
-  const formData: DriverFormData = {
-    name: entry.name.trim().normalize(),
-    surname: entry.surname.trim().normalize(),
-    contact: entry.contact.trim().normalize(),
-    licenseType: entry.licenseType.trim().normalize(),
-  };
-  return formData;
-};
-
-const exportTransfomer = async (entry: DriverEntry) => {
-  const driver = await tauriGetDriver(entry.id);
-  if (driver === null) {
-    return null;
-  }
-  const data: DriverExportData = {
-    id: driver.id,
-    contact: driver.contact,
-    licenseType: driver.license_type,
-    name: driver.name,
-    surname: entry.surname,
-  };
-
-  return data;
-};
-
 type DriverTableProps = {
   driverEntries: DriverEntry[];
 };
@@ -119,13 +86,12 @@ export const DriverTable: FC<DriverTableProps> = (
     ]
   );
 
-  const handleImport = (file: File) =>
+  const handleImport = (file: File) => {
     importWorkbook(file, {
       action: tauriPostDriver,
-      validator: importTransformer,
-      cleanup: revalidate,
+      validator: DRIVER_,
     });
-
+  };
   const handleExport = async () =>
     exportWorkbook(filteredEntries, {
       header: [
@@ -137,7 +103,6 @@ export const DriverTable: FC<DriverTableProps> = (
       ],
       transformer: exportTransfomer,
       name: "drivers",
-      worksheetName: "Drivers",
     }).then(
       () => {},
       (err) => {

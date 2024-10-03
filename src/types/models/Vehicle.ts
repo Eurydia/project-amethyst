@@ -1,11 +1,23 @@
-export type VehicleModel = {
-  id: number;
+import {
+  CITIES,
+  KNOWN_VEHICLE_CLASSES,
+} from "$core/constants";
+import { z } from "zod";
 
-  license_plate: string;
-  vendor: string;
-  vehicle_class: string;
-  registered_city: string;
-};
+export const vehicleModelSchema = z
+  .object({
+    id: z.number().int().min(1),
+    license_plate: z.string().min(1),
+    vendor: z.string().min(1),
+    vehicle_class: z.enum(KNOWN_VEHICLE_CLASSES),
+    registered_city: z.enum(CITIES),
+  })
+  .passthrough()
+  .required();
+
+export type VehicleModel = z.infer<
+  typeof vehicleModelSchema
+>;
 
 export type VehicleFormData = Omit<VehicleModel, "id">;
 
@@ -25,10 +37,16 @@ export type VehicleEntry = {
   }[];
 };
 
-// TODO: Rename attributes
-export type VehicleExportData = {
-  license_plate: string;
-  vendor: string;
-  vehicle_class: string;
-  registered_city: string;
-};
+export const VehicleExportDataSchema = z
+  .object({
+    เลขทะเบียน: z.string().min(1),
+    หจก: z.string().min(1),
+    ประเภทรถ: z.enum(KNOWN_VEHICLE_CLASSES),
+    จังหวัดที่จดทะเบียน: z.enum(CITIES),
+  })
+  .passthrough()
+  .required();
+
+export type VehicleExportData = z.infer<
+  typeof VehicleExportDataSchema
+>;

@@ -1,55 +1,59 @@
+import { z } from "zod";
 import { DriverModel } from "./driver";
 import { PickupRouteModel } from "./pickup-route";
 import { VehicleModel } from "./vehicle";
 
-export type OperationalLogModel = {
-	id: number;
-	driver_id: number;
-	vehicle_id: number;
-	route_id: number;
+export const operationalLogModelSchema = z
+  .object({
+    id: z.number().int().min(1),
+    driver_id: z.number().int().min(1),
+    vehicle_id: z.number().int().min(1),
+    route_id: z.number().int().min(1),
 
-	start_date: string;
-	end_date: string;
-};
+    start_date: z.string(),
+    end_date: z.string(),
+  })
+  .passthrough()
+  .required();
 
 export type OperationalLogEntry = {
-	id: number;
-	driverId: number;
-	driverName: string;
-	driverSurname: string;
+  id: number;
+  driverId: number;
+  driverName: string;
+  driverSurname: string;
 
-	vehicleId: number;
-	vehicleLicensePlate: string;
+  vehicleId: number;
+  vehicleLicensePlate: string;
 
-	routeId: number;
-	routeName: string;
+  routeId: number;
+  routeName: string;
 
-	startDate: string;
-	endDate: string;
+  startDate: string;
+  endDate: string;
 };
 
 export type OperationalLogFormData = {
-	driver: DriverModel;
-	vehicle: VehicleModel;
-	route: PickupRouteModel;
+  driver: DriverModel;
+  vehicle: VehicleModel;
+  route: PickupRouteModel;
 
-	startDate: string;
-	endDate: string;
+  startDate: string;
+  endDate: string;
 };
 
-export type OperationalLog = {
-	id: number;
+export type OperationalLogExportData = {
+  รหัส: number;
 
-	driverId: number;
-	driverName: string;
-	driverSurname: string;
+  รหัสคนขับรถ: number;
+  ชื่อคนขับรถ: string;
+  นามสกุลคนขับรถ: string;
 
-	vehicleId: number;
-	vehiclePlate: string;
+  รหัสรถรับส่ง: number;
+  เลขทะเบียน: string;
 
-	routeId: number;
-	routeName: string;
+  รหัสสายรถ: number;
+  ชื่อสาย: string;
 
-	startDate: string | null;
-	endDate: string | null;
+  วันที่เริ่มมีผล: string;
+  วันที่หมดอายุ: string;
 };

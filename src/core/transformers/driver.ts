@@ -3,6 +3,7 @@ import { tauriGetPickupRoute } from "$backend/database/get/pickup-routes";
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
 import {
   DriverEntry,
+  DriverExportData,
   DriverFormData,
   DriverModel,
 } from "$types/models/driver";
@@ -56,16 +57,28 @@ export const DRIVER_MODEL_TRANSFORMER = {
       name: "",
       surname: "",
       contact: "",
-      licenseType: "",
+      license_type: "",
     };
     if (driver !== undefined) {
       formData = {
         name: driver.name.trim().normalize(),
         surname: driver.surname.trim().normalize(),
         contact: driver.contact.trim().normalize(),
-        licenseType: driver.license_type.trim().normalize(),
+        license_type: driver.license_type
+          .trim()
+          .normalize(),
       };
     }
     return formData;
+  },
+
+  toExportData: (driver: DriverModel) => {
+    const exportData: DriverExportData = {
+      หมายเลขคนขับรถ: driver.id,
+      ชื่อ: driver.name,
+      นามสกุล: driver.surname,
+      เบอร์ติดต่อ: driver.contact,
+      ประเภทใบขับขี่: driver.license_type,
+    };
   },
 };

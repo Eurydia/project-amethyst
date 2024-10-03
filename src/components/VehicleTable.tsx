@@ -71,7 +71,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
   ];
 
 type VehicleTableProps = {
-  vehicleEntries: VehicleEntry[];
+  entries: VehicleEntry[];
   slotProps: {
     form: {
       vendorComboBox: {
@@ -83,20 +83,16 @@ type VehicleTableProps = {
 export const VehicleTable: FC<VehicleTableProps> = (
   props
 ) => {
-  const { vehicleEntries, slotProps } = props;
+  const { entries, slotProps } = props;
   const [dialogOpen, setDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const filteredEntries = filterItems(
-    vehicleEntries,
-    search,
-    [
-      "licensePlate",
-      "routes.*.name",
-      "drivers.*.name",
-      "drivers.*.surname",
-    ]
-  );
+  const filteredEntries = filterItems(entries, search, [
+    "licensePlate",
+    "routes.*.name",
+    "drivers.*.name",
+    "drivers.*.surname",
+  ]);
 
   const { revalidate } = useRevalidator();
 
@@ -105,12 +101,11 @@ export const VehicleTable: FC<VehicleTableProps> = (
       action: tauriPostVehicle,
       validator: VEHICLE_VALIDATOR.validate,
     }).then(
-      // TODO: translate
       () => {
-        toast.success("Imported vehicles");
+        toast.success("นำเข้าสำเร็จ");
         revalidate();
       },
-      () => toast.error("Failed to import vehicles")
+      () => toast.error("นำเข้าล้มเหลว")
     );
   };
 
@@ -122,22 +117,17 @@ export const VehicleTable: FC<VehicleTableProps> = (
       await Promise.all(vehicleReqs)
     ).filter((vehicle) => vehicle !== null);
 
-    // TODO: translate names
     exportWorkbook(vehicles, {
-      name: "vehicles",
+      name: "รถรับส่ง",
       header: [],
       transformer: VEHICLE_MODEL_TRANSFORMER.toExportData,
-    })
-      .then(
-        // TODO: translate
-        () => toast.success("Exported vehicles"),
-        () => toast.error("Export failed")
-      )
-      .finally(revalidate);
+    }).then(
+      () => toast.success("ดาวน์โหลดสำเร็จ"),
+      () => toast.error("ดาวน์โหลดล้มเหลว")
+    );
   };
 
-  const databaseHasNoVehicle = vehicleEntries.length === 0;
-
+  const databaseHasNoVehicle = entries.length === 0;
   return (
     <Stack spacing={1}>
       <BaseSortableTableToolbar
@@ -149,16 +139,15 @@ export const VehicleTable: FC<VehicleTableProps> = (
             value: search,
           },
           addButton: {
-            // TODO: translate
-            children: "Register Vehicle",
+            children: "เพิ่มรถรับส่ง",
             onClick: () => setDialogOpen(true),
           },
           importButton: {
-            children: "Register from file",
+            children: "นำเข้ารถรับส่ง",
             onFileSelect: handleImport,
           },
           exportButton: {
-            children: "export vehicles",
+            children: "ดาวน์โหลดสำเนา",
             onClick: handleExport,
           },
         }}
@@ -170,10 +159,9 @@ export const VehicleTable: FC<VehicleTableProps> = (
         entries={filteredEntries}
         slotProps={{
           body: {
-            // TODO: translate
             emptyText: databaseHasNoVehicle
-              ? "Database has no vehicle"
-              : "ไม่พบรถรับส่ง",
+              ? "ฐานข้อมูลว่าง"
+              : "ไม่พบรถรับส่งที่ค้นหา",
           },
         }}
       />

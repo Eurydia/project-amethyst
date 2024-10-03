@@ -1,5 +1,9 @@
 import { TableHeaderDefinition } from "$types/generics";
-import { Table, TableContainer, Typography } from "@mui/material";
+import {
+  Table,
+  TableContainer,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import { BaseSortableTableBody } from "./BaseSortableTableBody";
 import { BaseSortableTableHead } from "./BaseSortableTableHead";
@@ -15,22 +19,36 @@ type BaseSortableTableProps<T> = {
     };
   };
 };
-export const BaseSortableTable = <T,>(props: BaseSortableTableProps<T>) => {
-  const { entries, headers, defaultSortByColumn, defaultSortOrder, slotProps } =
-    props;
+export const BaseSortableTable = <T,>(
+  props: BaseSortableTableProps<T>
+) => {
+  const {
+    entries,
+    headers,
+    defaultSortByColumn,
+    defaultSortOrder,
+    slotProps,
+  } = props;
 
-  const [sortOrder, setOrderDirection] = useState(defaultSortOrder);
-  const [sortByColumn, setOrderColumn] = useState(defaultSortByColumn);
+  const [sortOrder, setOrderDirection] = useState(
+    defaultSortOrder
+  );
+  const [sortByColumn, setOrderColumn] = useState(
+    defaultSortByColumn
+  );
 
   const handleRequestSort = (colNumber: number) => {
-    const isAsc = sortByColumn === colNumber && sortOrder === "asc";
+    const isAsc =
+      sortByColumn === colNumber && sortOrder === "asc";
     setOrderDirection(isAsc ? "desc" : "asc");
     setOrderColumn(colNumber);
   };
   let sortedEntries = [...entries];
   if (sortByColumn < headers.length && sortByColumn >= 0) {
     if (headers[sortByColumn].compare !== null) {
-      sortedEntries = sortedEntries.sort(headers[sortByColumn].compare);
+      sortedEntries = sortedEntries.sort(
+        headers[sortByColumn].compare
+      );
     }
     if (sortOrder === "desc") {
       sortedEntries.reverse();
@@ -38,10 +56,7 @@ export const BaseSortableTable = <T,>(props: BaseSortableTableProps<T>) => {
   }
   return (
     <TableContainer>
-      <Typography>
-        found {entries.length} รายการ
-        {/* TODO: translate */}
-      </Typography>
+      <Typography>พบ {entries.length} รายการ</Typography>
       <Table sx={{ tableLayout: "fixed" }}>
         <BaseSortableTableHead
           headerDefinitions={headers}

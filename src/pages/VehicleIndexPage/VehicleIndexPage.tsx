@@ -12,7 +12,7 @@ export const VehicleIndexPage: FC = () => {
     <Stack spacing={1}>
       <Typography variant="h1">ทะเบียนรถรับส่ง</Typography>
       <VehicleTable
-        vehicleEntries={vehicleEntries}
+        entries={vehicleEntries}
         slotProps={{
           form: {
             vendorComboBox: {

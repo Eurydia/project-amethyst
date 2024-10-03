@@ -1,10 +1,18 @@
-export type PickupRouteModel = {
-  id: number;
+import { z } from "zod";
 
-  name: string;
-  arrival_time: string;
-  departure_time: string;
-};
+export const pickupRouteModelSchema = z
+  .object({
+    id: z.number().int().min(1),
+    name: z.string().min(1),
+    arrival_time: z.string(),
+    departure_time: z.string(),
+  })
+  .passthrough()
+  .required();
+
+export type PickupRouteModel = z.infer<
+  typeof pickupRouteModelSchema
+>;
 
 export type PickupRouteEntry = {
   id: number;
@@ -28,9 +36,15 @@ export type PickupRouteFormData = {
   departureTime: string;
 };
 
-export type PickupRouteExportData = {
-  เลขรหัส: number;
-  ชื่อสาย: string;
-  เวลารับเข้า: string;
-  เวลารับออก: string;
-};
+export const pickupRouteExportDataSchema = z
+  .object({
+    เลขรหัส: z.number().int().min(1),
+    ชื่อสาย: z.string().min(1),
+    เวลารับเข้า: z.string(),
+    เวลารับออก: z.string(),
+  })
+  .passthrough()
+  .required();
+export type PickupRouteExportData = z.infer<
+  typeof pickupRouteExportDataSchema
+>;

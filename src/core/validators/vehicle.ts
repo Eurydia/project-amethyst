@@ -1,16 +1,5 @@
-import {
-  CITIES,
-  KNOWN_VEHICLE_CLASSES,
-} from "$core/constants";
 import { VehicleFormData } from "$types/models/vehicle";
 import { z } from "zod";
-
-const schema = z.object({
-  license_plate: z.string().min(1),
-  vendor: z.string().min(1),
-  vehicle_class: z.enum(KNOWN_VEHICLE_CLASSES),
-  registered_city: z.enum(CITIES),
-});
 
 export const VEHICLE_VALIDATOR = {
   validate: async (data: unknown) => {

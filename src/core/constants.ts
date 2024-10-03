@@ -82,3 +82,5 @@ export const CITIES = [
   "อุทัยธานี",
   "อุบลราชธานี",
 ] as const;
+
+export const KNOWN_LICENSE_TYPES = ["ท.1", "ท.2"] as const;

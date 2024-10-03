@@ -16,6 +16,10 @@ export const operationalLogModelSchema = z
   .passthrough()
   .required();
 
+export type OperationalLogModel = z.infer<
+  typeof operationalLogModelSchema
+>;
+
 export type OperationalLogEntry = {
   id: number;
   driverId: number;

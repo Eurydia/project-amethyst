@@ -7,9 +7,12 @@ import { tauriGetOperationLogAll } from "$backend/database/get/operational-logs"
 import { tauriGetPickupRouteAll } from "$backend/database/get/pickup-routes";
 import { tauriGetTopicAll } from "$backend/database/get/topics";
 import { tauriGetVehicleAll } from "$backend/database/get/vehicles";
+import {
+  BAD_REQUEST_ERROR,
+  DRIVER_MISSING_FROM_DATABASE_ERROR,
+} from "$core/errors";
 import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
-import { TH_LOCALE } from "$locale/th";
 import { DriverModel } from "$types/models/driver";
 import { DriverReportEntry } from "$types/models/driver-report";
 import { OperationalLogEntry } from "$types/models/operational-log";
@@ -21,7 +24,7 @@ import {
   appLocalDataDir,
   join,
 } from "@tauri-apps/api/path";
-import { json, LoaderFunction } from "react-router-dom";
+import { LoaderFunction } from "react-router-dom";
 
 export type IndexPageLoaderData = {
   driver: DriverModel;
@@ -40,25 +43,12 @@ export const driverInfoPageLoader: LoaderFunction = async ({
   params,
 }) => {
   if (params.driverId === undefined) {
-    throw json(
-      {},
-      {
-        status: 400,
-        statusText: TH_LOCALE.driverIdIsMissingFromParams,
-      }
-    );
+    throw BAD_REQUEST_ERROR;
   }
   const driverId = Number.parseInt(params.driverId);
   const driver = await tauriGetDriver(driverId);
   if (driver === null) {
-    throw json(
-      {},
-      {
-        status: 404,
-        statusText:
-          TH_LOCALE.errorDriverIsMissingFromDatabase,
-      }
-    );
+    throw DRIVER_MISSING_FROM_DATABASE_ERROR;
   }
 
   const medicalReports = (

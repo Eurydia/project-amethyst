@@ -1,9 +1,7 @@
-/** @format */
-
 import { tauriGetTopicAll } from "$backend/database/get/topics";
 import { tauriGetVehicleReportInspectionAll } from "$backend/database/get/vehicle-inspection-reports";
 import { tauriGetVehicleAll } from "$backend/database/get/vehicles";
-import { VEHICLE_REPORT_INSPECTION_TRANSFORMER } from "$core/transformers/vehicle-report-inspection-model";
+import { VEHICLE_REPORT_INSPECTION_TRANSFORMER } from "$core/transformers/vehicle-report-inspection";
 import { VehicleModel } from "$types/models/vehicle";
 import { VehicleReportInspectionEntry } from "$types/models/vehicle-report-inspection";
 import { LoaderFunction } from "react-router-dom";

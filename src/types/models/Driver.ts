@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const driverModelSchema = z
   .object({
-    id: z.number().int().min(1),
+    id: z.number().int(),
 
     name: z.string().trim().min(1),
     surname: z.string().trim().min(1),

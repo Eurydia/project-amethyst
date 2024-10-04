@@ -6,10 +6,10 @@ import { VehicleModel } from "./vehicle";
 
 export const operationalLogModelSchema = z
   .object({
-    id: z.number().int().min(1),
-    driver_id: z.number().int().min(1),
-    vehicle_id: z.number().int().min(1),
-    route_id: z.number().int().min(1),
+    id: z.number().int(),
+    driver_id: z.number().int(),
+    vehicle_id: z.number().int(),
+    route_id: z.number().int(),
 
     start_date: z
       .string()

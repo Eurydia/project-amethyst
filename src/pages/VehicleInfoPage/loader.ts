@@ -1,5 +1,3 @@
-/** @format */
-
 import { tauriGetDriverAll } from "$backend/database/get/drivers";
 import { tauriGetOperationLogAll } from "$backend/database/get/operational-logs";
 import { tauriGetPickupRouteAll } from "$backend/database/get/pickup-routes";
@@ -8,10 +6,13 @@ import { tauriGetVehicleReportGeneralAll } from "$backend/database/get/vehicle-g
 import { tauriGetVehicleReportInspectionAll } from "$backend/database/get/vehicle-inspection-reports";
 import { tauriGetVehicleVendorAll } from "$backend/database/get/vehicle-vendors";
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
+import {
+  BAD_REQUEST_ERROR,
+  VEHICLE_MISSING_FROM_DATABASE_ERROR,
+} from "$core/errors";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
 import { VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-general";
-import { VEHICLE_REPORT_INSPECTION_TRANSFORMER } from "$core/transformers/vehicle-report-inspection-model";
-import { TH_LOCALE } from "$locale/th";
+import { VEHICLE_REPORT_INSPECTION_TRANSFORMER } from "$core/transformers/vehicle-report-inspection";
 import { DriverModel } from "$types/models/driver";
 import { OperationalLogEntry } from "$types/models/operational-log";
 import { PickupRouteModel } from "$types/models/pickup-route";
@@ -24,7 +25,7 @@ import {
   appLocalDataDir,
   join,
 } from "@tauri-apps/api/path";
-import { json, LoaderFunction } from "react-router-dom";
+import { LoaderFunction } from "react-router-dom";
 
 export type VehicleInfoPageLoaderData = {
   galleryFileEntries: FileEntry[];
@@ -43,26 +44,12 @@ export type VehicleInfoPageLoaderData = {
 export const vehicleInfoPageLoader: LoaderFunction =
   async ({ params }) => {
     if (params.vehicleId === undefined) {
-      throw json(
-        {},
-        {
-          status: 400,
-          statusText:
-            TH_LOCALE.vehicleIdIsMissingFromParams,
-        }
-      );
+      throw BAD_REQUEST_ERROR;
     }
     const vehicleId = Number.parseInt(params.vehicleId);
     const vehicle = await tauriGetVehicle(vehicleId);
     if (vehicle === null) {
-      throw json(
-        {},
-        {
-          status: 404,
-          statusText:
-            TH_LOCALE.errorVehicleIsMissingFromDatabase,
-        }
-      );
+      throw VEHICLE_MISSING_FROM_DATABASE_ERROR;
     }
 
     const logs = (await tauriGetOperationLogAll())

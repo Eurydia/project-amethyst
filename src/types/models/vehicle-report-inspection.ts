@@ -4,8 +4,9 @@ import { VehicleModel } from "./vehicle";
 
 export const vehicleReportInspectionModelSchema = z
   .object({
-    id: z.number().min(1),
-    vehicle_id: z.number().min(1),
+    id: z.number(),
+    vehicle_id: z.number(),
+
     datetime: z.string().refine((v) => dayjs(v).isValid()),
     topics: z.string(),
 

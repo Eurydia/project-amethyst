@@ -1,125 +1,184 @@
-/** @format */
-
+import { tauriGetAttendanceLog } from "$backend/database/get/attendance-logs";
 import { tauriPutAttendanceLog } from "$backend/database/put";
+import { compareStrings } from "$core/compare";
 import { filterItems } from "$core/filter";
+import { ATTENDANCE_LOG_MODEL_TRANSFORMER } from "$core/transformers/attendance-log";
+import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
 import { AttendanceLogEntry } from "$types/models/attendance-log";
-import { SearchRounded } from "@mui/icons-material";
-import { InputAdornment, Stack, TextField } from "@mui/material";
+import { Stack } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
 import { AttendanceLogTableCheckBox } from "./AttendanceLogTableCheckBox";
 import { BaseSortableTable } from "./BaseSortableTable";
+import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
 
-const HEADER_DEFINITIONS: TableHeaderDefinition<AttendanceLogEntry>[] = [
-	{
-		label: "สายรถ",
-		compare: (a, b) => a.routeName.localeCompare(b.routeName),
-		render: (item) => (
-			<BaseTypographyLink to={"/pickup-routes/info/" + item.routeId}>
-				{item.routeName}
-			</BaseTypographyLink>
-		),
-	},
-	{
-		label: "เลขทะเบียน",
-		compare: (a, b) => a.vehicleLicensePlate.localeCompare(b.vehicleLicensePlate),
-		render: (item) => (
-			<BaseTypographyLink to={"/vehicles/info/" + item.vehicleId}>
-				{item.vehicleLicensePlate}
-			</BaseTypographyLink>
-		),
-	},
-	{
-		label: "คนขับรถ",
-		compare: (a, b) => a.driverName.localeCompare(b.driverName),
-		render: (item) => (
-			<BaseTypographyLink to={"/drivers/info/" + item.driverId}>
-				{`${item.driverName} ${item.driverSurname}`}
-			</BaseTypographyLink>
-		),
-	},
-	{
-		label: "เวลารับข้า",
-		compare: null,
-		render: (item) => (
-			<AttendanceLogTableCheckBox
-				label="รับเข้า"
-				actual={item.actualArrivalDatetime}
-				expected={item.expectedArrivalDatetime}
-				onClick={async () =>
-					tauriPutAttendanceLog({
-						id: item.id,
-						actualArrivalDatetime: dayjs().format(),
-						actualDepartureDatetime: item.actualDepartureDatetime,
-					})
-				}
-			/>
-		),
-	},
-	{
-		label: "เวลารับออก",
-		compare: null,
-		render: (item) => (
-			<AttendanceLogTableCheckBox
-				label="รับออก"
-				actual={item.actualDepartureDatetime}
-				expected={item.expectedDepartureDatetime}
-				onClick={async () =>
-					tauriPutAttendanceLog({
-						id: item.id,
-						actualArrivalDatetime: item.actualArrivalDatetime,
-						actualDepartureDatetime: dayjs().format(),
-					})
-				}
-			/>
-		),
-	},
-];
+const HEADER_DEFINITIONS: TableHeaderDefinition<AttendanceLogEntry>[] =
+  [
+    {
+      label: "สายรถ",
+      compare: (a, b) =>
+        compareStrings(a.route_name, b.route_name),
+      render: (item) => (
+        <BaseTypographyLink
+          to={"/pickup-routes/info/" + item.route_id}
+        >
+          {item.route_name}
+        </BaseTypographyLink>
+      ),
+    },
+    {
+      label: "เลขทะเบียน",
+      compare: (a, b) =>
+        compareStrings(
+          a.vehicle_license_plate,
+          b.vehicle_license_plate
+        ),
+      render: (item) => (
+        <BaseTypographyLink
+          to={"/vehicles/info/" + item.vehicle_id}
+        >
+          {item.vehicle_license_plate}
+        </BaseTypographyLink>
+      ),
+    },
+    {
+      label: "คนขับรถ",
+      compare: (a, b) =>
+        compareStrings(
+          `${a.driver_name} ${a.driver_surname}`,
+          `${b.driver_name} ${b.driver_surname}`
+        ),
+      render: (item) => (
+        <BaseTypographyLink
+          to={"/drivers/info/" + item.driver_id}
+        >
+          {item.driver_name} {item.driver_surname}
+        </BaseTypographyLink>
+      ),
+    },
+    {
+      label: "เวลารับข้า",
+      compare: null,
+      render: (item) => (
+        <AttendanceLogTableCheckBox
+          label="รับเข้า"
+          actual={item.actual_arrival_datetime}
+          expected={item.expected_arrival_datetime}
+          onClick={async () =>
+            tauriPutAttendanceLog({
+              id: item.id,
+              actual_arrival_datetime: dayjs().format(),
+              actual_depature_datetime:
+                item.actual_departure_datetime,
+            })
+          }
+        />
+      ),
+    },
+    {
+      label: "เวลารับออก",
+      compare: null,
+      render: (item) => (
+        <AttendanceLogTableCheckBox
+          label="รับออก"
+          actual={item.actual_departure_datetime}
+          expected={item.expected_departure_datetime}
+          onClick={async () =>
+            tauriPutAttendanceLog({
+              id: item.id,
+              actual_arrival_datetime:
+                item.actual_arrival_datetime,
+              actual_depature_datetime: dayjs().format(),
+            })
+          }
+        />
+      ),
+    },
+  ];
 
 type AttendanceLogTableProps = {
-	entries: AttendanceLogEntry[];
+  entries: AttendanceLogEntry[];
 };
-export const AttendanceLogTable: FC<AttendanceLogTableProps> = (props) => {
-	const { entries } = props;
-	const [search, setSearch] = useState("");
+export const AttendanceLogTable: FC<
+  AttendanceLogTableProps
+> = (props) => {
+  const { entries } = props;
+  const [search, setSearch] = useState("");
 
-	const filteredEntries = filterItems(entries, search, [
-		"routeName",
-		"vehicleLicensePlate",
-		"driverName",
-		"driverSurname",
-	]);
+  const filteredEntries = filterItems(entries, search, [
+    "routeName",
+    "vehicleLicensePlate",
+    "driverName",
+    "driverSurname",
+  ]);
 
-	return (
-		<Stack spacing={1}>
-			<TextField
-				fullWidth
-				placeholder="ค้นหาด้วยชื่อสกุลคนขับรถ, สายรถ, หรือเลขทะเบียน"
-				value={search}
-				onChange={(e) => setSearch(e.target.value)}
-				slotProps={{
-					input: {
-						startAdornment: (
-							<InputAdornment position="start">
-								<SearchRounded />
-							</InputAdornment>
-						),
-					},
-				}}
-			/>
-			<BaseSortableTable
-				headers={HEADER_DEFINITIONS}
-				defaultSortByColumn={0}
-				defaultSortOrder="asc"
-				entries={filteredEntries}
-				slotProps={{
-					body: {
-						emptyText: "ไม่พบรายการ",
-					},
-				}}
-			/>
-		</Stack>
-	);
+  const handleExport = async () => {
+    if (filteredEntries.length === 0) {
+      return;
+    }
+    const logs = (
+      await Promise.all(
+        filteredEntries.map((entry) =>
+          tauriGetAttendanceLog(entry.id)
+        )
+      )
+    ).filter((log) => log !== null);
+
+    await exportWorkbook(logs, {
+      header: [],
+      name: "ประวัติการเดินรถ",
+      transformer:
+        ATTENDANCE_LOG_MODEL_TRANSFORMER.toExportData,
+    });
+  };
+
+  const databaseIsEmpty = entries.length === 0;
+
+  return (
+    <Stack spacing={1}>
+      <BaseSortableTableToolbar
+        slotProps={{
+          searchField: {
+            onChange: setSearch,
+            value: search,
+            placeholder:
+              "ค้นหาด้วยชื่อสกุลคนขับรถ, สายรถ, หรือเลขทะเบียน",
+          },
+          addButton: {
+            disabled: true,
+            children: "เพิ่มประวัติ",
+            onClick: function (): void {
+              throw new Error("Function not implemented.");
+            },
+          },
+          importButton: {
+            disabled: true,
+            children: "นำเข้าประวัติ",
+            onFileSelect: function (_: File): void {
+              throw new Error("Function not implemented.");
+            },
+          },
+          exportButton: {
+            children: "ดาวน์โหลด",
+            onClick: handleExport,
+          },
+        }}
+      />
+      <BaseSortableTable
+        headers={HEADER_DEFINITIONS}
+        defaultSortByColumn={0}
+        defaultSortOrder="asc"
+        entries={filteredEntries}
+        slotProps={{
+          body: {
+            emptyText: databaseIsEmpty
+              ? "ฐานข้อมูลว่าง"
+              : "ไม่พบประวัติที่ค้นหา",
+          },
+        }}
+      />
+    </Stack>
+  );
 };

@@ -4,8 +4,9 @@ import { PickupRouteModel } from "./pickup-route";
 
 export const pickupRouteReportGeneralModelSchema = z
   .object({
-    id: z.number().int().min(1),
-    route_id: z.number().int().min(1),
+    id: z.number().int(),
+    route_id: z.number().int(),
+
     datetime: z.string().refine((v) => dayjs(v).isValid()),
     title: z.string().trim().min(1),
     content: z.string(),

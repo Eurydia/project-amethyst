@@ -18,3 +18,13 @@ export const tauriGetAttendanceLogToday = async () => {
     .safeParse(logs);
   return r.success ? r.data : [];
 };
+
+export const tauriGetAttendanceLog = async (
+  log_id: number
+) => {
+  const data = await tauri.invoke("get_attendance_log", {
+    log_id,
+  });
+  const r = attendanceLogModelSchema.safeParse(data);
+  return r.success ? r.data : null;
+};

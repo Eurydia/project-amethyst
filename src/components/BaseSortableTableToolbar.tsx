@@ -5,7 +5,7 @@ import {
   SearchRounded,
 } from "@mui/icons-material";
 import { Button, Stack } from "@mui/material";
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import { BaseInputFileSelect } from "./BaseInputFileSelect";
 import { BaseInputTextField } from "./BaseInputTextField";
 
@@ -18,16 +18,17 @@ type BaseSortableTableToolbarProps = {
     };
     addButton: {
       disabled?: boolean;
-      children: string;
+      children: ReactNode | ReactNode[];
       onClick: () => void;
     };
     importButton: {
       disabled?: boolean;
-      children: string;
+      children: ReactNode | ReactNode[];
       onFileSelect: (file: File) => void;
     };
     exportButton: {
-      children: string;
+      disabled?: boolean;
+      children: ReactNode | ReactNode[];
       onClick: () => void;
     };
   };

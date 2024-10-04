@@ -5,7 +5,6 @@ import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { OperationalLogTable } from "$components/OperationalLogTable";
 import { PickupRouteInfoGroup } from "$components/PickupRouteInfoGroup";
 import { PickupRouteReportGeneralTable } from "$components/PickupRouteReportGeneralTable";
-import { TH_LOCALE } from "$locale/th";
 import { KeyboardArrowLeftRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
@@ -69,7 +68,7 @@ export const PickupRouteInfoPage: FC = () => {
         variant="h2"
         id="operational-log"
       >
-        {TH_LOCALE.operationalLogTable}
+        ตารางบันทึกประวัติการเดินรถ
       </Typography>
       <OperationalLogTable
         hideRouteColumn

@@ -4,8 +4,8 @@ import { DriverModel } from "./driver";
 
 export const driverReportModelSchema = z
   .object({
-    id: z.number().int().min(1),
-    driver_id: z.number().int().min(1),
+    id: z.number().int(),
+    driver_id: z.number().int(),
 
     datetime: z.string().refine((v) => dayjs(v).isValid()),
     title: z.string().trim().min(1),

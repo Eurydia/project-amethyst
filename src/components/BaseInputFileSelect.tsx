@@ -1,10 +1,10 @@
 import { Button } from "@mui/material";
-import { FC, useRef } from "react";
+import { FC, ReactNode, useRef } from "react";
 import { Fragment } from "react/jsx-runtime";
 
 type BaseInputFileSelectProps = {
   disabled?: boolean;
-  children: string;
+  children: ReactNode | ReactNode[];
   startIcon?: React.ReactNode;
   onFileSelect: (file: File) => void;
 };
@@ -27,7 +27,7 @@ export const BaseInputFileSelect: FC<
           }
           fileSelectRef.current.click();
         }}
-      ></Button>
+      />
       <input
         ref={fileSelectRef}
         accept=".xlsx, xls"
@@ -38,7 +38,6 @@ export const BaseInputFileSelect: FC<
           if (files === null || files.length === 0) {
             return;
           }
-
           const file = files[0];
           onFileSelect(file);
         }}

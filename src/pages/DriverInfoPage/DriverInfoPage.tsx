@@ -3,7 +3,6 @@ import { DriverInfoGroup } from "$components/DriverInfoGroup";
 import { DriverReportGeneralTable } from "$components/DriverReportGeneralTable";
 import { DriverReportMedicalTable } from "$components/DriverReportMedicalTable";
 import { OperationalLogTable } from "$components/OperationalLogTable";
-import { TH_LOCALE } from "$locale/th";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import { useLoaderData } from "react-router-dom";
@@ -11,19 +10,19 @@ import { IndexPageLoaderData as DriverInfoPageLoaderData } from "./loader";
 
 const TOC_ITEMS = [
   {
-    label: TH_LOCALE.driverInfoGroup,
+    label: "ข้อมูลคนขับรถ",
     href: "#info",
   },
   {
-    label: TH_LOCALE.operationalLogTable,
+    label: "ตารางบันทึกประวัติการเดินรถ",
     href: "#operational-log",
   },
   {
-    label: TH_LOCALE.driverGeneralReportTable,
+    label: "ตารางบันทึกเรื่องร้องเรียน",
     href: "#general-report",
   },
   {
-    label: TH_LOCALE.driverMedicalReportTable,
+    label: "ตารางบันทึกผลการตรวจสารเสพติด",
     href: "#medical-report",
   },
 ];
@@ -46,7 +45,7 @@ export const DriverInfoPage: FC = () => {
   return (
     <Stack spacing={1}>
       <Typography variant="h1">
-        {`${driver.name} ${driver.surname}`}
+        {driver.name} {driver.surname}
       </Typography>
       <BaseTOC>{TOC_ITEMS}</BaseTOC>
       <Typography
@@ -68,7 +67,7 @@ export const DriverInfoPage: FC = () => {
         variant="h2"
         id="operational-log"
       >
-        {TH_LOCALE.operationalLogTable}
+        ตารางบันทึกประวัติการเดินรถ
       </Typography>
       <OperationalLogTable
         logEntries={logEntries}
@@ -91,7 +90,7 @@ export const DriverInfoPage: FC = () => {
         variant="h2"
         id="general-report"
       >
-        {TH_LOCALE.driverGeneralReportTable}
+        ตารางบันทึกเรื่องร้องเรียน
       </Typography>
       <DriverReportGeneralTable
         hideDriverColumn
@@ -112,7 +111,7 @@ export const DriverInfoPage: FC = () => {
         variant="h2"
         id="medical-report"
       >
-        {TH_LOCALE.driverMedicalReportTable}
+        ตารางบันทึกผลการตรวจสารเสพติด
       </Typography>
       <DriverReportMedicalTable
         hideDriverColumn

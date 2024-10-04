@@ -3,7 +3,8 @@ import { z } from "zod";
 
 export const pickupRouteModelSchema = z
   .object({
-    id: z.number().int().min(1),
+    id: z.number().int(),
+
     name: z.string().trim().min(1),
     arrival_time: z
       .string()

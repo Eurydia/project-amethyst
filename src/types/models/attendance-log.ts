@@ -37,19 +37,41 @@ export type AttendanceLogFormData = Omit<
 
 export type AttendanceLogEntry = {
   id: number;
-  vehicleId: number;
-  vehicleLicensePlate: string;
+  vehicle_id: number;
+  driver_id: number;
+  route_id: number;
 
-  driverId: number;
-  driverName: string;
-  driverSurname: string;
+  driver_name: string;
+  driver_surname: string;
+  vehicle_license_plate: string;
+  route_name: string;
 
-  routeId: number;
-  routeName: string;
+  expected_arrival_datetime: string;
+  expected_departure_datetime: string;
 
-  expectedArrivalDatetime: string;
-  actualArrivalDatetime: string | null;
+  actual_arrival_datetime: string | null;
+  actual_departure_datetime: string | null;
+};
 
-  expectedDepartureDatetime: string;
-  actualDepartureDatetime: string | null;
+export type AttendanceLogExportData = {
+  รหัส: number;
+  รหัสคนขับรถ: number;
+  รหัสรถรับส่ง: number;
+  รหัสสายรถ: number;
+
+  ชื่อคนขับรถ: string;
+  นามสกุลคนขับรถ: string;
+  เลขทะเบียนรถ: string;
+  ชื่อสายรถ: string;
+
+  วันที่: string;
+
+  เวลารับเข้าตามกำหนด: string;
+  เวลารับออกตามกำหนด: string;
+
+  เวลารับเข้าจริง: string;
+  เวลารับออกจริง: string;
+
+  สถานะรับเข้า: string;
+  รับออกสาย: string;
 };

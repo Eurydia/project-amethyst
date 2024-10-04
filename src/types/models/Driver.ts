@@ -5,8 +5,8 @@ export const driverModelSchema = z
   .object({
     id: z.number().int().min(1),
 
-    name: z.string().min(1),
-    surname: z.string().min(1),
+    name: z.string().trim().min(1),
+    surname: z.string().trim().min(1),
     contact: z.string(),
     license_type: z.enum(KNOWN_LICENSE_TYPES),
   })
@@ -31,12 +31,7 @@ export type DriverEntry = {
   }[];
 };
 
-export type DriverFormData = {
-  name: string;
-  surname: string;
-  contact: string;
-  license_type: string;
-};
+export type DriverFormData = Omit<DriverModel, "id">;
 
 export const driverExportDataSchema = z
   .object({

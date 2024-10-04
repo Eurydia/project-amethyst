@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { z } from "zod";
 import { VehicleModel } from "./vehicle";
 
@@ -5,8 +6,8 @@ export const vehicleReportGeneralModelSchema = z
   .object({
     vehicle_id: z.number().int().min(1),
     id: z.number().int().min(1),
-    datetime: z.string(),
-    title: z.string().min(1),
+    datetime: z.string().refine((v) => dayjs(v).isValid()),
+    title: z.string().trim().min(1),
     content: z.string(),
     topics: z.string(),
   })

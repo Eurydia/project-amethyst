@@ -1,27 +1,24 @@
-import { KNOWN_LICENSE_TYPES } from "$core/constants";
-import { DriverFormData } from "$types/models/driver";
-import { z } from "zod";
+import {
+  PickupRouteModel,
+  pickupRouteModelSchema,
+} from "$types/models/pickup-route";
 
-const schema = z.object({
-  name: z.string().min(1),
-  surname: z.string().min(1),
-  contact: z.string(),
-  licenseType: z.enum(KNOWN_LICENSE_TYPES),
-});
-
-export const DRIVER_MODEL_VALIDATOR = {
+export const PICKUP_ROUTE_MODEL_VALIDATOR = {
   validate: async (data: unknown) => {
-    if (!schema.safeParse(data).success) {
+    const r = pickupRouteModelSchema.safeParse(data);
+
+    if (!r.success) {
       return null;
     }
 
-    const data_ = data as z.infer<typeof schema>;
+    const data_ = r.data;
 
-    const formData: DriverFormData = {
-      name: data_.name.normalize().trim(),
-      surname: data_.surname.normalize().trim(),
-      contact: data_.contact.normalize().trim(),
-      license_type: data_.licenseType.normalize().trim(),
+    const formData: PickupRouteModel = {
+      driver_id: data_.driver_id,
+      id: data_.id,
+      name: data_.name.normalize(),
+      arrival_time: data_.arrival_time,
+      departure_time: data_.departure_time,
     };
     return formData;
   },

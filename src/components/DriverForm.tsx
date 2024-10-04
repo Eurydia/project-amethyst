@@ -151,10 +151,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       label: "เบอร์ติดต่อ",
       value: (
         <BaseInputTextField
-          placeholder={
-            initFormData.contact.trim().normalize() ||
-            "ไม่มี"
-          }
+          placeholder={initFormData.contact || "ไม่มี"}
           value={fieldContact}
           onChange={setFieldContact}
         />

@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { z } from "zod";
 import { DriverModel } from "./driver";
 import { PickupRouteModel } from "./pickup-route";
@@ -10,8 +11,10 @@ export const operationalLogModelSchema = z
     vehicle_id: z.number().int().min(1),
     route_id: z.number().int().min(1),
 
-    start_date: z.string(),
-    end_date: z.string(),
+    start_date: z
+      .string()
+      .refine((v) => dayjs(v).isValid()),
+    end_date: z.string().refine((v) => dayjs(v).isValid()),
   })
   .passthrough()
   .required();

@@ -1,17 +1,20 @@
-import { VehicleFormData } from "$types/models/vehicle";
-import { z } from "zod";
+import {
+  VehicleFormData,
+  vehicleModelSchema,
+} from "$types/models/vehicle";
 
 export const VEHICLE_VALIDATOR = {
   validate: async (data: unknown) => {
-    if (!schema.safeParse(data).success) {
+    const r = vehicleModelSchema.safeParse(data);
+    if (!r.success) {
       return null;
     }
 
-    const data_ = data as z.infer<typeof schema>;
+    const data_ = r.data;
 
     const formData: VehicleFormData = {
-      license_plate: data_.license_plate.normalize().trim(),
-      vendor: data_.vendor.normalize().trim(),
+      license_plate: data_.license_plate.normalize(),
+      vendor: data_.vendor.normalize(),
       vehicle_class: data_.vehicle_class,
       registered_city: data_.registered_city,
     };

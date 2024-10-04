@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { z } from "zod";
 import { DriverModel } from "./driver";
 
@@ -6,8 +7,8 @@ export const driverReportModelSchema = z
     id: z.number().int().min(1),
     driver_id: z.number().int().min(1),
 
-    datetime: z.string(),
-    title: z.string().min(1),
+    datetime: z.string().refine((v) => dayjs(v).isValid()),
+    title: z.string().trim().min(1),
     content: z.string(),
     topics: z.string(),
   })
@@ -24,9 +25,9 @@ export type DriverReportEntry = {
   title: string;
   topics: string[];
 
-  driverId: number;
-  driverName: string;
-  driverSurname: string;
+  driver_id: number;
+  driver_name: string;
+  driver_surname: string;
 };
 export type DriverReportFormData = {
   datetime: string;

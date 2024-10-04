@@ -7,8 +7,8 @@ import { z } from "zod";
 export const vehicleModelSchema = z
   .object({
     id: z.number().int().min(1),
-    license_plate: z.string().min(1),
-    vendor: z.string().min(1),
+    license_plate: z.string().trim().min(1),
+    vendor: z.string().trim().min(1),
     vehicle_class: z.enum(KNOWN_VEHICLE_CLASSES),
     registered_city: z.enum(CITIES),
   })

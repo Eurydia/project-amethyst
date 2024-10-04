@@ -31,12 +31,12 @@ const DRIVER_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
   {
     label: "คนขับรถ",
     compare: (a, b) =>
-      a.driverName.localeCompare(b.driverName),
+      a.driver_name.localeCompare(b.driver_name),
     render: (item) => (
       <BaseTypographyLink
-        to={"/drivers/info/" + item.driverId}
+        to={"/drivers/info/" + item.driver_id}
       >
-        {item.driverName} {item.driverSurname}
+        {item.driver_name} {item.driver_surname}
       </BaseTypographyLink>
     ),
   };

@@ -15,14 +15,10 @@ export const DRIVER_REPORT_MODEL_TRANSFORMER = {
       return null;
     }
     const entry: DriverReportEntry = {
-      datetime: report.datetime,
-      id: report.id,
-      title: report.title,
+      ...report,
+      driver_name: driver.name,
+      driver_surname: driver.surname,
       topics: report.topics.split(","),
-
-      driverId: driver.id,
-      driverName: driver.name,
-      driverSurname: driver.surname,
     };
     return entry;
   },

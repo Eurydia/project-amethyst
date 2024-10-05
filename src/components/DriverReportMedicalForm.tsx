@@ -1,6 +1,11 @@
+import { tauriPostDriverReportGeneral } from "$backend/database/post";
+import { tauriPutDriverReportGeneral } from "$backend/database/put";
+import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report";
 import { DriverModel } from "$types/models/driver";
-import { DriverReportModel } from "$types/models/driver-report";
-import { SaveRounded } from "@mui/icons-material";
+import {
+  DriverReportFormData,
+  DriverReportModel,
+} from "$types/models/driver-report";
 import { default as dayjs } from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
@@ -14,6 +19,7 @@ import { DriverInputDriverSelect } from "./DriverInputDriverSelect";
 
 type DriverReportMedicalFormPostProps = {
   editing: false;
+
   open: boolean;
   onClose: () => void;
   slotProps: {
@@ -52,22 +58,14 @@ export const DriverReportMedicalForm: FC<
 > = (props) => {
   const { slotProps, onClose, open, editing } = props;
 
-  let title = "Add new report"; // TODO: translate
-  let initFormData = {
-    datetime: dayjs().format(),
-    title: "",
-    content: "",
-    topics: [],
-    driver: slotProps.driverSelect.options[0],
-  };
-  let submitButtonLabel = "Post report"; // TODO: translate
-  let submitButtonStartIcon = <SaveRounded />;
-  if (editing) {
-    title = "Edit report"; // TODO: translate
-    initFormData = props.initFormData;
-    submitButtonLabel = "Save changes"; // TODO: translate
-    submitButtonStartIcon = <SaveRounded />;
-  }
+  const title = editing
+    ? "แก้ไขข้อมูลผลตรวจสารเสพติด"
+    : "เพิ่มผลตรวจสารเสพติด";
+  const initFormData =
+    DRIVER_REPORT_MODEL_TRANSFORMER.toFormData(
+      editing ? props.report : undefined,
+      slotProps.driverSelect.options[0]
+    );
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime)
   );
@@ -111,53 +109,38 @@ export const DriverReportMedicalForm: FC<
       .format();
 
     const formData: DriverReportFormData = {
-      driver: fieldDriver,
-
-      topics: fieldTopics
-        .map((topic) => topic.trim().normalize())
-        .filter((topic) => topic.length > 0),
-      content: fieldContent.normalize().trim(),
-      title: fieldTitle.normalize().trim(),
-
       datetime,
+      driver: fieldDriver,
+      title: fieldTitle.trim() || "ผลตรวจสารเสพติด",
+      content: fieldContent.trim(),
+      topics: fieldTopics
+        .map((topic) => topic.trim())
+        .filter((topic) => topic.length > 0),
     };
-    if (editing) {
-      tauriPutDriverReportGeneral(props.reportId, formData)
-        .then(
-          () => {
-            toast.success(
-              "Report updated" // TODO: translate
-            );
-            revalidate();
-          },
-          () =>
-            toast.error(
-              "Failed to update report" // TODO: translate
-            )
+
+    (editing
+      ? tauriPutDriverReportGeneral(
+          props.report.id,
+          formData
         )
-        .finally(() => {
-          clearForm();
-          onClose();
-        });
-    } else {
-      tauriPostDriverReportGeneral(formData)
-        .then(
-          () => {
-            toast.success(
-              "Report posted" // TODO: translate
-            );
-            revalidate();
-          },
-          () =>
-            toast.error(
-              "Failed to post report" // TODO: translate
-            )
-        )
-        .finally(() => {
-          clearForm();
-          onClose();
-        });
-    }
+      : tauriPostDriverReportGeneral(formData)
+    )
+      .then(
+        () => {
+          toast.success(
+            editing ? "แก้ไขสำเร็จ" : "เพิ่มสำเร็จ"
+          );
+          revalidate();
+        },
+        () =>
+          toast.error(
+            editing ? "แก้ไขล้มเหลว" : "เพิ่มล้มเหลว"
+          )
+      )
+      .finally(() => {
+        clearForm();
+        onClose();
+      });
   };
 
   const isMissingTime =
@@ -167,10 +150,7 @@ export const DriverReportMedicalForm: FC<
     Number.isNaN(fieldDate.day()) ||
     Number.isNaN(fieldDate.month()) ||
     Number.isNaN(fieldDate.year());
-  const isMissingTitle = fieldTitle.trim() === "";
-  const isMissingContent = fieldContent.trim() === "";
-  const isFormIncomplete =
-    isMissingTitle || isMissingDate || isMissingTime;
+  const isFormIncomplete = isMissingDate || isMissingTime;
 
   const formItems: {
     label: string;
@@ -210,9 +190,10 @@ export const DriverReportMedicalForm: FC<
         <BaseInputTextField
           autoFocus
           onChange={setFieldTitle}
-          placeholder={initFormData.title}
+          placeholder={
+            initFormData.title.trim() || "ผลตรวจสารเสพติด"
+          }
           value={fieldTitle}
-          error={isMissingTitle}
         />
       ),
     },
@@ -223,8 +204,6 @@ export const DriverReportMedicalForm: FC<
           multiline
           minRows={6}
           value={fieldContent}
-          error={isMissingContent}
-          placeholder={initFormData.content}
           onChange={setFieldContent}
         />
       ),
@@ -233,7 +212,7 @@ export const DriverReportMedicalForm: FC<
       label: "หัวข้อที่เกี่ยวข้อง",
       value: (
         <BaseInputTopicComboBox
-          options={slotProps.topicComboBox.options}
+          {...slotProps.topicComboBox}
           values={fieldTopics}
           onChange={setFieldTopics}
         />
@@ -246,8 +225,6 @@ export const DriverReportMedicalForm: FC<
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
-          children: submitButtonLabel,
-          startIcon: submitButtonStartIcon,
           onClick: handleSubmit,
         },
       }}

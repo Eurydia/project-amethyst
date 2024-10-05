@@ -110,17 +110,18 @@ export const VehicleTable: FC<VehicleTableProps> = (
   };
 
   const handleExport = async () => {
-    const vehicleReqs = filteredEntries.map((entry) =>
-      tauriGetVehicle(entry.id)
-    );
     const vehicles = (
-      await Promise.all(vehicleReqs)
+      await Promise.all(
+        filteredEntries.map((entry) =>
+          tauriGetVehicle(entry.id)
+        )
+      )
     ).filter((vehicle) => vehicle !== null);
 
     exportWorkbook(vehicles, {
       name: "รถรับส่ง",
-      header: [],
-      transformer: VEHICLE_MODEL_TRANSFORMER.toExportData,
+      transformer: async (dt) =>
+        VEHICLE_MODEL_TRANSFORMER.toExportData(dt),
     }).then(
       () => toast.success("ดาวน์โหลดสำเร็จ"),
       () => toast.error("ดาวน์โหลดล้มเหลว")

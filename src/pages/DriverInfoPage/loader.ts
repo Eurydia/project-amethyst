@@ -3,7 +3,7 @@
 import { tauriGetDriverReportGeneralAll } from "$backend/database/get/driver-general-reports";
 import { tauriGetDriverReportMedicalAll } from "$backend/database/get/driver-medical-reports";
 import { tauriGetDriver } from "$backend/database/get/drivers";
-import { tauriGetOperationLogAll } from "$backend/database/get/operational-logs";
+import { tauriGetOperationalLogAll } from "$backend/database/get/operational-logs";
 import { tauriGetPickupRouteAll } from "$backend/database/get/pickup-routes";
 import { tauriGetTopicAll } from "$backend/database/get/topics";
 import { tauriGetVehicleAll } from "$backend/database/get/vehicles";
@@ -84,7 +84,7 @@ export const driverInfoPageLoader: LoaderFunction = async ({
     recursive: false,
   });
 
-  const logs = (await tauriGetOperationLogAll())
+  const logs = (await tauriGetOperationalLogAll())
     .filter(({ driver_id }) => driver_id === driverId)
     .map(OPERATIONAL_LOG_MODEL_TRANSFORMER.toEntry);
 

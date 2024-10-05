@@ -1,5 +1,5 @@
 import { tauriGetDriver } from "$backend/database/get/drivers";
-import { tauriGetOperationLogToday } from "$backend/database/get/operational-logs";
+import { tauriGetOperationalLogToday } from "$backend/database/get/operational-logs";
 import { tauriGetPickupRoute } from "$backend/database/get/pickup-routes";
 import {
   VehicleEntry,
@@ -20,7 +20,7 @@ export const VEHICLE_MODEL_TRANSFORMER = {
   },
 
   toEntry: async (vehicle: VehicleModel) => {
-    const logs = await tauriGetOperationLogToday();
+    const logs = await tauriGetOperationalLogToday();
 
     const driverIds = new Set<number>();
     const routeIds = new Set<number>();

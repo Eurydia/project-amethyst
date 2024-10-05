@@ -33,19 +33,15 @@ export const DriverReportMedicalInfoGroup: FC<
         <BaseTypographyLink
           to={"/drivers/info/" + driver.id}
         >
-          {`${driver.name} ${driver.surname}`}
+          {driver.name} {driver.surname}
         </BaseTypographyLink>
       ),
     },
     {
       label: "เวลาและวันที่",
-      value: (
-        <Typography>
-          {dayjs(report.datetime)
-            .locale("th")
-            .format("HH:mm น. วันddddที่ DD MMMM YYYY")}
-        </Typography>
-      ),
+      value: dayjs(report.datetime)
+        .locale("th")
+        .format("HH:mm น. วันddddที่ DD MMMM YYYY"),
     },
     {
       label: "เรื่อง",
@@ -53,27 +49,23 @@ export const DriverReportMedicalInfoGroup: FC<
     },
     {
       label: "รายละเอียด",
-      value:
-        report.content.trim().length > 0 ? (
-          <Typography>{report.content}</Typography>
-        ) : (
-          <Typography fontStyle="italic">
-            ไม่มีรายละเอียด
-          </Typography>
-        ),
+      value: report.content.trim() || (
+        <Typography fontStyle="italic">
+          ไม่มีรายละเอียด
+        </Typography>
+      ),
     },
     {
       label: "หัวข้อที่เกี่ยวข้อง",
-      value:
-        report.topics.length > 0 ? (
-          <Typography>
-            {report.topics.replaceAll(",", ", ")}
-          </Typography>
-        ) : (
-          <Typography fontStyle="italic">
-            ไม่มีหัวข้อที่เกี่ยวข้อง
-          </Typography>
-        ),
+      value: report.topics
+        .split(",")
+        .map((topic) => topic.trim())
+        .filter((topic) => topic.length > 0)
+        .join(", ") || (
+        <Typography fontStyle="italic">
+          ไม่มีหัวข้อที่เกี่ยวข้อง
+        </Typography>
+      ),
     },
   ];
 
@@ -89,14 +81,7 @@ export const DriverReportMedicalInfoGroup: FC<
       <FormalLayout>{infoItems}</FormalLayout>
       <DriverReportMedicalForm
         editing
-        reportId={report.id}
-        initFormData={{
-          datetime: report.datetime,
-          title: report.title,
-          content: report.content,
-          topics: report.topics.split(","),
-          driver,
-        }}
+        report={report}
         open={dialogOpen}
         onClose={() => setDialogOpen(true)}
         slotProps={{

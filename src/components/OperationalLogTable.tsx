@@ -1,23 +1,22 @@
-/** @format */
-
+import { tauriGetOperationalLog } from "$backend/database/get/operational-logs";
+import { compareStrings } from "$core/compare";
 import { filterItems } from "$core/filter";
+import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
+import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
 import { DriverModel } from "$types/models/driver";
 import { OperationalLogEntry } from "$types/models/operational-log";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { VehicleModel } from "$types/models/vehicle";
-import {
-  Alert,
-  Collapse,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
+import { toast } from "react-toastify";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
 import { OperationalLogForm } from "./OperationalLogForm";
+import { OperationalLogTableAlert } from "./OperationalLogTableAlert";
 
 const STARTDATE_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> =
   {
@@ -50,7 +49,7 @@ const DRIVER_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> =
   {
     label: "คนขับรถ",
     compare: (a, b) =>
-      a.driver_name.localeCompare(b.driver_name),
+      compareStrings(a.driver_name, b.driver_name),
     render: (item) => (
       <BaseTypographyLink
         to={"/drivers/info/" + item.driver_id}
@@ -63,7 +62,8 @@ const VEHICLE_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> =
   {
     label: "เลขทะเบียน",
     compare: (a, b) =>
-      a.vehicle_license_plate.localeCompare(
+      compareStrings(
+        a.vehicle_license_plate,
         b.vehicle_license_plate
       ),
     render: (item) => (
@@ -78,7 +78,7 @@ const ROUTE_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> =
   {
     label: "สายรถ",
     compare: (a, b) =>
-      a.route_name.localeCompare(b.route_name),
+      compareStrings(a.route_name, b.route_name),
     render: (item) => (
       <BaseTypographyLink
         to={"/pickup-routes/info/" + item.route_id}
@@ -114,7 +114,7 @@ export const OperationalLogTable: FC<
   OperationalLogTableProps
 > = (props) => {
   const {
-    logEntries,
+    logEntries: entries,
     slotProps,
     hideDriverColumn,
     hideRouteColumn,
@@ -123,12 +123,34 @@ export const OperationalLogTable: FC<
 
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const filteredEntries = filterItems(logEntries, search, [
+  const filteredEntries = filterItems(entries, search, [
     "driverName",
     "driverSurname",
     "vehicleLicensePlate",
     "routeName",
   ]);
+
+  const handleExport = async () => {
+    if (filteredEntries.length === 0) {
+      return;
+    }
+    const logs = (
+      await Promise.all(
+        filteredEntries.map((entry) =>
+          tauriGetOperationalLog(entry.id)
+        )
+      )
+    ).filter((log) => log !== null);
+
+    exportWorkbook(logs, {
+      name: "ประวัติการเดินรถ",
+      transformer:
+        OPERATIONAL_LOG_MODEL_TRANSFORMER.toExportData,
+    }).then(
+      () => toast.success("ดาวน์โหลดสำเร็จ"),
+      () => toast.error("ดา่วโหลดล้มเหลว")
+    );
+  };
 
   const headers = [
     STARTDATE_HEADER_DEFINITION,
@@ -151,7 +173,7 @@ export const OperationalLogTable: FC<
   const databaseHasNoRoute =
     slotProps.form.routeSelect.options.length === 0;
 
-  const databaseHasNoLog = logEntries.length === 0;
+  const databaseHasNoLog = entries.length === 0;
   const preventAddLog =
     databaseHasNoDriver ||
     databaseHasNoVehicle ||
@@ -159,55 +181,26 @@ export const OperationalLogTable: FC<
 
   return (
     <Stack spacing={1}>
-      <Collapse in={preventAddLog}>
-        {/* TODO: Translate */}
-        <Alert
-          variant="outlined"
-          severity="warning"
-        >
-          <Typography>
-            ไม่สามารถเพิ่มประวัติการเดินรถได้ เพราะว่า
-          </Typography>
-          <ul>
-            {databaseHasNoDriver && (
-              <li>
-                <Typography>
-                  No driver present in database
-                </Typography>
-              </li>
-            )}
-            {databaseHasNoVehicle && (
-              <li>
-                <Typography>ไม่มีรถ</Typography>
-              </li>
-            )}
-            {databaseHasNoRoute && (
-              <li>
-                <Typography>ไม่มีสายรถ</Typography>
-              </li>
-            )}
-          </ul>
-        </Alert>
-      </Collapse>
+      <OperationalLogTableAlert
+        show={preventAddLog}
+        databaseHasNoDriver={databaseHasNoDriver}
+        databaseHasNoVehicle={databaseHasNoVehicle}
+        databaseHasNoRoute={databaseHasNoRoute}
+      />
       <BaseSortableTableToolbar
         slotProps={{
-          // TODO: translate
           importButton: {
-            disabled: preventAddLog,
-            children: "Add log from file",
-            onFileSelect: function (): void {
+            disabled: true,
+            onFileSelect: () => {
               throw new Error("Function not implemented.");
             },
           },
           exportButton: {
-            children: "Export logs",
-            onClick: function (): void {
-              throw new Error("Function not implemented.");
-            },
+            disabled: databaseHasNoLog,
+            onClick: handleExport,
           },
           addButton: {
             disabled: preventAddLog,
-            children: "เพิ่มประวัติการเดินรถ",
             onClick: () => setDialogOpen(true),
           },
           searchField: {
@@ -224,11 +217,10 @@ export const OperationalLogTable: FC<
         defaultSortByColumn={0}
         defaultSortOrder="desc"
         slotProps={{
-          // TODO: translate
           body: {
             emptyText: databaseHasNoLog
-              ? "Database is empty"
-              : "ไม่พบประวัติการเดินรถ",
+              ? "ฐานข้อมูลว่าง"
+              : "ไม่พบประวัติการเดินรถที่ค้นหา",
           },
         }}
       />

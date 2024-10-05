@@ -35,7 +35,10 @@ export const driverExportDataSchema = z
   .object({
     ชื่อ: z.string().min(1),
     นามสกุล: z.string().min(1),
-    เบอร์ติดต่อ: z.string(),
+    เบอร์ติดต่อ: z
+      .string()
+      .optional()
+      .transform((v) => v ?? ""),
     ประเภทใบขับขี่: z.enum(KNOWN_LICENSE_TYPES),
   })
   .passthrough()

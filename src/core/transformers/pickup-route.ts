@@ -1,5 +1,5 @@
 import { tauriGetDriver } from "$backend/database/get/drivers";
-import { tauriGetOperationLogToday } from "$backend/database/get/operational-logs";
+import { tauriGetOperationalLogToday } from "$backend/database/get/operational-logs";
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
 import {
   PickupRouteEntry,
@@ -11,9 +11,9 @@ import dayjs from "dayjs";
 
 export const PICKUP_ROUTE_MODEL_TRANSFORMER = {
   toEntry: async (route: PickupRouteModel) => {
-    const logs = (await tauriGetOperationLogToday()).filter(
-      (log) => log.route_id === route.id
-    );
+    const logs = (
+      await tauriGetOperationalLogToday()
+    ).filter((log) => log.route_id === route.id);
     const driverIds = new Set<number>();
     const vehicleIds = new Set<number>();
     for (const log of logs) {

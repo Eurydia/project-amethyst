@@ -1,7 +1,7 @@
 import { operationalLogModelSchema } from "$types/models/operational-log";
 import { tauri } from "@tauri-apps/api";
 
-export const tauriGetOperationLogAll = async () => {
+export const tauriGetOperationalLogAll = async () => {
   const logs = await tauri.invoke(
     "get_operational_log_all"
   );
@@ -11,7 +11,7 @@ export const tauriGetOperationLogAll = async () => {
   return r.success ? r.data : [];
 };
 
-export const tauriGetOperationLogToday = async () => {
+export const tauriGetOperationalLogToday = async () => {
   const logs = await tauri.invoke(
     "get_operational_log_today"
   );
@@ -19,4 +19,14 @@ export const tauriGetOperationLogToday = async () => {
     .array()
     .safeParse(logs);
   return r.success ? r.data : [];
+};
+
+export const tauriGetOperationalLog = async (
+  log_id: number
+) => {
+  const log = await tauri.invoke("get_operational_log", {
+    log_id,
+  });
+  const r = operationalLogModelSchema.safeParse(log);
+  return r.success ? r.data : null;
 };

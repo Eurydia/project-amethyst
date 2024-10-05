@@ -1,5 +1,5 @@
 import { tauriGetDriverAll } from "$backend/database/get/drivers";
-import { tauriGetOperationLogAll } from "$backend/database/get/operational-logs";
+import { tauriGetOperationalLogAll } from "$backend/database/get/operational-logs";
 import { tauriGetPickupRouteAll } from "$backend/database/get/pickup-routes";
 import { tauriGetTopicAll } from "$backend/database/get/topics";
 import { tauriGetVehicleReportGeneralAll } from "$backend/database/get/vehicle-general-reports";
@@ -52,7 +52,7 @@ export const vehicleInfoPageLoader: LoaderFunction =
       throw VehicleMissingFromDatabaseError();
     }
 
-    const logs = (await tauriGetOperationLogAll())
+    const logs = (await tauriGetOperationalLogAll())
       .filter(({ vehicle_id }) => vehicle_id === vehicleId)
       .map(OPERATIONAL_LOG_MODEL_TRANSFORMER.toEntry);
     const generalReports = (

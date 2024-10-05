@@ -33,27 +33,23 @@ export const DriverReportGeneralInfoGroup: FC<
         <BaseTypographyLink
           to={"/drivers/info/" + driver.id}
         >
-          {`${driver.name} ${driver.surname}`}
+          {driver.name} {driver.surname}
         </BaseTypographyLink>
       ),
     },
     {
       label: "ลงบันทึก",
-      value: (
-        <Typography>
-          {dayjs(report.datetime)
-            .locale("th")
-            .format("HH:mm น. วันddddที่ DD MMMM YYYY")}
-        </Typography>
-      ),
+      value: dayjs(report.datetime)
+        .locale("th")
+        .format("HH:mm น. วันddddที่ DD MMMM YYYY"),
     },
     {
       label: "เรื่อง",
-      value: <Typography>{report.title}</Typography>,
+      value: report.title,
     },
     {
       label: "รายละเอียด",
-      value: report.content.trim().normalize() || (
+      value: report.content.trim() || (
         <Typography fontStyle="italic">
           ไม่มีรายละเอียด
         </Typography>
@@ -64,7 +60,6 @@ export const DriverReportGeneralInfoGroup: FC<
       value:
         report.topics.length > 0 ? (
           report.topics
-            .normalize()
             .split(",")
             .map((topic) => topic.trim())
             .filter((topic) => topic.length > 0)

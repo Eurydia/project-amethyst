@@ -1,7 +1,7 @@
 /** @format */
 
 import { tauriGetDriverAll } from "$backend/database/get/drivers";
-import { tauriGetOperationLogAll } from "$backend/database/get/operational-logs";
+import { tauriGetOperationalLogAll } from "$backend/database/get/operational-logs";
 import { tauriGetPickupRouteAll } from "$backend/database/get/pickup-routes";
 import { tauriGetVehicleAll } from "$backend/database/get/vehicles";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
@@ -24,7 +24,7 @@ export const operationalLogIndexPageLoader: LoaderFunction =
     const routeSelectOptions =
       await tauriGetPickupRouteAll();
 
-    const logs = (await tauriGetOperationLogAll()).map(
+    const logs = (await tauriGetOperationalLogAll()).map(
       OPERATIONAL_LOG_MODEL_TRANSFORMER.toEntry
     );
     const logEntries = (await Promise.all(logs)).filter(

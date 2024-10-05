@@ -1,23 +1,33 @@
+import { WarningRounded } from "@mui/icons-material";
+import { InputAdornment } from "@mui/material";
 import { TimeField } from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
-import { FC, ReactNode } from "react";
+import { FC } from "react";
 
 type BaseInputTimeFieldProps = {
   value: Dayjs;
   onChange: (value: Dayjs) => void;
-  helperText?: ReactNode;
+  error?: boolean;
 };
 export const BaseInputTimeField: FC<
   BaseInputTimeFieldProps
 > = (props) => {
-  const { value, onChange, helperText } = props;
+  const { value, onChange, error } = props;
   return (
     <TimeField
       fullWidth
       formatDensity="spacious"
       format="HH:mm น."
-      helperText={helperText}
       value={value}
+      slotProps={{
+        input: {
+          startAdornment: error && (
+            <InputAdornment position="start">
+              <WarningRounded />
+            </InputAdornment>
+          ),
+        },
+      }}
       onChange={(next) => {
         if (next === null) {
           return;

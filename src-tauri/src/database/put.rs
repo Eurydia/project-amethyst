@@ -1,4 +1,4 @@
-#[tauri::command(rename_all = "camelCase")]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn put_attendance_log(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -26,7 +26,7 @@ pub async fn put_attendance_log(
     }
 }
 
-#[tauri::command(rename_all = "camelCase")]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn put_driver(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -61,7 +61,7 @@ pub async fn put_driver(
     }
 }
 
-#[tauri::command(rename_all = "camelCase")]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn put_driver_report_general(
     state: tauri::State<'_, crate::AppState>,
     id: i64,
@@ -95,7 +95,7 @@ pub async fn put_driver_report_general(
     }
 }
 
-#[tauri::command(rename_all = "camelCase")]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn put_driver_report_medical(
     state: tauri::State<'_, crate::AppState>,
     id: i64,
@@ -129,7 +129,7 @@ pub async fn put_driver_report_medical(
     }
 }
 
-#[tauri::command(rename_all = "camelCase")]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn put_pickup_route(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -161,7 +161,7 @@ pub async fn put_pickup_route(
     }
 }
 
-#[tauri::command(rename_all = "camelCase")]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn put_pickup_route_report_general(
     state: tauri::State<'_, crate::AppState>,
     id: i64,
@@ -195,7 +195,7 @@ pub async fn put_pickup_route_report_general(
     }
 }
 
-#[tauri::command(rename_all = "camelCase")]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn put_vehicle(
     state: tauri::State<'_, crate::AppState>,
     id: i64,

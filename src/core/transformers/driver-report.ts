@@ -24,8 +24,8 @@ export const DRIVER_REPORT_MODEL_TRANSFORMER = {
   },
 
   toFormData: (
-    driver: DriverModel,
-    report: DriverReportModel | undefined = undefined
+    report: DriverReportModel | undefined,
+    driver: DriverModel
   ) => {
     let formData: DriverReportFormData = {
       datetime: dayjs().format(),

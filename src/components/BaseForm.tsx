@@ -1,6 +1,5 @@
-/** @format */
-
 import { FormalLayout } from "$layouts/FormalLayout";
+import { SaveRounded } from "@mui/icons-material";
 import {
   Button,
   Dialog,
@@ -9,6 +8,7 @@ import {
   Stack,
 } from "@mui/material";
 import { FC, ReactNode } from "react";
+import { BaseFormTransition } from "./BaseFormTransition";
 
 type BaseFormProps = {
   open: boolean;
@@ -16,8 +16,6 @@ type BaseFormProps = {
   title: ReactNode;
   slotProps: {
     submitButton: {
-      children: ReactNode;
-      startIcon?: ReactNode;
       disabled: boolean;
       onClick: () => void;
     };
@@ -33,6 +31,8 @@ export const BaseForm: FC<BaseFormProps> = (props) => {
 
   return (
     <Dialog
+      keepMounted
+      TransitionComponent={BaseFormTransition}
       open={open}
       onClose={onClose}
     >
@@ -48,8 +48,11 @@ export const BaseForm: FC<BaseFormProps> = (props) => {
           >
             <Button
               variant="contained"
+              startIcon={<SaveRounded />}
               {...slotProps.submitButton}
-            />
+            >
+              ยืนยัน
+            </Button>
             <Button
               variant="outlined"
               onClick={onClose}

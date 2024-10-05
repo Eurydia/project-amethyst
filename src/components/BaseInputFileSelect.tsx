@@ -1,6 +1,5 @@
 import { Button } from "@mui/material";
 import { FC, ReactNode, useRef } from "react";
-import { Fragment } from "react/jsx-runtime";
 
 type BaseInputWorkbookFileSelectProps = {
   disabled?: boolean;
@@ -15,16 +14,21 @@ export const BaseInputWorkbookFileSelect: FC<
   const fileSelectRef = useRef<HTMLInputElement | null>(
     null
   );
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   return (
-    <Fragment>
+    <form ref={formRef}>
       <Button
         {...rest}
         variant="outlined"
         onClick={() => {
-          if (fileSelectRef.current === null) {
+          if (
+            fileSelectRef.current === null ||
+            formRef.current === null
+          ) {
             return;
           }
+          formRef.current.reset();
           fileSelectRef.current.click();
         }}
       />
@@ -40,16 +44,12 @@ export const BaseInputWorkbookFileSelect: FC<
           }
           const file = files[0];
           onFileSelect(file);
-          if (fileSelectRef.current === null) {
-            return;
-          }
-          fileSelectRef.current.value === null;
         }}
         style={{
           display: "none",
           visibility: "hidden",
         }}
       />
-    </Fragment>
+    </form>
   );
 };

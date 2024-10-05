@@ -5,10 +5,6 @@ import {
   DriverFormData,
   DriverModel,
 } from "$types/models/driver";
-import {
-  AddRounded,
-  SaveRounded,
-} from "@mui/icons-material";
 import { FC, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -17,14 +13,13 @@ import { BaseInputTextField } from "./BaseInputTextField";
 import { DriverInputLicenseType } from "./DriverInputLicenseType";
 
 type DriverFormPostProps = {
-  editing?: false | undefined;
+  editing: false;
   open: boolean;
   onClose: () => void;
 };
 
 type DriverFormPutProps = {
   driver: DriverModel;
-
   editing: true;
   open: boolean;
   onClose: () => void;
@@ -40,12 +35,8 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
   let title = "ลงทะเบียนคนขับรถ";
   let initFormData: DriverFormData =
     DRIVER_MODEL_TRANSFORMER.toFormData(undefined);
-  let submitButtonLabel = "เพิ่ม";
-  let submitButtonStartIcon = <AddRounded />;
   if (editing) {
     title = "แก้ไขข้อมูลคนขับรถ";
-    submitButtonLabel = "บันทึก";
-    submitButtonStartIcon = <SaveRounded />;
     initFormData = DRIVER_MODEL_TRANSFORMER.toFormData(
       props.driver
     );
@@ -76,42 +67,32 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
     if (isFormIncomplete) {
       return;
     }
-    const contact = fieldContact.trim().normalize();
     const formData: DriverFormData = {
-      name: fieldName.trim().normalize(),
-      surname: fieldSurname.trim().normalize(),
-      contact: contact.trim().normalize(),
+      name: fieldName,
+      surname: fieldSurname,
+      contact: fieldContact.trim() || "ไม่มี",
       license_type: fieldLicenseType,
     };
 
-    let action = tauriPostDriver(formData).then(
-      () => {
-        toast.success("เพิ่มสำเร็จ");
-        revalidate();
-      },
-      () => toast.error("เพิ่มล้มเหลว")
-    );
-    if (editing) {
-      action = tauriPutDriver(
-        props.driver.id,
-        formData
-      ).then(
+    (editing
+      ? tauriPutDriver(props.driver.id, formData)
+      : tauriPostDriver(formData)
+    )
+      .then(
         () => {
-          toast.success("บันทึกสำเร็จ");
+          toast.success("สำเร็จ");
           revalidate();
         },
-        () => toast.error("บันทึกล้มเหลว")
-      );
-    }
-    await action.finally(() => {
-      resetForm();
-      onClose();
-    });
+        () => toast.error("ล้มเหลว")
+      )
+      .finally(() => {
+        resetForm();
+        onClose();
+      });
   };
 
-  const isMissingName = fieldName.trim().normalize() === "";
-  const isMissingSurname =
-    fieldSurname.trim().normalize() === "";
+  const isMissingName = fieldName.trim().length === 0;
+  const isMissingSurname = fieldSurname.trim().length === 0;
   const isFormIncomplete =
     isMissingName || isMissingSurname;
 
@@ -125,10 +106,8 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
         <BaseInputTextField
           autoFocus
           error={isMissingName}
-          placeholder={initFormData.name}
           value={fieldName}
           onChange={setFieldName}
-          errorText="ต้องกรองชื่อคนขับรถ"
         />
       ),
     },
@@ -138,9 +117,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
         <BaseInputTextField
           error={isMissingSurname}
           value={fieldSurname}
-          placeholder={initFormData.surname}
           onChange={setFielSurname}
-          errorText="ต้องกรองนามสกุลคนขชับรถ"
         />
       ),
     },
@@ -148,7 +125,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       label: "เบอร์ติดต่อ",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.contact}
+          placeholder="ไม่มี"
           value={fieldContact}
           onChange={setFieldContact}
         />
@@ -173,8 +150,6 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
-          startIcon: submitButtonStartIcon,
-          children: submitButtonLabel,
           onClick: handleSubmit,
         },
       }}

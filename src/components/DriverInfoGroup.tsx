@@ -31,7 +31,7 @@ export const DriverInfoGroup: FC<DriverInfoGroupProps> = (
     },
     {
       label: "เบอร์ติดต่อ",
-      value: driver.contact.trim() || (
+      value: driver.contact || (
         <Typography fontStyle="italic">ไม่มี</Typography>
       ),
     },

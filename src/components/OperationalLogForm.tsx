@@ -1,16 +1,11 @@
-/** @format */
-
 import { tauriPostOperationalLog } from "$backend/database/post";
+import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
 import { DriverModel } from "$types/models/driver";
+import { OperationalLogFormData } from "$types/models/operational-log";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { VehicleModel } from "$types/models/vehicle";
-import {
-  AddRounded,
-  WarningRounded,
-} from "@mui/icons-material";
-import { Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { FC, Fragment, ReactNode, useState } from "react";
+import { FC, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
@@ -43,41 +38,60 @@ export const OperationalLogForm: FC<
   const { slotProps, onClose, open } = props;
   const { revalidate } = useRevalidator();
 
+  const initFormData =
+    OPERATIONAL_LOG_MODEL_TRANSFORMER.toFormData(
+      slotProps.driverSelect.options[0],
+      slotProps.vehicleSelect.options[0],
+      slotProps.routeSelect.options[0]
+    );
+
   const [fieldStartDate, setFieldStartDate] = useState(
-    dayjs(dayjs().startOf("month").format())
+    dayjs(initFormData.start_date)
   );
   const [fieldEndDate, setFieldEndDate] = useState(
-    dayjs(dayjs().endOf("month").format())
+    dayjs(initFormData.end_date)
   );
   const [fieldDriver, setFieldDriver] = useState(
-    slotProps.driverSelect.options[0]
+    initFormData.driver
   );
   const [fieldRoute, setFieldRoute] = useState(
-    slotProps.routeSelect.options[0]
+    initFormData.route
   );
   const [fieldVehicle, setFieldVehicle] = useState(
-    slotProps.vehicleSelect.options[0]
+    initFormData.vehicle
   );
+
+  const handleReset = () => {
+    setFieldStartDate(dayjs(initFormData.start_date));
+    setFieldEndDate(dayjs(initFormData.end_date));
+    setFieldDriver(initFormData.driver);
+    setFieldRoute(initFormData.route);
+    setFieldVehicle(initFormData.vehicle);
+  };
 
   const handleSubmit = () => {
     if (isFormIncomplete) {
       return;
     }
-    tauriPostOperationalLog({
+    const formData: OperationalLogFormData = {
       driver: fieldDriver,
       route: fieldRoute,
       vehicle: fieldVehicle,
       start_date: fieldStartDate.startOf("day").format(),
       end_date: fieldEndDate.endOf("day").format(),
-    })
+    };
+    tauriPostOperationalLog(formData)
       .then(
         () => {
-          toast.success("สำเร็จ");
+          toast.success("เพิ่มสำเร็จ");
           revalidate();
         },
-        () => toast.error("ไม่สำเร็จ")
+        () => toast.error("เพิ่มล้มเหลว")
       )
-      .finally(onClose);
+      .finally(() => {
+        handleReset();
+        onClose();
+      });
   };
 
   const isStartDateInvalid =
@@ -113,23 +127,6 @@ export const OperationalLogForm: FC<
         <BaseInputDateField
           value={fieldStartDate}
           onChange={setFieldStartDate}
-          helperText={
-            // TODO: translate
-            <Fragment>
-              {isStartDateInvalid && (
-                <Typography>
-                  <WarningRounded />
-                  Invalid start date
-                </Typography>
-              )}
-              {isEndDateBeforeStartDate && (
-                <Typography>
-                  <WarningRounded />
-                  End date is before start date
-                </Typography>
-              )}
-            </Fragment>
-          }
         />
       ),
     },
@@ -139,23 +136,6 @@ export const OperationalLogForm: FC<
         <BaseInputDateField
           value={fieldEndDate}
           onChange={setFieldEndDate}
-          helperText={
-            // TODO: translate
-            <Fragment>
-              {isEndDateInvalid && (
-                <Typography>
-                  <WarningRounded />
-                  Invalid end date
-                </Typography>
-              )}
-              {isEndDateBeforeStartDate && (
-                <Typography>
-                  <WarningRounded />
-                  End date is before start date
-                </Typography>
-              )}
-            </Fragment>
-          }
         />
       ),
     },
@@ -195,8 +175,6 @@ export const OperationalLogForm: FC<
     <BaseForm
       slotProps={{
         submitButton: {
-          children: "ลงบันทึก",
-          startIcon: <AddRounded />,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
         },

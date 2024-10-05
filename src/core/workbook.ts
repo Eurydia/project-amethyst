@@ -37,21 +37,24 @@ export const exportWorkbook = async <
 
 type ImportOptions<In extends Object> = {
   validator: (data: unknown) => Promise<In | null>;
+  action: (data: In) => Promise<any>;
 };
 export const importWorkbook = async <In extends Object>(
   file: File,
   options: ImportOptions<In>
 ) => {
-  const { validator } = options;
+  const { validator, action } = options;
 
   const buffer = await file.arrayBuffer();
   const workbook = XLSX.read(buffer);
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
-  const data = XLSX.utils.sheet_to_json(sheet);
-  const items = (
-    await Promise.all(data.map(validator))
-  ).filter((entry) => entry !== null);
+  const data = XLSX.utils
+    .sheet_to_json(sheet)
+    .map(validator);
+  const items = (await Promise.all(data))
+    .filter((entry) => entry !== null)
+    .map(action);
 
-  return items;
+  await Promise.any(items);
 };

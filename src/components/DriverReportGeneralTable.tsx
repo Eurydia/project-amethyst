@@ -116,7 +116,6 @@ export const DriverReportGeneralTable: FC<
     ).filter((report) => report !== null);
 
     exportWorkbook(reports, {
-      header: [], // FIXME,
       name: "เรื่องร้องเรียนคนขับรถ",
       transformer:
         DRIVER_REPORT_MODEL_TRANSFORMER.toExportData,
@@ -142,16 +141,13 @@ export const DriverReportGeneralTable: FC<
           },
           addButton: {
             disabled: databaseHasNoDriver,
-            children: "เพิ่มเรื่องร้องเรียน",
             onClick: () => setDialogOpen(true),
           },
           importButton: {
             disabled: true,
-            children: "นำเข้าข้อมูล",
             onFileSelect: () => {},
           },
           exportButton: {
-            children: "ดาวน์โหลดสำเนา",
             onClick: handleExport,
           },
         }}
@@ -171,6 +167,7 @@ export const DriverReportGeneralTable: FC<
       />
       {slotProps.form.driverSelect.options.length > 0 && (
         <DriverReportGeneralForm
+          editing={false}
           slotProps={{
             driverSelect: slotProps.form.driverSelect,
             topicComboBox: slotProps.form.topicComboBox,

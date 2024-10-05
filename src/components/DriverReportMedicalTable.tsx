@@ -1,5 +1,3 @@
-/** @format */
-
 import { filterItems } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
 import { DriverModel } from "$types/models/driver";
@@ -129,10 +127,9 @@ export const DriverReportMedicalTable: FC<
         slotProps={{
           body: {
             emptyText:
-              // TODO: Translate
               entries.length === 0
-                ? "No medical report in database"
-                : `ไม่พบผลการตรวจสารเสพติด`,
+                ? "ฐานข้อมูลว่าง"
+                : "ไม่พบผลการตรวจสารเสพติดที่ค้นหา",
           },
         }}
         defaultSortByColumn={0}
@@ -142,6 +139,7 @@ export const DriverReportMedicalTable: FC<
       />
       {slotProps.form.driverSelect.options.length > 0 && (
         <DriverReportMedicalForm
+          editing={false}
           slotProps={{
             topicComboBox: slotProps.form.topicComboBox,
             driverSelect: slotProps.form.driverSelect,

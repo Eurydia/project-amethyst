@@ -1,23 +1,22 @@
 import { DateField } from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
-import { FC, ReactNode } from "react";
+import { FC } from "react";
 
 type BaseInputDateFieldProps = {
   value: Dayjs;
   onChange: (value: Dayjs) => void;
   error?: boolean;
-  helperText?: ReactNode;
 };
 export const BaseInputDateField: FC<
   BaseInputDateFieldProps
 > = (props) => {
-  const { value, onChange, helperText } = props;
+  const { value, onChange, error } = props;
   return (
     <DateField
       fullWidth
       formatDensity="spacious"
       format="DD/MM/YYYY"
-      helperText={helperText}
+      helperText={error && "วันที่ไม่ถูกต้อง"}
       value={value}
       onChange={(v) => {
         if (v === null) {

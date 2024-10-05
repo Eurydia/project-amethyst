@@ -6,10 +6,6 @@ import {
   DriverReportFormData,
   DriverReportModel,
 } from "$types/models/driver-report";
-import {
-  AddRounded,
-  SaveRounded,
-} from "@mui/icons-material";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
@@ -22,7 +18,7 @@ import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { DriverInputDriverSelect } from "./DriverInputDriverSelect";
 
 type DriverReportGeneralFormPostProps = {
-  editing?: false | undefined;
+  editing: false;
   open: boolean;
   onClose: () => void;
   slotProps: {
@@ -61,23 +57,14 @@ export const DriverReportGeneralForm: FC<
 > = (props) => {
   const { slotProps, onClose, open, editing } = props;
 
-  let title = "ร้องเรียนคนขับรถ";
-  let initFormData =
+  const title = editing
+    ? "แก้ไขข้อมูลเรื่องร้องเรียน"
+    : "ร้องเรียนคนขับรถ";
+  const initFormData =
     DRIVER_REPORT_MODEL_TRANSFORMER.toFormData(
+      editing ? props.report : undefined,
       slotProps.driverSelect.options[0]
     );
-  let submitButtonLabel = "เพิ่ม";
-  let submitButtonStartIcon = <AddRounded />;
-  if (editing) {
-    title = "แก้ไขข้อมูลเรื่องร้องเรียน";
-    initFormData =
-      DRIVER_REPORT_MODEL_TRANSFORMER.toFormData(
-        slotProps.driverSelect.options[0],
-        props.report
-      );
-    submitButtonLabel = "บันทึก";
-    submitButtonStartIcon = <SaveRounded />;
-  }
 
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime)
@@ -123,38 +110,36 @@ export const DriverReportGeneralForm: FC<
 
     const formData: DriverReportFormData = {
       datetime,
+      title: fieldTitle.trim() || "เรื่องร้องเรียน",
+      content: fieldContent.trim(),
       driver: fieldDriver,
       topics: fieldTopics
-        .map((topic) => topic.trim().normalize())
+        .map((topic) => topic.trim())
         .filter((topic) => topic.length > 0),
-      content: fieldContent.normalize().trim(),
-      title: fieldTitle.normalize().trim(),
     };
-    let action = tauriPostDriverReportGeneral(
-      formData
-    ).then(
-      () => {
-        toast.success("เพิ่มสำเร็จ");
-        revalidate();
-      },
-      () => toast.error("เพิ่มล้มเหลว")
-    );
-    if (editing) {
-      action = tauriPutDriverReportGeneral(
-        props.report.id,
-        formData
-      ).then(
+    (editing
+      ? tauriPutDriverReportGeneral(
+          props.report.id,
+          formData
+        )
+      : tauriPostDriverReportGeneral(formData)
+    )
+      .then(
         () => {
-          toast.success("บันทึกสำเร็จ");
+          toast.success(
+            editing ? "แก้ไขสำเร็จ" : "เพิ่มสำเร็จ"
+          );
           revalidate();
         },
-        () => toast.error("บันทึกล้มเหลว")
-      );
-    }
-    await action.finally(() => {
-      clearForm();
-      onClose();
-    });
+        () =>
+          toast.error(
+            editing ? "แก้ไขล้มเหลว" : "เพิ่มล้มเหลว"
+          )
+      )
+      .finally(() => {
+        clearForm();
+        onClose();
+      });
   };
 
   const isMissingTime =
@@ -164,10 +149,7 @@ export const DriverReportGeneralForm: FC<
     Number.isNaN(fieldDate.day()) ||
     Number.isNaN(fieldDate.month()) ||
     Number.isNaN(fieldDate.year());
-  const isMissingTitle = fieldTitle.trim() === "";
-  const isMissingContent = fieldContent.trim() === "";
-  const isFormIncomplete =
-    isMissingTitle || isMissingDate || isMissingTime;
+  const isFormIncomplete = isMissingDate || isMissingTime;
 
   const formItems: {
     label: string;
@@ -207,10 +189,8 @@ export const DriverReportGeneralForm: FC<
         <BaseInputTextField
           autoFocus
           onChange={setFieldTitle}
-          placeholder={initFormData.title}
+          placeholder="เรื่องร้องเรียน"
           value={fieldTitle}
-          error={isMissingTitle}
-          errorText="ต้องกรอกชื่อเรื่อง"
         />
       ),
     },
@@ -221,8 +201,6 @@ export const DriverReportGeneralForm: FC<
           multiline
           minRows={6}
           value={fieldContent}
-          error={isMissingContent}
-          placeholder={initFormData.content}
           onChange={setFieldContent}
         />
       ),
@@ -244,8 +222,6 @@ export const DriverReportGeneralForm: FC<
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
-          children: submitButtonLabel,
-          startIcon: submitButtonStartIcon,
           onClick: handleSubmit,
         },
       }}

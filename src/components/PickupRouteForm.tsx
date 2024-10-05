@@ -1,12 +1,6 @@
 import { tauriPostPickupRoute } from "$backend/database/post";
 import { tauriPutPickupRoute } from "$backend/database/put";
 import { PickupRouteFormData } from "$types/models/pickup-route";
-import {
-  AddRounded,
-  SaveRounded,
-  WarningRounded,
-} from "@mui/icons-material";
-import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
@@ -36,17 +30,11 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
 
   let initFormData: PickupRouteFormData;
   let title: string;
-  let submitButtonLabel: string;
-  let submitButtonStartIcon: ReactNode;
   if (editing) {
     title = "Edit Pickup Route details"; // TODO: translate
-    submitButtonLabel = "Save"; // TODO: translate
-    submitButtonStartIcon = <SaveRounded />;
     initFormData = props.initFormData;
   } else {
     title = "Register pickup route"; // TODO: translate
-    submitButtonLabel = "Add"; // TODO: translate
-    submitButtonStartIcon = <AddRounded />;
     initFormData = {
       name: "",
       arrival_time: dayjs().startOf("day").format("HH:mm"),
@@ -108,14 +96,14 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
   const isArrivalTimeIncomplete =
     Number.isNaN(fieldArrivalTime.hour()) ||
     Number.isNaN(fieldArrivalTime.minute());
-  const isDepartureTimeIncomplete =
+  const isDepartureTimeInvalid =
     Number.isNaN(fieldDepartureTime.hour()) ||
     Number.isNaN(fieldDepartureTime.minute());
   const isMissingName = fieldName.trim().normalize() === "";
   const isFormIncomplete =
     isMissingName ||
     isArrivalTimeIncomplete ||
-    isDepartureTimeIncomplete;
+    isDepartureTimeInvalid;
 
   const formItems: {
     label: string;
@@ -127,15 +115,6 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
         <BaseInputTextField
           autoFocus
           multiline
-          helperText={
-            isMissingName && (
-              <Typography>
-                <WarningRounded />
-                Route must have a name
-                {/* TODO: translate */}
-              </Typography>
-            )
-          }
           error={isMissingName}
           value={fieldName}
           placeholder={initFormData.name}
@@ -149,15 +128,7 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
         <BaseInputTimeField
           value={fieldArrivalTime}
           onChange={setFieldArrivalTime}
-          helperText={
-            isArrivalTimeIncomplete && (
-              <Typography>
-                <WarningRounded />
-                The arrival time should follow HH:mm format
-                {/* TODO: Translate */}
-              </Typography>
-            )
-          }
+          error={isArrivalTimeIncomplete}
         />
       ),
     },
@@ -167,16 +138,7 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
         <BaseInputTimeField
           value={fieldDepartureTime}
           onChange={setFieldDepartureTime}
-          helperText={
-            isDepartureTimeIncomplete && (
-              <Typography>
-                <WarningRounded />
-                The departure time should follow HH:mm
-                format
-                {/* TODO: Translate */}
-              </Typography>
-            )
-          }
+          error={isDepartureTimeInvalid}
         />
       ),
     },
@@ -189,8 +151,6 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
       title={title}
       slotProps={{
         submitButton: {
-          children: submitButtonLabel,
-          startIcon: submitButtonStartIcon,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
         },

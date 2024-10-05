@@ -2,7 +2,7 @@
 
 import { tauriGetAttendanceLogToday } from "$backend/database/get/attendance-logs";
 import { tauriGetDriver } from "$backend/database/get/drivers";
-import { tauriGetOperationLogToday } from "$backend/database/get/operational-logs";
+import { tauriGetOperationalLogToday } from "$backend/database/get/operational-logs";
 import { tauriGetPickupRoute } from "$backend/database/get/pickup-routes";
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
 import { tauriPostAttendanceLog } from "$backend/database/post";
@@ -22,7 +22,7 @@ export const App = () => {
     let active = true;
 
     (async () => {
-      const opLogs = await tauriGetOperationLogToday();
+      const opLogs = await tauriGetOperationalLogToday();
       const attLogs = await tauriGetAttendanceLogToday();
       if (
         active &&

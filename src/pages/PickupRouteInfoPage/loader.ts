@@ -1,7 +1,7 @@
 /** @format */
 
 import { tauriGetDriverAll } from "$backend/database/get/drivers";
-import { tauriGetOperationLogAll } from "$backend/database/get/operational-logs";
+import { tauriGetOperationalLogAll } from "$backend/database/get/operational-logs";
 import { tauriGetPickupRoute } from "$backend/database/get/pickup-routes";
 import { tauriGetPickupRouteReportGeneralAll } from "$backend/database/get/pickup-routes-general-reports";
 import { tauriGetTopicAll } from "$backend/database/get/topics";
@@ -40,7 +40,7 @@ export const pickupRouteInfoPageLoader: LoaderFunction =
       throw PickupRouteMissingFromDatabaseError();
     }
 
-    const logs = (await tauriGetOperationLogAll())
+    const logs = (await tauriGetOperationalLogAll())
       .filter(({ route_id }) => route_id === route.id)
       .map(OPERATIONAL_LOG_MODEL_TRANSFORMER.toEntry);
     const reports = (

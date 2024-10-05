@@ -23,7 +23,7 @@ export const DriverInputDriverSelect: FC<
   return (
     <Autocomplete
       disabled={disabled}
-      popupIcon={disabled ? <LockRounded /> : undefined}
+      popupIcon={disabled && <LockRounded />}
       disableClearable
       disableListWrap
       disablePortal

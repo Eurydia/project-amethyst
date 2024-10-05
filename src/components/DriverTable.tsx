@@ -92,37 +92,20 @@ export const DriverTable: FC<DriverTableProps> = (
     ]
   );
 
-  const handleImport = async (file: File) => {
-    console.log(file);
-    const importedDrivers = await importWorkbook(file, {
+  const handleImport = (file: File) => {
+    importWorkbook(file, {
+      action: tauriPostDriver,
       validator: async (dt) =>
         DRIVER_MODEL_VALIDATOR.validate(dt),
-    });
-    if (importedDrivers.length === 0) {
-      return;
-    }
-    const toastIdWrite = toast.info("กำลังเพิ่มคนขับรถ", {
-      autoClose: false,
-      isLoading: true,
-      hideProgressBar: true,
-    });
-    await Promise.all(importedDrivers.map(tauriPostDriver))
-      .then(
-        () => {
-          toast.success("เพิ่มคนขับรถสำเร็จ");
-          revalidate();
-        },
-        (err) => {
-          toast.error("เพิ่มคนขับรถล้มเหลว");
-          console.error(err);
-        }
-      )
-      .finally(() => toast.dismiss(toastIdWrite));
+    }).then(
+      () => {
+        toast.success(`เพิ่มคนขับรถสำเร็จ`);
+        revalidate();
+      },
+      () => toast.error("เพิ่มคนขับรถล้มเหลว")
+    );
   };
   const handleExport = async () => {
-    if (filteredEntries.length === 0) {
-      return;
-    }
     const drivers = (
       await Promise.all(
         filteredEntries.map((entry) =>
@@ -153,16 +136,13 @@ export const DriverTable: FC<DriverTableProps> = (
               "ค้นหาด้วยชื่อสกุลคนขับรถ, เลขทะเบียน, หรือสายรถ",
           },
           addButton: {
-            children: "เพิ่มคนขับรถ",
             onClick: () => setDialogOpen(true),
           },
           importButton: {
-            children: "เพิ่มจาก Excel",
             onFileSelect: handleImport,
           },
           exportButton: {
             disabled: filteredEntries.length === 0,
-            children: "ดาวน์โหลดคนขับรถ",
             onClick: handleExport,
           },
         }}

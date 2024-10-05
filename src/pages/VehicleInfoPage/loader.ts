@@ -7,8 +7,8 @@ import { tauriGetVehicleReportInspectionAll } from "$backend/database/get/vehicl
 import { tauriGetVehicleVendorAll } from "$backend/database/get/vehicle-vendors";
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
 import {
-  BAD_REQUEST_ERROR,
-  VEHICLE_MISSING_FROM_DATABASE_ERROR,
+  BadRequestError,
+  VehicleMissingFromDatabaseError,
 } from "$core/errors";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
 import { VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-general";
@@ -44,12 +44,12 @@ export type VehicleInfoPageLoaderData = {
 export const vehicleInfoPageLoader: LoaderFunction =
   async ({ params }) => {
     if (params.vehicleId === undefined) {
-      throw BAD_REQUEST_ERROR;
+      throw BadRequestError();
     }
     const vehicleId = Number.parseInt(params.vehicleId);
     const vehicle = await tauriGetVehicle(vehicleId);
     if (vehicle === null) {
-      throw VEHICLE_MISSING_FROM_DATABASE_ERROR;
+      throw VehicleMissingFromDatabaseError();
     }
 
     const logs = (await tauriGetOperationLogAll())

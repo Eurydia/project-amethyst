@@ -231,7 +231,7 @@ export const DriverReportGeneralForm: FC<
       label: "หัวข้อที่เกี่ยวข้อง",
       value: (
         <BaseInputTopicComboBox
-          options={slotProps.topicComboBox.options}
+          {...slotProps.topicComboBox}
           values={fieldTopics}
           onChange={setFieldTopics}
         />

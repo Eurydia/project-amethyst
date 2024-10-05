@@ -12,7 +12,10 @@ export const BaseTypographyLink: FC<
   const { children, to } = props;
 
   return (
-    <Typography component={Link} to={to}>
+    <Typography
+      component={Link}
+      to={to}
+    >
       {children}
     </Typography>
   );

@@ -11,13 +11,19 @@ type BaseTOCItemProps = {
   href: string;
 };
 export const BaseTOCItem: FC<BaseTOCItemProps> = (
-  props,
+  props
 ) => {
   const { label, href } = props;
   return (
-    <ListItem disablePadding disableGutters>
+    <ListItem
+      disablePadding
+      disableGutters
+    >
       <ListItemText disableTypography>
-        <Typography component="a" href={href}>
+        <Typography
+          component="a"
+          href={href}
+        >
           <KeyboardArrowRightRounded />
           {label}
         </Typography>

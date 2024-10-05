@@ -38,7 +38,7 @@ export const DriverReportGeneralInfoGroup: FC<
       ),
     },
     {
-      label: "เวลาและวันที่",
+      label: "ลงบันทึก",
       value: (
         <Typography>
           {dayjs(report.datetime)
@@ -53,22 +53,22 @@ export const DriverReportGeneralInfoGroup: FC<
     },
     {
       label: "รายละเอียด",
-      value:
-        report.content.trim().length > 0 ? (
-          <Typography>{report.content}</Typography>
-        ) : (
-          <Typography fontStyle="italic">
-            ไม่มีรายละเอียด
-          </Typography>
-        ),
+      value: report.content.trim().normalize() || (
+        <Typography fontStyle="italic">
+          ไม่มีรายละเอียด
+        </Typography>
+      ),
     },
     {
       label: "หัวข้อที่เกี่ยวข้อง",
       value:
         report.topics.length > 0 ? (
-          <Typography>
-            {report.topics.replaceAll(",", ", ")}
-          </Typography>
+          report.topics
+            .normalize()
+            .split(",")
+            .map((topic) => topic.trim())
+            .filter((topic) => topic.length > 0)
+            .join(", ")
         ) : (
           <Typography fontStyle="italic">
             ไม่มีหัวข้อที่เกี่ยวข้อง

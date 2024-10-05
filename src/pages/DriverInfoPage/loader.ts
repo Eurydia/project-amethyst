@@ -8,8 +8,8 @@ import { tauriGetPickupRouteAll } from "$backend/database/get/pickup-routes";
 import { tauriGetTopicAll } from "$backend/database/get/topics";
 import { tauriGetVehicleAll } from "$backend/database/get/vehicles";
 import {
-  BAD_REQUEST_ERROR,
-  DRIVER_MISSING_FROM_DATABASE_ERROR,
+  BadRequestError,
+  DriverMissingFromDatabaseError,
 } from "$core/errors";
 import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
@@ -43,12 +43,12 @@ export const driverInfoPageLoader: LoaderFunction = async ({
   params,
 }) => {
   if (params.driverId === undefined) {
-    throw BAD_REQUEST_ERROR;
+    throw BadRequestError();
   }
   const driverId = Number.parseInt(params.driverId);
   const driver = await tauriGetDriver(driverId);
   if (driver === null) {
-    throw DRIVER_MISSING_FROM_DATABASE_ERROR;
+    throw DriverMissingFromDatabaseError;
   }
 
   const medicalReports = (

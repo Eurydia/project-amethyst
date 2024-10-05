@@ -7,9 +7,9 @@ import {
 } from "$backend/database/get/vehicle-inspection-reports";
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
 import {
-  BAD_REQUEST_ERROR,
-  VEHICLE_MISSING_FROM_DATABASE_ERROR,
-  VEHICLE_REPORT_INSPECTION_MISSING_FROM_DATABASE_ERROR,
+  BadRequestError,
+  VehicleMissingFromDatabaseError,
+  VehicleReportInspectionMissingFromDatabaseError,
 } from "$core/errors";
 import { VehicleModel } from "$types/models/vehicle";
 import { VehicleReportInspectionModel } from "$types/models/vehicle-report-inspection";
@@ -24,20 +24,20 @@ export type VehicleReportInspectionInfoPageLoaderData = {
 export const vehicleReportInspectionInfoPageLoader: LoaderFunction =
   async ({ params }) => {
     if (params.reportId === undefined) {
-      throw BAD_REQUEST_ERROR;
+      throw BadRequestError();
     }
     const reportId = parseInt(params.reportId);
     const report = await tauriGetVehicleReportInspection(
       reportId
     );
     if (report === null) {
-      throw VEHICLE_REPORT_INSPECTION_MISSING_FROM_DATABASE_ERROR;
+      throw VehicleReportInspectionMissingFromDatabaseError();
     }
     const vehicle = await tauriGetVehicle(
       report.vehicle_id
     );
     if (vehicle === null) {
-      throw VEHICLE_MISSING_FROM_DATABASE_ERROR;
+      throw VehicleMissingFromDatabaseError();
     }
 
     const topicComboBoxOptions = await tauriGetTopicAll();

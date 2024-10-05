@@ -2,14 +2,14 @@ import { Button } from "@mui/material";
 import { FC, ReactNode, useRef } from "react";
 import { Fragment } from "react/jsx-runtime";
 
-type BaseInputFileSelectProps = {
+type BaseInputWorkbookFileSelectProps = {
   disabled?: boolean;
   children: ReactNode | ReactNode[];
   startIcon?: React.ReactNode;
   onFileSelect: (file: File) => void;
 };
-export const BaseInputFileSelect: FC<
-  BaseInputFileSelectProps
+export const BaseInputWorkbookFileSelect: FC<
+  BaseInputWorkbookFileSelectProps
 > = (props) => {
   const { onFileSelect, ...rest } = props;
   const fileSelectRef = useRef<HTMLInputElement | null>(
@@ -29,10 +29,10 @@ export const BaseInputFileSelect: FC<
         }}
       />
       <input
+        hidden
         ref={fileSelectRef}
         accept=".xlsx, xls"
         type="file"
-        hidden
         onChange={(event) => {
           const files = event.target.files;
           if (files === null || files.length === 0) {

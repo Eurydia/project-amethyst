@@ -4,9 +4,9 @@ import { tauriGetPickupRoute } from "$backend/database/get/pickup-routes";
 import { tauriGetPickupRouteReportGeneral } from "$backend/database/get/pickup-routes-general-reports";
 import { tauriGetTopicAll } from "$backend/database/get/topics";
 import {
-  BAD_REQUEST_ERROR,
-  PICKUP_ROUTE_MISSING_FROM_DATABASE_ERROR,
-  PICKUP_ROUTE_REPORT_GENERAL_MISSING_FROM_DATA_ERROR,
+  BadRequestError,
+  PickupRouteMissingFromDatabaseError,
+  PickupRouteReportGeneralMissingFromDatabaseError,
 } from "$core/errors";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { PickupRouteReportGeneralModel } from "$types/models/pickup-route-report-general";
@@ -20,20 +20,20 @@ export type PickupRouteReportGeneralInfoPageLoaderData = {
 export const pickupRouteReportGeneralInfoPageLoader: LoaderFunction =
   async ({ params }) => {
     if (params.reportId === undefined) {
-      throw BAD_REQUEST_ERROR;
+      throw BadRequestError();
     }
     const reportId = Number.parseInt(params.reportId);
     const report = await tauriGetPickupRouteReportGeneral(
       reportId
     );
     if (report === null) {
-      throw PICKUP_ROUTE_REPORT_GENERAL_MISSING_FROM_DATA_ERROR;
+      throw PickupRouteReportGeneralMissingFromDatabaseError();
     }
     const route = await tauriGetPickupRoute(
       report.route_id
     );
     if (route === null) {
-      throw PICKUP_ROUTE_MISSING_FROM_DATABASE_ERROR;
+      throw PickupRouteMissingFromDatabaseError();
     }
 
     const topicComboBoxOptions = await tauriGetTopicAll();

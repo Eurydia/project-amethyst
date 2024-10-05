@@ -19,11 +19,11 @@ export const BaseInputDateField: FC<
       format="DD/MM/YYYY"
       helperText={helperText}
       value={value}
-      onChange={(next) => {
-        if (next === null) {
+      onChange={(v) => {
+        if (v === null) {
           return;
         }
-        onChange(next);
+        onChange(v);
       }}
     />
   );

@@ -1,5 +1,3 @@
-/** @format */
-
 import { FormalLayout } from "$layouts/FormalLayout";
 import { InfoGroupItemDefinition } from "$types/generics";
 import { DriverModel } from "$types/models/driver";
@@ -29,20 +27,13 @@ export const DriverInfoGroup: FC<DriverInfoGroupProps> = (
   const infoItems: InfoGroupItemDefinition[] = [
     {
       label: "ชื่อสกุล",
-      value: (
-        <Typography>{`${driver.name} ${driver.surname}`}</Typography>
-      ),
+      value: `${driver.name} ${driver.surname}`,
     },
     {
       label: "เบอร์ติดต่อ",
-      value:
-        driver.contact.trim().length === 0 ? (
-          <Typography fontStyle="italic">ไม่มี</Typography>
-        ) : (
-          <Typography>
-            {driver.contact.trim().normalize()}
-          </Typography>
-        ),
+      value: driver.contact.trim() || (
+        <Typography fontStyle="italic">ไม่มี</Typography>
+      ),
     },
     {
       label: "ประเภทใบขับขี่",

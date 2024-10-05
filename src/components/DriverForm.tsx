@@ -38,7 +38,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
   const { onClose, open, editing } = props;
 
   let title = "ลงทะเบียนคนขับรถ";
-  let initFormData =
+  let initFormData: DriverFormData =
     DRIVER_MODEL_TRANSFORMER.toFormData(undefined);
   let submitButtonLabel = "เพิ่ม";
   let submitButtonStartIcon = <AddRounded />;
@@ -72,7 +72,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
     setFieldLicenseType(initFormData.license_type);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isFormIncomplete) {
       return;
     }
@@ -80,36 +80,33 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
     const formData: DriverFormData = {
       name: fieldName.trim().normalize(),
       surname: fieldSurname.trim().normalize(),
-      contact: contact.trim().normalize() || "ไม่มี",
+      contact: contact.trim().normalize(),
       license_type: fieldLicenseType,
     };
+
+    let action = tauriPostDriver(formData).then(
+      () => {
+        toast.success("เพิ่มสำเร็จ");
+        revalidate();
+      },
+      () => toast.error("เพิ่มล้มเหลว")
+    );
     if (editing) {
-      tauriPutDriver(props.driver.id, formData)
-        .then(
-          () => {
-            toast.success("บันทึกสำเร็จ");
-            revalidate();
-          },
-          () => toast.error("บันทึกล้มเหลว")
-        )
-        .finally(() => {
-          resetForm();
-          onClose();
-        });
-    } else {
-      tauriPostDriver(formData)
-        .then(
-          () => {
-            toast.success("เพิ่มสำเร็จ");
-            revalidate();
-          },
-          () => toast.error("เพิ่มล้มเหลว")
-        )
-        .finally(() => {
-          resetForm();
-          onClose();
-        });
+      action = tauriPutDriver(
+        props.driver.id,
+        formData
+      ).then(
+        () => {
+          toast.success("บันทึกสำเร็จ");
+          revalidate();
+        },
+        () => toast.error("บันทึกล้มเหลว")
+      );
     }
+    await action.finally(() => {
+      resetForm();
+      onClose();
+    });
   };
 
   const isMissingName = fieldName.trim().normalize() === "";
@@ -151,7 +148,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       label: "เบอร์ติดต่อ",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.contact || "ไม่มี"}
+          placeholder={initFormData.contact}
           value={fieldContact}
           onChange={setFieldContact}
         />

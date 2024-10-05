@@ -2,9 +2,9 @@ import { tauriGetDriverReportGeneral } from "$backend/database/get/driver-genera
 import { tauriGetDriver } from "$backend/database/get/drivers";
 import { tauriGetTopicAll } from "$backend/database/get/topics";
 import {
-  BAD_REQUEST_ERROR,
-  DRIVER_MISSING_FROM_DATABASE_ERROR,
-  DRIVER_REPORT_GENERAL_MISSING_FROM_DATABASE_ERROR,
+  BadRequestError,
+  DriverMissingFromDatabaseError,
+  DriverReportGeneralMissingFromDatabaseError,
 } from "$core/errors";
 import { DriverModel } from "$types/models/driver";
 import { DriverReportModel } from "$types/models/driver-report";
@@ -18,18 +18,18 @@ export type DriverReportMedicalInfoPageLoaderData = {
 export const driverReportMedicalInfoPageLoader: LoaderFunction =
   async ({ params }) => {
     if (params.reportId === undefined) {
-      throw BAD_REQUEST_ERROR;
+      throw BadRequestError();
     }
     const reportId = Number.parseInt(params.reportId);
     const report = await tauriGetDriverReportGeneral(
       reportId
     );
     if (report === null) {
-      throw DRIVER_REPORT_GENERAL_MISSING_FROM_DATABASE_ERROR;
+      throw DriverReportGeneralMissingFromDatabaseError;
     }
     const driver = await tauriGetDriver(report.driver_id);
     if (driver === null) {
-      throw DRIVER_MISSING_FROM_DATABASE_ERROR;
+      throw DriverMissingFromDatabaseError();
     }
 
     const topicComboBoxOptions = await tauriGetTopicAll();

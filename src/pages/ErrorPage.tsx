@@ -1,9 +1,9 @@
+import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { KeyboardArrowLeftRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import {
   isRouteErrorResponse,
-  Link,
   useRouteError,
 } from "react-router-dom";
 
@@ -19,11 +19,12 @@ export const ErrorPage: FC = () => {
 
   return (
     <Stack spacing={1}>
-      <Typography component={Link} to="/">
+      <BaseTypographyLink to="/">
         <KeyboardArrowLeftRounded />
         หน้าแรก
-      </Typography>
-      <Typography variant="h1">{statusText}</Typography>
+      </BaseTypographyLink>
+      <Typography variant="h1">เกิดข้อผิดพลาด</Typography>
+      <Typography variant="h2">{statusText}</Typography>
     </Stack>
   );
 };

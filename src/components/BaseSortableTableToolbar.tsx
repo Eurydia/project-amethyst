@@ -6,7 +6,7 @@ import {
 } from "@mui/icons-material";
 import { Button, Stack } from "@mui/material";
 import { FC, ReactNode } from "react";
-import { BaseInputFileSelect } from "./BaseInputFileSelect";
+import { BaseInputWorkbookFileSelect } from "./BaseInputFileSelect";
 import { BaseInputTextField } from "./BaseInputTextField";
 
 type BaseSortableTableToolbarProps = {
@@ -59,7 +59,7 @@ export const BaseSortableTableToolbar: FC<
           flexWrap="wrap"
           flexDirection="row"
         >
-          <BaseInputFileSelect
+          <BaseInputWorkbookFileSelect
             startIcon={<FileUploadRounded />}
             {...slotProps.importButton}
           />

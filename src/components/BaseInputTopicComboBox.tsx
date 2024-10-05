@@ -15,23 +15,26 @@ type BaseInputTopicComboBoxProps = {
   values: string[];
   onChange: (value: string[]) => void;
 };
-export const BaseInputTopicComboBox: FC<BaseInputTopicComboBoxProps> = (
-  props
-) => {
+export const BaseInputTopicComboBox: FC<
+  BaseInputTopicComboBoxProps
+> = (props) => {
   const { values, options, onChange } = props;
   const [inputValue, setInputValue] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
   const optionSet = new Set(
-    options.filter((option) => option.trim().length > 0)
+    options
+      .map((option) => option.trim().normalize())
+      .filter((option) => option.length > 0)
   );
-  const valueSet = new Set(values.filter((value) => value.trim().length > 0));
+  const valueSet = new Set(
+    values
+      .map((option) => option.trim().normalize())
+      .filter((value) => value.length > 0)
+  );
 
   return (
-    <Stack
-      spacing={1}
-      useFlexGap
-    >
+    <Stack spacing={1}>
       <Autocomplete
         freeSolo
         disableListWrap
@@ -41,17 +44,20 @@ export const BaseInputTopicComboBox: FC<BaseInputTopicComboBoxProps> = (
         options={options}
         value={searchValue}
         inputValue={inputValue}
-        onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
+        onInputChange={(_, newInputValue) =>
+          setInputValue(newInputValue)
+        }
         filterOptions={(fOptions, params) => {
           const filtered = filterItems(
-            fOptions.filter((option) => !valueSet.has(option)),
+            fOptions.filter(
+              (option) => !valueSet.has(option)
+            ),
             params.inputValue,
             undefined
           );
           const inputValue = params.inputValue.trim();
           if (
             inputValue.length > 0 &&
-            // !valueSet.has(inputValue) &&
             !filtered.includes(inputValue)
           ) {
             filtered.push(inputValue);
@@ -72,7 +78,9 @@ export const BaseInputTopicComboBox: FC<BaseInputTopicComboBoxProps> = (
           >
             <ListItemText disableTypography>
               <Typography>
-                {optionSet.has(option) ? option : `เพิ่มหัวข้อ "${option}"`}
+                {optionSet.has(option)
+                  ? option
+                  : `เพิ่มหัวข้อ "${option}"`}
               </Typography>
             </ListItemText>
           </ListItem>

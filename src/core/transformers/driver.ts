@@ -51,16 +51,19 @@ export const DRIVER_MODEL_TRANSFORMER = {
     return entry;
   },
 
-  toFormData: (driver: DriverModel | undefined) => {
+  toFormData: (
+    driver: DriverModel | undefined
+  ): DriverFormData => {
+    if (driver !== undefined) {
+      return driver;
+    }
     let formData: DriverFormData = {
       name: "",
       surname: "",
       contact: "",
-      license_type: "",
+      license_type: "ท.1",
     };
-    if (driver !== undefined) {
-      formData = driver;
-    }
+
     return formData;
   },
 

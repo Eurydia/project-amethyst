@@ -49,7 +49,7 @@ export const DriverInputDriverSelect: FC<
             {...rest}
           >
             <ListItemText>
-              {`${option.name} ${option.surname}`}
+              {option.name} {option.surname}
             </ListItemText>
           </ListItem>
         );

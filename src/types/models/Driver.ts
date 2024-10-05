@@ -10,10 +10,10 @@ export const driverModelSchema = z
     contact: z.string(),
     license_type: z.enum(KNOWN_LICENSE_TYPES),
   })
-  .required()
-  .passthrough();
+  .required();
 
 export type DriverModel = z.infer<typeof driverModelSchema>;
+export type DriverFormData = Omit<DriverModel, "id">;
 
 export type DriverEntry = {
   id: number;
@@ -30,8 +30,6 @@ export type DriverEntry = {
     name: string;
   }[];
 };
-
-export type DriverFormData = Omit<DriverModel, "id">;
 
 export const driverExportDataSchema = z
   .object({

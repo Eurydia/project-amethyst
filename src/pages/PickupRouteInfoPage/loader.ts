@@ -7,8 +7,8 @@ import { tauriGetPickupRouteReportGeneralAll } from "$backend/database/get/picku
 import { tauriGetTopicAll } from "$backend/database/get/topics";
 import { tauriGetVehicleAll } from "$backend/database/get/vehicles";
 import {
-  BAD_REQUEST_ERROR,
-  PICKUP_ROUTE_MISSING_FROM_DATABASE_ERROR,
+  BadRequestError,
+  PickupRouteMissingFromDatabaseError,
 } from "$core/errors";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
 import { PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-report-general";
@@ -32,12 +32,12 @@ export const pickupRouteInfoPageLoader: LoaderFunction =
   async ({ params }) => {
     console.log(params);
     if (params.routeId === undefined) {
-      throw BAD_REQUEST_ERROR;
+      throw BadRequestError();
     }
     const routeId = Number.parseInt(params.routeId);
     const route = await tauriGetPickupRoute(routeId);
     if (route === null) {
-      throw PICKUP_ROUTE_MISSING_FROM_DATABASE_ERROR;
+      throw PickupRouteMissingFromDatabaseError();
     }
 
     const logs = (await tauriGetOperationLogAll())

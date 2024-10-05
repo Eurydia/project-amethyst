@@ -149,18 +149,19 @@ export const AttendanceLogTable: FC<
           addButton: {
             disabled: true,
             children: "เพิ่มประวัติ",
-            onClick: function (): void {
+            onClick: () => {
               throw new Error("Function not implemented.");
             },
           },
           importButton: {
             disabled: true,
             children: "นำเข้าประวัติ",
-            onFileSelect: function (_: File): void {
+            onFileSelect: (_: File) => {
               throw new Error("Function not implemented.");
             },
           },
           exportButton: {
+            disabled: filteredEntries.length === 0,
             children: "ดาวน์โหลด",
             onClick: handleExport,
           },

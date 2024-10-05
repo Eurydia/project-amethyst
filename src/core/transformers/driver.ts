@@ -67,9 +67,9 @@ export const DRIVER_MODEL_TRANSFORMER = {
     return formData;
   },
 
-  toExportData: (driver: DriverModel) => {
+  toExportData: async (driver: DriverModel) => {
     const exportData: DriverExportData = {
-      หมายเลขคนขับรถ: driver.id,
+      รหัส: driver.id,
       ชื่อ: driver.name,
       นามสกุล: driver.surname,
       เบอร์ติดต่อ: driver.contact,

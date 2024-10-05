@@ -1,5 +1,8 @@
+import { tauriGetDriver } from "$backend/database/get/drivers";
 import { tauriPostDriver } from "$backend/database/post";
 import { filterItems } from "$core/filter";
+import { DRIVER_MODEL_TRANSFORMER } from "$core/transformers/driver";
+import { DRIVER_MODEL_VALIDATOR } from "$core/validators/driver";
 import {
   exportWorkbook,
   importWorkbook,
@@ -9,6 +12,7 @@ import { DriverEntry } from "$types/models/driver";
 import { Stack, Typography } from "@mui/material";
 import { FC, useState } from "react";
 import { useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
@@ -20,7 +24,9 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverEntry>[] =
       compare: (a, b) => a.name.localeCompare(b.name),
       render: (item) => (
         <BaseTypographyLink to={"/drivers/info/" + item.id}>
-          {item.name} {item.surname}
+          {`${item.name} ${item.surname}`
+            .trim()
+            .normalize()}
         </BaseTypographyLink>
       ),
     },
@@ -86,29 +92,53 @@ export const DriverTable: FC<DriverTableProps> = (
     ]
   );
 
-  const handleImport = (file: File) => {
-    importWorkbook(file, {
-      action: tauriPostDriver,
-      validator: DRIVER_,
+  const handleImport = async (file: File) => {
+    console.log(file);
+    const importedDrivers = await importWorkbook(file, {
+      validator: async (dt) =>
+        DRIVER_MODEL_VALIDATOR.validate(dt),
     });
+    if (importedDrivers.length === 0) {
+      return;
+    }
+    const toastIdWrite = toast.info("กำลังเพิ่มคนขับรถ", {
+      autoClose: false,
+      isLoading: true,
+      hideProgressBar: true,
+    });
+    await Promise.all(importedDrivers.map(tauriPostDriver))
+      .then(
+        () => {
+          toast.success("เพิ่มคนขับรถสำเร็จ");
+          revalidate();
+        },
+        (err) => {
+          toast.error("เพิ่มคนขับรถล้มเหลว");
+          console.error(err);
+        }
+      )
+      .finally(() => toast.dismiss(toastIdWrite));
   };
-  const handleExport = async () =>
-    exportWorkbook(filteredEntries, {
-      header: [
-        "id",
-        "name",
-        "surname",
-        "contact",
-        "licenseType",
-      ],
-      transformer: exportTransfomer,
-      name: "drivers",
+  const handleExport = async () => {
+    if (filteredEntries.length === 0) {
+      return;
+    }
+    const drivers = (
+      await Promise.all(
+        filteredEntries.map((entry) =>
+          tauriGetDriver(entry.id)
+        )
+      )
+    ).filter((driver) => driver !== null);
+
+    exportWorkbook(drivers, {
+      transformer: DRIVER_MODEL_TRANSFORMER.toExportData,
+      name: "รายชื่อคนขับรถ",
     }).then(
-      () => {},
-      (err) => {
-        console.error(err);
-      }
+      () => toast.success("ดาวน์โหลดสำเร็จ"),
+      () => toast.error("ดาวน์โหลดล้มเหลว")
     );
+  };
 
   const databaseHasNoDrivers = driverEntries.length === 0;
 
@@ -123,17 +153,16 @@ export const DriverTable: FC<DriverTableProps> = (
               "ค้นหาด้วยชื่อสกุลคนขับรถ, เลขทะเบียน, หรือสายรถ",
           },
           addButton: {
-            // TODO: translate
-            children: "Register driver",
+            children: "เพิ่มคนขับรถ",
             onClick: () => setDialogOpen(true),
           },
           importButton: {
-            children: "Register from file",
+            children: "เพิ่มจาก Excel",
             onFileSelect: handleImport,
           },
           exportButton: {
-            // TODO: translate
-            children: "Export drivers",
+            disabled: filteredEntries.length === 0,
+            children: "ดาวน์โหลดคนขับรถ",
             onClick: handleExport,
           },
         }}
@@ -147,8 +176,8 @@ export const DriverTable: FC<DriverTableProps> = (
         slotProps={{
           body: {
             emptyText: databaseHasNoDrivers
-              ? "The database has no driver"
-              : "ไม่พบคนขับรถ", // TODO: translate
+              ? "ฐานข้อมูลคนขับรถว่าง"
+              : "ไม่พบคนขับรถที่ค้นหา",
           },
         }}
       />

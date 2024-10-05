@@ -6,7 +6,6 @@ type ExportOptions<
   Out extends Object
 > = {
   name: string;
-  header: (keyof Out)[];
   transformer: (data: In) => Promise<Out | null>;
 };
 export const exportWorkbook = async <
@@ -16,15 +15,13 @@ export const exportWorkbook = async <
   entries: In[],
   options: ExportOptions<In, Out>
 ) => {
-  const { name, header, transformer } = options;
+  const { name, transformer } = options;
 
   const data = (
     await Promise.all(entries.map(transformer))
   ).filter((entry) => entry !== null);
 
-  const worksheet = XLSX.utils.json_to_sheet(data, {
-    header: header.map((key) => key.toString()),
-  });
+  const worksheet = XLSX.utils.json_to_sheet(data);
 
   const timestamp = dayjs()
     .locale("th")
@@ -40,22 +37,21 @@ export const exportWorkbook = async <
 
 type ImportOptions<In extends Object> = {
   validator: (data: unknown) => Promise<In | null>;
-  action: (data: In) => Promise<any>;
 };
-export const importWorkbook = async <T extends Object>(
+export const importWorkbook = async <In extends Object>(
   file: File,
-  options: ImportOptions<T>
+  options: ImportOptions<In>
 ) => {
-  const { validator, action } = options;
+  const { validator } = options;
 
   const buffer = await file.arrayBuffer();
   const workbook = XLSX.read(buffer);
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
   const data = XLSX.utils.sheet_to_json(sheet);
-  const entries = (
+  const items = (
     await Promise.all(data.map(validator))
   ).filter((entry) => entry !== null);
 
-  await Promise.all(entries.map(action));
+  return items;
 };

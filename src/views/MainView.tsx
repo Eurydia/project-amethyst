@@ -62,7 +62,7 @@ export const MainView: FC = () => {
   const appBarRef = useRef<HTMLElement | null>(null);
   const [appBarHeight, setAppBarHeight] = useState("0px");
   const [clock, setClock] = useState(
-    dayjs().locale("th").format(CLOCK_FORMAT),
+    dayjs().locale("th").format(CLOCK_FORMAT)
   );
 
   useEffect(() => {

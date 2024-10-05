@@ -40,6 +40,10 @@ export const BaseInputWorkbookFileSelect: FC<
           }
           const file = files[0];
           onFileSelect(file);
+          if (fileSelectRef.current === null) {
+            return;
+          }
+          fileSelectRef.current.value === null;
         }}
         style={{
           display: "none",

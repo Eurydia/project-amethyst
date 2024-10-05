@@ -100,6 +100,7 @@ export const App = () => {
         icon={false}
         autoClose={2750}
         position="bottom-left"
+        pauseOnFocusLoss={false}
       />
       <ThemeProvider theme={theme}>
         <CssBaseline enableColorScheme />

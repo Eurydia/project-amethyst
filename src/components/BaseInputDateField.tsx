@@ -1,3 +1,5 @@
+import { WarningRounded } from "@mui/icons-material";
+import { InputAdornment } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
 import { FC } from "react";
@@ -16,7 +18,15 @@ export const BaseInputDateField: FC<
       fullWidth
       formatDensity="spacious"
       format="DD/MM/YYYY"
-      helperText={error && "วันที่ไม่ถูกต้อง"}
+      slotProps={{
+        input: {
+          startAdornment: error && (
+            <InputAdornment position="start">
+              <WarningRounded />
+            </InputAdornment>
+          ),
+        },
+      }}
       value={value}
       onChange={(v) => {
         if (v === null) {

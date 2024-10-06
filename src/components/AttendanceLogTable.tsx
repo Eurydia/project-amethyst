@@ -9,6 +9,7 @@ import { AttendanceLogEntry } from "$types/models/attendance-log";
 import { Stack } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
+import { toast } from "react-toastify";
 import { AttendanceLogTableCheckBox } from "./AttendanceLogTableCheckBox";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
@@ -126,12 +127,14 @@ export const AttendanceLogTable: FC<
       )
     ).filter((log) => log !== null);
 
-    await exportWorkbook(logs, {
-      header: [],
+    exportWorkbook(logs, {
       name: "ประวัติการเดินรถ",
       transformer:
         ATTENDANCE_LOG_MODEL_TRANSFORMER.toExportData,
-    });
+    }).then(
+      () => toast.success("ดาวน์โหลดสำเร็จ"),
+      () => toast.error("ดาวน์โหลดล้มเหลว")
+    );
   };
 
   const databaseIsEmpty = entries.length === 0;
@@ -148,21 +151,18 @@ export const AttendanceLogTable: FC<
           },
           addButton: {
             disabled: true,
-            children: "เพิ่มประวัติ",
             onClick: () => {
               throw new Error("Function not implemented.");
             },
           },
           importButton: {
             disabled: true,
-            children: "นำเข้าประวัติ",
-            onFileSelect: (_: File) => {
+            onFileSelect: () => {
               throw new Error("Function not implemented.");
             },
           },
           exportButton: {
             disabled: filteredEntries.length === 0,
-            children: "ดาวน์โหลด",
             onClick: handleExport,
           },
         }}

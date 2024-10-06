@@ -5,7 +5,7 @@ import { EditRounded } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
-import { Link } from "react-router-dom";
+import { BaseTypographyLink } from "./BaseTypographyLink";
 import { VehicleReportInspectionForm } from "./VehicleReportInspectionForm";
 
 type VehicleReportInspectionInfoGroupProps = {
@@ -35,9 +35,11 @@ export const VehicleReportInspectionInfoGroup: FC<
     {
       label: "เลขทะเบียน",
       value: (
-        <Link to={"/vehicles/info/" + vehicle.id}>
+        <BaseTypographyLink
+          to={"/vehicles/info/" + vehicle.id}
+        >
           {vehicle.license_plate}
-        </Link>
+        </BaseTypographyLink>
       ),
     },
     {
@@ -88,35 +90,27 @@ export const VehicleReportInspectionInfoGroup: FC<
       label: "กระจกมองข้าง",
       value: report.sideview_mirror,
     },
-  ].map((item) => ({
-    label: item.label,
-    value: <Typography>{item.value}</Typography>,
-  }));
-
-  infoItems.push({
-    label: "รายละเอียดเพิ่มเติม",
-    value:
-      report.content.trim().length === 0 ? (
+    {
+      label: "รายละเอียดเพิ่มเติม",
+      value: report.content.trim() || (
         <Typography fontStyle="italic">
           ไม่มีรายละเอียดเพิ่มเติม
         </Typography>
-      ) : (
-        <Typography>{report.content}</Typography>
       ),
-  });
+    },
+  ];
 
   infoItems.push({
     label: "หัวข้อที่เกี่ยวข้อง",
-    value:
-      report.topics.length === 0 ? (
-        <Typography fontStyle="italic">
-          ไม่มีหัวข้อที่เกี่ยวข้อง
-        </Typography>
-      ) : (
-        <Typography>
-          {report.topics.replaceAll(",", ", ")}
-        </Typography>
-      ),
+    value: report.topics
+      .split(",")
+      .map((topic) => topic.trim())
+      .filter((topic) => topic.length > 0)
+      .join(", ") || (
+      <Typography fontStyle="italic">
+        ไม่มีหัวข้อที่เกี่ยวข้อง
+      </Typography>
+    ),
   });
 
   return (
@@ -126,7 +120,7 @@ export const VehicleReportInspectionInfoGroup: FC<
         onClick={() => setDialogOpen(true)}
         startIcon={<EditRounded />}
       >
-        แก้ไข
+        แก้ไขข้อมูล
       </Button>
       <FormalLayout>{infoItems}</FormalLayout>
       <VehicleReportInspectionForm

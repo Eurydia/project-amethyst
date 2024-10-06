@@ -1,7 +1,7 @@
 import { FormalLayout } from "$layouts/FormalLayout";
 import { VehicleModel } from "$types/models/vehicle";
 import { EditRounded } from "@mui/icons-material";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { FileEntry } from "@tauri-apps/api/fs";
 import { FC, useState } from "react";
 import { BaseGallery } from "./BaseGallery";
@@ -27,7 +27,7 @@ export const VehicleInfoGroup: FC<VehicleInfoGroupProps> = (
 
   const infoItems = [
     {
-      label: "เลขที่รถรับส่ง",
+      label: "รหัส",
       value: vehicle.id,
     },
     {
@@ -46,20 +46,16 @@ export const VehicleInfoGroup: FC<VehicleInfoGroupProps> = (
       label: "หจก.",
       value: vehicle.vendor,
     },
-  ].map((item) => ({
-    label: item.label,
-    value: <Typography>{item.value}</Typography>,
-  }));
-
-  infoItems.push({
-    label: "คลังภาพ",
-    value: (
-      <BaseGallery
-        dirPath={slotProps.gallery.dirPath}
-        fileEntries={slotProps.gallery.fileEntries}
-      />
-    ),
-  });
+    {
+      label: "คลังภาพ",
+      value: (
+        <BaseGallery
+          dirPath={slotProps.gallery.dirPath}
+          fileEntries={slotProps.gallery.fileEntries}
+        />
+      ),
+    },
+  ];
 
   return (
     <Stack spacing={1}>
@@ -76,9 +72,7 @@ export const VehicleInfoGroup: FC<VehicleInfoGroupProps> = (
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         slotProps={{
-          vendorComboBox: {
-            options: slotProps.form.vendorComboBox.options,
-          },
+          vendorComboBox: slotProps.form.vendorComboBox,
         }}
       />
     </Stack>

@@ -24,7 +24,7 @@ export const VehicleInputVehicle: FC<
   return (
     <Autocomplete
       disabled={disabled}
-      popupIcon={disabled ? <LockRounded /> : undefined}
+      popupIcon={disabled && <LockRounded />}
       onChange={(_, value) => {
         if (value === null) {
           return;
@@ -54,18 +54,21 @@ export const VehicleInputVehicle: FC<
           "registered_city",
         ])
       }
-      renderOption={({ key, ...rest }, option) => (
-        <ListItem
-          key={key}
-          {...rest}
-        >
-          <ListItemText disableTypography>
-            <Typography>
-              {`${option.license_plate} (${option.vendor})`}
-            </Typography>
-          </ListItemText>
-        </ListItem>
-      )}
+      renderOption={(optionProps, option) => {
+        const { key, ...rest } = optionProps;
+        return (
+          <ListItem
+            key={key}
+            {...rest}
+          >
+            <ListItemText disableTypography>
+              <Typography>
+                {option.license_plate} ({option.vendor})
+              </Typography>
+            </ListItemText>
+          </ListItem>
+        );
+      }}
     />
   );
 };

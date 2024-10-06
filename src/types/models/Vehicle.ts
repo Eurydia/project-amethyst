@@ -13,7 +13,6 @@ export const vehicleModelSchema = z
     vehicle_class: z.enum(KNOWN_VEHICLE_CLASSES),
     registered_city: z.enum(CITIES),
   })
-  .passthrough()
   .required();
 
 export type VehicleModel = z.infer<

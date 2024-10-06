@@ -2,6 +2,10 @@ import { tauriGetDriver } from "$backend/database/get/drivers";
 import { tauriGetOperationalLogToday } from "$backend/database/get/operational-logs";
 import { tauriGetPickupRoute } from "$backend/database/get/pickup-routes";
 import {
+  CITIES,
+  KNOWN_VEHICLE_CLASSES,
+} from "$core/constants";
+import {
   VehicleEntry,
   VehicleExportData,
   VehicleFormData,
@@ -62,18 +66,28 @@ export const VEHICLE_MODEL_TRANSFORMER = {
   },
 
   toFormData: (
-    vehicle: VehicleModel | undefined = undefined
+    vehicle: VehicleModel | undefined,
+    vendor: string
   ): VehicleFormData => {
-    let formData: VehicleFormData = {
-      licensePlate: "",
-      registeredCity: "",
-      vendor: "",
-      vehicleClass: "",
-    };
     if (vehicle === undefined) {
+      const formData: VehicleFormData = {
+        license_plate: "",
+        vendor,
+        registered_city: CITIES[0],
+        vehicle_class: KNOWN_VEHICLE_CLASSES[0],
+      };
       return formData;
     }
-    formData = vehicle;
+
+    const formData: VehicleFormData = {
+      license_plate: vehicle.license_plate
+        .trim()
+        .normalize(),
+      vendor: vehicle.vendor.trim().normalize(),
+      registered_city: vehicle.registered_city,
+      vehicle_class: vehicle.vehicle_class,
+    };
+
     return formData;
   },
 };

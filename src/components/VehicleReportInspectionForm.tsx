@@ -6,11 +6,6 @@ import {
   VehicleReportInspectionFormData,
   VehicleReportInspectionModel,
 } from "$types/models/vehicle-report-inspection";
-import {
-  AddRounded,
-  SaveRounded,
-} from "@mui/icons-material";
-import { replaceInvalidDateByNull } from "@mui/x-date-pickers/internals";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
@@ -67,24 +62,18 @@ export const VehicleReportInspectionForm: FC<
   const { slotProps, onClose, open, editing } = props;
 
   // TODO:  translate
-  let title: string = "Add new info";
-  let submitButtonLabel: string = "Submit";
-  let submitButtonStartIcon: ReactNode = <AddRounded />;
-  let initFormData =
+  const title = editing
+    ? "แก้ไขข้อมูลผลการตรวจสภาพรถรับส่ง"
+    : "เพิ่มผลการตรวจสภาพรถรับส่ง";
+  const initFormData =
     VEHICLE_REPORT_INSPECTION_TRANSFORMER.toFormData(
-      undefined,
+      editing ? props.report : undefined,
       slotProps.form.vehicleSelect.options[0]
     );
-  if (editing) {
-    title = "Edit info";
-    submitButtonLabel = "Save changes";
-    submitButtonStartIcon = <SaveRounded />;
-    initFormData =
-      VEHICLE_REPORT_INSPECTION_TRANSFORMER.toFormData(
-        props.report,
-        slotProps.form.vehicleSelect.options[0]
-      );
-  }
+
+  const [fieldTitle, setFieldTitle] = useState(
+    initFormData.title
+  );
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime)
   );
@@ -94,7 +83,7 @@ export const VehicleReportInspectionForm: FC<
   const [fieldContent, setFieldContent] = useState(
     initFormData.content
   );
-  const [fieldBodyFrame, setFieldBodyFrame] = useState(
+  const [fieldFrame, setFieldFrame] = useState(
     initFormData.frame
   );
   const [fieldWindows, setFieldWindows] = useState(
@@ -137,25 +126,24 @@ export const VehicleReportInspectionForm: FC<
   const { revalidate } = useRevalidator();
 
   const clearForm = () => {
-    setFieldDate(dayjs());
-    setFieldTime(dayjs());
-    setFieldContent("");
-    setFieldBodyFrame("");
-    setFieldWindows("");
-    setFieldFrontCam("");
-    setFieldFanOverhead("");
-    setFieldBrakeLight("");
-    setFieldHeadlights("");
-    setFieldTurnSignals("");
-    setFieldMirrorRearview("");
-    setFieldMirrorSideview("");
-    setFieldSeatbelts("");
-    setFieldSeats("");
-    setFieldTires("");
-    setFieldTopics([]);
-    setFieldVehicle(
-      slotProps.form.vehicleSelect.options[0]
-    );
+    setFieldDate(dayjs(initFormData.datetime));
+    setFieldTime(dayjs(initFormData.datetime));
+    setFieldTitle(initFormData.title);
+    setFieldContent(initFormData.content);
+    setFieldFrame(initFormData.frame);
+    setFieldWindows(initFormData.windows);
+    setFieldFrontCam(initFormData.front_camera);
+    setFieldFanOverhead(initFormData.overhead_fan);
+    setFieldBrakeLight(initFormData.brake_light);
+    setFieldHeadlights(initFormData.headlights);
+    setFieldTurnSignals(initFormData.turn_signals);
+    setFieldMirrorRearview(initFormData.rearview_mirror);
+    setFieldMirrorSideview(initFormData.sideview_mirror);
+    setFieldSeatbelts(initFormData.seatbelts);
+    setFieldSeats(initFormData.seats);
+    setFieldTires(initFormData.tires);
+    setFieldTopics(initFormData.topics);
+    setFieldVehicle(initFormData.vehicle);
   };
 
   const handleSubmit = async () => {
@@ -173,11 +161,12 @@ export const VehicleReportInspectionForm: FC<
     const formData: VehicleReportInspectionFormData = {
       datetime,
       vehicle: fieldVehicle,
+      title: fieldTitle.normalize().trim(),
       content: fieldContent.normalize().trim(),
       topics: fieldTopics
         .map((topic) => topic.normalize().trim())
         .filter((topic) => topic.length > 0),
-      frame: fieldBodyFrame.normalize().trim() || "ปกติ",
+      frame: fieldFrame.normalize().trim() || "ปกติ",
       windows: fieldWindows.normalize().trim() || "ปกติ",
       front_camera:
         fieldFrontCam.normalize().trim() || "ปกติ",
@@ -199,38 +188,30 @@ export const VehicleReportInspectionForm: FC<
       tires: fieldTires.normalize().trim() || "ปกติ",
     };
 
-    if (editing) {
-      tauriPutVehicleReportInspection(
-        props.report.id,
-        formData
+    (editing
+      ? tauriPutVehicleReportInspection(
+          props.report.id,
+          formData
+        )
+      : tauriPostVehicleReportInspection(formData)
+    )
+      .then(
+        () => {
+          toast.success(
+            editing ? "แก้ไขสำเร็จ" : "เพิ่มสำเร็จ"
+          );
+          revalidate();
+        },
+        () =>
+          toast.error(
+            editing ? "แก้ไข้ล้มเหลว" : "เพิ่มล้มเหลว"
+          )
       )
-        .then(
-          () => {
-            toast.success("Save success");
-            revalidate();
-          },
-          () => toast.error("Save failed")
-        )
-        .finally(() => {
-          clearForm();
-          onClose();
-        });
-    } else {
-      tauriPostVehicleReportInspection(formData)
-        .then(
-          () => {
-            toast.success("Save success");
-            replaceInvalidDateByNull;
-          },
-          () => toast.error("Save failed")
-        )
-        .finally(() => {
-          clearForm();
-          onClose();
-        });
-    }
+      .finally(() => {
+        clearForm();
+        onClose();
+      });
   };
-
   const isVehicleEmpty = fieldVehicle === null;
   const isFormIncomplete = isVehicleEmpty;
 
@@ -260,10 +241,19 @@ export const VehicleReportInspectionForm: FC<
       label: "เลขทะเบียน",
       value: (
         <VehicleInputVehicle
-          disabled={slotProps.form.vehicleSelect.disabled}
-          options={slotProps.form.vehicleSelect.options}
+          {...slotProps.form.vehicleSelect}
           value={fieldVehicle}
           onChange={setFieldVehicle}
+        />
+      ),
+    },
+    {
+      label: "ชื่อเรื่อง",
+      value: (
+        <BaseInputTextField
+          value={fieldTitle}
+          onChange={setFieldTitle}
+          placeholder="ผลการตรวจสภาพรถรับส่ง"
         />
       ),
     },
@@ -370,8 +360,8 @@ export const VehicleReportInspectionForm: FC<
           placeholder={initFormData.frame || "ปกติ"}
           multiline
           minRows={2}
-          value={fieldBodyFrame}
-          onChange={setFieldBodyFrame}
+          value={fieldFrame}
+          onChange={setFieldFrame}
         />
       ),
     },
@@ -444,8 +434,6 @@ export const VehicleReportInspectionForm: FC<
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
-          children: submitButtonLabel,
-          startIcon: submitButtonStartIcon,
           onClick: handleSubmit,
         },
       }}

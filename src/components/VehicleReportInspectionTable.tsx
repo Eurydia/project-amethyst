@@ -1,4 +1,5 @@
 import { tauriGetVehicleReportInspection } from "$backend/database/get/vehicle-inspection-reports";
+import { compareStrings } from "$core/compare";
 import { filterItems } from "$core/filter";
 import { VEHICLE_REPORT_INSPECTION_TRANSFORMER } from "$core/transformers/vehicle-report-inspection";
 import { exportWorkbook } from "$core/workbook";
@@ -31,33 +32,27 @@ const VEHICLE_HEADER: TableHeaderDefinition<VehicleReportInspectionEntry> =
   {
     label: "เลขทะเบียนรถ",
     compare: (a, b) =>
-      a.vehicle_license_plate.localeCompare(
+      compareStrings(
+        a.vehicle_license_plate,
         b.vehicle_license_plate
       ),
-    render: ({
-      vehicle_id: vehicleId,
-      vehicle_license_plate: vehicleLicensePlate,
-    }) => (
+    render: (item) => (
       <BaseTypographyLink
-        to={"/vehicles/info/" + vehicleId}
+        to={"/vehicles/info/" + item.vehicle_id}
       >
-        {vehicleLicensePlate}
+        {item.vehicle_license_plate}
       </BaseTypographyLink>
     ),
   };
 const TITLE_HEADER: TableHeaderDefinition<VehicleReportInspectionEntry> =
   {
-    label: "รอบการตรวจสภาพรถ",
-    compare: (a, b) =>
-      a.inspection_round_number - b.inspection_round_number,
-    render: ({
-      inspection_round_number: inspectionRoundNumber,
-      id,
-    }) => (
+    label: "ชื่อเรื่อง",
+    compare: (a, b) => compareStrings(a.title, b.title),
+    render: (item) => (
       <BaseTypographyLink
-        to={"/vehicles/report/inspection/info/" + id}
+        to={"/vehicles/report/inspection/info/" + item.id}
       >
-        {`รอบที่ ${inspectionRoundNumber}`}
+        {item.title}
       </BaseTypographyLink>
     ),
   };
@@ -65,11 +60,12 @@ const TOPIC_HEADER: TableHeaderDefinition<VehicleReportInspectionEntry> =
   {
     label: "หัวข้อที่เกี่ยวข้อง",
     compare: null,
-    render: ({ topics }) =>
-      topics.length === 0 ? (
+    render: (item) =>
+      item.topics
+        .map((topic) => topic.trim())
+        .filter((topic) => topic.length > 0)
+        .join(", ") || (
         <Typography fontStyle="italic">ไม่มี</Typography>
-      ) : (
-        <Typography>{topics.join(", ")}</Typography>
       ),
   };
 
@@ -104,15 +100,16 @@ export const VehicleReportInspectionTable: FC<
   ]);
 
   const handleExport = async () => {
-    const reportReqs = filteredEntries.map((entry) =>
-      tauriGetVehicleReportInspection(entry.id)
-    );
-    const reports = (await Promise.all(reportReqs)).filter(
-      (report) => report !== null
-    );
+    const reports = (
+      await Promise.all(
+        filteredEntries.map((entry) =>
+          tauriGetVehicleReportInspection(entry.id)
+        )
+      )
+    ).filter((report) => report !== null);
+
     exportWorkbook(reports, {
-      header: [], // FIXME: define header order
-      name: "ผลการตรวจสภาพรถรับส่ง",
+      name: "บันทึกผลการตรวจสภาพรถรับส่ง",
       transformer:
         VEHICLE_REPORT_INSPECTION_TRANSFORMER.toExportData,
     }).then(
@@ -148,21 +145,19 @@ export const VehicleReportInspectionTable: FC<
           },
           addButton: {
             disabled: databaseHasNoVehicle,
-            children: "เพิ่ม",
             onClick: () => setDialogOpen(true),
           },
           importButton: {
             disabled: true,
-            children: "เพิ่มจากไฟล์",
-            onFileSelect: () => {},
+            onFileSelect: () => {
+              throw new Error("Function not implemented.");
+            },
           },
           exportButton: {
-            children: "ดาวน์โหลดสำเนา",
             onClick: handleExport,
           },
         }}
       />
-
       <BaseSortableTable
         defaultSortByColumn={0}
         defaultSortOrder="desc"

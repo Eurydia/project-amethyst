@@ -46,8 +46,12 @@ export const pickupRouteExportDataSchema = z
   .object({
     เลขรหัส: z.number().int().min(1),
     ชื่อสาย: z.string().min(1),
-    เวลารับเข้า: z.string(),
-    เวลารับออก: z.string(),
+    เวลารับเข้า: z
+      .string()
+      .refine((v) => dayjs(v, "HH:mm").isValid()),
+    เวลารับออก: z
+      .string()
+      .refine((v) => dayjs(v, "HH:mm").isValid()),
   })
   .passthrough()
   .required();

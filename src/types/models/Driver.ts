@@ -7,10 +7,14 @@ export const driverModelSchema = z
 
     name: z.string().trim().min(1),
     surname: z.string().trim().min(1),
-    contact: z.string(),
+    contact: z
+      .string()
+      .optional()
+      .transform((v) => v ?? ""),
     license_type: z.enum(KNOWN_LICENSE_TYPES),
   })
-  .required();
+  .required()
+  .readonly();
 
 export type DriverModel = z.infer<typeof driverModelSchema>;
 export type DriverFormData = Omit<DriverModel, "id">;

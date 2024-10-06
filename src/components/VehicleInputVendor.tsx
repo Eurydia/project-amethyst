@@ -1,5 +1,4 @@
 import { filterItems } from "$core/filter";
-import { WarningRounded } from "@mui/icons-material";
 import {
   Autocomplete,
   ListItem,
@@ -35,15 +34,6 @@ export const VehicleInputVendor: FC<
         <TextField
           {...params}
           error={error}
-          helperText={
-            // TODO: translate
-            error && (
-              <Typography>
-                <WarningRounded />
-                Required
-              </Typography>
-            )
-          }
         />
       )}
       renderOption={(props, option) => (
@@ -63,7 +53,6 @@ export const VehicleInputVendor: FC<
           state.inputValue,
           undefined
         );
-
         if (
           items.length === 0 &&
           state.inputValue.trim().length > 0

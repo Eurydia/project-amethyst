@@ -119,7 +119,7 @@ export const VehicleTable: FC<VehicleTableProps> = (
     ).filter((vehicle) => vehicle !== null);
 
     exportWorkbook(vehicles, {
-      name: "รถรับส่ง",
+      name: "ทะเบียนรถรับส่ง",
       transformer: async (dt) =>
         VEHICLE_MODEL_TRANSFORMER.toExportData(dt),
     }).then(
@@ -140,15 +140,13 @@ export const VehicleTable: FC<VehicleTableProps> = (
             value: search,
           },
           addButton: {
-            children: "เพิ่มรถรับส่ง",
             onClick: () => setDialogOpen(true),
           },
           importButton: {
-            children: "นำเข้ารถรับส่ง",
             onFileSelect: handleImport,
           },
           exportButton: {
-            children: "ดาวน์โหลดสำเนา",
+            disabled: filteredEntries.length === 0,
             onClick: handleExport,
           },
         }}

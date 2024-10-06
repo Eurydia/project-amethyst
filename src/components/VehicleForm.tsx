@@ -5,10 +5,6 @@ import {
   VehicleFormData,
   VehicleModel,
 } from "$types/models/vehicle";
-import {
-  AddRounded,
-  SaveRounded,
-} from "@mui/icons-material";
 import { FC, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -48,101 +44,71 @@ export const VehicleForm: FC<VehicleFormProps> = (
 ) => {
   const { editing, slotProps, onClose, open } = props;
 
-  // TODO: translate
-  let submitButtonLabel: string = "Create";
-  let submitButtonStartIcon: ReactNode = <AddRounded />;
-  let title: string = "Register vehicle";
-  let initFormData: VehicleFormData =
-    VEHICLE_MODEL_TRANSFORMER.toFormData(undefined);
-  if (editing) {
-    // TODO: translate
-    submitButtonLabel = "Save";
-    submitButtonStartIcon = <SaveRounded />;
-    title = "Edit Vehicle";
-    initFormData = VEHICLE_MODEL_TRANSFORMER.toFormData(
-      props.vehicle
-    );
-  }
+  const title = editing
+    ? "แก้ไขข้อมูลรถรับส่ง"
+    : "เพิ่มรถรับส่ง";
+  const initFormData = VEHICLE_MODEL_TRANSFORMER.toFormData(
+    editing ? props.vehicle : undefined,
+    slotProps.vendorComboBox.options[0]
+  );
 
   const [fieldLicensePlate, setFieldLicensePlate] =
-    useState(initFormData.licensePlate);
+    useState(initFormData.license_plate);
   const [fieldVendor, setFieldVendor] = useState(
     initFormData.vendor
   );
   const [fieldRegisteredCity, setFieldRegisteredCity] =
-    useState(initFormData.registeredCity);
+    useState(initFormData.registered_city);
   const [fieldVehicleClass, setFieldVehicleClass] =
-    useState(initFormData.vehicleClass);
+    useState(initFormData.vehicle_class);
 
   const { revalidate } = useRevalidator();
 
-  const handleClear = () => {
-    setFieldLicensePlate(initFormData.licensePlate);
+  const handleReset = () => {
+    setFieldLicensePlate(initFormData.license_plate);
     setFieldVendor(initFormData.vendor);
-    setFieldRegisteredCity(initFormData.registeredCity);
-    setFieldVehicleClass(initFormData.vehicleClass);
+    setFieldRegisteredCity(initFormData.registered_city);
+    setFieldVehicleClass(initFormData.vehicle_class);
   };
-
-  const _licensePlate = fieldLicensePlate
-    .trim()
-    .normalize();
-  const _vendor = fieldVendor.trim().normalize();
-  const _registeredCity = fieldRegisteredCity
-    .trim()
-    .normalize();
-  const _vehicleClass = fieldVehicleClass
-    .trim()
-    .normalize();
 
   const handleSubmit = () => {
     if (isFormIncomplete) {
       return;
     }
     const formData: VehicleFormData = {
-      licensePlate: _licensePlate,
-      vendor: _vendor,
-      registeredCity: _registeredCity,
-      vehicleClass: _vehicleClass,
+      license_plate: fieldLicensePlate.trim().normalize(),
+      vendor: fieldVendor.trim().normalize(),
+      vehicle_class: fieldVehicleClass,
+      registered_city: fieldRegisteredCity,
     };
-
-    if (editing) {
-      tauriPutVehicle(props.vehicle.id, formData)
-        .then(
-          () => {
-            toast.success("Vehicle updated"); // TODO: translate
-            revalidate();
-          },
-          () => toast.error("Failed to update vehicle")
-        )
-        .finally(() => {
-          handleClear();
-          onClose();
-        });
-    } else {
-      tauriPostVehicle(formData)
-        // TODO: translate
-        .then(
-          () => {
-            toast.success("Vehicle updated"); // TODO: translate
-            revalidate();
-          },
-          () => toast.error("Failed to update vehicle")
-        )
-        .finally(() => {
-          handleClear();
-          onClose();
-        });
-    }
+    (editing
+      ? tauriPutVehicle(props.vehicle.id, formData)
+      : tauriPostVehicle(formData)
+    )
+      .then(
+        () => {
+          toast.success(
+            editing ? "แก้ไขสำเร็จ" : "เพิ่มสำเร็จ"
+          );
+          revalidate();
+        },
+        () =>
+          toast.error(
+            editing ? "แก้ไขล้มเหลว" : "เพิ่มล้มเหลว"
+          )
+      )
+      .finally(() => {
+        handleReset();
+        onClose();
+      });
   };
 
-  const missingFieldLicensePlate = _licensePlate.length < 1;
-  const missingFieldRegisteredCity =
-    _registeredCity.length < 1;
-  const missingFieldVendor = _vendor.length < 1;
+  const missingFieldLicensePlate =
+    fieldLicensePlate.trim().normalize().length < 1;
+  const missingFieldVendor =
+    fieldVendor.trim().normalize().length < 1;
   const isFormIncomplete =
-    missingFieldLicensePlate ||
-    missingFieldRegisteredCity ||
-    missingFieldVendor;
+    missingFieldLicensePlate || missingFieldVendor;
 
   const formItems: {
     label: string;
@@ -156,7 +122,6 @@ export const VehicleForm: FC<VehicleFormProps> = (
           error={missingFieldLicensePlate}
           value={fieldLicensePlate}
           onChange={setFieldLicensePlate}
-          errorText="Required" // TODO: translate
         />
       ),
     },
@@ -164,7 +129,6 @@ export const VehicleForm: FC<VehicleFormProps> = (
       label: "หจก.",
       value: (
         <VehicleInputVendor
-          error={missingFieldVendor}
           options={slotProps.vendorComboBox.options}
           value={fieldVendor}
           onChange={setFieldVendor}
@@ -199,8 +163,6 @@ export const VehicleForm: FC<VehicleFormProps> = (
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
-          startIcon: submitButtonStartIcon,
-          children: submitButtonLabel,
           onClick: handleSubmit,
         },
       }}

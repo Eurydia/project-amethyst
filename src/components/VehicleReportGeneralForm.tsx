@@ -6,10 +6,6 @@ import {
   VehicleReportGeneralFormData,
   VehicleReportGeneralModel,
 } from "$types/models/vehicle-report-general";
-import {
-  AddRounded,
-  SaveRounded,
-} from "@mui/icons-material";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
@@ -62,25 +58,15 @@ export const VehicleReportGeneralForm: FC<
 > = (props) => {
   const { editing, slotProps, onClose, open } = props;
 
-  // TODO: translate
-  let submitButtonLabel = "Add";
-  let submitButtonStartIcon = <AddRounded />;
-  let title = "Add vehicle report";
+  const title = editing
+    ? "แก้ไขข้อมูลเรื่องร้องเรียนรถรับส่ง"
+    : "เพิ่มเรื่องร้องเรียนรถรับส่ง";
   let initFormData =
     VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER.toFormData(
-      undefined,
+      editing ? props.report : undefined,
       slotProps.vehcleSelect.options[0]
     );
-  if (editing) {
-    submitButtonLabel = "Save";
-    submitButtonStartIcon = <SaveRounded />;
-    title = "Edit Report";
-    initFormData =
-      VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER.toFormData(
-        props.report,
-        slotProps.vehcleSelect.options[0]
-      );
-  }
+
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime)
   );
@@ -101,13 +87,13 @@ export const VehicleReportGeneralForm: FC<
   );
   const { revalidate } = useRevalidator();
 
-  const clearForm = () => {
-    setFieldDate(dayjs());
-    setFieldTime(dayjs());
-    setFieldTitle("");
-    setFieldContent("");
-    setFieldTopics([]);
-    setFieldVehicle(slotProps.vehcleSelect.options[0]);
+  const handleReset = () => {
+    setFieldDate(dayjs(initFormData.datetime));
+    setFieldTime(dayjs(initFormData.datetime));
+    setFieldTitle(initFormData.title);
+    setFieldContent(initFormData.content);
+    setFieldTopics(initFormData.topics);
+    setFieldVehicle(initFormData.vehicle);
   };
 
   const handleSubmit = () => {
@@ -124,49 +110,46 @@ export const VehicleReportGeneralForm: FC<
 
     const formData: VehicleReportGeneralFormData = {
       datetime,
+      vehicle: fieldVehicle,
+      title:
+        fieldTitle.normalize().trim() ||
+        "เรื่องร้องเรียนรถรับส่ง",
       content: fieldContent.normalize().trim(),
-      title: fieldTitle.normalize().trim(),
       topics: fieldTopics
         .map((topic) => topic.normalize().trim())
         .filter((topic) => topic.length > 0),
-      vehicle: fieldVehicle,
     };
 
-    if (editing) {
-      tauriPutVehicleReportGeneral(
-        props.report.id,
-        formData
+    (editing
+      ? tauriPutVehicleReportGeneral(
+          props.report.id,
+          formData
+        )
+      : tauriPostVehicleReportGeneral(formData)
+    )
+      .then(
+        () => {
+          toast.success(
+            editing ? "แก้ไขสำเร็จ" : "เพิ่มสำเร็จ"
+          );
+          revalidate();
+        },
+        () =>
+          toast.error(
+            editing ? "แก้ไขล้มเหลว" : "เพิ่มล้มเหลว"
+          )
       )
-        .then(
-          () => {
-            toast.success("Save success");
-            revalidate();
-          },
-          () => toast.error("Save failed")
-        )
-        .finally(() => {
-          clearForm();
-          onClose();
-        });
-    } else {
-      tauriPostVehicleReportGeneral(formData)
-        .then(
-          () => {
-            toast.success("Save success");
-            revalidate();
-          },
-          () => toast.error("Save failed")
-        )
-        .finally(() => {
-          clearForm();
-          onClose();
-        });
-    }
+      .finally(() => {
+        handleReset();
+        onClose();
+      });
   };
 
-  const isVehicleEmpty = fieldVehicle === null;
-  const isTitleEmpty = fieldTitle.trim().length === 0;
-  const isFormIncomplete = isVehicleEmpty || isTitleEmpty;
+  const isDateValid = dayjs(fieldDate)
+    .startOf("day")
+    .isValid();
+  const isTimeValid = dayjs(fieldTime).isValid();
+  const isFormIncomplete = !isDateValid || !isTimeValid;
 
   const formItems: {
     label: string;
@@ -178,6 +161,7 @@ export const VehicleReportGeneralForm: FC<
         <BaseInputTimeField
           value={fieldTime}
           onChange={setFieldTime}
+          error={!isTimeValid}
         />
       ),
     },
@@ -187,6 +171,7 @@ export const VehicleReportGeneralForm: FC<
         <BaseInputDateField
           value={fieldDate}
           onChange={setFieldDate}
+          error={!isDateValid}
         />
       ),
     },
@@ -205,10 +190,9 @@ export const VehicleReportGeneralForm: FC<
       value: (
         <BaseInputTextField
           autoFocus
-          error={isTitleEmpty}
           value={fieldTitle}
           onChange={setFieldTitle}
-          placeholder={initFormData.title}
+          placeholder="เรื่องร้องเรียนรถรับส่ง"
         />
       ),
     },
@@ -220,7 +204,6 @@ export const VehicleReportGeneralForm: FC<
           minRows={6}
           value={fieldContent}
           onChange={setFieldContent}
-          placeholder={initFormData.content}
         />
       ),
     },
@@ -243,8 +226,6 @@ export const VehicleReportGeneralForm: FC<
       title={title}
       slotProps={{
         submitButton: {
-          startIcon: submitButtonStartIcon,
-          children: submitButtonLabel,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
         },

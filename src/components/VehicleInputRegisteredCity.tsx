@@ -1,22 +1,19 @@
 import { CITIES } from "$core/constants";
 import { filterItems } from "$core/filter";
+import { VehicleModel } from "$types/models/vehicle";
 import { Autocomplete, TextField } from "@mui/material";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 
 type VehicleInputRegisteredCityProps = {
-  value: string;
-  onChange: (value: string) => void;
+  value: VehicleModel["registered_city"];
+  onChange: (
+    value: VehicleModel["registered_city"]
+  ) => void;
 };
 export const VehicleInputRegisteredCity: FC<
   VehicleInputRegisteredCityProps
 > = (props) => {
   const { onChange, value } = props;
-
-  useEffect(() => {
-    if (value.normalize().trim().length < 0) {
-      onChange(CITIES[0]);
-    }
-  }, [value]);
 
   return (
     <Autocomplete
@@ -29,7 +26,11 @@ export const VehicleInputRegisteredCity: FC<
       value={value}
       getOptionLabel={(option) => option}
       getOptionKey={(option) => option}
-      onChange={(_, newValue) => onChange(newValue)}
+      onChange={(_, newValue) =>
+        onChange(
+          newValue as VehicleModel["registered_city"]
+        )
+      }
       renderInput={(params) => <TextField {...params} />}
       filterOptions={(options, state) =>
         filterItems(options, state.inputValue, undefined)

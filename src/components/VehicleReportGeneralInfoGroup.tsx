@@ -48,24 +48,19 @@ export const VehicleReportGeneralInfoGroup: FC<
       label: "รายละเอียด",
       value: report.content,
     },
-  ].map(({ label, value }) => ({
-    label,
-    value: <Typography>{value}</Typography>,
-  }));
-
-  infoItems.push({
-    label: "หัวข้อที่เกี่ยวข้อง",
-    value:
-      report.topics.length > 0 ? (
-        <Typography>
-          {report.topics.replaceAll(",", ", ")}
-        </Typography>
-      ) : (
+    {
+      label: "หัวข้อที่เกี่ยวข้อง",
+      value: report.topics
+        .split(",")
+        .map((topic) => topic.trim().normalize())
+        .filter((topic) => topic.length > 0)
+        .join(", ") || (
         <Typography fontStyle="italic">
           ไม่มีหัวข้อที่เกี่ยวข้อง
         </Typography>
       ),
-  });
+    },
+  ];
 
   return (
     <Stack spacing={1}>

@@ -1,4 +1,5 @@
 import { tauriGetVehicleReportGeneral } from "$backend/database/get/vehicle-general-reports";
+import { compareStrings } from "$core/compare";
 import { filterItems } from "$core/filter";
 import { VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-general";
 import { exportWorkbook } from "$core/workbook";
@@ -31,7 +32,8 @@ const VEHICLE_HEADER_DEFINITION: TableHeaderDefinition<VehicleReportGeneralEntry
   {
     label: "เลขทะเบียน",
     compare: (a, b) =>
-      a.vehicle_license_plate.localeCompare(
+      compareStrings(
+        a.vehicle_license_plate,
         b.vehicle_license_plate
       ),
     render: (item) => (
@@ -45,7 +47,7 @@ const VEHICLE_HEADER_DEFINITION: TableHeaderDefinition<VehicleReportGeneralEntry
 const TITLE_HEADER_DEFINITION: TableHeaderDefinition<VehicleReportGeneralEntry> =
   {
     label: "เรื่อง",
-    compare: (a, b) => a.title.localeCompare(b.title),
+    compare: (a, b) => compareStrings(a.title, b.title),
     render: (item) => (
       <BaseTypographyLink
         to={"/vehicles/report/general/info/" + item.id}
@@ -95,30 +97,24 @@ export const VehicleReportGeneralTable: FC<
   const [search, setSearch] = useState("");
 
   const handleExport = async () => {
-    const reportReqs = filteredEntries.map((entry) =>
-      tauriGetVehicleReportGeneral(entry.id)
-    );
-    const reports = (await Promise.all(reportReqs)).filter(
-      (report) => report !== null
-    );
+    if (filteredEntries.length === 0) {
+      return;
+    }
+    const reports = (
+      await Promise.all(
+        filteredEntries.map((entry) =>
+          tauriGetVehicleReportGeneral(entry.id)
+        )
+      )
+    ).filter((report) => report !== null);
 
-    // TODO: translate
     exportWorkbook(reports, {
-      name: "vehicle general report",
-      header: {
-        หมายเลขเรื่องร้องเรียน: "",
-        วันที่ลงบันทึก: "",
-        เรื่อง: "",
-        รายละเอียด: "",
-        หัวข้อที่เกี่ยวข้อง: "",
-        หมายเลขรถรับส่ง: "",
-        เลขทะเบียน: "",
-      }, // FIXME
+      name: "บัทึกเรื่องร้องเรียนรถรับส่ง",
       transformer:
         VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER.toExportData,
     }).then(
-      () => toast.success("Exported"),
-      () => toast.error("Export failed")
+      () => toast.success("ดาวน์โหลดสำเร็จ"),
+      () => toast.error("ดาวน์โหลดล้มเหลว")
     );
   };
 
@@ -156,18 +152,16 @@ export const VehicleReportGeneralTable: FC<
             onChange: setSearch,
           },
           addButton: {
-            // TODO: translate
             disabled: databaseHasNoVehicle,
-            children: "Add report",
             onClick: () => setDialogOpen(true),
           },
           importButton: {
             disabled: true,
-            children: "Import from file",
-            onFileSelect: () => {},
+            onFileSelect: () => {
+              throw new Error("Function not implemented.");
+            },
           },
           exportButton: {
-            children: "Export data",
             onClick: handleExport,
           },
         }}
@@ -179,14 +173,13 @@ export const VehicleReportGeneralTable: FC<
         headers={headers}
         slotProps={{
           body: {
-            // TODO: translate
             emptyText: databaseIsEmpty
-              ? "Database is empty"
-              : "ไม่พบเรื่องร้องเรียน",
+              ? "ฐานข้อมูลว่าง"
+              : "ไม่พบเรื่องร้องเรียนรถรับส่งที่ค้นหา",
           },
         }}
       />
-      {slotProps.form.vehicleSelect.options.length > 0 && (
+      {!databaseHasNoVehicle && (
         <VehicleReportGeneralForm
           editing={false}
           open={dialogOpen}

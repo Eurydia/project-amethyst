@@ -16,7 +16,6 @@ export const operationalLogModelSchema = z
       .refine((v) => dayjs(v).isValid()),
     end_date: z.string().refine((v) => dayjs(v).isValid()),
   })
-  .passthrough()
   .required();
 
 export type OperationalLogModel = z.infer<

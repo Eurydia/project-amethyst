@@ -1,39 +1,36 @@
 import { KNOWN_VEHICLE_CLASSES } from "$core/constants";
+import { VehicleModel } from "$types/models/vehicle";
 import {
   FormControlLabel,
   Radio,
   RadioGroup,
   Typography,
 } from "@mui/material";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 
 type VehicleInputVehicleClassProps = {
-  value: string;
-  onChange: (value: string) => void;
+  value: VehicleModel["vehicle_class"];
+  onChange: (value: VehicleModel["vehicle_class"]) => void;
 };
 export const VehicleInputVehicleClass: FC<
   VehicleInputVehicleClassProps
 > = (props) => {
   const { value, onChange } = props;
 
-  useEffect(() => {
-    if (value.trim().normalize().length < 1) {
-      onChange(KNOWN_VEHICLE_CLASSES[0]);
-    }
-  }, [value]);
-
   return (
     <RadioGroup
       row
       value={value}
-      onChange={(_, value) => onChange(value)}
+      onChange={(_, value) =>
+        onChange(value as VehicleModel["vehicle_class"])
+      }
     >
-      {KNOWN_VEHICLE_CLASSES.map((vClass, index) => (
+      {KNOWN_VEHICLE_CLASSES.map((optionValue, index) => (
         <FormControlLabel
           key={"option" + index}
-          value={vClass}
+          value={optionValue}
           control={<Radio />}
-          label={<Typography>{vClass}</Typography>}
+          label={<Typography>{optionValue}</Typography>}
         />
       ))}
     </RadioGroup>

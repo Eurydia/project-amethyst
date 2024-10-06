@@ -45,7 +45,7 @@ export const AttendanceLogTableCheckBox: FC<
           color="error"
           fontWeight="bold"
         >
-          {`สายไป ${lateByLabel}`}
+          สายไป {lateByLabel}
         </Typography>
       );
     }

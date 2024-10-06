@@ -18,9 +18,8 @@ export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
     }
 
     const entry: VehicleReportInspectionEntry = {
-      inspection_round_number: 0, // FIXME
-
       id: report.id,
+      title: report.title,
       datetime: report.datetime,
       topics: report.topics.split(","),
 
@@ -40,10 +39,10 @@ export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
       return null;
     }
     const exportData: VehicleReportInpsectionExportData = {
+      ชื่อเรื่อง: report.title,
       รหัสรถรับส่ง: vehicle.id,
       เลขทะเบียน: vehicle.license_plate,
       รหัส: report.id,
-      รอบการตรวจสภาพ: 0, // FIXME
       วันที่ลงบันทึก: dayjs(report.datetime)
         .locale("th")
         .format(),
@@ -69,25 +68,26 @@ export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
     report: VehicleReportInspectionModel | undefined,
     vehicle: VehicleModel
   ): VehicleReportInspectionFormData => {
-    let formData: VehicleReportInspectionFormData = {
-      vehicle,
-      datetime: dayjs().locale("th").format(),
-      topics: [],
-      content: "",
-      front_camera: "",
-      overhead_fan: "",
-      windows: "",
-      seatbelts: "",
-      seats: "",
-      headlights: "",
-      turn_signals: "",
-      brake_light: "",
-      frame: "",
-      rearview_mirror: "",
-      sideview_mirror: "",
-      tires: "",
-    };
     if (report === undefined) {
+      const formData: VehicleReportInspectionFormData = {
+        vehicle,
+        datetime: dayjs().locale("th").format(),
+        topics: [],
+        title: "ผลการตรวจสภาพรถรับส่ง",
+        brake_light: "ปกติ",
+        content: "ปกติ",
+        frame: "ปกติ",
+        front_camera: "ปกติ",
+        headlights: "ปกติ",
+        overhead_fan: "ปกติ",
+        rearview_mirror: "ปกติ",
+        seatbelts: "ปกติ",
+        seats: "ปกติ",
+        sideview_mirror: "ปกติ",
+        tires: "ปกติ",
+        windows: "ปกติ",
+        turn_signals: "ปกติ",
+      };
       return formData;
     }
 
@@ -95,11 +95,32 @@ export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
     if (!datetime.isValid()) {
       datetime = dayjs();
     }
-    formData = {
-      ...report,
+    const formData: VehicleReportInspectionFormData = {
       vehicle,
       datetime: datetime.locale("th").format(),
-      topics: report.topics.split(","),
+      topics: report.topics
+        .split(",")
+        .map((topic) => topic.trim().normalize())
+        .filter((topic) => topic.length > 0),
+
+      title: report.title.normalize().trim(),
+      content: report.content.normalize().trim(),
+      brake_light: report.brake_light.trim().normalize(),
+      frame: report.frame.trim().normalize(),
+      front_camera: report.front_camera.trim().normalize(),
+      headlights: report.headlights.trim().normalize(),
+      overhead_fan: report.overhead_fan.trim().normalize(),
+      rearview_mirror: report.rearview_mirror
+        .trim()
+        .normalize(),
+      seatbelts: report.seatbelts.trim().normalize(),
+      seats: report.seats.trim().normalize(),
+      sideview_mirror: report.sideview_mirror
+        .trim()
+        .normalize(),
+      tires: report.tires.trim().normalize(),
+      turn_signals: report.turn_signals.trim().normalize(),
+      windows: report.windows.trim().normalize(),
     };
     return formData;
   },

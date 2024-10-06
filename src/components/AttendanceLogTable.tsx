@@ -1,7 +1,7 @@
 import { tauriGetAttendanceLog } from "$backend/database/get/attendance-logs";
 import { tauriPutAttendanceLog } from "$backend/database/put";
 import { compareStrings } from "$core/compare";
-import { filterItems } from "$core/filter";
+import { filterObjects } from "$core/filter";
 import { ATTENDANCE_LOG_MODEL_TRANSFORMER } from "$core/transformers/attendance-log";
 import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
@@ -108,7 +108,7 @@ export const AttendanceLogTable: FC<
   const { entries } = props;
   const [search, setSearch] = useState("");
 
-  const filteredEntries = filterItems(entries, search, [
+  const filteredEntries = filterObjects(entries, search, [
     "routeName",
     "vehicleLicensePlate",
     "driverName",

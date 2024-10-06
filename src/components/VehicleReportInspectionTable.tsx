@@ -1,6 +1,6 @@
 import { tauriGetVehicleReportInspection } from "$backend/database/get/vehicle-inspection-reports";
 import { compareStrings } from "$core/compare";
-import { filterItems } from "$core/filter";
+import { filterObjects } from "$core/filter";
 import { VEHICLE_REPORT_INSPECTION_TRANSFORMER } from "$core/transformers/vehicle-report-inspection";
 import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
@@ -62,7 +62,7 @@ const TOPIC_HEADER: TableHeaderDefinition<VehicleReportInspectionEntry> =
     compare: null,
     render: (item) =>
       item.topics
-        .map((topic) => topic.trim())
+        .map((topic) => topic.trim().normalize())
         .filter((topic) => topic.length > 0)
         .join(", ") || (
         <Typography fontStyle="italic">ไม่มี</Typography>
@@ -92,11 +92,10 @@ export const VehicleReportInspectionTable: FC<
   const [dialogOpen, setDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const filteredEntries = filterItems(entries, search, [
-    "title",
-    "topics",
-    "vehicleLicensePlate",
-    "inspectionRoundNumber",
+  const filteredEntries = filterObjects(entries, search, [
+    (item) => item.title,
+    (item) => item.topics,
+    (item) => item.vehicle_license_plate,
   ]);
 
   const handleExport = async () => {

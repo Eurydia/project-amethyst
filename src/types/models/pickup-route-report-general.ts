@@ -9,10 +9,15 @@ export const pickupRouteReportGeneralModelSchema = z
 
     datetime: z.string().refine((v) => dayjs(v).isValid()),
     title: z.string().trim().min(1),
-    content: z.string(),
-    topics: z.string(),
+    content: z
+      .string()
+      .optional()
+      .transform((v) => v ?? ""),
+    topics: z
+      .string()
+      .optional()
+      .transform((v) => v ?? ""),
   })
-  .passthrough()
   .required();
 
 export type PickupRouteReportGeneralModel = z.infer<

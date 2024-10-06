@@ -1,6 +1,7 @@
 import { tauriGetDriver } from "$backend/database/get/drivers";
 import { tauriPostDriver } from "$backend/database/post";
-import { filterItems } from "$core/filter";
+import { compareStrings } from "$core/compare";
+import { filterObjects } from "$core/filter";
 import { DRIVER_MODEL_TRANSFORMER } from "$core/transformers/driver";
 import { DRIVER_MODEL_VALIDATOR } from "$core/validators/driver";
 import {
@@ -21,12 +22,14 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverEntry>[] =
   [
     {
       label: "คนขับรถ",
-      compare: (a, b) => a.name.localeCompare(b.name),
+      compare: (a, b) =>
+        compareStrings(
+          `${a.name} ${a.surname}`,
+          `${b.name} ${b.surname}`
+        ),
       render: (item) => (
         <BaseTypographyLink to={"/drivers/info/" + item.id}>
-          {`${item.name} ${item.surname}`
-            .trim()
-            .normalize()}
+          {item.name} {item.surname}
         </BaseTypographyLink>
       ),
     },
@@ -78,17 +81,18 @@ export const DriverTable: FC<DriverTableProps> = (
 ) => {
   const { driverEntries } = props;
   const { revalidate } = useRevalidator();
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const filteredEntries = filterItems(
+  const filteredEntries = filterObjects(
     driverEntries,
     search,
     [
-      "name",
-      "surname",
-      "vehicles.*.licensePlate",
-      "routes.*.name",
+      (item) => item.name,
+      (item) => item.surname,
+      (item) => item.vehicles.map((v) => v.licensePlate),
+      (item) => item.routes.map((r) => r.name),
     ]
   );
 
@@ -99,10 +103,10 @@ export const DriverTable: FC<DriverTableProps> = (
         DRIVER_MODEL_VALIDATOR.validate(dt),
     }).then(
       () => {
-        toast.success(`เพิ่มคนขับรถสำเร็จ`);
+        toast.success("เพิ่มสำเร็จ");
         revalidate();
       },
-      () => toast.error("เพิ่มคนขับรถล้มเหลว")
+      () => toast.error("เพิ่มล้มเหลว")
     );
   };
   const handleExport = async () => {
@@ -162,6 +166,7 @@ export const DriverTable: FC<DriverTableProps> = (
         }}
       />
       <DriverForm
+        editing={false}
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
       />

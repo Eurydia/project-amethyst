@@ -1,9 +1,7 @@
-/** @format */
-
 import { FormalLayout } from "$layouts/FormalLayout";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { EditRounded } from "@mui/icons-material";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
 import { PickupRouteForm } from "./PickupRouteForm";
@@ -24,21 +22,18 @@ export const PickupRouteInfoGroup: FC<
       value: route.name,
     },
     {
-      label: "Arrival time", // TODO: translate
+      label: "เวลารับเข้า",
       value: dayjs(route.arrival_time, "HH:mm").format(
         "HH:mm น."
       ),
     },
     {
-      label: "Departure time", // TODO: translate
+      label: "เวลารับออก",
       value: dayjs(route.departure_time, "HH:mm").format(
         "HH:mm น."
       ),
     },
-  ].map(({ label, value }) => ({
-    label,
-    value: <Typography>{value}</Typography>,
-  }));
+  ];
 
   return (
     <Stack spacing={1}>
@@ -52,12 +47,7 @@ export const PickupRouteInfoGroup: FC<
       <FormalLayout>{infoItems}</FormalLayout>
       <PickupRouteForm
         editing
-        routeId={route.id}
-        initFormData={{
-          name: route.name,
-          arrival_time: route.arrival_time,
-          departure_time: route.departure_time,
-        }}
+        route={route}
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
       />

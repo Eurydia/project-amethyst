@@ -1,5 +1,5 @@
 import { tauriGetDriverReportGeneral } from "$backend/database/get/driver-general-reports";
-import { filterItems } from "$core/filter";
+import { filterObjects } from "$core/filter";
 import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report";
 import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
@@ -85,11 +85,11 @@ export const DriverReportGeneralTable: FC<
 
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const filteredEntries = filterItems(entries, search, [
+  const filteredEntries = filterObjects(entries, search, [
     "title",
     "topics",
-    "driverName",
-    "driverSurname",
+    "driver_name",
+    "driver_surname",
   ]);
 
   let headers = [

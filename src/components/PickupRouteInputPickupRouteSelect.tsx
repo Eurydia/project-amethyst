@@ -1,4 +1,4 @@
-import { filterItems } from "$core/filter";
+import { filterObjects } from "$core/filter";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { LockRounded } from "@mui/icons-material";
 import {
@@ -49,7 +49,7 @@ export const PickupRouteInputPickupRouteSelect: FC<
         </ListItem>
       )}
       filterOptions={(options, state) =>
-        filterItems(options, state.inputValue, ["name"])
+        filterObjects(options, state.inputValue, ["name"])
       }
       renderInput={(params) => (
         <TextField

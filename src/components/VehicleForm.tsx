@@ -103,12 +103,12 @@ export const VehicleForm: FC<VehicleFormProps> = (
       });
   };
 
-  const missingFieldLicensePlate =
+  const missingLicensePlate =
     fieldLicensePlate.trim().normalize().length < 1;
-  const missingFieldVendor =
+  const missingVendor =
     fieldVendor.trim().normalize().length < 1;
   const isFormIncomplete =
-    missingFieldLicensePlate || missingFieldVendor;
+    missingLicensePlate || missingVendor;
 
   const formItems: {
     label: string;
@@ -119,7 +119,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
       value: (
         <BaseInputTextField
           autoFocus
-          error={missingFieldLicensePlate}
+          error={missingLicensePlate}
           value={fieldLicensePlate}
           onChange={setFieldLicensePlate}
         />
@@ -129,7 +129,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
       label: "หจก.",
       value: (
         <VehicleInputVendor
-          options={slotProps.vendorComboBox.options}
+          {...slotProps.vendorComboBox}
           value={fieldVendor}
           onChange={setFieldVendor}
         />

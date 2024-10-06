@@ -87,13 +87,13 @@ export const DriverReportMedicalForm: FC<
 
   const { revalidate } = useRevalidator();
 
-  const clearForm = () => {
-    setFieldDate(dayjs());
-    setFieldTime(dayjs());
-    setFieldTitle("");
-    setFieldContent("");
-    setFieldTopics([]);
-    setFieldDriver(slotProps.driverSelect.options[0]);
+  const handleReset = () => {
+    setFieldDate(dayjs(initFormData.datetime));
+    setFieldTime(dayjs(initFormData.datetime));
+    setFieldTitle(initFormData.title);
+    setFieldContent(initFormData.content);
+    setFieldTopics(initFormData.topics);
+    setFieldDriver(initFormData.driver);
   };
 
   const handleSubmit = async () => {
@@ -138,19 +138,14 @@ export const DriverReportMedicalForm: FC<
           )
       )
       .finally(() => {
-        clearForm();
+        handleReset();
         onClose();
       });
   };
 
-  const isMissingTime =
-    Number.isNaN(fieldTime.hour()) ||
-    Number.isNaN(fieldTime.minute());
-  const isMissingDate =
-    Number.isNaN(fieldDate.day()) ||
-    Number.isNaN(fieldDate.month()) ||
-    Number.isNaN(fieldDate.year());
-  const isFormIncomplete = isMissingDate || isMissingTime;
+  const isTimeValid = fieldTime.isValid();
+  const isDateValid = fieldDate.isValid();
+  const isFormIncomplete = !isDateValid || !isTimeValid;
 
   const formItems: {
     label: string;
@@ -162,6 +157,7 @@ export const DriverReportMedicalForm: FC<
         <BaseInputTimeField
           value={fieldTime}
           onChange={setFieldTime}
+          error={!isTimeValid}
         />
       ),
     },
@@ -171,6 +167,7 @@ export const DriverReportMedicalForm: FC<
         <BaseInputDateField
           value={fieldDate}
           onChange={setFieldDate}
+          error={!isDateValid}
         />
       ),
     },
@@ -189,10 +186,10 @@ export const DriverReportMedicalForm: FC<
       value: (
         <BaseInputTextField
           autoFocus
-          onChange={setFieldTitle}
           placeholder={
             initFormData.title.trim() || "ผลตรวจสารเสพติด"
           }
+          onChange={setFieldTitle}
           value={fieldTitle}
         />
       ),
@@ -222,6 +219,7 @@ export const DriverReportMedicalForm: FC<
 
   return (
     <BaseForm
+      title={title}
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
@@ -230,7 +228,6 @@ export const DriverReportMedicalForm: FC<
       }}
       open={open}
       onClose={onClose}
-      title={title}
     >
       {formItems}
     </BaseForm>

@@ -25,12 +25,12 @@ export const DriverInputLicenseType: FC<
         onChange(value as DriverFormData["license_type"])
       }
     >
-      {KNOWN_LICENSE_TYPES.map((lTypes, index) => (
+      {KNOWN_LICENSE_TYPES.map((optionValue, index) => (
         <FormControlLabel
           key={"option" + index}
-          value={lTypes}
+          value={optionValue}
           control={<Radio />}
-          label={<Typography>{lTypes}</Typography>}
+          label={<Typography>{optionValue}</Typography>}
         />
       ))}
     </RadioGroup>

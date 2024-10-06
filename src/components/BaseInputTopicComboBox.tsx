@@ -1,4 +1,4 @@
-import { filterItems } from "$core/filter";
+import { filterObjects } from "$core/filter";
 import {
   Autocomplete,
   ListItem,
@@ -48,7 +48,7 @@ export const BaseInputTopicComboBox: FC<
           setInputValue(newInputValue)
         }
         filterOptions={(fOptions, params) => {
-          const filtered = filterItems(
+          const filtered = filterObjects(
             fOptions.filter(
               (option) => !valueSet.has(option)
             ),

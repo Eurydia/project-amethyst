@@ -145,9 +145,7 @@ export const VehicleReportGeneralForm: FC<
       });
   };
 
-  const isDateValid = dayjs(fieldDate)
-    .startOf("day")
-    .isValid();
+  const isDateValid = dayjs(fieldDate).isValid();
   const isTimeValid = dayjs(fieldTime).isValid();
   const isFormIncomplete = !isDateValid || !isTimeValid;
 

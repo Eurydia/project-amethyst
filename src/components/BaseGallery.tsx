@@ -1,6 +1,7 @@
 import { openDir, openFile } from "$backend/open";
 import { FolderRounded } from "@mui/icons-material";
 import {
+  Button,
   ImageList,
   ImageListItem,
   ImageListItemBar,
@@ -10,7 +11,6 @@ import {
 import { FileEntry } from "@tauri-apps/api/fs";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
 import { FC } from "react";
-import { TypographyButton } from "./TypographyButton";
 
 const REGEX =
   /([^\\\/]+\.(jpg|jpeg|png|gif|webp|svg|apng|bmp|ico))$/i;
@@ -61,13 +61,13 @@ export const BaseGallery: FC<BaseGalleryProps> = (
 
   return (
     <Stack spacing={1}>
-      <TypographyButton
+      <Button
         variant="outlined"
         startIcon={<FolderRounded />}
         onClick={async () => openDir(dirPath)}
       >
         เปิดคลังภาพ
-      </TypographyButton>
+      </Button>
       {imageGallery}
     </Stack>
   );

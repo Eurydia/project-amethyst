@@ -63,25 +63,30 @@ export const PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER =
       report: PickupRouteReportGeneralModel | undefined,
       route: PickupRouteModel
     ) => {
-      let formData: PickupRouteReportGeneralFormData = {
-        route,
-        datetime: dayjs().format(),
-        title: "",
-        content: "",
-        topics: [],
-      };
       if (report === undefined) {
+        const formData: PickupRouteReportGeneralFormData = {
+          route,
+          datetime: dayjs().locale("th").format(),
+          title: "เรื่องร้องเรียนสายรถ",
+          content: "",
+          topics: [],
+        };
         return formData;
       }
       let datetime = dayjs(report.datetime);
       if (!datetime.isValid()) {
         datetime = dayjs();
       }
-      formData = {
-        ...report,
-        datetime: datetime.format(),
-        topics: report.topics.split(","),
+      const formData: PickupRouteReportGeneralFormData = {
         route,
+        datetime: datetime.format(),
+        title: report.title.normalize().trim(),
+        content: report.content.normalize().trim(),
+        topics: report.topics
+          .normalize()
+          .split(",")
+          .map((topic) => topic.trim())
+          .filter((topic) => topic.length > 0),
       };
       return formData;
     },

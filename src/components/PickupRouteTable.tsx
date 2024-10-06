@@ -1,22 +1,19 @@
-/** @format */
-
 import { tauriGetPickupRoute } from "$backend/database/get/pickup-routes";
 import { tauriPostPickupRoute } from "$backend/database/post";
-import { filterItems } from "$core/filter";
+import { compareStrings } from "$core/compare";
+import { filterObjects } from "$core/filter";
+import { PICKUP_ROUTE_MODEL_TRANSFORMER } from "$core/transformers/pickup-route";
+import { PICKUP_ROUTE_VALIDATOR } from "$core/validators/pickup-route";
 import {
   exportWorkbook,
   importWorkbook,
 } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
-import {
-  PickupRouteEntry,
-  PickupRouteExportData,
-  PickupRouteFormData,
-} from "$types/models/pickup-route";
+import { PickupRouteEntry } from "$types/models/pickup-route";
 import { Stack, Typography } from "@mui/material";
-import dayjs from "dayjs";
 import { FC, useState } from "react";
 import { useRevalidator } from "react-router-dom";
+import { toast } from "react-toastify";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
@@ -26,7 +23,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
   [
     {
       label: "สายรถ",
-      compare: (a, b) => a.name.localeCompare(b.name),
+      compare: (a, b) => compareStrings(a.name, b.name),
       render: (item) => (
         <BaseTypographyLink
           to={"/pickup-routes/info/" + item.id}
@@ -75,38 +72,6 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
     },
   ];
 
-const importTransformer = async (data: unknown) => {
-  const entry = data as PickupRouteExportData;
-  const name = entry["ชื่อสาย"].trim().normalize();
-  const arrivalTime = dayjs(entry["เวลารับเข้า"], "HH:mm");
-  const departureTime = dayjs(entry["เวลารับออก"], "HH:mm");
-  if (!arrivalTime.isValid() || !departureTime.isValid()) {
-    return null;
-  }
-  const formData: PickupRouteFormData = {
-    name,
-    arrival_time: arrivalTime.format("HH:mm"),
-    departure_time: departureTime.format("HH:mm"),
-  };
-  return formData;
-};
-
-const exportTransformer = async (
-  entry: PickupRouteEntry
-) => {
-  const route = await tauriGetPickupRoute(entry.id);
-  if (route === null) {
-    return null;
-  }
-  const exportData: PickupRouteExportData = {
-    ชื่อสาย: route.name,
-    เวลารับเข้า: route.arrival_time,
-    เวลารับออก: route.departure_time,
-    เลขรหัส: route.id,
-  };
-  return exportData;
-};
-
 type PickupRouteTableProps = {
   routeEntries: PickupRouteEntry[];
 };
@@ -120,36 +85,42 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
   const [search, setSearch] = useState("");
   const [formDialogOpen, setFormDialogOpen] =
     useState(false);
-  const filteredEntries = filterItems(
+  const filteredEntries = filterObjects(
     routeEntries,
     search,
-    [
-      "name",
-      "vehicles.*.licensePlate",
-      "drivers.*.name",
-      "drivers.*.surname",
-    ]
+    ["name", "vehicles", "drivers"]
   );
 
-  const handleImport = (file: File) =>
+  const handleImport = (file: File) => {
     importWorkbook(file, {
+      validator: PICKUP_ROUTE_VALIDATOR.validate,
       action: tauriPostPickupRoute,
-      cleanup: revalidate,
-      validator: importTransformer,
-    });
+    }).then(
+      () => {
+        toast.success("เพิ่มสำเร็จ");
+        revalidate();
+      },
+      () => toast.error("เพิ่มล้มเหลว")
+    );
+  };
 
   const handleExport = async () => {
-    exportWorkbook(filteredEntries, {
-      header: [
-        "เลขรหัส",
-        "ชื่อสาย",
-        "เวลารับเข้า",
-        "เวลารับออก",
-      ],
-      transformer: exportTransformer,
-      name: "Routes", // TODO: translate
-      worksheetName: "Routes", // TODO: translate
-    });
+    const routes = (
+      await Promise.all(
+        filteredEntries.map((entry) =>
+          tauriGetPickupRoute(entry.id)
+        )
+      )
+    ).filter((route) => route !== null);
+
+    exportWorkbook(routes, {
+      name: "รายชื่อสายรถ",
+      transformer: async (dt) =>
+        PICKUP_ROUTE_MODEL_TRANSFORMER.toExportData(dt),
+    }).then(
+      () => toast.success("ดาวน์โหลดสำเร็จ"),
+      () => toast.error("ดาวน์โหลดล้มเหลว")
+    );
   };
 
   const databaseHasNoRoute = routeEntries.length === 0;
@@ -165,15 +136,13 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
             onChange: setSearch,
           },
           addButton: {
-            children: "register route", // TODO: translate
             onClick: () => setFormDialogOpen(true),
           },
           importButton: {
-            children: "register from file", // TODO: translate
             onFileSelect: handleImport,
           },
           exportButton: {
-            children: "export routes", // TODO: translate
+            disabled: filteredEntries.length === 0,
             onClick: handleExport,
           },
         }}
@@ -186,12 +155,13 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
         slotProps={{
           body: {
             emptyText: databaseHasNoRoute
-              ? "No routes registered in the system"
-              : "No matching routes", //  TODO: translate
+              ? "ฐานข้อมูลว่าง"
+              : "ไม่พบสายรถที่ค้นหา",
           },
         }}
       />
       <PickupRouteForm
+        editing={false}
         open={formDialogOpen}
         onClose={() => setFormDialogOpen(false)}
       />

@@ -1,6 +1,6 @@
 import { tauriGetOperationalLog } from "$backend/database/get/operational-logs";
 import { compareStrings } from "$core/compare";
-import { filterItems } from "$core/filter";
+import { filterObjects } from "$core/filter";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
 import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
@@ -123,7 +123,7 @@ export const OperationalLogTable: FC<
 
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const filteredEntries = filterItems(entries, search, [
+  const filteredEntries = filterObjects(entries, search, [
     "driverName",
     "driverSurname",
     "vehicleLicensePlate",

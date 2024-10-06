@@ -28,7 +28,7 @@ export const BaseInputTopicComboBoxListItem: FC<
       }}
     >
       <TypographyTooltip
-        title={`ลบหัวข้อ`}
+        title="ลบหัวข้อ"
         arrow
       >
         <ListItemButton

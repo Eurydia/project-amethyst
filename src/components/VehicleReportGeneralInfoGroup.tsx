@@ -25,6 +25,12 @@ export const VehicleReportGeneralInfoGroup: FC<
   const { report, vehicle, slotProps } = props;
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  const topics = report.topics
+    .normalize()
+    .split(",")
+    .map((topic) => topic.trim())
+    .filter((topic) => topic.length > 0);
+
   const infoItems = [
     {
       label: "วันที่ลงบันทึก",
@@ -50,15 +56,14 @@ export const VehicleReportGeneralInfoGroup: FC<
     },
     {
       label: "หัวข้อที่เกี่ยวข้อง",
-      value: report.topics
-        .split(",")
-        .map((topic) => topic.trim().normalize())
-        .filter((topic) => topic.length > 0)
-        .join(", ") || (
-        <Typography fontStyle="italic">
-          ไม่มีหัวข้อที่เกี่ยวข้อง
-        </Typography>
-      ),
+      value:
+        topics.length > 0 ? (
+          topics.join(", ")
+        ) : (
+          <Typography fontStyle="italic">
+            ไม่มีหัวข้อที่เกี่ยวข้อง
+          </Typography>
+        ),
     },
   ];
 

@@ -1,6 +1,6 @@
 import { tauriGetVehicleReportGeneral } from "$backend/database/get/vehicle-general-reports";
 import { compareStrings } from "$core/compare";
-import { filterItems } from "$core/filter";
+import { filterObjects } from "$core/filter";
 import { VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/vehicle-report-general";
 import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
@@ -60,17 +60,17 @@ const TOPIC_HEADER_DEFINITION: TableHeaderDefinition<VehicleReportGeneralEntry> 
   {
     label: "หัวข้อที่เกี่ยวข้อง",
     compare: null,
-    render: (item) =>
-      item.topics.length === 0 ? (
+    render: (item) => {
+      const topics = item.topics
+        .map((topic) => topic.normalize().trim())
+        .filter((topic) => topic.length > 0);
+
+      return topics.length === 0 ? (
         <Typography fontStyle="italic">ไม่มี</Typography>
       ) : (
-        <Typography>
-          {item.topics
-            .map((topic) => topic.normalize().trim())
-            .filter((topic) => topic.length > 0)
-            .join(", ")}
-        </Typography>
-      ),
+        <Typography>{topics.join(", ")}</Typography>
+      );
+    },
   };
 
 type VehicleReportGeneralTableProps = {
@@ -118,10 +118,10 @@ export const VehicleReportGeneralTable: FC<
     );
   };
 
-  const filteredEntries = filterItems(entries, search, [
-    "title",
-    "topics",
-    "vehicleLicensePlate",
+  const filteredEntries = filterObjects(entries, search, [
+    (item) => item.vehicle_license_plate,
+    (item) => item.topics,
+    (item) => item.title,
   ]);
 
   let headers = [
@@ -175,7 +175,7 @@ export const VehicleReportGeneralTable: FC<
           body: {
             emptyText: databaseIsEmpty
               ? "ฐานข้อมูลว่าง"
-              : "ไม่พบเรื่องร้องเรียนรถรับส่งที่ค้นหา",
+              : "ไม่พบเรื่องร้องเรียนที่ค้นหา",
           },
         }}
       />

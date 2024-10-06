@@ -1,4 +1,4 @@
-import { filterItems } from "$core/filter";
+import { filterObjects } from "$core/filter";
 import { DriverModel } from "$types/models/driver";
 import { LockRounded } from "@mui/icons-material";
 import {
@@ -55,7 +55,7 @@ export const DriverInputDriverSelect: FC<
         );
       }}
       filterOptions={(options, state) =>
-        filterItems(options, state.inputValue, [
+        filterObjects(options, state.inputValue, [
           "name",
           "surname",
           "contact",

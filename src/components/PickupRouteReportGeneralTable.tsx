@@ -1,16 +1,15 @@
-import { tauriGetPickupRoute } from "$backend/database/get/pickup-routes";
 import { tauriGetPickupRouteReportGeneral } from "$backend/database/get/pickup-routes-general-reports";
-import { filterItems } from "$core/filter";
+import { compareStrings } from "$core/compare";
+import { filterObjects } from "$core/filter";
+import { PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-report-general";
 import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
 import { PickupRouteModel } from "$types/models/pickup-route";
-import {
-  PickupRouteReportGeneralEntry,
-  PickupRouteReportGeneralExportData,
-} from "$types/models/pickup-route-report-general";
+import { PickupRouteReportGeneralEntry } from "$types/models/pickup-route-report-general";
 import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
+import { toast } from "react-toastify";
 import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
@@ -33,7 +32,7 @@ const ROUTE_HEADER_DEFINITION: TableHeaderDefinition<PickupRouteReportGeneralEnt
   {
     label: "สายรถ",
     compare: (a, b) =>
-      a.routeName.localeCompare(b.routeName),
+      compareStrings(a.routeName, b.routeName),
     render: (item) => (
       <BaseTypographyLink
         to={"/pickup-routes/info/" + item.routeId}
@@ -45,7 +44,7 @@ const ROUTE_HEADER_DEFINITION: TableHeaderDefinition<PickupRouteReportGeneralEnt
 const TITLE_HEADER_DEFINITION: TableHeaderDefinition<PickupRouteReportGeneralEntry> =
   {
     label: "เรื่อง",
-    compare: (a, b) => a.title.localeCompare(b.title),
+    compare: (a, b) => compareStrings(a.title, b.title),
     render: (item) => (
       <BaseTypographyLink
         to={"/pickup-routes/report/general/info/" + item.id}
@@ -62,12 +61,13 @@ const TOPIC_HEADER_DEFINITION: TableHeaderDefinition<PickupRouteReportGeneralEnt
       const topics = item.topics
         .map((topic) => topic.trim().normalize())
         .filter((topic) => topic.trim().length > 0);
-      if (topics.length === 0) {
-        return (
-          <Typography fontStyle="italic">ไม่มี</Typography>
-        );
-      }
-      return <Typography>{topics.join(", ")}</Typography>;
+      return topics.length === 0 ? (
+        <Typography fontStyle="italic">
+          ไม่มีหัวข้อที่เกี่ยวข้อง
+        </Typography>
+      ) : (
+        <Typography>{topics.join(", ")}</Typography>
+      );
     },
   };
 
@@ -87,32 +87,6 @@ type PickupRouteReportGeneralTableProps = {
   };
 };
 
-const exportTransformer = async (
-  entry: PickupRouteReportGeneralEntry
-) => {
-  const route = await tauriGetPickupRoute(entry.routeId);
-  const report = await tauriGetPickupRouteReportGeneral(
-    entry.id
-  );
-  if (route === null || report === null) {
-    return null;
-  }
-  const data: PickupRouteReportGeneralExportData = {
-    รหัสสายรถ: route.id,
-    ชื่อสายรถ: route.name,
-
-    รหัสเรื่องร้องเรียน: report.id,
-    วันที่ลงบันทึก: report.datetime,
-    เรื่อง: report.title,
-    รายละเอียด: report.content,
-    หัวข้อที่เกี่ยวข้อง: report.topics.replaceAll(
-      ",",
-      ", "
-    ),
-  };
-  return data;
-};
-
 export const PickupRouteReportGeneralTable: FC<
   PickupRouteReportGeneralTableProps
 > = (props) => {
@@ -124,10 +98,14 @@ export const PickupRouteReportGeneralTable: FC<
 
   const databaseHasNoRoute =
     slotProps.form.routeSelect.options.length === 0;
-  const filteredEntries = filterItems(
+  const filteredEntries = filterObjects(
     reportEntries,
     search,
-    ["title", "topics", "routeName"]
+    [
+      (item) => item.title,
+      (item) => item.topics,
+      (item) => item.routeName,
+    ]
   );
 
   let headers = [
@@ -144,22 +122,26 @@ export const PickupRouteReportGeneralTable: FC<
     ];
   }
 
-  const handleExport = () =>
-    exportWorkbook(filteredEntries, {
-      name: "route general reports", // TODO: translate
-      worksheetName: "general reports", // TODO: translate
-      header: [
-        "รหัสสายรถ",
-        "ชื่อสายรถ",
-        "รหัสเรื่องร้องเรียน",
-        "วันที่ลงบันทึก",
-        "เรื่อง",
-        "รายละเอียด",
-        "หัวข้อที่เกี่ยวข้อง",
-      ], // FIXME
-      transformer: exportTransformer,
-    });
-
+  const handleExport = async () => {
+    if (filteredEntries.length === 0) {
+      return;
+    }
+    const _reports = (
+      await Promise.all(
+        filteredEntries.map((entry) =>
+          tauriGetPickupRouteReportGeneral(entry.id)
+        )
+      )
+    ).filter((report) => report !== null);
+    exportWorkbook(_reports, {
+      name: "บันทึกเรื่องร้องเรียนสายรถ",
+      transformer:
+        PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER.toExportData,
+    }).then(
+      () => toast.success("ดาวน์โหลดสำเร็จ"),
+      () => toast.error("ดาวน์โหลดล้มเหลว")
+    );
+  };
   return (
     <Stack spacing={1}>
       <BaseSortableTableToolbar
@@ -171,17 +153,16 @@ export const PickupRouteReportGeneralTable: FC<
             onChange: setSearch,
           },
           addButton: {
-            children: "เพิ่มเรื่องร้องเรียน",
             disabled: databaseHasNoRoute,
             onClick: () => setDialogOpen(true),
           },
           importButton: {
             disabled: true,
-            children: "import reports", // TODO: translate
-            onFileSelect: () => {},
+            onFileSelect: () => {
+              throw new Error("Function not implemented.");
+            },
           },
           exportButton: {
-            children: "export reports", // TODO: translate
             onClick: handleExport,
           },
         }}
@@ -194,13 +175,14 @@ export const PickupRouteReportGeneralTable: FC<
         slotProps={{
           body: {
             emptyText: databaseHasNoRoute
-              ? "Database has no route"
-              : "ไม่พบเรื่องร้องเรียน", // TODO: translate,
+              ? "ฐานข้อมูลว่าง"
+              : "ไม่พบเรื่องร้องเรียนที่ค้นหา",
           },
         }}
       />
       {!databaseHasNoRoute && (
         <PickupRouteReportGeneralForm
+          editing={false}
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
           slotProps={{

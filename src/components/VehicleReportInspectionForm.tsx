@@ -61,7 +61,6 @@ export const VehicleReportInspectionForm: FC<
 > = (props) => {
   const { slotProps, onClose, open, editing } = props;
 
-  // TODO:  translate
   const title = editing
     ? "แก้ไขข้อมูลผลการตรวจสภาพรถรับส่ง"
     : "เพิ่มผลการตรวจสภาพรถรับส่ง";
@@ -161,7 +160,9 @@ export const VehicleReportInspectionForm: FC<
     const formData: VehicleReportInspectionFormData = {
       datetime,
       vehicle: fieldVehicle,
-      title: fieldTitle.normalize().trim(),
+      title:
+        fieldTitle.normalize().trim() ||
+        "ผลการตรวจสภาพรถรับส่ง",
       content: fieldContent.normalize().trim(),
       topics: fieldTopics
         .map((topic) => topic.normalize().trim())
@@ -212,8 +213,10 @@ export const VehicleReportInspectionForm: FC<
         onClose();
       });
   };
-  const isVehicleEmpty = fieldVehicle === null;
-  const isFormIncomplete = isVehicleEmpty;
+
+  const isDateValid = fieldDate.isValid();
+  const isTimeValid = fieldTime.isValid();
+  const isFormIncomplete = !isDateValid || !isTimeValid;
 
   const formItems: {
     label: string;
@@ -225,6 +228,7 @@ export const VehicleReportInspectionForm: FC<
         <BaseInputTimeField
           value={fieldTime}
           onChange={setFieldTime}
+          error={!isTimeValid}
         />
       ),
     },
@@ -234,6 +238,7 @@ export const VehicleReportInspectionForm: FC<
         <BaseInputDateField
           value={fieldDate}
           onChange={setFieldDate}
+          error={!isDateValid}
         />
       ),
     },
@@ -261,7 +266,7 @@ export const VehicleReportInspectionForm: FC<
       label: "กล้องหน้ารถ",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.front_camera || "ปกติ"}
+          placeholder="ปกติ"
           multiline
           minRows={2}
           value={fieldFrontCam}
@@ -273,7 +278,7 @@ export const VehicleReportInspectionForm: FC<
       label: "เข็มขัดนิรภัย",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.seatbelts || "ปกติ"}
+          placeholder="ปกติ"
           multiline
           minRows={2}
           value={fieldSeatbelts}
@@ -285,7 +290,7 @@ export const VehicleReportInspectionForm: FC<
       label: "ที่นั่งและเบาะ",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.seats || "ปกติ"}
+          placeholder="ปกติ"
           multiline
           minRows={2}
           value={fieldSeats}
@@ -297,7 +302,7 @@ export const VehicleReportInspectionForm: FC<
       label: "พัดลม",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.overhead_fan || "ปกติ"}
+          placeholder="ปกติ"
           multiline
           minRows={2}
           value={fieldFanOverhead}
@@ -309,7 +314,7 @@ export const VehicleReportInspectionForm: FC<
       label: "หน้าต่าง",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.windows || "ปกติ"}
+          placeholder="ปกติ"
           multiline
           minRows={2}
           value={fieldWindows}
@@ -321,7 +326,7 @@ export const VehicleReportInspectionForm: FC<
       label: "ไฟหน้า",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.headlights || "ปกติ"}
+          placeholder="ปกติ"
           multiline
           minRows={2}
           value={fieldHeadlights}
@@ -333,7 +338,7 @@ export const VehicleReportInspectionForm: FC<
       label: "ไฟเบรค",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.brake_light || "ปกติ"}
+          placeholder="ปกติ"
           multiline
           minRows={2}
           value={fieldBrakeLight}
@@ -345,7 +350,7 @@ export const VehicleReportInspectionForm: FC<
       label: "ไฟเลี้ยว",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.turn_signals || "ปกติ"}
+          placeholder="ปกติ"
           multiline
           minRows={2}
           value={fieldTurnSignals}
@@ -357,7 +362,7 @@ export const VehicleReportInspectionForm: FC<
       label: "ตัวรถ",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.frame || "ปกติ"}
+          placeholder="ปกติ"
           multiline
           minRows={2}
           value={fieldFrame}
@@ -369,9 +374,7 @@ export const VehicleReportInspectionForm: FC<
       label: "กระจกมองหลัง",
       value: (
         <BaseInputTextField
-          placeholder={
-            initFormData.rearview_mirror || "ปกติ"
-          }
+          placeholder="ปกติ"
           multiline
           minRows={2}
           value={fieldMirrorRearview}
@@ -383,9 +386,7 @@ export const VehicleReportInspectionForm: FC<
       label: "กระจกมองข้าง",
       value: (
         <BaseInputTextField
-          placeholder={
-            initFormData.sideview_mirror || "ปกติ"
-          }
+          placeholder="ปกติ"
           multiline
           minRows={2}
           value={fieldMirrorSideview}
@@ -397,7 +398,7 @@ export const VehicleReportInspectionForm: FC<
       label: "ยางและล้อ",
       value: (
         <BaseInputTextField
-          placeholder={initFormData.tires || "ปกติ"}
+          placeholder="ปกติ"
           multiline
           minRows={2}
           value={fieldTires}
@@ -421,7 +422,7 @@ export const VehicleReportInspectionForm: FC<
       label: "หัวข้อที่เกี่ยวข้อง",
       value: (
         <BaseInputTopicComboBox
-          options={slotProps.form.topicComboBox.options}
+          {...slotProps.form.topicComboBox}
           values={fieldTopics}
           onChange={setFieldTopics}
         />

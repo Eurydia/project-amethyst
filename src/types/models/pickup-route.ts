@@ -13,7 +13,6 @@ export const pickupRouteModelSchema = z
       .string()
       .refine((v) => dayjs(v, "HH:mm").isValid()),
   })
-  .passthrough()
   .required();
 
 export type PickupRouteModel = z.infer<
@@ -44,7 +43,7 @@ export type PickupRouteFormData = {
 
 export const pickupRouteExportDataSchema = z
   .object({
-    เลขรหัส: z.number().int().min(1),
+    รหัส: z.number().int().min(1).optional(),
     ชื่อสาย: z.string().min(1),
     เวลารับเข้า: z
       .string()
@@ -53,7 +52,6 @@ export const pickupRouteExportDataSchema = z
       .string()
       .refine((v) => dayjs(v, "HH:mm").isValid()),
   })
-  .passthrough()
   .required();
 export type PickupRouteExportData = z.infer<
   typeof pickupRouteExportDataSchema

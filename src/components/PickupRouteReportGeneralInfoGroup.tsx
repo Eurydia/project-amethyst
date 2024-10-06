@@ -1,5 +1,3 @@
-/** @format */
-
 import { FormalLayout } from "$layouts/FormalLayout";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { PickupRouteReportGeneralModel } from "$types/models/pickup-route-report-general";
@@ -27,14 +25,18 @@ export const PickupRouteReportGeneralInfoGroup: FC<
 
   const infoItems = [
     {
-      label: "ร้องเรียนเมื่อ",
+      label: "บันทึกเมื่อ",
       value: dayjs(report.datetime)
         .locale("th")
         .format("HH:mm น. วันddddที่ DD MMMM YYYY"),
     },
     {
       label: "สายรถ",
-      value: <Link to={"/pickup-routes/info/" + route.id}>{route.name}</Link>,
+      value: (
+        <Link to={"/pickup-routes/info/" + route.id}>
+          {route.name}
+        </Link>
+      ),
     },
     {
       label: "เรื่อง",
@@ -42,22 +44,24 @@ export const PickupRouteReportGeneralInfoGroup: FC<
     },
     {
       label: "รายละเอียด",
-      value: report.content,
-    },
-  ].map(({ label, value }) => ({
-    label,
-    value: <Typography>{value}</Typography>,
-  }));
-
-  infoItems.push({
-    label: "หัวข้อที่เกี่ยวข้อง",
-    value:
-      report.topics.trim().length === 0 ? (
-        <Typography fontStyle="italic">ไม่มี</Typography>
-      ) : (
-        <Typography>{report.topics.replaceAll(",", ", ")}</Typography>
+      value: report.content.trim() || (
+        <Typography fontStyle="italic">
+          ไม่มีรายละเอียด
+        </Typography>
       ),
-  });
+    },
+    {
+      label: "หัวข้อที่เกี่ยวข้อง",
+      value: report.topics
+        .normalize()
+        .split(",")
+        .map((topic) => topic.trim())
+        .filter((topic) => topic.length > 0)
+        .join(", ") || (
+        <Typography fontStyle="italic">ไม่มี</Typography>
+      ),
+    },
+  ];
 
   return (
     <Stack spacing={1}>
@@ -71,17 +75,7 @@ export const PickupRouteReportGeneralInfoGroup: FC<
       <FormalLayout>{infoItems}</FormalLayout>
       <PickupRouteReportGeneralForm
         editing
-        reportId={report.id}
-        initFormData={{
-          route,
-          content: report.content,
-          datetime: report.datetime,
-          title: report.title,
-          topics: report.topics
-            .split(",")
-            .map((topic) => topic.trim().normalize())
-            .filter((topic) => topic.trim().length > 0),
-        }}
+        report={report}
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         slotProps={{

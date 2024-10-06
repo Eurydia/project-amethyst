@@ -1,4 +1,4 @@
-import { filterItems } from "$core/filter";
+import { filterObjects } from "$core/filter";
 import { VehicleModel } from "$types/models/vehicle";
 import { LockRounded } from "@mui/icons-material";
 import {
@@ -48,10 +48,10 @@ export const VehicleInputVehicle: FC<
         />
       )}
       filterOptions={(options, state) =>
-        filterItems(options, state.inputValue, [
-          "vendor",
-          "license_plate",
-          "registered_city",
+        filterObjects(options, state.inputValue, [
+          (option) => option.license_plate,
+          (option) => option.vendor,
+          (option) => option.registered_city,
         ])
       }
       renderOption={(optionProps, option) => {

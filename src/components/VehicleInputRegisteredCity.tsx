@@ -1,5 +1,5 @@
 import { CITIES } from "$core/constants";
-import { filterItems } from "$core/filter";
+import { filterStrings } from "$core/filter";
 import { VehicleModel } from "$types/models/vehicle";
 import { Autocomplete, TextField } from "@mui/material";
 import { FC } from "react";
@@ -33,7 +33,10 @@ export const VehicleInputRegisteredCity: FC<
       }
       renderInput={(params) => <TextField {...params} />}
       filterOptions={(options, state) =>
-        filterItems(options, state.inputValue, undefined)
+        filterStrings(
+          options,
+          state.inputValue
+        ) as typeof options
       }
     />
   );

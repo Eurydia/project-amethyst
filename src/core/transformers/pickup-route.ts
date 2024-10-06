@@ -52,7 +52,7 @@ export const PICKUP_ROUTE_MODEL_TRANSFORMER = {
 
   toExportData: (route: PickupRouteModel) => {
     const data: PickupRouteExportData = {
-      เลขรหัส: route.id,
+      รหัส: route.id,
       ชื่อสาย: route.name,
       เวลารับเข้า: dayjs(route.arrival_time)
         .locale("th")
@@ -65,14 +65,31 @@ export const PICKUP_ROUTE_MODEL_TRANSFORMER = {
   },
 
   toFormData: (route: PickupRouteModel | undefined) => {
-    let formData: PickupRouteFormData = {
-      name: "",
-      arrival_time: dayjs().startOf("day").format("HH:mm"),
-      departure_time: dayjs().endOf("day").format("HH:mm"),
-    };
-    if (route !== undefined) {
-      formData = route;
+    if (route === undefined) {
+      const formData: PickupRouteFormData = {
+        name: "",
+        arrival_time: dayjs()
+          .startOf("day")
+          .format("HH:mm"),
+        departure_time: dayjs()
+          .endOf("day")
+          .format("HH:mm"),
+      };
+      return formData;
     }
+    let departure = dayjs(route.departure_time, "HH:mm");
+    if (!departure.isValid()) {
+      departure = dayjs().endOf("day");
+    }
+    let arrival = dayjs(route.arrival_time, "HH:mm");
+    if (!arrival.isValid()) {
+      arrival = dayjs().startOf("day");
+    }
+    const formData: PickupRouteFormData = {
+      name: route.name.trim().normalize(),
+      arrival_time: arrival.format("HH:mm"),
+      departure_time: departure.format("HH:mm"),
+    };
     return formData;
   },
 };

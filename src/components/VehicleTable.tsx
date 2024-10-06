@@ -1,6 +1,6 @@
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
 import { tauriPostVehicle } from "$backend/database/post";
-import { filterItems } from "$core/filter";
+import { filterObjects } from "$core/filter";
 import { VEHICLE_MODEL_TRANSFORMER } from "$core/transformers/vehicle";
 import { VEHICLE_VALIDATOR } from "$core/validators/vehicle";
 import {
@@ -87,11 +87,11 @@ export const VehicleTable: FC<VehicleTableProps> = (
   const [dialogOpen, setDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const filteredEntries = filterItems(entries, search, [
-    "licensePlate",
-    "routes.*.name",
-    "drivers.*.name",
-    "drivers.*.surname",
+  const filteredEntries = filterObjects(entries, search, [
+    (item) => item.license_plate,
+    (item) => item.routes.map((route) => route.name),
+    (item) => item.drivers.map((driver) => driver.name),
+    (item) => item.drivers.map((driver) => driver.surname),
   ]);
 
   const { revalidate } = useRevalidator();
@@ -102,10 +102,10 @@ export const VehicleTable: FC<VehicleTableProps> = (
       validator: VEHICLE_VALIDATOR.validate,
     }).then(
       () => {
-        toast.success("นำเข้าสำเร็จ");
+        toast.success("เพิ่มสำเร็จ");
         revalidate();
       },
-      () => toast.error("นำเข้าล้มเหลว")
+      () => toast.error("เพิ่มล้มเหลว")
     );
   };
 

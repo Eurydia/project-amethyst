@@ -103,6 +103,7 @@ export const VehicleReportInspectionInfoGroup: FC<
   infoItems.push({
     label: "หัวข้อที่เกี่ยวข้อง",
     value: report.topics
+      .normalize()
       .split(",")
       .map((topic) => topic.trim())
       .filter((topic) => topic.length > 0)

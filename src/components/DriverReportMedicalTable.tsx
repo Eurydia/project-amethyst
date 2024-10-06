@@ -1,4 +1,4 @@
-import { filterItems } from "$core/filter";
+import { filterObjects } from "$core/filter";
 import { TableHeaderDefinition } from "$types/generics";
 import { DriverModel } from "$types/models/driver";
 import { DriverReportEntry } from "$types/models/driver-report";
@@ -86,11 +86,11 @@ export const DriverReportMedicalTable: FC<
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const filteredEntries = filterItems(entries, search, [
+  const filteredEntries = filterObjects(entries, search, [
     "title",
     "topics",
-    "driverName",
-    "driverSurname",
+    "driver_name",
+    "driver_surname",
   ]);
 
   let headers = [

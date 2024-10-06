@@ -1,8 +1,11 @@
 import { tauriPostPickupRouteReportGeneral } from "$backend/database/post";
 import { tauriPutPickupRouteReportGeneral } from "$backend/database/put";
+import { PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER } from "$core/transformers/pickup-route-report-general";
 import { PickupRouteModel } from "$types/models/pickup-route";
-import { PickupRouteReportGeneralFormData } from "$types/models/pickup-route-report-general";
-import { AddRounded, SaveRounded } from "@mui/icons-material";
+import {
+  PickupRouteReportGeneralFormData,
+  PickupRouteReportGeneralModel,
+} from "$types/models/pickup-route-report-general";
 import dayjs from "dayjs";
 import { FC, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
@@ -14,65 +17,78 @@ import { BaseInputTimeField } from "./BaseInputTimeField";
 import { BaseInputTopicComboBox } from "./BaseInputTopicComboBox";
 import { PickupRouteInputPickupRouteSelect } from "./PickupRouteInputPickupRouteSelect";
 
-type PickupRouteReportGeneralFormProps = {
+type PickupRouteReportGeneralPostFormProps = {
+  editing: false;
   open: boolean;
   onClose: () => void;
   slotProps: {
+    routeSelect: {
+      disabled?: boolean;
+      options: PickupRouteModel[];
+    };
     topicComboBox: {
       options: string[];
     };
+  };
+};
+
+type PickupRouteReportGeneralPutFormProps = {
+  editing: true;
+  report: PickupRouteReportGeneralModel;
+
+  open: boolean;
+  onClose: () => void;
+  slotProps: {
     routeSelect: {
-      options: PickupRouteModel[];
       disabled?: boolean;
+      options: PickupRouteModel[];
+    };
+    topicComboBox: {
+      options: string[];
     };
   };
-} & (
-  | {
-      editing: true;
-      reportId: number;
-      initFormData: PickupRouteReportGeneralFormData;
-    }
-  | {
-      editing?: false | undefined;
-    }
-);
+};
+
+type PickupRouteReportGeneralFormProps =
+  | PickupRouteReportGeneralPostFormProps
+  | PickupRouteReportGeneralPutFormProps;
+
 export const PickupRouteReportGeneralForm: FC<
   PickupRouteReportGeneralFormProps
 > = (props) => {
   const { onClose, open, slotProps, editing } = props;
 
-  let initFormData: PickupRouteReportGeneralFormData;
-  let submitButtonLabel: string;
-  let submitButtonStartIcon: ReactNode;
-  let title: string;
-  if (editing) {
-    title = "Edit route report details"; // TODO: translate
-    submitButtonLabel = "Save changes"; // TODO: translate
-    submitButtonStartIcon = <SaveRounded />;
-    initFormData = props.initFormData;
-  } else {
-    title = "Create new route report"; // TODO: translate
-    submitButtonLabel = "Create"; // TODO: translate
-    submitButtonStartIcon = <AddRounded />;
-    initFormData = {
-      datetime: dayjs().format(),
-      route: slotProps.routeSelect.options[0],
-      content: "",
-      title: "",
-      topics: [],
-    };
-  }
+  const title = editing
+    ? "แก้ไขข้อมูลเรื่องร้องเรียนสายรถ"
+    : "เพิ่มเรื่องร้องเรียนสายรถ";
+  const initFormData =
+    PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER.toFormData(
+      editing ? props.report : undefined,
+      slotProps.routeSelect.options[0]
+    );
 
-  const [fieldDate, setFieldDate] = useState(dayjs(initFormData.datetime));
-  const [fieldTime, setFieldTime] = useState(dayjs(initFormData.datetime));
-  const [fieldTitle, setFieldTitle] = useState(initFormData.title);
-  const [fieldContent, setFieldContent] = useState(initFormData.content);
-  const [fieldTopics, setFieldTopics] = useState(initFormData.topics);
-  const [fieldRoute, setFieldRoute] = useState(initFormData.route);
+  const [fieldDate, setFieldDate] = useState(
+    dayjs(initFormData.datetime)
+  );
+  const [fieldTime, setFieldTime] = useState(
+    dayjs(initFormData.datetime)
+  );
+  const [fieldTitle, setFieldTitle] = useState(
+    initFormData.title
+  );
+  const [fieldContent, setFieldContent] = useState(
+    initFormData.content
+  );
+  const [fieldTopics, setFieldTopics] = useState(
+    initFormData.topics
+  );
+  const [fieldRoute, setFieldRoute] = useState(
+    initFormData.route
+  );
 
   const { revalidate } = useRevalidator();
 
-  const clearForm = () => {
+  const handleReset = () => {
     setFieldDate(dayjs(initFormData.datetime));
     setFieldTime(dayjs(initFormData.datetime));
     setFieldTitle(initFormData.title);
@@ -94,70 +110,45 @@ export const PickupRouteReportGeneralForm: FC<
       .format();
 
     const formData: PickupRouteReportGeneralFormData = {
+      datetime,
       route: fieldRoute,
+      title:
+        fieldTitle.normalize().trim() ||
+        "เรื่องร้องเรียนสายรถ",
       content: fieldContent.normalize().trim(),
-      datetime: datetime,
-      title: fieldTitle.normalize().trim(),
       topics: fieldTopics
         .map((topic) => topic.normalize().trim())
         .filter((topic) => topic.trim().length > 0),
     };
 
-    if (editing) {
-      tauriPutPickupRouteReportGeneral(props.reportId, formData)
-        .then(
-          () => {
-            toast.success(
-              "Route report updated successfully" // TODO: translate
-            );
-            revalidate();
-          },
-          () =>
-            toast.error(
-              "Failed to update route report" // TODO: translate
-            )
+    (editing
+      ? tauriPutPickupRouteReportGeneral(
+          props.report.id,
+          formData
         )
-        .finally(() => {
-          clearForm();
-          onClose();
-        });
-    } else {
-      tauriPostPickupRouteReportGeneral(formData)
-        .then(
-          () => {
-            toast.success(
-              "Route report created successfully" // TODO: translate
-            );
-            revalidate();
-          },
-          () =>
-            toast.error(
-              "Failed to create route report"
-              // TODO: translate
-            )
-        )
-        .finally(() => {
-          clearForm();
-          onClose();
-        });
-    }
+      : tauriPostPickupRouteReportGeneral(formData)
+    )
+      .then(
+        () => {
+          toast.success(
+            editing ? "แก้ไขสำเร็จ" : "เพิ่มสำเร็จ"
+          );
+          revalidate();
+        },
+        () =>
+          toast.error(
+            editing ? "แก้ไขล้มเหลว" : "เพิ่มล้มเหลว"
+          )
+      )
+      .finally(() => {
+        handleReset();
+        onClose();
+      });
   };
 
-  const isTimeInvalid =
-    Number.isNaN(fieldTime.hour()) || Number.isNaN(fieldTime.minute());
-  const isDateInvalid =
-    Number.isNaN(fieldDate.date()) ||
-    Number.isNaN(fieldDate.month()) ||
-    Number.isNaN(fieldDate.year());
-  const isRouteEmpty = fieldRoute === null;
-  const isTitleEmpty = fieldTitle.trim().length === 0;
-  const isContentEmpty = fieldContent.trim().length === 0;
-  const isFormIncomplete =
-    isRouteEmpty ||
-    isTitleEmpty ||
-    isContentEmpty ||
-    isTimeInvalid ||
-    isDateInvalid;
+  const isTimeValid = dayjs(fieldDate).isValid();
+  const isDateValid = dayjs(fieldTime).isValid();
+  const isFormIncomplete = !isTimeValid || !isDateValid;
 
   const formItems: {
     label: string;
@@ -169,6 +160,7 @@ export const PickupRouteReportGeneralForm: FC<
         <BaseInputTimeField
           value={fieldTime}
           onChange={setFieldTime}
+          error={!isTimeValid}
         />
       ),
     },
@@ -178,6 +170,7 @@ export const PickupRouteReportGeneralForm: FC<
         <BaseInputDateField
           value={fieldDate}
           onChange={setFieldDate}
+          error={!isDateValid}
         />
       ),
     },
@@ -185,8 +178,7 @@ export const PickupRouteReportGeneralForm: FC<
       label: "สายรถ",
       value: (
         <PickupRouteInputPickupRouteSelect
-          options={slotProps.routeSelect.options}
-          isDisabled={slotProps.routeSelect.disabled}
+          {...slotProps.routeSelect}
           value={fieldRoute}
           onChange={setFieldRoute}
         />
@@ -197,10 +189,9 @@ export const PickupRouteReportGeneralForm: FC<
       value: (
         <BaseInputTextField
           autoFocus
-          error={isTitleEmpty}
           value={fieldTitle}
           onChange={setFieldTitle}
-          placeholder={initFormData.title}
+          placeholder="เรื่องร้องเรียนสายรถ"
         />
       ),
     },
@@ -210,8 +201,6 @@ export const PickupRouteReportGeneralForm: FC<
         <BaseInputTextField
           multiline
           minRows={6}
-          error={isContentEmpty}
-          placeholder={initFormData.content}
           value={fieldContent}
           onChange={setFieldContent}
         />
@@ -221,7 +210,7 @@ export const PickupRouteReportGeneralForm: FC<
       label: "หัวข้อที่เกี่ยวข้อง",
       value: (
         <BaseInputTopicComboBox
-          options={slotProps.topicComboBox.options}
+          {...slotProps.topicComboBox}
           values={fieldTopics}
           onChange={setFieldTopics}
         />
@@ -235,8 +224,6 @@ export const PickupRouteReportGeneralForm: FC<
       slotProps={{
         submitButton: {
           disabled: isFormIncomplete,
-          startIcon: submitButtonStartIcon,
-          children: submitButtonLabel,
           onClick: handleSubmit,
         },
       }}

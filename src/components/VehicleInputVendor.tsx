@@ -1,4 +1,4 @@
-import { filterItems } from "$core/filter";
+import { filterStrings } from "$core/filter";
 import {
   Autocomplete,
   ListItem,
@@ -42,16 +42,15 @@ export const VehicleInputVendor: FC<
             <Typography>
               {optionSet.has(option)
                 ? option
-                : `เพิ่มหจก. "${option}"`}
+                : 'เพิ่มหจก. "${option}"'}
             </Typography>
           </ListItemText>
         </ListItem>
       )}
       filterOptions={(options, state) => {
-        const items = filterItems(
+        const items = filterStrings(
           options,
-          state.inputValue,
-          undefined
+          state.inputValue
         );
         if (
           items.length === 0 &&

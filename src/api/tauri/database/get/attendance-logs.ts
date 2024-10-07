@@ -20,10 +20,10 @@ export const tauriGetAttendanceLogToday = async () => {
 };
 
 export const tauriGetAttendanceLog = async (
-  log_id: number
+  logId: number
 ) => {
   const data = await tauri.invoke("get_attendance_log", {
-    log_id,
+    logId,
   });
   const r = attendanceLogModelSchema.safeParse(data);
   return r.success ? r.data : null;

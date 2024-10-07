@@ -63,7 +63,7 @@ export const VehicleInputVehicle: FC<
           >
             <ListItemText disableTypography>
               <Typography>
-                {option.license_plate} ({option.vendor})
+                {option.license_plate}
               </Typography>
             </ListItemText>
           </ListItem>

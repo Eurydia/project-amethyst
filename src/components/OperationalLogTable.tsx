@@ -16,7 +16,6 @@ import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
 import { OperationalLogForm } from "./OperationalLogForm";
-import { OperationalLogTableAlert } from "./OperationalLogTableAlert";
 
 const STARTDATE_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> =
   {
@@ -49,7 +48,10 @@ const DRIVER_HEADER_DEFINITION: TableHeaderDefinition<OperationalLogEntry> =
   {
     label: "คนขับรถ",
     compare: (a, b) =>
-      compareStrings(a.driver_name, b.driver_name),
+      compareStrings(
+        `${a.driver_name} ${a.driver_surname}`,
+        `${b.driver_name} ${b.driver_surname}`
+      ),
     render: (item) => (
       <BaseTypographyLink
         to={"/drivers/info/" + item.driver_id}
@@ -143,7 +145,7 @@ export const OperationalLogTable: FC<
     ).filter((log) => log !== null);
 
     exportWorkbook(logs, {
-      name: "ประวัติการเดินรถ",
+      name: "บันทึกประวัติการเดินรถ",
       transformer:
         OPERATIONAL_LOG_MODEL_TRANSFORMER.toExportData,
     }).then(
@@ -179,27 +181,30 @@ export const OperationalLogTable: FC<
     databaseHasNoVehicle ||
     databaseHasNoRoute;
 
+  const disabledReasons: string[] = [];
+  if (databaseHasNoDriver) {
+    disabledReasons.push("ยังไม่มีคนขับรถในฐานข้อมูล");
+  }
+  if (databaseHasNoVehicle) {
+    disabledReasons.push("ยังไม่มีรถรับส่งในฐานข้อมูล");
+  }
+  if (databaseHasNoRoute) {
+    disabledReasons.push("ยังไม่มีสายรถในฐานข้อมูล");
+  }
+
   return (
     <Stack spacing={1}>
-      <OperationalLogTableAlert
-        show={preventAddLog}
-        databaseHasNoDriver={databaseHasNoDriver}
-        databaseHasNoVehicle={databaseHasNoVehicle}
-        databaseHasNoRoute={databaseHasNoRoute}
-      />
       <BaseSortableTableToolbar
         slotProps={{
           importButton: {
-            disabled: true,
-            onFileSelect: () => {
-              throw new Error("Function not implemented.");
-            },
+            hidden: true,
           },
           exportButton: {
             disabled: filteredEntries.length === 0,
             onClick: handleExport,
           },
           addButton: {
+            disabledReasons,
             disabled: preventAddLog,
             onClick: () => setDialogOpen(true),
           },
@@ -216,13 +221,7 @@ export const OperationalLogTable: FC<
         headers={headers}
         defaultSortByColumn={0}
         defaultSortOrder="desc"
-        slotProps={{
-          body: {
-            emptyText: databaseHasNoLog
-              ? "ฐานข้อมูลว่าง"
-              : "ไม่พบประวัติการเดินรถที่ค้นหา",
-          },
-        }}
+        databaseIsEmpty={databaseHasNoLog}
       />
       {!databaseHasNoDriver &&
         !databaseHasNoVehicle &&

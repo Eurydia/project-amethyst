@@ -39,8 +39,10 @@ async fn main() -> Result<(), &'static str> {
             get_pickup_route_report_general,
             get_attendance_log_all,
             get_attendance_log_today,
+            get_attendance_log,
             get_operational_log_all,
             get_operational_log_today,
+            get_operational_log,
             //////////////////////////////////////////
             post_driver,
             post_driver_report_general,

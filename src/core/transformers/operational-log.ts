@@ -70,8 +70,12 @@ export const OPERATIONAL_LOG_MODEL_TRANSFORMER = {
     }
 
     const exportData: OperationalLogExportData = {
-      วันที่หมดอายุ: log.end_date,
-      วันที่เริ่มมีผล: log.start_date,
+      วันที่หมดอายุ: dayjs(log.end_date)
+        .locale("th")
+        .format("DD MMMM YYYY"),
+      วันที่เริ่มมีผล: dayjs(log.start_date)
+        .locale("th")
+        .format("DD MMMM YYYY"),
       รหัส: log.id,
       รหัสคนขับรถ: driver.id,
       รหัสรถรับส่ง: vehicle.id,

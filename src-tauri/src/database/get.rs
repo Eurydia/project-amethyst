@@ -123,6 +123,15 @@ pub async fn get_operational_log_all(
 }
 
 #[tauri::command]
+pub async fn get_operational_log(
+    _: tauri::AppHandle,
+    state: tauri::State<'_, crate::AppState>,
+    log_id: i64,
+) -> Result<Option<super::models::OperationalLogModel>, &'static str> {
+    get_one!("operational_logs", log_id, state.db)
+}
+
+#[tauri::command]
 pub async fn get_operational_log_today(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -280,6 +289,15 @@ pub async fn get_attendance_log_all(
     state: tauri::State<'_, crate::AppState>,
 ) -> Result<Vec<super::models::AttendanceLogModel>, &'static str> {
     get_all!("attendance_logs", state.db)
+}
+
+#[tauri::command]
+pub async fn get_attendance_log(
+    _: tauri::AppHandle,
+    state: tauri::State<'_, crate::AppState>,
+    log_id: i64,
+) -> Result<Option<super::models::AttendanceLogModel>, &'static str> {
+    get_one!("attendance_logs", log_id, state.db)
 }
 
 #[tauri::command]

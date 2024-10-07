@@ -22,10 +22,10 @@ export const tauriGetOperationalLogToday = async () => {
 };
 
 export const tauriGetOperationalLog = async (
-  log_id: number
+  logId: number
 ) => {
   const log = await tauri.invoke("get_operational_log", {
-    log_id,
+    logId,
   });
   const r = operationalLogModelSchema.safeParse(log);
   return r.success ? r.data : null;

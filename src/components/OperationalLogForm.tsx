@@ -1,7 +1,10 @@
 import { tauriPostOperationalLog } from "$backend/database/post";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
 import { DriverModel } from "$types/models/driver";
-import { OperationalLogFormData } from "$types/models/operational-log";
+import {
+  OperationalLogExportData,
+  OperationalLogFormData,
+} from "$types/models/operational-log";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { VehicleModel } from "$types/models/vehicle";
 import dayjs from "dayjs";
@@ -96,11 +99,28 @@ export const OperationalLogForm: FC<
 
   const isStartDateValid = fieldStartDate.isValid();
   const isEndDateValid = fieldEndDate.isValid();
+  const isStartDateAfterEndDate =
+    fieldStartDate.isAfter(fieldEndDate);
   const isFormIncomplete =
-    !isStartDateValid || !isEndDateValid;
+    !isStartDateValid ||
+    !isEndDateValid ||
+    isStartDateAfterEndDate;
+
+  const disabledReasons: string[] = [];
+  if (!isStartDateValid) {
+    disabledReasons.push("วันที่เริ่มมีผลไม่ถูกต้อง");
+  }
+  if (!isEndDateValid) {
+    disabledReasons.push("วันที่สิ้นสุดไม่ถูกต้อง");
+  }
+  if (isStartDateAfterEndDate) {
+    disabledReasons.push(
+      "วันที่เริ่มมีผลอยู่หลังจากวันที่หมดอายุ"
+    );
+  }
 
   const formItems: {
-    label: string;
+    label: string | keyof OperationalLogExportData;
     value: ReactNode;
   }[] = [
     {
@@ -109,17 +129,15 @@ export const OperationalLogForm: FC<
         <BaseInputDateField
           value={fieldStartDate}
           onChange={setFieldStartDate}
-          error={!isStartDateValid}
         />
       ),
     },
     {
-      label: "วันที่สิ้นสุด",
+      label: "วันที่หมดอายุ",
       value: (
         <BaseInputDateField
           value={fieldEndDate}
           onChange={setFieldEndDate}
-          error={!isEndDateValid}
         />
       ),
     },
@@ -159,6 +177,7 @@ export const OperationalLogForm: FC<
     <BaseForm
       slotProps={{
         submitButton: {
+          disabledReasons,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
         },

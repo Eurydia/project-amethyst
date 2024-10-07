@@ -59,12 +59,10 @@ const TOPIC_HEADER_DEFINITION: TableHeaderDefinition<PickupRouteReportGeneralEnt
     compare: null,
     render: (item) => {
       const topics = item.topics
-        .map((topic) => topic.trim().normalize())
+        .map((topic) => topic.trim())
         .filter((topic) => topic.length > 0);
       return topics.length === 0 ? (
-        <Typography fontStyle="italic">
-          ไม่มีหัวข้อที่เกี่ยวข้อง
-        </Typography>
+        <Typography fontStyle="italic">ไม่มี</Typography>
       ) : (
         <Typography>{topics.join(", ")}</Typography>
       );

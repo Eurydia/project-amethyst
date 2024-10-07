@@ -94,7 +94,7 @@ type OperationalLogTableProps = {
   hideVehicleColumn?: boolean;
   hideRouteColumn?: boolean;
   hideDriverColumn?: boolean;
-  logEntries: OperationalLogEntry[];
+  entries: OperationalLogEntry[];
   slotProps: {
     form: {
       vehicleSelect: {
@@ -116,7 +116,7 @@ export const OperationalLogTable: FC<
   OperationalLogTableProps
 > = (props) => {
   const {
-    logEntries: entries,
+    entries,
     slotProps,
     hideDriverColumn,
     hideRouteColumn,
@@ -150,7 +150,7 @@ export const OperationalLogTable: FC<
         OPERATIONAL_LOG_MODEL_TRANSFORMER.toExportData,
     }).then(
       () => toast.success("ดาวน์โหลดสำเร็จ"),
-      () => toast.error("ดา่วโหลดล้มเหลว")
+      () => toast.error("ดาวโหลดล้มเหลว")
     );
   };
 

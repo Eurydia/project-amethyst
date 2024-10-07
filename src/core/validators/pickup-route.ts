@@ -5,7 +5,11 @@ import {
 
 export const PICKUP_ROUTE_VALIDATOR = {
   validate: async (data: unknown) => {
-    const r = pickupRouteExportDataSchema.safeParse(data);
+    const r = pickupRouteExportDataSchema
+      .omit({
+        รหัส: true,
+      })
+      .safeParse(data);
     if (!r.success) {
       return null;
     }

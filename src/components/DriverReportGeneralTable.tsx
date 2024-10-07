@@ -1,4 +1,5 @@
 import { tauriGetDriverReportGeneral } from "$backend/database/get/driver-general-reports";
+import { compareStrings } from "$core/compare";
 import { filterObjects } from "$core/filter";
 import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report";
 import { exportWorkbook } from "$core/workbook";
@@ -31,7 +32,10 @@ const DRIVER_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
   {
     label: "คนขับรถ",
     compare: (a, b) =>
-      a.driver_name.localeCompare(b.driver_name),
+      compareStrings(
+        `${a.driver_name} ${a.driver_surname}`,
+        `${b.driver_name} ${b.driver_surname}`
+      ),
     render: (item) => (
       <BaseTypographyLink
         to={"/drivers/info/" + item.driver_id}
@@ -44,7 +48,7 @@ const DRIVER_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
 const TITLE_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
   {
     label: "ชื่อเรื่อง",
-    compare: (a, b) => a.title.localeCompare(b.title),
+    compare: (a, b) => compareStrings(a.title, b.title),
     render: (item) => (
       <BaseTypographyLink to={"./info/" + item.id}>
         {item.title}
@@ -56,12 +60,16 @@ const TOPICS_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
   {
     label: "หัวข้อที่เกี่ยวข้อง",
     compare: null,
-    render: (item) =>
-      item.topics.length === 0 ? (
+    render: (item) => {
+      const topics = item.topics
+        .map((topic) => topic.trim())
+        .filter((topic) => topic.length > 0);
+      return topics.length === 0 ? (
         <Typography fontStyle="italic">ไม่มี</Typography>
       ) : (
-        <Typography>{item.topics.join(", ")}</Typography>
-      ),
+        <Typography>{topics.join(", ")}</Typography>
+      );
+    },
   };
 type DriverReportGeneralTableProps = {
   hideDriverColumn?: boolean;
@@ -86,10 +94,10 @@ export const DriverReportGeneralTable: FC<
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const filteredEntries = filterObjects(entries, search, [
-    "title",
-    "topics",
-    "driver_name",
-    "driver_surname",
+    (item) => item.driver_name,
+    (item) => item.driver_surname,
+    (item) => item.title,
+    (item) => item.topics,
   ]);
 
   let headers = [

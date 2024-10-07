@@ -37,6 +37,7 @@ export type DriverEntry = {
 
 export const driverExportDataSchema = z
   .object({
+    รหัส: z.number().int().min(1),
     ชื่อ: z.string().min(1),
     นามสกุล: z.string().min(1),
     เบอร์ติดต่อ: z
@@ -45,7 +46,6 @@ export const driverExportDataSchema = z
       .transform((v) => v ?? ""),
     ประเภทใบขับขี่: z.enum(KNOWN_LICENSE_TYPES),
   })
-  .passthrough()
   .required();
 
 export type DriverExportData = z.infer<

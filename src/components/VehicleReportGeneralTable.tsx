@@ -62,7 +62,7 @@ const TOPIC_HEADER_DEFINITION: TableHeaderDefinition<VehicleReportGeneralEntry> 
     compare: null,
     render: (item) => {
       const topics = item.topics
-        .map((topic) => topic.normalize().trim())
+        .map((topic) => topic.trim())
         .filter((topic) => topic.length > 0);
 
       return topics.length === 0 ? (

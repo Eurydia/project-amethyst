@@ -1,11 +1,14 @@
 import {
+  VehicleExportDataSchema,
   VehicleFormData,
-  vehicleModelSchema,
 } from "$types/models/vehicle";
 
 export const VEHICLE_VALIDATOR = {
   validate: async (data: unknown) => {
-    const r = vehicleModelSchema.safeParse(data);
+    const r = VehicleExportDataSchema.omit({
+      รหัส: true,
+    }).safeParse(data);
+
     if (!r.success) {
       return null;
     }
@@ -13,10 +16,10 @@ export const VEHICLE_VALIDATOR = {
     const data_ = r.data;
 
     const formData: VehicleFormData = {
-      license_plate: data_.license_plate.normalize(),
-      vendor: data_.vendor.normalize(),
-      vehicle_class: data_.vehicle_class,
-      registered_city: data_.registered_city,
+      license_plate: data_["ประเภทรถ"].trim().normalize(),
+      vehicle_class: data_["ประเภทรถ"],
+      registered_city: data_["จังหวัดที่จดทะเบียน"],
+      vendor: data_["หจก."],
     };
     return formData;
   },

@@ -43,7 +43,7 @@ export type PickupRouteFormData = {
 
 export const pickupRouteExportDataSchema = z
   .object({
-    รหัส: z.number().int().min(1).optional(),
+    รหัส: z.number().int().min(1),
     ชื่อสาย: z.string().min(1),
     เวลารับเข้า: z
       .string()

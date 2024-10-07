@@ -170,7 +170,7 @@ export const DriverReportMedicalTable: FC<
         entries={filteredEntries}
         headers={headers}
       />
-      {slotProps.form.driverSelect.options.length > 0 && (
+      {!databaseHasNoDrivers && (
         <DriverReportMedicalForm
           editing={false}
           slotProps={{

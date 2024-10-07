@@ -36,9 +36,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
       compare: null,
       render: (item) =>
         item.routes.length === 0 ? (
-          <Typography fontStyle="italic">
-            ไม่มีสายรถ
-          </Typography>
+          <Typography fontStyle="italic">ไม่มี</Typography>
         ) : (
           <Stack spacing={1}>
             {item.routes.map(({ id, name }, index) => (
@@ -55,19 +53,17 @@ const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
     {
       label: "คนขับรถ",
       compare: null,
-      render: ({ drivers }) =>
-        drivers.length === 0 ? (
-          <Typography fontStyle="italic">
-            ไม่มีคนขับรถ
-          </Typography>
+      render: (item) =>
+        item.drivers.length === 0 ? (
+          <Typography fontStyle="italic">ไม่มี</Typography>
         ) : (
           <Stack spacing={1}>
-            {drivers.map(({ id, name, surname }, index) => (
+            {item.drivers.map((driver, index) => (
               <BaseTypographyLink
                 key={"driver" + index}
-                to={"/drivers/info/" + id}
+                to={"/drivers/info/" + driver.id}
               >
-                {name} {surname}
+                {driver.name} {driver.surname}
               </BaseTypographyLink>
             ))}
           </Stack>

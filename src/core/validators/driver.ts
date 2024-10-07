@@ -5,9 +5,12 @@ import {
 
 export const DRIVER_MODEL_VALIDATOR = {
   validate: (data: unknown) => {
-    const r = driverExportDataSchema.safeParse(data);
+    const r = driverExportDataSchema
+      .omit({
+        รหัส: true,
+      })
+      .safeParse(data);
     if (!r.success) {
-      console.error(r.error);
       return null;
     }
     const data_ = r.data;

@@ -89,9 +89,13 @@ export const DriverTable: FC<DriverTableProps> = (
     driverEntries,
     search,
     [
-      (item) => `${item.name} ${item.surname}`,
-      (item) => item.vehicles.map((v) => v.licensePlate),
-      (item) => item.routes.map((r) => r.name),
+      (item) => item.name,
+      (item) => item.surname,
+      (item) => item.routes.map((route) => route.name),
+      (item) =>
+        item.vehicles.map(
+          (vehicle) => vehicle.licensePlate
+        ),
     ]
   );
 
@@ -126,7 +130,7 @@ export const DriverTable: FC<DriverTableProps> = (
     );
   };
 
-  const databaseHasNoDrivers = driverEntries.length === 0;
+  const databaseHasNoDriver = driverEntries.length === 0;
 
   return (
     <Stack spacing={1}>
@@ -157,7 +161,7 @@ export const DriverTable: FC<DriverTableProps> = (
         defaultSortOrder="asc"
         defaultSortByColumn={0}
         entries={filteredEntries}
-        databaseIsEmpty={databaseHasNoDrivers}
+        databaseIsEmpty={databaseHasNoDriver}
       />
       <DriverForm
         editing={false}

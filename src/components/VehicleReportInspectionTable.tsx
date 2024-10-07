@@ -62,15 +62,13 @@ const TOPIC_HEADER: TableHeaderDefinition<VehicleReportInspectionEntry> =
     compare: null,
     render: (item) => {
       const topics = item.topics
-        .map((topic) => topic.trim().normalize())
+        .map((topic) => topic.trim())
         .filter((topic) => topic.length > 0);
 
       return topics.length > 0 ? (
         <Typography>{topics.join(", ")}</Typography>
       ) : (
-        <Typography fontStyle="italic">
-          ไม่มีหัวข้อที่เกี่ยวข้อง
-        </Typography>
+        <Typography fontStyle="italic">ไม่มี</Typography>
       );
     },
   };
@@ -144,7 +142,7 @@ export const VehicleReportInspectionTable: FC<
             onChange: setSearch,
             value: search,
             placeholder:
-              "ค้นหาด้วยเลขทะเบียน, รอบการตรวจ หรือหัวข้อที่เกี่ยวข้อง",
+              "ค้นหาด้วยเลขทะเบียน, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง",
           },
           addButton: {
             disabled: databaseHasNoVehicle,

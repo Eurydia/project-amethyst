@@ -109,10 +109,10 @@ export const AttendanceLogTable: FC<
   const [search, setSearch] = useState("");
 
   const filteredEntries = filterObjects(entries, search, [
-    "routeName",
-    "vehicleLicensePlate",
-    "driverName",
-    "driverSurname",
+    (item) => item.driver_name,
+    (item) => item.driver_surname,
+    (item) => item.vehicle_license_plate,
+    (item) => item.route_name,
   ]);
 
   const handleExport = async () => {
@@ -128,7 +128,7 @@ export const AttendanceLogTable: FC<
     ).filter((log) => log !== null);
 
     exportWorkbook(logs, {
-      name: "ประวัติการเดินรถ",
+      name: "บันทึกประวัติการเดินรถ",
       transformer:
         ATTENDANCE_LOG_MODEL_TRANSFORMER.toExportData,
     }).then(
@@ -137,7 +137,7 @@ export const AttendanceLogTable: FC<
     );
   };
 
-  const databaseIsEmpty = entries.length === 0;
+  const databaseHasNoLog = entries.length === 0;
 
   return (
     <Stack spacing={1}>
@@ -162,7 +162,7 @@ export const AttendanceLogTable: FC<
         }}
       />
       <BaseSortableTable
-        databaseIsEmpty={databaseIsEmpty}
+        databaseIsEmpty={databaseHasNoLog}
         headers={HEADER_DEFINITIONS}
         defaultSortByColumn={0}
         defaultSortOrder="asc"

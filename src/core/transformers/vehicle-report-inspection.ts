@@ -88,20 +88,20 @@ export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
         vehicle,
         datetime: dayjs().locale("th").format(),
         topics: [],
-        title: "ผลการตรวจสภาพรถรับส่ง",
-        brake_light: "ปกติ",
-        content: "ปกติ",
-        frame: "ปกติ",
-        front_camera: "ปกติ",
-        headlights: "ปกติ",
-        overhead_fan: "ปกติ",
-        rearview_mirror: "ปกติ",
-        seatbelts: "ปกติ",
-        seats: "ปกติ",
-        sideview_mirror: "ปกติ",
-        tires: "ปกติ",
-        windows: "ปกติ",
-        turn_signals: "ปกติ",
+        title: "",
+        brake_light: "",
+        content: "",
+        frame: "",
+        front_camera: "",
+        headlights: "",
+        overhead_fan: "",
+        rearview_mirror: "",
+        seatbelts: "",
+        seats: "",
+        sideview_mirror: "",
+        tires: "",
+        windows: "",
+        turn_signals: "",
       };
       return formData;
     }
@@ -115,27 +115,23 @@ export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
       datetime: datetime.locale("th").format(),
       topics: report.topics
         .split(",")
-        .map((topic) => topic.trim().normalize())
+        .map((topic) => topic.trim())
         .filter((topic) => topic.length > 0),
 
-      title: report.title.normalize().trim(),
-      content: report.content.normalize().trim(),
-      brake_light: report.brake_light.trim().normalize(),
-      frame: report.frame.trim().normalize(),
-      front_camera: report.front_camera.trim().normalize(),
-      headlights: report.headlights.trim().normalize(),
-      overhead_fan: report.overhead_fan.trim().normalize(),
-      rearview_mirror: report.rearview_mirror
-        .trim()
-        .normalize(),
-      seatbelts: report.seatbelts.trim().normalize(),
-      seats: report.seats.trim().normalize(),
-      sideview_mirror: report.sideview_mirror
-        .trim()
-        .normalize(),
-      tires: report.tires.trim().normalize(),
-      turn_signals: report.turn_signals.trim().normalize(),
-      windows: report.windows.trim().normalize(),
+      title: report.title,
+      content: report.content,
+      brake_light: report.brake_light,
+      frame: report.frame,
+      front_camera: report.front_camera,
+      headlights: report.headlights,
+      overhead_fan: report.overhead_fan,
+      rearview_mirror: report.rearview_mirror,
+      seatbelts: report.seatbelts,
+      seats: report.seats,
+      sideview_mirror: report.sideview_mirror,
+      tires: report.tires,
+      turn_signals: report.turn_signals,
+      windows: report.windows,
     };
     return formData;
   },

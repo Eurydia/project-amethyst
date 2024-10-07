@@ -43,7 +43,10 @@ export const HomePage: FC = () => {
     <Stack spacing={1}>
       <Typography variant="h1">หน้าแรก</Typography>
       <Typography fontWeight="bold">ทางลัด</Typography>
-      <List disablePadding dense>
+      <List
+        disablePadding
+        dense
+      >
         {ROUTES.map((route, index) => (
           <ListItem
             key={"route" + index}
@@ -61,7 +64,7 @@ export const HomePage: FC = () => {
         ))}
       </List>
       <Typography variant="h2">
-        สมุดบันทึกเวลารับเข้าและรับออก
+        ตารางบันทึกเวลารับเข้าและรับออก
       </Typography>
       <AttendanceLogTable entries={logEntries} />
     </Stack>

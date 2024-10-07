@@ -7,9 +7,16 @@ import { z } from "zod";
 export const vehicleModelSchema = z
   .object({
     id: z.number().int(),
-
-    license_plate: z.string().trim().min(1),
-    vendor: z.string().trim().min(1),
+    license_plate: z
+      .string()
+      .trim()
+      .min(1)
+      .transform((v) => v.trim().normalize()),
+    vendor: z
+      .string()
+      .trim()
+      .min(1)
+      .transform((v) => v.trim().normalize()),
     vehicle_class: z.enum(KNOWN_VEHICLE_CLASSES),
     registered_city: z.enum(CITIES),
   })
@@ -40,8 +47,14 @@ export type VehicleEntry = {
 export const VehicleExportDataSchema = z
   .object({
     "รหัส": z.number().int(),
-    "เลขทะเบียน": z.string().min(1),
-    "หจก.": z.string().min(1),
+    "เลขทะเบียน": z
+      .string()
+      .min(1)
+      .transform((v) => v.trim().normalize()),
+    "หจก.": z
+      .string()
+      .min(1)
+      .transform((v) => v.trim().normalize()),
     "ประเภทรถ": z.enum(KNOWN_VEHICLE_CLASSES),
     "จังหวัดที่จดทะเบียน": z.enum(CITIES),
   })

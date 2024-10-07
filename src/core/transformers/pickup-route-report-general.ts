@@ -23,15 +23,15 @@ export const PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER =
         id: report.id,
         datetime: dayjs(report.datetime)
           .locale("th")
-          .format("YYYY-MM-DD HH:mm:ss"),
-        title: report.title.trim().normalize(),
+          .format("HH:mm น., DD MMMM YYYY"),
+        title: report.title,
         topics: report.topics
           .split(",")
-          .map((topic) => topic.trim().normalize())
+          .map((topic) => topic.trim())
           .filter((topic) => topic.length > 0),
 
         routeId: route.id,
-        routeName: route.name.trim().normalize(),
+        routeName: route.name,
       };
       return entry;
     },
@@ -50,7 +50,7 @@ export const PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER =
         รหัสสายรถ: route.id,
         ชื่อสายรถ: route.name,
 
-        รหัสเรื่องร้องเรียน: report.id,
+        รหัส: report.id,
         วันที่ลงบันทึก: report.datetime,
         เรื่อง: report.title,
         รายละเอียด: report.content,
@@ -66,8 +66,8 @@ export const PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER =
       if (report === undefined) {
         const formData: PickupRouteReportGeneralFormData = {
           route,
-          datetime: dayjs().locale("th").format(),
-          title: "เรื่องร้องเรียนสายรถ",
+          datetime: dayjs().format(),
+          title: "",
           content: "",
           topics: [],
         };
@@ -80,10 +80,9 @@ export const PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER =
       const formData: PickupRouteReportGeneralFormData = {
         route,
         datetime: datetime.format(),
-        title: report.title.normalize().trim(),
-        content: report.content.normalize().trim(),
+        title: report.title,
+        content: report.content,
         topics: report.topics
-          .normalize()
           .split(",")
           .map((topic) => topic.trim())
           .filter((topic) => topic.length > 0),

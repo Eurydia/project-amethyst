@@ -8,21 +8,40 @@ export const pickupRouteReportGeneralModelSchema = z
     route_id: z.number().int(),
 
     datetime: z.string().refine((v) => dayjs(v).isValid()),
-    title: z.string().trim().min(1),
+    title: z
+      .string()
+      .trim()
+      .min(1)
+      .transform((v) => v.trim().normalize()),
     content: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     topics: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) =>
+        (v ?? "")
+          .normalize()
+          .split(",")
+          .map((v) => v.trim())
+          .filter((v) => v.length > 0)
+          .join(",")
+      ),
   })
   .required();
 
 export type PickupRouteReportGeneralModel = z.infer<
   typeof pickupRouteReportGeneralModelSchema
 >;
+
+export type PickupRouteReportGeneralFormData = Omit<
+  PickupRouteReportGeneralModel,
+  "topics" | "id"
+> & {
+  route: PickupRouteModel;
+  topics: string[];
+};
 
 export type PickupRouteReportGeneralEntry = {
   datetime: string;
@@ -33,19 +52,11 @@ export type PickupRouteReportGeneralEntry = {
   topics: string[];
 };
 
-export type PickupRouteReportGeneralFormData = {
-  route: PickupRouteModel;
-  datetime: string;
-  title: string;
-  content: string;
-  topics: string[];
-};
-
 export type PickupRouteReportGeneralExportData = {
   ชื่อสายรถ: string;
   รหัสสายรถ: number;
 
-  รหัสเรื่องร้องเรียน: number;
+  รหัส: number;
   วันที่ลงบันทึก: string;
   เรื่อง: string;
   รายละเอียด: string;

@@ -1,5 +1,4 @@
 import { tauriGetAttendanceLog } from "$backend/database/get/attendance-logs";
-import { tauriPutAttendanceLog } from "$backend/database/put";
 import { compareStrings } from "$core/compare";
 import { filterObjects } from "$core/filter";
 import { ATTENDANCE_LOG_MODEL_TRANSFORMER } from "$core/transformers/attendance-log";
@@ -7,7 +6,6 @@ import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
 import { AttendanceLogEntry } from "$types/models/attendance-log";
 import { Stack } from "@mui/material";
-import dayjs from "dayjs";
 import { FC, useState } from "react";
 import { toast } from "react-toastify";
 import { AttendanceLogTableCheckBox } from "./AttendanceLogTableCheckBox";
@@ -64,17 +62,8 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<AttendanceLogEntry>[] =
       compare: null,
       render: (item) => (
         <AttendanceLogTableCheckBox
-          label="รับเข้า"
-          actual={item.actual_arrival_datetime}
-          expected={item.expected_arrival_datetime}
-          onClick={async () =>
-            tauriPutAttendanceLog({
-              id: item.id,
-              actual_arrival_datetime: dayjs().format(),
-              actual_depature_datetime:
-                item.actual_departure_datetime,
-            })
-          }
+          log={item}
+          mode="arrival"
         />
       ),
     },
@@ -83,17 +72,8 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<AttendanceLogEntry>[] =
       compare: null,
       render: (item) => (
         <AttendanceLogTableCheckBox
-          label="รับออก"
-          actual={item.actual_departure_datetime}
-          expected={item.expected_departure_datetime}
-          onClick={async () =>
-            tauriPutAttendanceLog({
-              id: item.id,
-              actual_arrival_datetime:
-                item.actual_arrival_datetime,
-              actual_depature_datetime: dayjs().format(),
-            })
-          }
+          log={item}
+          mode="departure"
         />
       ),
     },

@@ -22,6 +22,15 @@ export type OperationalLogModel = z.infer<
   typeof operationalLogModelSchema
 >;
 
+export type OperationalLogFormData = Pick<
+  OperationalLogModel,
+  "start_date" | "end_date"
+> & {
+  driver: DriverModel;
+  vehicle: VehicleModel;
+  route: PickupRouteModel;
+};
+
 export type OperationalLogEntry = {
   id: number;
   driver_id: number;
@@ -38,17 +47,10 @@ export type OperationalLogEntry = {
   end_date: string;
 };
 
-export type OperationalLogFormData = {
-  driver: DriverModel;
-  vehicle: VehicleModel;
-  route: PickupRouteModel;
-
-  start_date: string;
-  end_date: string;
-};
-
 export type OperationalLogExportData = {
   รหัส: number;
+  วันที่เริ่มมีผล: string;
+  วันที่หมดอายุ: string;
 
   รหัสคนขับรถ: number;
   ชื่อคนขับรถ: string;
@@ -59,7 +61,4 @@ export type OperationalLogExportData = {
 
   รหัสสายรถ: number;
   ชื่อสาย: string;
-
-  วันที่เริ่มมีผล: string;
-  วันที่หมดอายุ: string;
 };

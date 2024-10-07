@@ -45,7 +45,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<PickupRouteEntry>[] =
                 key={"vehicle" + index}
                 to={"/vehicles/info/" + vehicle.id}
               >
-                {vehicle.licensePlate}
+                {vehicle.license_plate}
               </BaseTypographyLink>
             ))}
           </Stack>
@@ -98,7 +98,7 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
 
       (item) =>
         item.vehicles.map(
-          (vehicle) => vehicle.licensePlate
+          (vehicle) => vehicle.license_plate
         ),
     ]
   );

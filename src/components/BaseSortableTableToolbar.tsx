@@ -63,7 +63,11 @@ export const BaseSortableTableToolbar: FC<
             <BaseInputButton
               variant="contained"
               startIcon={<AddRounded />}
-              {...slotProps.addButton}
+              disabled={slotProps.addButton.disabled}
+              disabledReasons={
+                slotProps.addButton.disabledReasons
+              }
+              onClick={slotProps.addButton.onClick}
             >
               เพิ่ม
             </BaseInputButton>

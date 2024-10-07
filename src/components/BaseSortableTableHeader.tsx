@@ -1,10 +1,10 @@
 import {
   TableCell,
   TableSortLabel,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { ReactNode } from "react";
-import { TypographyTooltip } from "./TypographyTooltip";
 
 type BaseSortableTableHeaderProps = {
   isSortable: boolean;
@@ -38,12 +38,25 @@ export const BaseSortableTableHeader = (
     </TableSortLabel>
   );
   if (isSorted) {
-    const toolTipTitle =
+    const sortOrderLabel =
       sortOrder === "asc" ? "น้อยขึ้นไปมาก" : "มากลงไปน้อย";
     header = (
-      <TypographyTooltip title={toolTipTitle}>
-        {header}
-      </TypographyTooltip>
+      <Tooltip
+        arrow
+        title={
+          <Typography
+            sx={{
+              userSelect: "none",
+              wordBreak: "keep-all",
+              wordWrap: "none",
+            }}
+          >
+            {sortOrderLabel}
+          </Typography>
+        }
+      >
+        <Typography>{header}</Typography>
+      </Tooltip>
     );
   }
 

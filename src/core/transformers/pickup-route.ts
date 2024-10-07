@@ -38,7 +38,7 @@ export const PICKUP_ROUTE_MODEL_TRANSFORMER = {
       .filter((vehicle) => vehicle !== null)
       .map(({ id, license_plate }) => ({
         id,
-        licensePlate: license_plate,
+        license_plate,
       }));
 
     const entry: PickupRouteEntry = {
@@ -86,7 +86,7 @@ export const PICKUP_ROUTE_MODEL_TRANSFORMER = {
       arrival = dayjs().startOf("day");
     }
     const formData: PickupRouteFormData = {
-      name: route.name.trim().normalize(),
+      name: route.name,
       arrival_time: arrival.format("HH:mm"),
       departure_time: departure.format("HH:mm"),
     };

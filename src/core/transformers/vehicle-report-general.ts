@@ -24,7 +24,6 @@ export const VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER = {
       id: report.id,
       title: report.title,
       topics: report.topics
-        .normalize()
         .split(",")
         .map((topic) => topic.trim())
         .filter((topic) => topic.length > 0),
@@ -68,11 +67,11 @@ export const VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER = {
   ) => {
     if (report === undefined) {
       const formData: VehicleReportGeneralFormData = {
+        vehicle,
         datetime: dayjs().locale("th").format(),
-        title: "เรื่องร้องเรียนรถรับส่ง",
+        title: "",
         content: "",
         topics: [],
-        vehicle,
       };
       return formData;
     }
@@ -83,13 +82,12 @@ export const VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER = {
     const formData = {
       vehicle,
       datetime: datetime.locale("th").format(),
+      title: report.title,
+      content: report.content,
       topics: report.topics
-        .normalize()
         .split(",")
         .map((topic) => topic.trim())
         .filter((topic) => topic.length > 0),
-      content: report.content.trim().normalize(),
-      title: report.title.trim().normalize(),
     };
     return formData;
   },

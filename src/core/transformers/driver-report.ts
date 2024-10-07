@@ -15,10 +15,13 @@ export const DRIVER_REPORT_MODEL_TRANSFORMER = {
       return null;
     }
     const entry: DriverReportEntry = {
-      ...report,
+      driver_id: driver.id,
       driver_name: driver.name,
       driver_surname: driver.surname,
+      id: report.id,
       topics: report.topics.split(","),
+      datetime: report.datetime,
+      title: report.title,
     };
     return entry;
   },
@@ -44,10 +47,9 @@ export const DRIVER_REPORT_MODEL_TRANSFORMER = {
     const formData: DriverReportFormData = {
       driver,
       datetime: datetime.format(),
-      title: report.title.trim().normalize(),
-      content: report.content.trim().normalize(),
+      title: report.title,
+      content: report.content,
       topics: report.topics
-        .normalize()
         .split(",")
         .map((topic) => topic.trim())
         .filter((topic) => topic.length > 0),
@@ -61,10 +63,11 @@ export const DRIVER_REPORT_MODEL_TRANSFORMER = {
       return null;
     }
     const exportData: DriverReportExportData = {
+      รหัส: report.id,
       รหัสคนขับ: driver.id,
       ชื่อคนขับรถ: driver.name,
       นามสกุลคนขับรถ: driver.surname,
-      รหัส: report.id,
+
       วันที่ลงบันทึก: report.datetime,
       เรื่อง: report.title,
       รายละเอียด: report.content,

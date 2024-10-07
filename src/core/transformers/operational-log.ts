@@ -28,17 +28,16 @@ export const OPERATIONAL_LOG_MODEL_TRANSFORMER = {
 
     const entry: OperationalLogEntry = {
       id: log.id,
+      vehicle_id: vehicle.id,
+      driver_id: driver.id,
+      route_id: route.id,
+
       start_date: log.start_date,
       end_date: log.end_date,
 
-      vehicle_id: vehicle.id,
       vehicle_license_plate: vehicle.license_plate,
-
-      driver_id: driver.id,
       driver_name: driver.name,
       driver_surname: driver.surname,
-
-      route_id: route.id,
       route_name: route.name,
     };
     return entry;
@@ -61,6 +60,7 @@ export const OPERATIONAL_LOG_MODEL_TRANSFORMER = {
     const vehicle = await tauriGetVehicle(log.vehicle_id);
     const driver = await tauriGetDriver(log.driver_id);
     const route = await tauriGetPickupRoute(log.route_id);
+
     if (
       vehicle === null ||
       driver === null ||
@@ -76,6 +76,7 @@ export const OPERATIONAL_LOG_MODEL_TRANSFORMER = {
       วันที่เริ่มมีผล: dayjs(log.start_date)
         .locale("th")
         .format("DD MMMM YYYY"),
+
       รหัส: log.id,
       รหัสคนขับรถ: driver.id,
       รหัสรถรับส่ง: vehicle.id,

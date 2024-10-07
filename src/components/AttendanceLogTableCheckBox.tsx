@@ -1,3 +1,5 @@
+import { tauriPutAttendanceLog } from "$backend/database/put";
+import { AttendanceLogEntry } from "$types/models/attendance-log";
 import {
   Checkbox,
   FormControlLabel,
@@ -9,15 +11,23 @@ import { FC, ReactNode } from "react";
 import { useRevalidator } from "react-router-dom";
 
 type AttendanceLogTableCheckBoxProps = {
-  onClick: () => Promise<any>;
-  label: string;
-  actual: string | null;
-  expected: string;
+  mode: "arrival" | "departure";
+  log: AttendanceLogEntry;
 };
 export const AttendanceLogTableCheckBox: FC<
   AttendanceLogTableCheckBoxProps
 > = (props) => {
-  const { actual, label, expected, onClick } = props;
+  const { mode, log } = props;
+
+  const label = mode === "arrival" ? "รับเข้า" : "รับออก";
+  const actual =
+    mode === "arrival"
+      ? log.actual_arrival_datetime
+      : log.actual_departure_datetime;
+  const expected =
+    mode === "arrival"
+      ? log.expected_arrival_datetime
+      : log.expected_departure_datetime;
 
   const { revalidate } = useRevalidator();
 
@@ -25,7 +35,20 @@ export const AttendanceLogTableCheckBox: FC<
     if (isChecked) {
       return;
     }
-    await onClick().then(revalidate);
+    (mode === "arrival"
+      ? tauriPutAttendanceLog({
+          id: log.id,
+          actual_arrival_datetime: dayjs().format(),
+          actual_departure_datetime:
+            log.actual_departure_datetime,
+        })
+      : tauriPutAttendanceLog({
+          id: log.id,
+          actual_arrival_datetime:
+            log.actual_arrival_datetime,
+          actual_departure_datetime: dayjs().format(),
+        })
+    ).then(revalidate);
   };
 
   const isChecked = actual !== null;
@@ -37,15 +60,12 @@ export const AttendanceLogTableCheckBox: FC<
     const expectedDatetime = dayjs(expected);
     _label = actualDatetime.format("HH:mm น.");
     if (actualDatetime.isAfter(expectedDatetime)) {
-      const lateByLabel = expectedDatetime
+      const lateByAmount = expectedDatetime
         .locale("th")
         .from(actual, true);
       lateBy = (
-        <Typography
-          color="error"
-          fontWeight="bold"
-        >
-          สายไป {lateByLabel}
+        <Typography color="error">
+          สายไป {lateByAmount}
         </Typography>
       );
     }

@@ -13,12 +13,14 @@ export const DRIVER_MODEL_TRANSFORMER = {
     const logs = (
       await tauriGetOperationalLogToday()
     ).filter(({ driver_id }) => driver_id === driver.id);
+
     const routeIds = new Set<number>();
     const vehicleIds = new Set<number>();
     for (const log of logs) {
       routeIds.add(log.route_id);
       vehicleIds.add(log.vehicle_id);
     }
+
     const vehicles = (
       await Promise.all(
         [...vehicleIds].map(tauriGetVehicle)
@@ -27,7 +29,7 @@ export const DRIVER_MODEL_TRANSFORMER = {
       .filter((vehicle) => vehicle !== null)
       .map(({ id, license_plate }) => ({
         id,
-        licensePlate: license_plate,
+        license_plate,
       }));
 
     const routes = (
@@ -56,9 +58,9 @@ export const DRIVER_MODEL_TRANSFORMER = {
   ): DriverFormData => {
     if (driver !== undefined) {
       const formData: DriverFormData = {
-        name: driver.name.trim().normalize(),
-        surname: driver.surname.trim().normalize(),
-        contact: driver.contact.trim().normalize(),
+        name: driver.name,
+        surname: driver.surname,
+        contact: driver.contact,
         license_type: "ท.1",
       };
       return formData;

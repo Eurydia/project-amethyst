@@ -65,7 +65,7 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<DriverEntry>[] =
                 key={"vehicle" + index}
                 to={"/vehicles/info/" + vehicle.id}
               >
-                {vehicle.licensePlate}
+                {vehicle.license_plate}
               </BaseTypographyLink>
             ))}
           </Stack>
@@ -94,7 +94,7 @@ export const DriverTable: FC<DriverTableProps> = (
       (item) => item.routes.map((route) => route.name),
       (item) =>
         item.vehicles.map(
-          (vehicle) => vehicle.licensePlate
+          (vehicle) => vehicle.license_plate
         ),
     ]
   );

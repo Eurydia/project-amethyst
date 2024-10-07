@@ -5,16 +5,23 @@ export const driverModelSchema = z
   .object({
     id: z.number().int(),
 
-    name: z.string().trim().min(1),
-    surname: z.string().trim().min(1),
+    name: z
+      .string()
+      .trim()
+      .min(1)
+      .transform((v) => v.trim().normalize()),
+    surname: z
+      .string()
+      .trim()
+      .min(1)
+      .transform((v) => v.trim().normalize()),
     contact: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => v ?? "".trim().normalize()),
     license_type: z.enum(KNOWN_LICENSE_TYPES),
   })
-  .required()
-  .readonly();
+  .required();
 
 export type DriverModel = z.infer<typeof driverModelSchema>;
 export type DriverFormData = Omit<DriverModel, "id">;
@@ -26,7 +33,7 @@ export type DriverEntry = {
 
   vehicles: {
     id: number;
-    licensePlate: string;
+    license_plate: string;
   }[];
 
   routes: {
@@ -38,12 +45,20 @@ export type DriverEntry = {
 export const driverExportDataSchema = z
   .object({
     รหัส: z.number().int().min(1),
-    ชื่อ: z.string().min(1),
-    นามสกุล: z.string().min(1),
+    ชื่อ: z
+      .string()
+      .trim()
+      .min(1)
+      .transform((v) => v.trim().normalize()),
+    นามสกุล: z
+      .string()
+      .trim()
+      .min(1)
+      .transform((v) => v.trim().normalize()),
     เบอร์ติดต่อ: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     ประเภทใบขับขี่: z.enum(KNOWN_LICENSE_TYPES),
   })
   .required();

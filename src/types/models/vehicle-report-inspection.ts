@@ -4,67 +4,78 @@ import { VehicleModel } from "./vehicle";
 
 export const vehicleReportInspectionModelSchema = z
   .object({
-    id: z.number(),
-    vehicle_id: z.number(),
-    title: z.string().trim().min(1),
+    id: z.number().int().min(1),
+    vehicle_id: z.number().int().min(1),
+    title: z
+      .string()
+      .trim()
+      .min(1)
+      .transform((v) => v.trim().normalize()),
     datetime: z.string().refine((v) => dayjs(v).isValid()),
 
     topics: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) =>
+        (v ?? "")
+          .normalize()
+          .split(",")
+          .map((v) => v.trim())
+          .filter((v) => v.length > 0)
+          .join(",")
+      ),
     content: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     front_camera: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     overhead_fan: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     windows: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     seatbelts: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     seats: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     headlights: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     turn_signals: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     brake_light: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     frame: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     rearview_mirror: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     sideview_mirror: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
     tires: z
       .string()
       .optional()
-      .transform((v) => v ?? ""),
+      .transform((v) => (v ?? "").trim().normalize()),
   })
   .required();
 
@@ -90,11 +101,11 @@ export type VehicleReportInspectionEntry = {
 };
 
 export type VehicleReportInpsectionExportData = {
-  รหัสรถรับส่ง: number;
-  เลขทะเบียน: string;
-
   รหัส: number;
   ชื่อเรื่อง: string;
+
+  รหัสรถรับส่ง: number;
+  เลขทะเบียน: string;
 
   วันที่ลงบันทึก: string;
   หมายเหตุ: string;

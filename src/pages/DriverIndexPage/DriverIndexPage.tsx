@@ -1,5 +1,3 @@
-/** @format */
-
 import { DriverTable } from "$components/DriverTable";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";

@@ -37,7 +37,6 @@ export const BaseForm: FC<BaseFormProps> = (props) => {
   return (
     <Dialog
       keepMounted
-      scroll="body"
       TransitionComponent={BaseFormTransition}
       open={open}
       onClose={onClose}

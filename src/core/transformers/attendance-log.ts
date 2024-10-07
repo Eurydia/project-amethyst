@@ -98,7 +98,7 @@ export const ATTENDANCE_LOG_MODEL_TRANSFORMER = {
 
       วันที่: dayjs(log.expected_arrival_datetime)
         .locale("th")
-        .format("DD/MMMM/YYYY"),
+        .format("DD MMMM YYYY"),
 
       เวลารับเข้าตามกำหนด: formatTime(
         log.expected_arrival_datetime
@@ -109,11 +109,11 @@ export const ATTENDANCE_LOG_MODEL_TRANSFORMER = {
       เวลารับเข้าจริง:
         log.actual_arrival_datetime !== null
           ? formatTime(log.actual_arrival_datetime)
-          : "-",
+          : "",
       เวลารับออกจริง:
         log.actual_departure_datetime !== null
           ? formatTime(log.actual_departure_datetime)
-          : "-",
+          : "",
       สถานะรับเข้า: arrivalStatus,
       รับออกสาย: departureStatus,
     };

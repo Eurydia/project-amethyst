@@ -23,7 +23,6 @@ export const attendanceLogModelSchema = z
       .nullable()
       .refine((v) => v === null || dayjs(v).isValid()),
   })
-  .passthrough()
   .required();
 
 export type AttendanceLogModel = z.infer<
@@ -55,23 +54,21 @@ export type AttendanceLogEntry = {
 
 export type AttendanceLogExportData = {
   รหัส: number;
-  รหัสคนขับรถ: number;
-  รหัสรถรับส่ง: number;
-  รหัสสายรถ: number;
-
-  ชื่อคนขับรถ: string;
-  นามสกุลคนขับรถ: string;
-  เลขทะเบียนรถ: string;
-  ชื่อสายรถ: string;
-
   วันที่: string;
-
+  สถานะรับเข้า: string;
+  รับออกสาย: string;
   เวลารับเข้าตามกำหนด: string;
   เวลารับออกตามกำหนด: string;
-
   เวลารับเข้าจริง: string;
   เวลารับออกจริง: string;
 
-  สถานะรับเข้า: string;
-  รับออกสาย: string;
+  รหัสคนขับรถ: number;
+  ชื่อคนขับรถ: string;
+  นามสกุลคนขับรถ: string;
+
+  รหัสรถรับส่ง: number;
+  เลขทะเบียนรถ: string;
+
+  รหัสสายรถ: number;
+  ชื่อสายรถ: string;
 };

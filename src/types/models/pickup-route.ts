@@ -5,7 +5,11 @@ export const pickupRouteModelSchema = z
   .object({
     id: z.number().int(),
 
-    name: z.string().trim().min(1),
+    name: z
+      .string()
+      .trim()
+      .min(1)
+      .transform((v) => v.trim().normalize()),
     arrival_time: z
       .string()
       .refine((v) => dayjs(v, "HH:mm").isValid()),
@@ -25,7 +29,7 @@ export type PickupRouteEntry = {
 
   vehicles: {
     id: number;
-    licensePlate: string;
+    license_plate: string;
   }[];
 
   drivers: {
@@ -44,7 +48,11 @@ export type PickupRouteFormData = {
 export const pickupRouteExportDataSchema = z
   .object({
     รหัส: z.number().int().min(1),
-    ชื่อสาย: z.string().min(1),
+    ชื่อสาย: z
+      .string()
+      .trim()
+      .min(1)
+      .transform((v) => v.trim().normalize()),
     เวลารับเข้า: z
       .string()
       .refine((v) => dayjs(v, "HH:mm").isValid()),

@@ -68,12 +68,12 @@ export const VEHICLE_MODEL_TRANSFORMER = {
 
   toFormData: (
     vehicle: VehicleModel | undefined,
-    vendor: string
+    vendor: string | undefined
   ): VehicleFormData => {
     if (vehicle === undefined) {
       const formData: VehicleFormData = {
+        vendor: vendor ?? "",
         license_plate: "",
-        vendor: (vendor ?? "").trim().normalize(),
         registered_city: CITIES[0],
         vehicle_class: KNOWN_VEHICLE_CLASSES[0],
       };
@@ -81,10 +81,8 @@ export const VEHICLE_MODEL_TRANSFORMER = {
     }
 
     const formData: VehicleFormData = {
-      license_plate: vehicle.license_plate
-        .trim()
-        .normalize(),
-      vendor: vehicle.vendor.trim().normalize(),
+      license_plate: vehicle.license_plate,
+      vendor: vehicle.vendor,
       registered_city: vehicle.registered_city,
       vehicle_class: vehicle.vehicle_class,
     };

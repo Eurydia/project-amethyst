@@ -6,8 +6,9 @@ import {
   VehicleReportInspectionFormData,
   VehicleReportInspectionModel,
 } from "$types/models/vehicle-report-inspection";
+import { Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { FC, useState } from "react";
+import { FC, Fragment, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
@@ -61,15 +62,25 @@ export const VehicleReportInspectionForm: FC<
 > = (props) => {
   const { slotProps, onClose, open, editing } = props;
 
-  const title = editing
-    ? "แก้ไขข้อมูลผลการตรวจสภาพรถรับส่ง"
-    : "เพิ่มผลการตรวจสภาพรถรับส่ง";
   const initFormData =
     VEHICLE_REPORT_INSPECTION_TRANSFORMER.toFormData(
       editing ? props.report : undefined,
       slotProps.form.vehicleSelect.options[0]
     );
-
+  const title = editing ? (
+    <Fragment>
+      <Typography variant="h2">
+        {initFormData.vehicle.license_plate}
+      </Typography>
+      <Typography variant="h3">
+        แก้ไขข้อมูลผลการตรวจสภาพรถรับส่ง
+      </Typography>
+    </Fragment>
+  ) : (
+    <Typography variant="h2">
+      เพิ่มผลการตรวจสภาพรถรับส่ง
+    </Typography>
+  );
   const [fieldTitle, setFieldTitle] = useState(
     initFormData.title
   );
@@ -163,8 +174,8 @@ export const VehicleReportInspectionForm: FC<
       topics: fieldTopics
         .map((topic) => topic.trim())
         .filter((topic) => topic.length > 0),
-      title: fieldTitle.trim() || "ผลการตรวจสภาพรถรับส่ง",
       content: fieldContent.trim(),
+      title: fieldTitle.trim() || "ผลการตรวจสภาพรถรับส่ง",
       frame: fieldFrame.trim() || "ปกติ",
       windows: fieldWindows.trim() || "ปกติ",
       front_camera: fieldFrontCam.trim() || "ปกติ",
@@ -207,6 +218,14 @@ export const VehicleReportInspectionForm: FC<
   const isDateValid = fieldDate.isValid();
   const isTimeValid = fieldTime.isValid();
   const isFormIncomplete = !isDateValid || !isTimeValid;
+
+  const disabledReasons: string[] = [];
+  if (!isTimeValid) {
+    disabledReasons.push("เวลาไม่ถูกต้อง");
+  }
+  if (!isDateValid) {
+    disabledReasons.push("วันที่ไม่ถูกต้อง");
+  }
 
   const formItems = [
     {
@@ -414,14 +433,6 @@ export const VehicleReportInspectionForm: FC<
       ),
     },
   ];
-
-  const disabledReasons: string[] = [];
-  if (!isDateValid) {
-    disabledReasons.push("วันที่ไม่ถูกต้อง");
-  }
-  if (!isTimeValid) {
-    disabledReasons.push("เวลาไม่ถูกต้อง");
-  }
 
   return (
     <BaseForm

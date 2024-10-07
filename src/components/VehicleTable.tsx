@@ -36,7 +36,9 @@ const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
       compare: null,
       render: (item) =>
         item.routes.length === 0 ? (
-          <Typography fontStyle="italic">ไม่มี</Typography>
+          <Typography fontStyle="italic">
+            ไม่มีสายรถ
+          </Typography>
         ) : (
           <Stack spacing={1}>
             {item.routes.map(({ id, name }, index) => (
@@ -55,7 +57,9 @@ const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
       compare: null,
       render: ({ drivers }) =>
         drivers.length === 0 ? (
-          <Typography fontStyle="italic">ไม่มี</Typography>
+          <Typography fontStyle="italic">
+            ไม่มีคนขับรถ
+          </Typography>
         ) : (
           <Stack spacing={1}>
             {drivers.map(({ id, name, surname }, index) => (
@@ -91,10 +95,8 @@ export const VehicleTable: FC<VehicleTableProps> = (
   const filteredEntries = filterObjects(entries, search, [
     (item) => item.license_plate,
     (item) => item.routes.map((route) => route.name),
-    (item) =>
-      item.drivers.map(
-        (driver) => `${driver.name} ${driver.surname}`
-      ),
+    (item) => item.drivers.map((driver) => driver.name),
+    (item) => item.drivers.map((driver) => driver.surname),
   ]);
 
   const { revalidate } = useRevalidator();
@@ -132,6 +134,7 @@ export const VehicleTable: FC<VehicleTableProps> = (
   };
 
   const databaseHasNoVehicle = entries.length === 0;
+
   return (
     <Stack spacing={1}>
       <BaseSortableTableToolbar

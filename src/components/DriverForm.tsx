@@ -111,10 +111,10 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
 
   const disabledReasons: string[] = [];
   if (isMissingName) {
-    disabledReasons.push("ต้องกรองชื่อ");
+    disabledReasons.push("ต้องมีชื่อ");
   }
   if (isMissingSurname) {
-    disabledReasons.push("ต้องกรองนามสกุล");
+    disabledReasons.push("ต้องมีนามสกุล");
   }
 
   const formItems = [

@@ -1,14 +1,11 @@
 import { tauriPostOperationalLog } from "$backend/database/post";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
 import { DriverModel } from "$types/models/driver";
-import {
-  OperationalLogExportData,
-  OperationalLogFormData,
-} from "$types/models/operational-log";
+import { OperationalLogFormData } from "$types/models/operational-log";
 import { PickupRouteModel } from "$types/models/pickup-route";
 import { VehicleModel } from "$types/models/vehicle";
 import dayjs from "dayjs";
-import { FC, ReactNode, useState } from "react";
+import { FC, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
@@ -119,10 +116,7 @@ export const OperationalLogForm: FC<
     );
   }
 
-  const formItems: {
-    label: string | keyof OperationalLogExportData;
-    value: ReactNode;
-  }[] = [
+  const formItems = [
     {
       label: "วันที่เริ่มมีผล",
       value: (

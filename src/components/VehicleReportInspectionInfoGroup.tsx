@@ -48,10 +48,6 @@ export const VehicleReportInspectionInfoGroup: FC<
       ),
     },
     {
-      label: "รหัส",
-      value: report.id.toString(),
-    },
-    {
       label: "เรื่อง",
       value: report.title,
     },

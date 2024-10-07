@@ -46,6 +46,7 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
   ) : (
     <Typography variant="h2">เพิ่มสายรถ</Typography>
   );
+
   const initFormData =
     PICKUP_ROUTE_MODEL_TRANSFORMER.toFormData(
       editing ? props.route : undefined
@@ -114,7 +115,7 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
 
   const disabledReasons: string[] = [];
   if (isMissingName) {
-    disabledReasons.push("สายรถต้องมีชื่อ");
+    disabledReasons.push("ต้องมีชื่อสายรถ");
   }
   if (!isArrivalTimeValid) {
     disabledReasons.push("เวลารับเข้าไม่ถูกต้อง");
@@ -161,9 +162,9 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
       title={title}
       slotProps={{
         submitButton: {
+          disabledReasons,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
-          disabledReasons,
         },
       }}
     >

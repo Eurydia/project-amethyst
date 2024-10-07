@@ -8,7 +8,7 @@ import {
 } from "$types/models/driver-report";
 import { Typography } from "@mui/material";
 import { default as dayjs } from "dayjs";
-import { FC, Fragment, ReactNode, useState } from "react";
+import { FC, Fragment, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
@@ -124,7 +124,7 @@ export const DriverReportMedicalForm: FC<
     const formData: DriverReportFormData = {
       datetime,
       driver: fieldDriver,
-      title: fieldTitle.trim() || "ผลตรวจสารเสพติด",
+      title: fieldTitle.trim() || "ผลตรวจสารเสพติดคนขับรถ",
       content: fieldContent.trim(),
       topics: fieldTopics
         .map((topic) => topic.trim())
@@ -168,10 +168,7 @@ export const DriverReportMedicalForm: FC<
     disabledReasons.push("เวลาไม่ถูกต้อง");
   }
 
-  const formItems: {
-    label: string;
-    value: ReactNode;
-  }[] = [
+  const formItems = [
     {
       label: "เวลา",
       value: (
@@ -206,7 +203,8 @@ export const DriverReportMedicalForm: FC<
         <BaseInputTextField
           autoFocus
           placeholder={
-            initFormData.title.trim() || "ผลตรวจสารเสพติด"
+            initFormData.title.trim() ||
+            "ผลตรวจสารเสพติดคนขับรถ"
           }
           onChange={setFieldTitle}
           value={fieldTitle}

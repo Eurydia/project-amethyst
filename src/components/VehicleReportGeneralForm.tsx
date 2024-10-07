@@ -6,8 +6,9 @@ import {
   VehicleReportGeneralFormData,
   VehicleReportGeneralModel,
 } from "$types/models/vehicle-report-general";
+import { Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { FC, useState } from "react";
+import { FC, Fragment, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
@@ -57,15 +58,25 @@ export const VehicleReportGeneralForm: FC<
   VehicleReportGeneralFormProps
 > = (props) => {
   const { editing, slotProps, onClose, open } = props;
-
-  const title = editing
-    ? "แก้ไขข้อมูลเรื่องร้องเรียนรถรับส่ง"
-    : "เพิ่มเรื่องร้องเรียนรถรับส่ง";
-  let initFormData =
+  const initFormData =
     VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER.toFormData(
       editing ? props.report : undefined,
       slotProps.vehcleSelect.options[0]
     );
+  const title = editing ? (
+    <Fragment>
+      <Typography variant="h2">
+        {initFormData.vehicle.license_plate}
+      </Typography>
+      <Typography variant="h3">
+        แก้ไขข้อมูลเรื่องร้องเรียนรถรับส่ง
+      </Typography>
+    </Fragment>
+  ) : (
+    <Typography variant="h2">
+      เพิ่มเรื่องร้องเรียนรถรับส่ง
+    </Typography>
+  );
 
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime)
@@ -147,6 +158,14 @@ export const VehicleReportGeneralForm: FC<
   const isTimeValid = dayjs(fieldTime).isValid();
   const isFormIncomplete = !isDateValid || !isTimeValid;
 
+  const disabledReasons: string[] = [];
+  if (!isTimeValid) {
+    disabledReasons.push("เวลาไม่ถูกต้อง");
+  }
+  if (!isDateValid) {
+    disabledReasons.push("วันที่ไม่ถูกต้อง");
+  }
+
   const formItems = [
     {
       label: "เวลา",
@@ -209,14 +228,6 @@ export const VehicleReportGeneralForm: FC<
       ),
     },
   ];
-
-  const disabledReasons: string[] = [];
-  if (!isDateValid) {
-    disabledReasons.push("วันที่ไม่ถูกต้อง");
-  }
-  if (!isTimeValid) {
-    disabledReasons.push("เวลาไม่ถูกต้อง");
-  }
 
   return (
     <BaseForm

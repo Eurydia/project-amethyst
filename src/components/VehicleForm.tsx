@@ -116,11 +116,18 @@ export const VehicleForm: FC<VehicleFormProps> = (
   };
 
   const missingLicensePlate =
-    fieldLicensePlate.trim().normalize().length < 1;
-  const missingVendor =
-    fieldVendor.trim().normalize().length < 1;
+    fieldLicensePlate.trim().length < 1;
+  const missingVendor = fieldVendor.trim().length < 1;
   const isFormIncomplete =
     missingLicensePlate || missingVendor;
+
+  const disabledReasons: string[] = [];
+  if (missingLicensePlate) {
+    disabledReasons.push("ต้องมีเลขทะเบียน");
+  }
+  if (missingVendor) {
+    disabledReasons.push("ต้องมีหจก.");
+  }
 
   const formItems = [
     {
@@ -163,14 +170,6 @@ export const VehicleForm: FC<VehicleFormProps> = (
       ),
     },
   ];
-
-  const disabledReasons: string[] = [];
-  if (missingLicensePlate) {
-    disabledReasons.push("ต้องมีเลขทะเบียน");
-  }
-  if (missingVendor) {
-    disabledReasons.push("ต้องมีหจก.");
-  }
 
   return (
     <BaseForm

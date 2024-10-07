@@ -56,9 +56,9 @@ export const DriverInputDriverSelect: FC<
       }}
       filterOptions={(options, state) =>
         filterObjects(options, state.inputValue, [
-          (option) => option.name,
-          (option) => option.surname,
-          (option) => option.contact,
+          (option) => option.name.trim().normalize(),
+          (option) => option.surname.trim().normalize(),
+          (option) => option.contact.trim().normalize(),
         ])
       }
       renderInput={(props) => (

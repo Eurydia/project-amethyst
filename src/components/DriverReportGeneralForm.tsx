@@ -6,8 +6,9 @@ import {
   DriverReportFormData,
   DriverReportModel,
 } from "$types/models/driver-report";
+import { Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { FC, ReactNode, useState } from "react";
+import { FC, Fragment, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
@@ -57,14 +58,26 @@ export const DriverReportGeneralForm: FC<
 > = (props) => {
   const { slotProps, onClose, open, editing } = props;
 
-  const title = editing
-    ? "แก้ไขข้อมูลเรื่องร้องเรียนคนขับรถ"
-    : "เพิ่มเรื่องร้องเรียนคนขับรถ";
   const initFormData =
     DRIVER_REPORT_MODEL_TRANSFORMER.toFormData(
       editing ? props.report : undefined,
       slotProps.driverSelect.options[0]
     );
+  const title = editing ? (
+    <Fragment>
+      <Typography variant="h2">
+        {initFormData.driver.name}
+        {initFormData.driver.surname}
+      </Typography>
+      <Typography variant="h3">
+        แก้ไขข้อมูลเรื่องร้องเรียนคนขับรถ
+      </Typography>
+    </Fragment>
+  ) : (
+    <Typography variant="h2">
+      เพิ่มเรื่องร้องเรียนคนขับรถ
+    </Typography>
+  );
 
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime)
@@ -110,9 +123,9 @@ export const DriverReportGeneralForm: FC<
 
     const formData: DriverReportFormData = {
       datetime,
-      title: fieldTitle.trim() || "เรื่องร้องเรียน",
-      content: fieldContent.trim(),
       driver: fieldDriver,
+      title: fieldTitle.trim() || "เรื่องร้องเรียนคนขับรถ",
+      content: fieldContent.trim(),
       topics: fieldTopics
         .map((topic) => topic.trim())
         .filter((topic) => topic.length > 0),
@@ -146,17 +159,21 @@ export const DriverReportGeneralForm: FC<
   const isDateValid = fieldDate.isValid();
   const isFormIncomplete = !isTimeValid || !isDateValid;
 
-  const formItems: {
-    label: string;
-    value: ReactNode;
-  }[] = [
+  const disabledReasons: string[] = [];
+  if (!isTimeValid) {
+    disabledReasons.push("เวลาไม่ถูกต้อง");
+  }
+  if (!isDateValid) {
+    disabledReasons.push("วันที่ไม่ถูกต้อง");
+  }
+
+  const formItems = [
     {
       label: "เวลา",
       value: (
         <BaseInputTimeField
           value={fieldTime}
           onChange={setFieldTime}
-          error={!isTimeValid}
         />
       ),
     },
@@ -166,7 +183,6 @@ export const DriverReportGeneralForm: FC<
         <BaseInputDateField
           value={fieldDate}
           onChange={setFieldDate}
-          error={!isDateValid}
         />
       ),
     },
@@ -218,6 +234,7 @@ export const DriverReportGeneralForm: FC<
     <BaseForm
       slotProps={{
         submitButton: {
+          disabledReasons,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
         },

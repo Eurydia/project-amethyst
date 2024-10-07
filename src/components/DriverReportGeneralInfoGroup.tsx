@@ -26,7 +26,6 @@ export const DriverReportGeneralInfoGroup: FC<
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const topics = report.topics
-    .normalize()
     .split(",")
     .map((topic) => topic.trim())
     .filter((topic) => topic.length > 0);
@@ -43,7 +42,7 @@ export const DriverReportGeneralInfoGroup: FC<
       ),
     },
     {
-      label: "ลงบันทึก",
+      label: "วันที่ลงบันทึก",
       value: dayjs(report.datetime)
         .locale("th")
         .format("HH:mm น. วันddddที่ DD MMMM YYYY"),

@@ -6,8 +6,9 @@ import {
   DriverReportFormData,
   DriverReportModel,
 } from "$types/models/driver-report";
+import { Typography } from "@mui/material";
 import { default as dayjs } from "dayjs";
-import { FC, ReactNode, useState } from "react";
+import { FC, Fragment, ReactNode, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
@@ -58,14 +59,26 @@ export const DriverReportMedicalForm: FC<
 > = (props) => {
   const { slotProps, onClose, open, editing } = props;
 
-  const title = editing
-    ? "แก้ไขข้อมูลผลตรวจสารเสพติด"
-    : "เพิ่มผลตรวจสารเสพติด";
   const initFormData =
     DRIVER_REPORT_MODEL_TRANSFORMER.toFormData(
       editing ? props.report : undefined,
       slotProps.driverSelect.options[0]
     );
+  const title = editing ? (
+    <Fragment>
+      <Typography variant="h2">
+        {initFormData.driver.name}{" "}
+        {initFormData.driver.surname}
+      </Typography>
+      <Typography variant="h3">
+        แก้ไขข้อมูลผลตรวจสารเสพติด
+      </Typography>
+    </Fragment>
+  ) : (
+    <Typography variant="h2">
+      เพิ่มผลตรวจสารเสพติด
+    </Typography>
+  );
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime)
   );
@@ -147,6 +160,14 @@ export const DriverReportMedicalForm: FC<
   const isDateValid = fieldDate.isValid();
   const isFormIncomplete = !isDateValid || !isTimeValid;
 
+  const disabledReasons: string[] = [];
+  if (!isDateValid) {
+    disabledReasons.push("วันที่ไม่ถูกต้อง");
+  }
+  if (!isTimeValid) {
+    disabledReasons.push("เวลาไม่ถูกต้อง");
+  }
+
   const formItems: {
     label: string;
     value: ReactNode;
@@ -157,7 +178,6 @@ export const DriverReportMedicalForm: FC<
         <BaseInputTimeField
           value={fieldTime}
           onChange={setFieldTime}
-          error={!isTimeValid}
         />
       ),
     },
@@ -167,7 +187,6 @@ export const DriverReportMedicalForm: FC<
         <BaseInputDateField
           value={fieldDate}
           onChange={setFieldDate}
-          error={!isDateValid}
         />
       ),
     },
@@ -222,6 +241,7 @@ export const DriverReportMedicalForm: FC<
       title={title}
       slotProps={{
         submitButton: {
+          disabledReasons,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
         },

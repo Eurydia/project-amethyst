@@ -89,8 +89,7 @@ export const DriverTable: FC<DriverTableProps> = (
     driverEntries,
     search,
     [
-      (item) => item.name,
-      (item) => item.surname,
+      (item) => `${item.name} ${item.surname}`,
       (item) => item.vehicles.map((v) => v.licensePlate),
       (item) => item.routes.map((r) => r.name),
     ]
@@ -140,6 +139,7 @@ export const DriverTable: FC<DriverTableProps> = (
               "ค้นหาด้วยชื่อสกุลคนขับรถ, เลขทะเบียน, หรือสายรถ",
           },
           addButton: {
+            disabledReasons: [],
             onClick: () => setDialogOpen(true),
           },
           importButton: {
@@ -157,13 +157,7 @@ export const DriverTable: FC<DriverTableProps> = (
         defaultSortOrder="asc"
         defaultSortByColumn={0}
         entries={filteredEntries}
-        slotProps={{
-          body: {
-            emptyText: databaseHasNoDrivers
-              ? "ฐานข้อมูลคนขับรถว่าง"
-              : "ไม่พบคนขับรถที่ค้นหา",
-          },
-        }}
+        databaseIsEmpty={databaseHasNoDrivers}
       />
       <DriverForm
         editing={false}

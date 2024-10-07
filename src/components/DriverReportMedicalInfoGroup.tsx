@@ -26,6 +26,11 @@ export const DriverReportMedicalInfoGroup: FC<
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  const topics = report.topics
+    .split(",")
+    .map((topic) => topic.trim())
+    .filter((topic) => topic.length > 0);
+
   const infoItems = [
     {
       label: "คบขับรถ",
@@ -38,7 +43,7 @@ export const DriverReportMedicalInfoGroup: FC<
       ),
     },
     {
-      label: "เวลาและวันที่",
+      label: "วันที่ลงบันทึก",
       value: dayjs(report.datetime)
         .locale("th")
         .format("HH:mm น. วันddddที่ DD MMMM YYYY"),
@@ -57,15 +62,14 @@ export const DriverReportMedicalInfoGroup: FC<
     },
     {
       label: "หัวข้อที่เกี่ยวข้อง",
-      value: report.topics
-        .split(",")
-        .map((topic) => topic.trim())
-        .filter((topic) => topic.length > 0)
-        .join(", ") || (
-        <Typography fontStyle="italic">
-          ไม่มีหัวข้อที่เกี่ยวข้อง
-        </Typography>
-      ),
+      value:
+        topics.length > 0 ? (
+          topics.join(", ")
+        ) : (
+          <Typography fontStyle="italic">
+            ไม่มีหัวข้อที่เกี่ยวข้อง
+          </Typography>
+        ),
     },
   ];
 

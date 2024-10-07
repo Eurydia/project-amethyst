@@ -5,7 +5,8 @@ import {
   DriverFormData,
   DriverModel,
 } from "$types/models/driver";
-import { FC, ReactNode, useState } from "react";
+import { Typography } from "@mui/material";
+import { FC, Fragment, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
@@ -32,13 +33,22 @@ type DriverFormProps =
 export const DriverForm: FC<DriverFormProps> = (props) => {
   const { onClose, open, editing } = props;
 
-  const title = editing
-    ? "แก้ไขข้อมูลคนขับรถ"
-    : "ลงทะเบียนคนขับรถ";
   const initFormData: DriverFormData =
     DRIVER_MODEL_TRANSFORMER.toFormData(
       editing ? props.driver : undefined
     );
+  const title = editing ? (
+    <Fragment>
+      <Typography variant="h2">
+        {initFormData.name} {initFormData.surname}
+      </Typography>
+      <Typography variant="h3">
+        แก้ไขข้อมูลคนขับรถ
+      </Typography>
+    </Fragment>
+  ) : (
+    <Typography variant="h2">ลงทะเบียนคนขับรถ</Typography>
+  );
 
   const [fieldName, setFieldName] = useState(
     initFormData.name
@@ -68,7 +78,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
     const formData: DriverFormData = {
       name: fieldName,
       surname: fieldSurname,
-      contact: fieldContact.trim() || "ไม่มี",
+      contact: fieldContact,
       license_type: fieldLicenseType,
     };
 
@@ -99,10 +109,15 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
   const isFormIncomplete =
     isMissingName || isMissingSurname;
 
-  const formItems: {
-    label: string;
-    value: ReactNode;
-  }[] = [
+  const disabledReasons: string[] = [];
+  if (isMissingName) {
+    disabledReasons.push("ต้องกรองชื่อ");
+  }
+  if (isMissingSurname) {
+    disabledReasons.push("ต้องกรองนามสกุล");
+  }
+
+  const formItems = [
     {
       label: "ชื่อ",
       value: (
@@ -128,7 +143,6 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       label: "เบอร์ติดต่อ",
       value: (
         <BaseInputTextField
-          placeholder="ไม่มี"
           value={fieldContact}
           onChange={setFieldContact}
         />
@@ -152,6 +166,7 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
       title={title}
       slotProps={{
         submitButton: {
+          disabledReasons,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
         },

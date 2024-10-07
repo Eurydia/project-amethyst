@@ -64,8 +64,9 @@ const TOPICS_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
     compare: null,
     render: (item) => {
       const topics = item.topics
-        .map((topic) => topic.trim().normalize())
+        .map((topic) => topic.trim())
         .filter((topic) => topic.length > 0);
+
       return topics.length === 0 ? (
         <Typography fontStyle="italic">ไม่มี</Typography>
       ) : (
@@ -122,20 +123,20 @@ export const DriverReportMedicalTable: FC<
     );
   };
 
-  let headers = [
-    DATETIME_COLUMN_DEFINITION,
-    DRIVER_COLUMN_DEFINITION,
-    TITLE_COLUMN_DEFINITION,
-    TOPICS_COLUMN_DEFINITION,
-  ];
-  if (hideDriverColumn) {
-    headers = [
-      DATETIME_COLUMN_DEFINITION,
-      TITLE_COLUMN_DEFINITION,
-      TOPICS_COLUMN_DEFINITION,
-    ];
-  }
+  const headers = hideDriverColumn
+    ? [
+        DATETIME_COLUMN_DEFINITION,
+        TITLE_COLUMN_DEFINITION,
+        TOPICS_COLUMN_DEFINITION,
+      ]
+    : [
+        DATETIME_COLUMN_DEFINITION,
+        DRIVER_COLUMN_DEFINITION,
+        TITLE_COLUMN_DEFINITION,
+        TOPICS_COLUMN_DEFINITION,
+      ];
 
+  const databaseHasNoReport = entries.length === 0;
   const databaseHasNoDrivers =
     slotProps.form.driverSelect.options.length === 0;
   return (
@@ -150,13 +151,11 @@ export const DriverReportMedicalTable: FC<
           },
           addButton: {
             disabled: databaseHasNoDrivers,
+            disabledReasons: ["ยังไม่มีคนขับรถในฐานข้อมูล"],
             onClick: () => setDialogOpen(true),
           },
           importButton: {
-            disabled: true,
-            onFileSelect: () => {
-              throw new Error("Function not implemented.");
-            },
+            hidden: true,
           },
           exportButton: {
             disabled: filteredEntries.length === 0,
@@ -165,14 +164,7 @@ export const DriverReportMedicalTable: FC<
         }}
       />
       <BaseSortableTable
-        slotProps={{
-          body: {
-            emptyText:
-              entries.length === 0
-                ? "ฐานข้อมูลว่าง"
-                : "ไม่พบผลการตรวจสารเสพติดที่ค้นหา",
-          },
-        }}
+        databaseIsEmpty={databaseHasNoReport}
         defaultSortByColumn={0}
         defaultSortOrder="desc"
         entries={filteredEntries}

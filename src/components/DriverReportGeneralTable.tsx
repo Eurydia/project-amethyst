@@ -116,7 +116,7 @@ export const DriverReportGeneralTable: FC<
     ).filter((report) => report !== null);
 
     exportWorkbook(reports, {
-      name: "เรื่องร้องเรียนคนขับรถ",
+      name: "บันทึกเรื่องร้องเรียนคนขับรถ",
       transformer:
         DRIVER_REPORT_MODEL_TRANSFORMER.toExportData,
     }).then(
@@ -125,7 +125,7 @@ export const DriverReportGeneralTable: FC<
     );
   };
 
-  const databaseIsEmpty = entries.length === 0;
+  const databaseHasNoReport = entries.length === 0;
   const databaseHasNoDriver =
     slotProps.form.driverSelect.options.length === 0;
 
@@ -141,13 +141,11 @@ export const DriverReportGeneralTable: FC<
           },
           addButton: {
             disabled: databaseHasNoDriver,
+            disabledReasons: ["ยังไม่มีคนขับรถในฐานข้อมูล"],
             onClick: () => setDialogOpen(true),
           },
           importButton: {
-            disabled: true,
-            onFileSelect: () => {
-              throw new Error("Function not implemented.");
-            },
+            hidden: true,
           },
           exportButton: {
             disabled: filteredEntries.length === 0,
@@ -160,15 +158,9 @@ export const DriverReportGeneralTable: FC<
         defaultSortOrder="desc"
         entries={filteredEntries}
         headers={headers}
-        slotProps={{
-          body: {
-            emptyText: databaseIsEmpty
-              ? "ฐานข้อมูลว่าง"
-              : "ไม่พบเรื่องร้องเรียนที่ค้นหา",
-          },
-        }}
+        databaseIsEmpty={databaseHasNoReport}
       />
-      {slotProps.form.driverSelect.options.length > 0 && (
+      {!databaseHasNoDriver && (
         <DriverReportGeneralForm
           editing={false}
           slotProps={{

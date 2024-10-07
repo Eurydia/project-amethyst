@@ -7,7 +7,7 @@ import {
   VehicleReportInspectionModel,
 } from "$types/models/vehicle-report-inspection";
 import dayjs from "dayjs";
-import { FC, ReactNode, useState } from "react";
+import { FC, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
@@ -124,7 +124,7 @@ export const VehicleReportInspectionForm: FC<
   );
   const { revalidate } = useRevalidator();
 
-  const clearForm = () => {
+  const handleClear = () => {
     setFieldDate(dayjs(initFormData.datetime));
     setFieldTime(dayjs(initFormData.datetime));
     setFieldTitle(initFormData.title);
@@ -160,33 +160,23 @@ export const VehicleReportInspectionForm: FC<
     const formData: VehicleReportInspectionFormData = {
       datetime,
       vehicle: fieldVehicle,
-      title:
-        fieldTitle.normalize().trim() ||
-        "ผลการตรวจสภาพรถรับส่ง",
-      content: fieldContent.normalize().trim(),
       topics: fieldTopics
-        .map((topic) => topic.normalize().trim())
+        .map((topic) => topic.trim())
         .filter((topic) => topic.length > 0),
-      frame: fieldFrame.normalize().trim() || "ปกติ",
-      windows: fieldWindows.normalize().trim() || "ปกติ",
-      front_camera:
-        fieldFrontCam.normalize().trim() || "ปกติ",
-      overhead_fan:
-        fieldFanOverhead.normalize().trim() || "ปกติ",
-      brake_light:
-        fieldBrakeLight.normalize().trim() || "ปกติ",
-      headlights:
-        fieldHeadlights.normalize().trim() || "ปกติ",
-      turn_signals:
-        fieldTurnSignals.normalize().trim() || "ปกติ",
-      rearview_mirror:
-        fieldMirrorRearview.normalize().trim() || "ปกติ",
-      sideview_mirror:
-        fieldMirrorSideview.normalize().trim() || "ปกติ",
-      seatbelts:
-        fieldSeatbelts.normalize().trim() || "ปกติ",
-      seats: fieldSeats.normalize().trim() || "ปกติ",
-      tires: fieldTires.normalize().trim() || "ปกติ",
+      title: fieldTitle.trim() || "ผลการตรวจสภาพรถรับส่ง",
+      content: fieldContent.trim(),
+      frame: fieldFrame.trim() || "ปกติ",
+      windows: fieldWindows.trim() || "ปกติ",
+      front_camera: fieldFrontCam.trim() || "ปกติ",
+      overhead_fan: fieldFanOverhead.trim() || "ปกติ",
+      brake_light: fieldBrakeLight.trim() || "ปกติ",
+      headlights: fieldHeadlights.trim() || "ปกติ",
+      turn_signals: fieldTurnSignals.trim() || "ปกติ",
+      rearview_mirror: fieldMirrorRearview.trim() || "ปกติ",
+      sideview_mirror: fieldMirrorSideview.trim() || "ปกติ",
+      seatbelts: fieldSeatbelts.trim() || "ปกติ",
+      seats: fieldSeats.trim() || "ปกติ",
+      tires: fieldTires.trim() || "ปกติ",
     };
 
     (editing
@@ -209,7 +199,7 @@ export const VehicleReportInspectionForm: FC<
           )
       )
       .finally(() => {
-        clearForm();
+        handleClear();
         onClose();
       });
   };
@@ -218,17 +208,13 @@ export const VehicleReportInspectionForm: FC<
   const isTimeValid = fieldTime.isValid();
   const isFormIncomplete = !isDateValid || !isTimeValid;
 
-  const formItems: {
-    label: string;
-    value: ReactNode;
-  }[] = [
+  const formItems = [
     {
       label: "เวลา",
       value: (
         <BaseInputTimeField
           value={fieldTime}
           onChange={setFieldTime}
-          error={!isTimeValid}
         />
       ),
     },
@@ -238,7 +224,6 @@ export const VehicleReportInspectionForm: FC<
         <BaseInputDateField
           value={fieldDate}
           onChange={setFieldDate}
-          error={!isDateValid}
         />
       ),
     },
@@ -430,10 +415,19 @@ export const VehicleReportInspectionForm: FC<
     },
   ];
 
+  const disabledReasons: string[] = [];
+  if (!isDateValid) {
+    disabledReasons.push("วันที่ไม่ถูกต้อง");
+  }
+  if (!isTimeValid) {
+    disabledReasons.push("เวลาไม่ถูกต้อง");
+  }
+
   return (
     <BaseForm
       slotProps={{
         submitButton: {
+          disabledReasons,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
         },

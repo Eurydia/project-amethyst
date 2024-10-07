@@ -5,8 +5,9 @@ import {
   PickupRouteFormData,
   PickupRouteModel,
 } from "$types/models/pickup-route";
+import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { FC, ReactNode, useState } from "react";
+import { FC, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
@@ -35,7 +36,16 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
 ) => {
   const { onClose, open, editing } = props;
 
-  const title = editing ? "แก้ไขข้อมูลสายรถ" : "เพิ่มสายรถ";
+  const title = editing ? (
+    <Stack spacing={1}>
+      <Typography variant="h2">
+        {props.route.name}
+      </Typography>
+      <Typography variant="h3">แก้ไขข้อมูลสายรถ</Typography>
+    </Stack>
+  ) : (
+    <Typography variant="h2">เพิ่มสายรถ</Typography>
+  );
   const initFormData =
     PICKUP_ROUTE_MODEL_TRANSFORMER.toFormData(
       editing ? props.route : undefined
@@ -52,7 +62,7 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
 
   const { revalidate } = useRevalidator();
 
-  const clearForm = () => {
+  const handleReset = () => {
     setFieldName(initFormData.name);
     setFieldArrivalTime(
       dayjs(initFormData.arrival_time, "HH:mm")
@@ -88,7 +98,7 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
           )
       )
       .finally(() => {
-        clearForm();
+        handleReset();
         onClose();
       });
   };
@@ -102,17 +112,22 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
     !isArrivalTimeValid ||
     !isDepartureTimeValid;
 
-  const formItems: {
-    label: string;
-    value: ReactNode;
-  }[] = [
+  const submitDisabledReasons: string[] = [];
+  if (isMissingName) {
+    submitDisabledReasons.push("ต้องตั้งชื่อสายรถ");
+  }
+  if (!isArrivalTimeValid) {
+    submitDisabledReasons.push("เวลารับเข้าไม่ถูกต้อง");
+  }
+  if (!isDepartureTimeValid) {
+    submitDisabledReasons.push("เวลารับออกไม่ถูกต้อง");
+  }
+  const formItems = [
     {
       label: "ชื่อสาย",
       value: (
         <BaseInputTextField
           autoFocus
-          multiline
-          minRows={2}
           error={isMissingName}
           value={fieldName}
           onChange={setFieldName}
@@ -125,7 +140,6 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
         <BaseInputTimeField
           value={fieldArrivalTime}
           onChange={setFieldArrivalTime}
-          error={isArrivalTimeValid}
         />
       ),
     },
@@ -135,7 +149,6 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
         <BaseInputTimeField
           value={fieldDepartureTime}
           onChange={setFieldDepartureTime}
-          error={isDepartureTimeValid}
         />
       ),
     },
@@ -150,6 +163,7 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
         submitButton: {
           disabled: isFormIncomplete,
           onClick: handleSubmit,
+          disabledReasons: submitDisabledReasons,
         },
       }}
     >

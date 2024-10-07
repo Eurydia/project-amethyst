@@ -109,7 +109,7 @@ export const VehicleReportGeneralTable: FC<
     ).filter((report) => report !== null);
 
     exportWorkbook(reports, {
-      name: "บัทึกเรื่องร้องเรียนรถรับส่ง",
+      name: "บันทึกเรื่องร้องเรียนรถรับส่ง",
       transformer:
         VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER.toExportData,
     }).then(
@@ -124,22 +124,21 @@ export const VehicleReportGeneralTable: FC<
     (item) => item.title,
   ]);
 
-  let headers = [
-    DATETIME_HEADER_DEFINITION,
-    VEHICLE_HEADER_DEFINITION,
-    TITLE_HEADER_DEFINITION,
-    TOPIC_HEADER_DEFINITION,
-  ];
-  if (hideVehicleColumn) {
-    headers = [
-      DATETIME_HEADER_DEFINITION,
-      TITLE_HEADER_DEFINITION,
-      TOPIC_HEADER_DEFINITION,
-    ];
-  }
+  const headers = hideVehicleColumn
+    ? [
+        DATETIME_HEADER_DEFINITION,
+        TITLE_HEADER_DEFINITION,
+        TOPIC_HEADER_DEFINITION,
+      ]
+    : [
+        DATETIME_HEADER_DEFINITION,
+        VEHICLE_HEADER_DEFINITION,
+        TITLE_HEADER_DEFINITION,
+        TOPIC_HEADER_DEFINITION,
+      ];
   const databaseHasNoVehicle =
     slotProps.form.vehicleSelect.options.length === 0;
-  const databaseIsEmpty = entries.length === 0;
+  const databaseHasNoReport = entries.length === 0;
 
   return (
     <Stack spacing={1}>
@@ -153,15 +152,16 @@ export const VehicleReportGeneralTable: FC<
           },
           addButton: {
             disabled: databaseHasNoVehicle,
+            disabledReasons: [
+              "ยังไม่มีรถรับส่งในฐานข้อมูล",
+            ],
             onClick: () => setDialogOpen(true),
           },
           importButton: {
-            disabled: true,
-            onFileSelect: () => {
-              throw new Error("Function not implemented.");
-            },
+            hidden: true,
           },
           exportButton: {
+            disabled: filteredEntries.length === 0,
             onClick: handleExport,
           },
         }}
@@ -171,13 +171,7 @@ export const VehicleReportGeneralTable: FC<
         defaultSortOrder="desc"
         entries={filteredEntries}
         headers={headers}
-        slotProps={{
-          body: {
-            emptyText: databaseIsEmpty
-              ? "ฐานข้อมูลว่าง"
-              : "ไม่พบเรื่องร้องเรียนที่ค้นหา",
-          },
-        }}
+        databaseIsEmpty={databaseHasNoReport}
       />
       {!databaseHasNoVehicle && (
         <VehicleReportGeneralForm

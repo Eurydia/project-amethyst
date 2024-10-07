@@ -94,28 +94,10 @@ export const OperationalLogForm: FC<
       });
   };
 
-  const isStartDateInvalid =
-    fieldStartDate === null ||
-    Number.isNaN(fieldStartDate.date()) ||
-    Number.isNaN(fieldStartDate.month()) ||
-    Number.isNaN(fieldStartDate.year());
-  const isEndDateInvalid =
-    fieldEndDate === null ||
-    Number.isNaN(fieldEndDate.date()) ||
-    Number.isNaN(fieldEndDate.month()) ||
-    Number.isNaN(fieldEndDate.year());
-  const isEndDateBeforeStartDate =
-    fieldEndDate.isBefore(fieldStartDate);
-  const isDriverMissing = fieldDriver === null;
-  const isRouteMissing = fieldRoute === null;
-  const isVehicleMissing = fieldVehicle === null;
+  const isStartDateValid = fieldStartDate.isValid();
+  const isEndDateValid = fieldEndDate.isValid();
   const isFormIncomplete =
-    isDriverMissing ||
-    isRouteMissing ||
-    isVehicleMissing ||
-    isStartDateInvalid ||
-    isEndDateInvalid ||
-    isEndDateBeforeStartDate;
+    !isStartDateValid || !isEndDateValid;
 
   const formItems: {
     label: string;
@@ -127,6 +109,7 @@ export const OperationalLogForm: FC<
         <BaseInputDateField
           value={fieldStartDate}
           onChange={setFieldStartDate}
+          error={!isStartDateValid}
         />
       ),
     },
@@ -136,6 +119,7 @@ export const OperationalLogForm: FC<
         <BaseInputDateField
           value={fieldEndDate}
           onChange={setFieldEndDate}
+          error={!isEndDateValid}
         />
       ),
     },

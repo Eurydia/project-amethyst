@@ -85,10 +85,22 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
   const [search, setSearch] = useState("");
   const [formDialogOpen, setFormDialogOpen] =
     useState(false);
+  console.log(routeEntries);
   const filteredEntries = filterObjects(
     routeEntries,
     search,
-    ["name", "vehicles", "drivers"]
+    [
+      (item) => item.name,
+      (item) =>
+        item.drivers.map(
+          (driver) => `${driver.name} ${driver.surname}`
+        ),
+
+      (item) =>
+        item.vehicles.map(
+          (vehicle) => vehicle.licensePlate
+        ),
+    ]
   );
 
   const handleImport = (file: File) => {
@@ -136,6 +148,7 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
             onChange: setSearch,
           },
           addButton: {
+            disabledReasons: [],
             onClick: () => setFormDialogOpen(true),
           },
           importButton: {
@@ -151,14 +164,8 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
         defaultSortOrder="asc"
         defaultSortByColumn={0}
         headers={HEADER_DEFINITION}
-        entries={routeEntries}
-        slotProps={{
-          body: {
-            emptyText: databaseHasNoRoute
-              ? "ฐานข้อมูลว่าง"
-              : "ไม่พบสายรถที่ค้นหา",
-          },
-        }}
+        entries={filteredEntries}
+        databaseIsEmpty={databaseHasNoRoute}
       />
       <PickupRouteForm
         editing={false}

@@ -150,16 +150,10 @@ export const AttendanceLogTable: FC<
               "ค้นหาด้วยชื่อสกุลคนขับรถ, สายรถ, หรือเลขทะเบียน",
           },
           addButton: {
-            disabled: true,
-            onClick: () => {
-              throw new Error("Function not implemented.");
-            },
+            hidden: true,
           },
           importButton: {
-            disabled: true,
-            onFileSelect: () => {
-              throw new Error("Function not implemented.");
-            },
+            hidden: true,
           },
           exportButton: {
             disabled: filteredEntries.length === 0,
@@ -168,17 +162,11 @@ export const AttendanceLogTable: FC<
         }}
       />
       <BaseSortableTable
+        databaseIsEmpty={databaseIsEmpty}
         headers={HEADER_DEFINITIONS}
         defaultSortByColumn={0}
         defaultSortOrder="asc"
         entries={filteredEntries}
-        slotProps={{
-          body: {
-            emptyText: databaseIsEmpty
-              ? "ฐานข้อมูลว่าง"
-              : "ไม่พบประวัติที่ค้นหา",
-          },
-        }}
       />
     </Stack>
   );

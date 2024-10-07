@@ -60,13 +60,19 @@ const TOPIC_HEADER: TableHeaderDefinition<VehicleReportInspectionEntry> =
   {
     label: "หัวข้อที่เกี่ยวข้อง",
     compare: null,
-    render: (item) =>
-      item.topics
+    render: (item) => {
+      const topics = item.topics
         .map((topic) => topic.trim().normalize())
-        .filter((topic) => topic.length > 0)
-        .join(", ") || (
-        <Typography fontStyle="italic">ไม่มี</Typography>
-      ),
+        .filter((topic) => topic.length > 0);
+
+      return topics.length > 0 ? (
+        <Typography>{topics.join(", ")}</Typography>
+      ) : (
+        <Typography fontStyle="italic">
+          ไม่มีหัวข้อที่เกี่ยวข้อง
+        </Typography>
+      );
+    },
   };
 
 type VehicleReportInspectionTableProps = {
@@ -117,20 +123,18 @@ export const VehicleReportInspectionTable: FC<
     );
   };
 
-  const databaseIsEmpty = entries.length === 0;
+  const databaseHasNoReport = entries.length === 0;
   const databaseHasNoVehicle =
     slotProps.form.vehicleSelect.options.length === 0;
 
-  let headers = [
-    DATETIME_HEADER,
-    VEHICLE_HEADER,
-    TITLE_HEADER,
-    TOPIC_HEADER,
-  ];
-
-  if (hideVehicleColumn) {
-    headers = [DATETIME_HEADER, TITLE_HEADER, TOPIC_HEADER];
-  }
+  const headers = hideVehicleColumn
+    ? [DATETIME_HEADER, TITLE_HEADER, TOPIC_HEADER]
+    : [
+        DATETIME_HEADER,
+        VEHICLE_HEADER,
+        TITLE_HEADER,
+        TOPIC_HEADER,
+      ];
 
   return (
     <Stack spacing={1}>
@@ -144,15 +148,16 @@ export const VehicleReportInspectionTable: FC<
           },
           addButton: {
             disabled: databaseHasNoVehicle,
+            disabledReasons: [
+              "ยังไม่มีรถรับส่งในฐานข้อมูล",
+            ],
             onClick: () => setDialogOpen(true),
           },
           importButton: {
-            disabled: true,
-            onFileSelect: () => {
-              throw new Error("Function not implemented.");
-            },
+            hidden: true,
           },
           exportButton: {
+            disabled: filteredEntries.length === 0,
             onClick: handleExport,
           },
         }}
@@ -162,15 +167,9 @@ export const VehicleReportInspectionTable: FC<
         defaultSortOrder="desc"
         entries={filteredEntries}
         headers={headers}
-        slotProps={{
-          body: {
-            emptyText: databaseIsEmpty
-              ? "ฐานข้อมมูลว่าง"
-              : "ไม่พบผลตรวจสภาพรถที่ค้นหา",
-          },
-        }}
+        databaseIsEmpty={databaseHasNoReport}
       />
-      {slotProps.form.vehicleSelect.options.length > 0 && (
+      {!databaseHasNoVehicle && (
         <VehicleReportInspectionForm
           editing={false}
           open={dialogOpen}

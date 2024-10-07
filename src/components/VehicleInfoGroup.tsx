@@ -1,9 +1,10 @@
+import { VEHICLE_MODEL_TRANSFORMER } from "$core/transformers/vehicle";
 import { FormalLayout } from "$layouts/FormalLayout";
 import { VehicleModel } from "$types/models/vehicle";
 import { EditRounded } from "@mui/icons-material";
 import { Button, Stack } from "@mui/material";
 import { FileEntry } from "@tauri-apps/api/fs";
-import { FC, useState } from "react";
+import { FC, ReactNode, useState } from "react";
 import { BaseGallery } from "./BaseGallery";
 import { VehicleForm } from "./VehicleForm";
 
@@ -25,41 +26,25 @@ export const VehicleInfoGroup: FC<VehicleInfoGroupProps> = (
   const { vehicle, slotProps } = props;
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const infoItems = [
-    {
-      label: "รหัส",
-      value: vehicle.id,
-    },
-    {
-      label: "เลขทะเบียน",
-      value: vehicle.license_plate,
-    },
-    {
-      label: "จังหวัดที่จดทะเบียน",
-      value: vehicle.registered_city,
-    },
-    {
-      label: "ประเภทรถ",
-      value: vehicle.vehicle_class,
-    },
-    {
-      label: "หจก.",
-      value: vehicle.vendor,
-    },
-    {
-      label: "คลังภาพ",
-      value: (
-        <BaseGallery
-          dirPath={slotProps.gallery.dirPath}
-          fileEntries={slotProps.gallery.fileEntries}
-        />
-      ),
-    },
-  ];
-
+  const infoItems = Object.entries(
+    VEHICLE_MODEL_TRANSFORMER.toExportData(vehicle)
+  ).map(([label, value]) => ({
+    label,
+    value: value as ReactNode,
+  }));
+  infoItems.push({
+    label: "คลังภาพ",
+    value: (
+      <BaseGallery
+        dirPath={slotProps.gallery.dirPath}
+        fileEntries={slotProps.gallery.fileEntries}
+      />
+    ),
+  });
   return (
     <Stack spacing={1}>
       <Button
+        variant="contained"
         startIcon={<EditRounded />}
         onClick={() => setDialogOpen(true)}
       >

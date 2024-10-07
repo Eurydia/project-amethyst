@@ -60,7 +60,7 @@ const TOPIC_HEADER_DEFINITION: TableHeaderDefinition<PickupRouteReportGeneralEnt
     render: (item) => {
       const topics = item.topics
         .map((topic) => topic.trim().normalize())
-        .filter((topic) => topic.trim().length > 0);
+        .filter((topic) => topic.length > 0);
       return topics.length === 0 ? (
         <Typography fontStyle="italic">
           ไม่มีหัวข้อที่เกี่ยวข้อง

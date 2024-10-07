@@ -32,15 +32,13 @@ type DriverFormProps =
 export const DriverForm: FC<DriverFormProps> = (props) => {
   const { onClose, open, editing } = props;
 
-  let title = "ลงทะเบียนคนขับรถ";
-  let initFormData: DriverFormData =
-    DRIVER_MODEL_TRANSFORMER.toFormData(undefined);
-  if (editing) {
-    title = "แก้ไขข้อมูลคนขับรถ";
-    initFormData = DRIVER_MODEL_TRANSFORMER.toFormData(
-      props.driver
+  const title = editing
+    ? "แก้ไขข้อมูลคนขับรถ"
+    : "ลงทะเบียนคนขับรถ";
+  const initFormData: DriverFormData =
+    DRIVER_MODEL_TRANSFORMER.toFormData(
+      editing ? props.driver : undefined
     );
-  }
 
   const [fieldName, setFieldName] = useState(
     initFormData.name
@@ -80,10 +78,15 @@ export const DriverForm: FC<DriverFormProps> = (props) => {
     )
       .then(
         () => {
-          toast.success("สำเร็จ");
+          toast.success(
+            editing ? "แก้ไขสำเร็จ" : "เพิ่มสำเร็จ"
+          );
           revalidate();
         },
-        () => toast.error("ล้มเหลว")
+        () =>
+          toast.error(
+            editing ? "แก้ไขล้มเหลว" : "เพิ่มล้มเหลว"
+          )
       )
       .finally(() => {
         resetForm();

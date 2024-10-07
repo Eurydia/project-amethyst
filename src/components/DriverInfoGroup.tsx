@@ -31,9 +31,12 @@ export const DriverInfoGroup: FC<DriverInfoGroupProps> = (
     },
     {
       label: "เบอร์ติดต่อ",
-      value: driver.contact.trim() || (
-        <Typography fontStyle="italic">ไม่มี</Typography>
-      ),
+      value:
+        driver.contact.trim().normalize() === "ไม่มี" ? (
+          <Typography fontStyle="italic">ไม่มี</Typography>
+        ) : (
+          driver.contact
+        ),
     },
     {
       label: "ประเภทใบขับขี่",

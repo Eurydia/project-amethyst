@@ -12,6 +12,9 @@ export const VehicleReportGeneralInfoPage: FC = () => {
   return (
     <Stack spacing={1}>
       <Typography variant="h1">
+        {vehicle.license_plate}
+      </Typography>
+      <Typography variant="h1">
         เรื่องร้องเรียนรถรับส่ง
       </Typography>
       <VehicleReportGeneralInfoGroup

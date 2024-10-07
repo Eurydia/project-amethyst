@@ -50,7 +50,11 @@ export const VEHICLE_REPORT_GENERAL_MODEL_TRANSFORMER = {
       เรื่อง: report.title,
       รายละเอียด: report.content,
       วันที่ลงบันทึก: report.datetime,
-      หัวข้อที่เกี่ยวข้อง: report.topics,
+      หัวข้อที่เกี่ยวข้อง: report.topics
+        .split(",")
+        .map((topic) => topic.trim())
+        .filter((topic) => topic.length > 0)
+        .join(", "),
 
       รหัสรถรับส่ง: vehicle.id,
       เลขทะเบียน: vehicle.license_plate,

@@ -4,6 +4,7 @@ import {
 } from "@mui/material";
 import {
   amber,
+  brown,
   indigo,
   purple,
 } from "@mui/material/colors";
@@ -87,9 +88,17 @@ let theme = createTheme(
           },
         },
       },
+      MuiTooltip: {
+        styleOverrides: {
+          tooltip: {
+            opacity: 1,
+            backgroundColor: brown[900],
+          },
+        },
+      },
     },
   },
-  thTH,
+  thTH
 );
 theme = responsiveFontSizes(theme);
 

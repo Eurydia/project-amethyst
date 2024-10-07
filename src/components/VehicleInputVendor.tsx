@@ -18,7 +18,9 @@ export const VehicleInputVendor: FC<
   VehicleInputVendorProps
 > = (props) => {
   const { onChange, options, value, error } = props;
-  const optionSet = new Set(options);
+  const optionSet = new Set(
+    options.map((option) => option.normalize().trim())
+  );
   return (
     <Autocomplete
       freeSolo
@@ -36,27 +38,30 @@ export const VehicleInputVendor: FC<
           error={error}
         />
       )}
-      renderOption={(props, option) => (
-        <ListItem {...props}>
-          <ListItemText disableTypography>
-            <Typography>
-              {optionSet.has(option)
-                ? option
-                : 'เพิ่มหจก. "${option}"'}
-            </Typography>
-          </ListItemText>
-        </ListItem>
-      )}
-      filterOptions={(options, state) => {
-        const items = filterStrings(
-          options,
-          state.inputValue
+      renderOption={(optionProps, option) => {
+        const { key, ...rest } = optionProps;
+        const _option = option.normalize().trim();
+        const label = optionSet.has(_option)
+          ? option
+          : `เพิ่มหจก. "${_option}"`;
+        return (
+          <ListItem
+            key={key}
+            {...rest}
+          >
+            <ListItemText disableTypography>
+              <Typography>{label}</Typography>
+            </ListItemText>
+          </ListItem>
         );
-        if (
-          items.length === 0 &&
-          state.inputValue.trim().length > 0
-        ) {
-          items.push(state.inputValue.normalize());
+      }}
+      filterOptions={(options, state) => {
+        const inputValue = state.inputValue
+          .normalize()
+          .trim();
+        const items = filterStrings(options, inputValue);
+        if (items.length === 0 && inputValue.length > 0) {
+          items.push(inputValue);
         }
         return items;
       }}

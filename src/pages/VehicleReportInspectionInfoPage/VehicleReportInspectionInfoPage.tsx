@@ -6,12 +6,7 @@ import { useLoaderData } from "react-router-dom";
 import { VehicleReportInspectionInfoPageLoaderData } from "./loader";
 
 export const VehicleReportInspectionInfoPage: FC = () => {
-  const {
-    report,
-    vehicle,
-    inspectionRoundNumber,
-    topicComboBoxOptions,
-  } =
+  const { report, vehicle, topicComboBoxOptions } =
     useLoaderData() as VehicleReportInspectionInfoPageLoaderData;
 
   return (
@@ -20,7 +15,7 @@ export const VehicleReportInspectionInfoPage: FC = () => {
         {vehicle.license_plate}
       </Typography>
       <Typography variant="h2">
-        {`ผลการตรวจสภาพรถรอบที่ ${inspectionRoundNumber}`}
+        ผลการตรวจสภาพรถรับส่ง
       </Typography>
       <VehicleReportInspectionInfoGroup
         report={report}

@@ -49,7 +49,9 @@ export const PickupRouteInputPickupRouteSelect: FC<
         </ListItem>
       )}
       filterOptions={(options, state) =>
-        filterObjects(options, state.inputValue, ["name"])
+        filterObjects(options, state.inputValue, [
+          (option) => option.name,
+        ])
       }
       renderInput={(params) => (
         <TextField

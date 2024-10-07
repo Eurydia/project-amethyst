@@ -145,9 +145,12 @@ export const DriverReportGeneralTable: FC<
           },
           importButton: {
             disabled: true,
-            onFileSelect: () => {},
+            onFileSelect: () => {
+              throw new Error("Function not implemented.");
+            },
           },
           exportButton: {
+            disabled: filteredEntries.length === 0,
             onClick: handleExport,
           },
         }}

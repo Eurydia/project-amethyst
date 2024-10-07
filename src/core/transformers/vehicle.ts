@@ -15,10 +15,11 @@ import {
 export const VEHICLE_MODEL_TRANSFORMER = {
   toExportData: (vehicle: VehicleModel) => {
     const exportData: VehicleExportData = {
-      เลขทะเบียน: vehicle.license_plate,
-      จังหวัดที่จดทะเบียน: vehicle.registered_city,
-      หจก: vehicle.vendor,
-      ประเภทรถ: vehicle.vehicle_class,
+      "รหัส": vehicle.id,
+      "เลขทะเบียน": vehicle.license_plate,
+      "จังหวัดที่จดทะเบียน": vehicle.registered_city,
+      "หจก.": vehicle.vendor,
+      "ประเภทรถ": vehicle.vehicle_class,
     };
     return exportData;
   },
@@ -72,7 +73,7 @@ export const VEHICLE_MODEL_TRANSFORMER = {
     if (vehicle === undefined) {
       const formData: VehicleFormData = {
         license_plate: "",
-        vendor,
+        vendor: (vendor ?? "").trim().normalize(),
         registered_city: CITIES[0],
         vehicle_class: KNOWN_VEHICLE_CLASSES[0],
       };

@@ -33,6 +33,6 @@ export const filterStrings = (
     .filter((token) => token.length > 0);
   return searchTokens.reduceRight(
     (leftover, token) => matchSorter(leftover, token),
-    items
+    items.map((item) => item.normalize().trim())
   );
 };

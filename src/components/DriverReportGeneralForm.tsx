@@ -58,8 +58,8 @@ export const DriverReportGeneralForm: FC<
   const { slotProps, onClose, open, editing } = props;
 
   const title = editing
-    ? "แก้ไขข้อมูลเรื่องร้องเรียน"
-    : "ร้องเรียนคนขับรถ";
+    ? "แก้ไขข้อมูลเรื่องร้องเรียนคนขับรถ"
+    : "เพิ่มเรื่องร้องเรียนคนขับรถ";
   const initFormData =
     DRIVER_REPORT_MODEL_TRANSFORMER.toFormData(
       editing ? props.report : undefined,
@@ -93,7 +93,7 @@ export const DriverReportGeneralForm: FC<
     setFieldTitle(initFormData.title);
     setFieldContent(initFormData.content);
     setFieldTopics(initFormData.topics);
-    setFieldDriver(slotProps.driverSelect.options[0]);
+    setFieldDriver(initFormData.driver);
   };
 
   const handleSubmit = async () => {
@@ -142,14 +142,9 @@ export const DriverReportGeneralForm: FC<
       });
   };
 
-  const isMissingTime =
-    Number.isNaN(fieldTime.hour()) ||
-    Number.isNaN(fieldTime.minute());
-  const isMissingDate =
-    Number.isNaN(fieldDate.day()) ||
-    Number.isNaN(fieldDate.month()) ||
-    Number.isNaN(fieldDate.year());
-  const isFormIncomplete = isMissingDate || isMissingTime;
+  const isTimeValid = fieldTime.isValid();
+  const isDateValid = fieldDate.isValid();
+  const isFormIncomplete = !isTimeValid || !isDateValid;
 
   const formItems: {
     label: string;
@@ -161,6 +156,7 @@ export const DriverReportGeneralForm: FC<
         <BaseInputTimeField
           value={fieldTime}
           onChange={setFieldTime}
+          error={!isTimeValid}
         />
       ),
     },
@@ -170,6 +166,7 @@ export const DriverReportGeneralForm: FC<
         <BaseInputDateField
           value={fieldDate}
           onChange={setFieldDate}
+          error={!isDateValid}
         />
       ),
     },
@@ -189,7 +186,7 @@ export const DriverReportGeneralForm: FC<
         <BaseInputTextField
           autoFocus
           onChange={setFieldTitle}
-          placeholder="เรื่องร้องเรียน"
+          placeholder="เรื่องร้องเรียนคนขับรถ"
           value={fieldTitle}
         />
       ),

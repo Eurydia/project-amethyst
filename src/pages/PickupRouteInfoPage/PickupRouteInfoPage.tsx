@@ -20,7 +20,7 @@ const TOC_ITEMS: {
     href: "#info",
   },
   {
-    label: "Operational logs", // TODO: translate
+    label: "ตารางบันทึกประวัติการเดินรถ",
     href: "#operational-log",
   },
   {

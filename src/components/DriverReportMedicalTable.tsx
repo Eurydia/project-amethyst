@@ -1,13 +1,17 @@
+import { tauriGetDriverReportMedical } from "$backend/database/get/driver-medical-reports";
+import { compareStrings } from "$core/compare";
 import { filterObjects } from "$core/filter";
+import { DRIVER_REPORT_MODEL_TRANSFORMER } from "$core/transformers/driver-report";
+import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
 import { DriverModel } from "$types/models/driver";
 import { DriverReportEntry } from "$types/models/driver-report";
-import { AddRounded } from "@mui/icons-material";
-import { Button, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
-import { BaseInputTextField } from "./BaseInputTextField";
+import { toast } from "react-toastify";
 import { BaseSortableTable } from "./BaseSortableTable";
+import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
 import { DriverReportMedicalForm } from "./DriverReportMedicalForm";
 
@@ -28,7 +32,10 @@ const DRIVER_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
   {
     label: "คนขับรถ",
     compare: (a, b) =>
-      a.driver_name.localeCompare(b.driver_name),
+      compareStrings(
+        `${a.driver_name} ${a.driver_surname}`,
+        `${b.driver_name} ${b.driver_surname}`
+      ),
     render: (item) => (
       <BaseTypographyLink
         to={"/drivers/info/" + item.driver_id}
@@ -41,7 +48,7 @@ const DRIVER_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
 const TITLE_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
   {
     label: "ชื่อเรื่อง",
-    compare: (a, b) => a.title.localeCompare(b.title),
+    compare: (a, b) => compareStrings(a.title, b.title),
     render: (item) => (
       <BaseTypographyLink
         to={"/drivers/report/medical/info/" + item.id}
@@ -55,12 +62,16 @@ const TOPICS_COLUMN_DEFINITION: TableHeaderDefinition<DriverReportEntry> =
   {
     label: "หัวข้อที่เกี่ยวข้อง",
     compare: null,
-    render: (item) =>
-      item.topics.length === 0 ? (
+    render: (item) => {
+      const topics = item.topics
+        .map((topic) => topic.trim().normalize())
+        .filter((topic) => topic.length > 0);
+      return topics.length === 0 ? (
         <Typography fontStyle="italic">ไม่มี</Typography>
       ) : (
-        <Typography>{item.topics.join(", ")}</Typography>
-      ),
+        <Typography>{topics.join(", ")}</Typography>
+      );
+    },
   };
 
 type DriverReportMedicalTableProps = {
@@ -87,11 +98,29 @@ export const DriverReportMedicalTable: FC<
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const filteredEntries = filterObjects(entries, search, [
-    "title",
-    "topics",
-    "driver_name",
-    "driver_surname",
+    (item) => item.title,
+    (item) => item.topics,
+    (item) => item.driver_name,
+    (item) => item.driver_surname,
   ]);
+
+  const handleExport = async () => {
+    const reports = (
+      await Promise.all(
+        filteredEntries.map((entry) =>
+          tauriGetDriverReportMedical(entry.id)
+        )
+      )
+    ).filter((report) => report !== null);
+    exportWorkbook(reports, {
+      name: "บันทึกผลการตรวจสารเสพติดคนขับรถ",
+      transformer:
+        DRIVER_REPORT_MODEL_TRANSFORMER.toExportData,
+    }).then(
+      () => toast.success("ดาวน์โหลดสำเร็จ"),
+      () => toast.error("ดาวน์โหลดล้มเหลว")
+    );
+  };
 
   let headers = [
     DATETIME_COLUMN_DEFINITION,
@@ -107,21 +136,33 @@ export const DriverReportMedicalTable: FC<
     ];
   }
 
+  const databaseHasNoDrivers =
+    slotProps.form.driverSelect.options.length === 0;
   return (
     <Stack spacing={1}>
-      <Stack direction="row">
-        <Button
-          variant="contained"
-          startIcon={<AddRounded />}
-          onClick={() => setDialogOpen(true)}
-        >
-          เพิ่มผลตรวจสารเสพติด
-        </Button>
-      </Stack>
-      <BaseInputTextField
-        value={search}
-        onChange={setSearch}
-        placeholder="ค้นหาด้วยชื่อสกุลคนขับรถ, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง"
+      <BaseSortableTableToolbar
+        slotProps={{
+          searchField: {
+            placeholder:
+              "ค้นหาด้วยชื่อสกุลคนขับรถ, ชื่อเรื่อง, หรือหัวข้อที่เกี่ยวข้อง",
+            onChange: setSearch,
+            value: search,
+          },
+          addButton: {
+            disabled: databaseHasNoDrivers,
+            onClick: () => setDialogOpen(true),
+          },
+          importButton: {
+            disabled: true,
+            onFileSelect: () => {
+              throw new Error("Function not implemented.");
+            },
+          },
+          exportButton: {
+            disabled: filteredEntries.length === 0,
+            onClick: handleExport,
+          },
+        }}
       />
       <BaseSortableTable
         slotProps={{

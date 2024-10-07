@@ -25,6 +25,11 @@ export const VehicleReportInspectionInfoGroup: FC<
   const { report, vehicle, slotProps } = props;
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  const topics = report.topics
+    .split(",")
+    .map((topic) => topic.trim())
+    .filter((topic) => topic.length > 0);
+
   const infoItems = [
     {
       label: "วันที่ลงบันทึก",
@@ -38,9 +43,17 @@ export const VehicleReportInspectionInfoGroup: FC<
         <BaseTypographyLink
           to={"/vehicles/info/" + vehicle.id}
         >
-          {vehicle.license_plate}
+          {vehicle.license_plate} ({vehicle.id})
         </BaseTypographyLink>
       ),
+    },
+    {
+      label: "รหัส",
+      value: report.id.toString(),
+    },
+    {
+      label: "เรื่อง",
+      value: report.title,
     },
     {
       label: "กล้องหน้ารถ",
@@ -98,21 +111,18 @@ export const VehicleReportInspectionInfoGroup: FC<
         </Typography>
       ),
     },
+    {
+      label: "หัวข้อที่เกี่ยวข้อง",
+      value:
+        topics.length > 0 ? (
+          topics.join(", ")
+        ) : (
+          <Typography fontStyle="italic">
+            ไม่มีหัวข้อที่เกี่ยวข้อง
+          </Typography>
+        ),
+    },
   ];
-
-  infoItems.push({
-    label: "หัวข้อที่เกี่ยวข้อง",
-    value: report.topics
-      .normalize()
-      .split(",")
-      .map((topic) => topic.trim())
-      .filter((topic) => topic.length > 0)
-      .join(", ") || (
-      <Typography fontStyle="italic">
-        ไม่มีหัวข้อที่เกี่ยวข้อง
-      </Typography>
-    ),
-  });
 
   return (
     <Stack spacing={1}>

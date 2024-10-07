@@ -27,25 +27,31 @@ export const DRIVER_REPORT_MODEL_TRANSFORMER = {
     report: DriverReportModel | undefined,
     driver: DriverModel
   ) => {
-    let formData: DriverReportFormData = {
-      datetime: dayjs().format(),
-      driver,
-      title: "",
-      content: "",
-      topics: [],
-    };
-    if (report !== undefined) {
-      let datetime = dayjs(report.datetime);
-      if (!datetime.isValid()) {
-        datetime = dayjs();
-      }
-      formData = {
-        ...report,
+    if (report === undefined) {
+      const formData: DriverReportFormData = {
+        datetime: dayjs().format(),
         driver,
-        datetime: datetime.format(),
-        topics: report.topics.split(","),
+        title: "",
+        content: "",
+        topics: [],
       };
+      return formData;
     }
+    let datetime = dayjs(report.datetime);
+    if (!datetime.isValid()) {
+      datetime = dayjs();
+    }
+    const formData: DriverReportFormData = {
+      driver,
+      datetime: datetime.format(),
+      title: report.title.trim().normalize(),
+      content: report.content.trim().normalize(),
+      topics: report.topics
+        .normalize()
+        .split(",")
+        .map((topic) => topic.trim())
+        .filter((topic) => topic.length > 0),
+    };
     return formData;
   },
 

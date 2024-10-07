@@ -7,7 +7,7 @@ import {
   VehicleReportGeneralModel,
 } from "$types/models/vehicle-report-general";
 import dayjs from "dayjs";
-import { FC, ReactNode, useState } from "react";
+import { FC, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
@@ -111,12 +111,10 @@ export const VehicleReportGeneralForm: FC<
     const formData: VehicleReportGeneralFormData = {
       datetime,
       vehicle: fieldVehicle,
-      title:
-        fieldTitle.normalize().trim() ||
-        "เรื่องร้องเรียนรถรับส่ง",
-      content: fieldContent.normalize().trim(),
+      title: fieldTitle.trim() || "เรื่องร้องเรียนรถรับส่ง",
+      content: fieldContent.trim(),
       topics: fieldTopics
-        .map((topic) => topic.normalize().trim())
+        .map((topic) => topic.trim())
         .filter((topic) => topic.length > 0),
     };
 
@@ -149,17 +147,13 @@ export const VehicleReportGeneralForm: FC<
   const isTimeValid = dayjs(fieldTime).isValid();
   const isFormIncomplete = !isDateValid || !isTimeValid;
 
-  const formItems: {
-    label: string;
-    value: ReactNode;
-  }[] = [
+  const formItems = [
     {
       label: "เวลา",
       value: (
         <BaseInputTimeField
           value={fieldTime}
           onChange={setFieldTime}
-          error={!isTimeValid}
         />
       ),
     },
@@ -169,7 +163,6 @@ export const VehicleReportGeneralForm: FC<
         <BaseInputDateField
           value={fieldDate}
           onChange={setFieldDate}
-          error={!isDateValid}
         />
       ),
     },
@@ -217,6 +210,14 @@ export const VehicleReportGeneralForm: FC<
     },
   ];
 
+  const disabledReasons: string[] = [];
+  if (!isDateValid) {
+    disabledReasons.push("วันที่ไม่ถูกต้อง");
+  }
+  if (!isTimeValid) {
+    disabledReasons.push("เวลาไม่ถูกต้อง");
+  }
+
   return (
     <BaseForm
       onClose={onClose}
@@ -224,6 +225,7 @@ export const VehicleReportGeneralForm: FC<
       title={title}
       slotProps={{
         submitButton: {
+          disabledReasons,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
         },

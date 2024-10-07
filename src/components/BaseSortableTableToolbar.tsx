@@ -3,8 +3,9 @@ import {
   FileDownloadRounded,
   SearchRounded,
 } from "@mui/icons-material";
-import { Button, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import { FC } from "react";
+import { BaseInputButton } from "./BaseInputButton";
 import { BaseInputWorkbookFileSelect } from "./BaseInputFileSelect";
 import { BaseInputTextField } from "./BaseInputTextField";
 
@@ -15,16 +16,24 @@ type BaseSortableTableToolbarProps = {
       value: string;
       placeholder: string;
     };
-    addButton: {
-      disabled?: boolean;
-      onClick: () => void;
-    };
-    importButton: {
-      disabled?: boolean;
-      onFileSelect: (file: File) => void;
-    };
+    addButton:
+      | { hidden: true }
+      | {
+          hidden?: false | undefined;
+          disabled?: boolean | undefined;
+          disabledReasons: string[];
+          onClick: () => void;
+        };
+    importButton:
+      | {
+          hidden?: false | undefined;
+          onFileSelect: (file: File) => void;
+        }
+      | {
+          hidden: true;
+        };
     exportButton: {
-      disabled?: boolean;
+      disabled: boolean | undefined;
       onClick: () => void;
     };
   };
@@ -50,27 +59,37 @@ export const BaseSortableTableToolbar: FC<
           flexWrap="wrap"
           flexDirection="row"
         >
-          <Button
-            variant="contained"
-            startIcon={<AddRounded />}
-            {...slotProps.addButton}
-          >
-            เพิ่ม
-          </Button>
-          <BaseInputWorkbookFileSelect
-            startIcon={<AddRounded />}
-            {...slotProps.importButton}
-          >
-            เพิ่มจากไฟล์
-          </BaseInputWorkbookFileSelect>
+          {!slotProps.addButton.hidden && (
+            <BaseInputButton
+              variant="contained"
+              startIcon={<AddRounded />}
+              {...slotProps.addButton}
+            >
+              เพิ่ม
+            </BaseInputButton>
+          )}
+          {!slotProps.importButton.hidden && (
+            <BaseInputWorkbookFileSelect
+              startIcon={<AddRounded />}
+              onFileSelect={
+                slotProps.importButton.onFileSelect
+              }
+            >
+              เพิ่มจากไฟล์
+            </BaseInputWorkbookFileSelect>
+          )}
         </Stack>
-        <Button
+
+        <BaseInputButton
           variant="outlined"
           startIcon={<FileDownloadRounded />}
+          disabledReasons={[
+            "ต้องมีอย่างน้อยหนึ่งรายการถึงจะดาวน์โหลดได้",
+          ]}
           {...slotProps.exportButton}
         >
           ดาวน์โหลด
-        </Button>
+        </BaseInputButton>
       </Stack>
       <BaseInputTextField
         {...slotProps.searchField}

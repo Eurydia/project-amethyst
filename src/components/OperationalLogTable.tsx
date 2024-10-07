@@ -124,10 +124,10 @@ export const OperationalLogTable: FC<
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const filteredEntries = filterObjects(entries, search, [
-    "driverName",
-    "driverSurname",
-    "vehicleLicensePlate",
-    "routeName",
+    (item) => item.driver_name,
+    (item) => item.driver_surname,
+    (item) => item.vehicle_license_plate,
+    (item) => item.route_name,
   ]);
 
   const handleExport = async () => {
@@ -196,7 +196,7 @@ export const OperationalLogTable: FC<
             },
           },
           exportButton: {
-            disabled: databaseHasNoLog,
+            disabled: filteredEntries.length === 0,
             onClick: handleExport,
           },
           addButton: {

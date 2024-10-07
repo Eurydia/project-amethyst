@@ -5,7 +5,8 @@ import {
   VehicleFormData,
   VehicleModel,
 } from "$types/models/vehicle";
-import { FC, ReactNode, useState } from "react";
+import { Typography } from "@mui/material";
+import { FC, Fragment, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
@@ -44,9 +45,18 @@ export const VehicleForm: FC<VehicleFormProps> = (
 ) => {
   const { editing, slotProps, onClose, open } = props;
 
-  const title = editing
-    ? "แก้ไขข้อมูลรถรับส่ง"
-    : "เพิ่มรถรับส่ง";
+  const title = editing ? (
+    <Fragment>
+      <Typography variant="h2">
+        {props.vehicle.license_plate}
+      </Typography>
+      <Typography variant="h3">
+        แก้ไขข้อมูลรถรับส่ง
+      </Typography>
+    </Fragment>
+  ) : (
+    <Typography variant="h2">เพิ่มรถรับส่ง</Typography>
+  );
   const initFormData = VEHICLE_MODEL_TRANSFORMER.toFormData(
     editing ? props.vehicle : undefined,
     slotProps.vendorComboBox.options[0]
@@ -76,8 +86,8 @@ export const VehicleForm: FC<VehicleFormProps> = (
       return;
     }
     const formData: VehicleFormData = {
-      license_plate: fieldLicensePlate.trim().normalize(),
-      vendor: fieldVendor.trim().normalize(),
+      license_plate: fieldLicensePlate.trim(),
+      vendor: fieldVendor.trim(),
       vehicle_class: fieldVehicleClass,
       registered_city: fieldRegisteredCity,
     };
@@ -92,10 +102,12 @@ export const VehicleForm: FC<VehicleFormProps> = (
           );
           revalidate();
         },
-        () =>
+        (err) => {
           toast.error(
             editing ? "แก้ไขล้มเหลว" : "เพิ่มล้มเหลว"
-          )
+          );
+          console.error(err);
+        }
       )
       .finally(() => {
         handleReset();
@@ -110,10 +122,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
   const isFormIncomplete =
     missingLicensePlate || missingVendor;
 
-  const formItems: {
-    label: string;
-    value: ReactNode;
-  }[] = [
+  const formItems = [
     {
       label: "เลขทะเบียน",
       value: (
@@ -155,6 +164,14 @@ export const VehicleForm: FC<VehicleFormProps> = (
     },
   ];
 
+  const disabledReasons: string[] = [];
+  if (missingLicensePlate) {
+    disabledReasons.push("ต้องมีเลขทะเบียน");
+  }
+  if (missingVendor) {
+    disabledReasons.push("ต้องมีหจก.");
+  }
+
   return (
     <BaseForm
       open={open}
@@ -162,6 +179,7 @@ export const VehicleForm: FC<VehicleFormProps> = (
       onClose={onClose}
       slotProps={{
         submitButton: {
+          disabledReasons,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
         },

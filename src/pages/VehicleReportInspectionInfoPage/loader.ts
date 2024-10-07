@@ -1,10 +1,7 @@
 /** @format */
 
 import { tauriGetTopicAll } from "$backend/database/get/topics";
-import {
-  tauriGetVehicleReportInspection,
-  tauriGetVehicleReportInspectionAll,
-} from "$backend/database/get/vehicle-inspection-reports";
+import { tauriGetVehicleReportInspection } from "$backend/database/get/vehicle-inspection-reports";
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
 import {
   BadRequestError,
@@ -18,7 +15,6 @@ import { LoaderFunction } from "react-router-dom";
 export type VehicleReportInspectionInfoPageLoaderData = {
   report: VehicleReportInspectionModel;
   vehicle: VehicleModel;
-  inspectionRoundNumber: number;
   topicComboBoxOptions: string[];
 };
 export const vehicleReportInspectionInfoPageLoader: LoaderFunction =
@@ -41,23 +37,10 @@ export const vehicleReportInspectionInfoPageLoader: LoaderFunction =
     }
 
     const topicComboBoxOptions = await tauriGetTopicAll();
-    const reports = (
-      await tauriGetVehicleReportInspectionAll()
-    )
-      .filter(({ vehicle_id }) => vehicle_id === vehicle.id)
-      .toReversed();
-    let inspectionRoundNumber = 0;
-    for (const { id } of reports) {
-      inspectionRoundNumber++;
-      if (id === report.id) {
-        break;
-      }
-    }
 
     const loaderData: VehicleReportInspectionInfoPageLoaderData =
       {
         report,
-        inspectionRoundNumber,
         topicComboBoxOptions,
         vehicle,
       };

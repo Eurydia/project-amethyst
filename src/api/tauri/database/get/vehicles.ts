@@ -10,7 +10,7 @@ export const tauriGetVehicleAll = async () => {
 export const tauriGetVehicle = async (
   vehicleId: number
 ) => {
-  const vehicle = tauri.invoke("get_vehicle", {
+  const vehicle = await tauri.invoke("get_vehicle", {
     vehicleId,
   });
   const r = vehicleModelSchema.safeParse(vehicle);

@@ -29,25 +29,25 @@ export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
     return entry;
   },
 
-  toExportData: async (
-    report: VehicleReportInspectionModel
+  toExportDataSync: async (
+    report: VehicleReportInspectionModel,
+    vehicle: VehicleModel
   ) => {
-    const vehicle = await tauriGetVehicle(
-      report.vehicle_id
-    );
-    if (vehicle === null) {
-      return null;
-    }
     const exportData: VehicleReportInpsectionExportData = {
       ชื่อเรื่อง: report.title,
       รหัสรถรับส่ง: vehicle.id,
+
       เลขทะเบียน: vehicle.license_plate,
       รหัส: report.id,
       วันที่ลงบันทึก: dayjs(report.datetime)
         .locale("th")
         .format(),
       หมายเหตุ: report.content,
-      หัวข้อที่เกี่ยวข้อง: report.topics,
+      หัวข้อที่เกี่ยวข้อง: report.topics
+        .split(",")
+        .map((topic) => topic.trim())
+        .filter((topic) => topic.length > 0)
+        .join(", "),
       กล้องหน้ารถ: report.front_camera,
       พัดลม: report.overhead_fan,
       หน้าต่าง: report.windows,
@@ -62,6 +62,21 @@ export const VEHICLE_REPORT_INSPECTION_TRANSFORMER = {
       ยางและล้อ: report.tires,
     };
     return exportData;
+  },
+
+  toExportData: async (
+    report: VehicleReportInspectionModel
+  ) => {
+    const vehicle = await tauriGetVehicle(
+      report.vehicle_id
+    );
+    if (vehicle === null) {
+      return null;
+    }
+    return VEHICLE_REPORT_INSPECTION_TRANSFORMER.toExportDataSync(
+      report,
+      vehicle
+    );
   },
 
   toFormData: (

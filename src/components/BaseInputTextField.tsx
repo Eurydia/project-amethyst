@@ -1,5 +1,4 @@
-import { WarningRounded } from "@mui/icons-material";
-import { InputAdornment, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { FC, ReactNode } from "react";
 
 type BaseInputTextFieldProps = {
@@ -24,15 +23,6 @@ export const BaseInputTextField: FC<
       onChange={(e) => onChange(e.target.value)}
       error={error}
       {...rest}
-      slotProps={{
-        input: {
-          startAdornment: (
-            <InputAdornment position="start">
-              {error ? <WarningRounded /> : startIcon}
-            </InputAdornment>
-          ),
-        },
-      }}
     />
   );
 };

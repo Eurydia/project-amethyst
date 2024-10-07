@@ -1,11 +1,12 @@
 import { alpha, Grid2, Typography } from "@mui/material";
+import { brown } from "@mui/material/colors";
 import { FC, ReactNode } from "react";
 
 type FormalLayoutProps = {
   children: { label: string; value: ReactNode }[];
 };
 export const FormalLayout: FC<FormalLayoutProps> = (
-  props,
+  props
 ) => {
   const { children } = props;
   const renderedFormItems = children.map((item, index) => (
@@ -18,9 +19,9 @@ export const FormalLayout: FC<FormalLayoutProps> = (
         backgroundColor: ({ palette }) =>
           alpha(
             index % 2 === 0
-              ? palette.primary.main
+              ? brown[700]
               : palette.background.default,
-            0.05,
+            0.05
           ),
       }}
     >

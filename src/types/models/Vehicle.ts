@@ -39,12 +39,12 @@ export type VehicleEntry = {
 
 export const VehicleExportDataSchema = z
   .object({
-    เลขทะเบียน: z.string().min(1),
-    หจก: z.string().min(1),
-    ประเภทรถ: z.enum(KNOWN_VEHICLE_CLASSES),
-    จังหวัดที่จดทะเบียน: z.enum(CITIES),
+    "รหัส": z.number().int(),
+    "เลขทะเบียน": z.string().min(1),
+    "หจก.": z.string().min(1),
+    "ประเภทรถ": z.enum(KNOWN_VEHICLE_CLASSES),
+    "จังหวัดที่จดทะเบียน": z.enum(CITIES),
   })
-  .passthrough()
   .required();
 
 export type VehicleExportData = z.infer<

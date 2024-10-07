@@ -2,7 +2,6 @@ import { Button } from "@mui/material";
 import { FC, ReactNode, useRef } from "react";
 
 type BaseInputWorkbookFileSelectProps = {
-  disabled?: boolean;
   children: ReactNode | ReactNode[];
   startIcon?: React.ReactNode;
   onFileSelect: (file: File) => void;

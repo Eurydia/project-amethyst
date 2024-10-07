@@ -1,4 +1,4 @@
-#[tauri::command]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn post_attendance_log(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -44,7 +44,7 @@ pub async fn post_attendance_log(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn post_operational_log(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -123,7 +123,7 @@ pub async fn post_driver(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn post_driver_report_general(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -160,7 +160,7 @@ pub async fn post_driver_report_general(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn post_driver_report_medical(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -197,7 +197,7 @@ pub async fn post_driver_report_medical(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn post_pickup_route(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -228,7 +228,7 @@ pub async fn post_pickup_route(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn post_pickup_route_report_general(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -265,7 +265,7 @@ pub async fn post_pickup_route_report_general(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn post_vehicle(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -299,7 +299,7 @@ pub async fn post_vehicle(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn post_vehicle_report_general(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
@@ -336,7 +336,7 @@ pub async fn post_vehicle_report_general(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn post_vehicle_report_inspection(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,

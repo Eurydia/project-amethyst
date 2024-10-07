@@ -26,7 +26,6 @@ export const VehicleReportGeneralInfoGroup: FC<
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const topics = report.topics
-    .normalize()
     .split(",")
     .map((topic) => topic.trim())
     .filter((topic) => topic.length > 0);
@@ -52,7 +51,11 @@ export const VehicleReportGeneralInfoGroup: FC<
     },
     {
       label: "รายละเอียด",
-      value: report.content,
+      value: report.content.trim() || (
+        <Typography fontStyle="italic">
+          ไม่มีรายละเอียด
+        </Typography>
+      ),
     },
     {
       label: "หัวข้อที่เกี่ยวข้อง",
@@ -70,7 +73,7 @@ export const VehicleReportGeneralInfoGroup: FC<
   return (
     <Stack spacing={1}>
       <Button
-        variant="outlined"
+        variant="contained"
         startIcon={<EditRounded />}
         onClick={() => setDialogOpen(true)}
       >

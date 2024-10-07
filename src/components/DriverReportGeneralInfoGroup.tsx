@@ -25,6 +25,11 @@ export const DriverReportGeneralInfoGroup: FC<
   const { report, driver, slotProps } = props;
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const topics = report.topics
+    .normalize()
+    .split(",")
+    .map((topic) => topic.trim())
+    .filter((topic) => topic.length > 0);
 
   const infoItems = [
     {
@@ -58,12 +63,8 @@ export const DriverReportGeneralInfoGroup: FC<
     {
       label: "หัวข้อที่เกี่ยวข้อง",
       value:
-        report.topics.length > 0 ? (
-          report.topics
-            .split(",")
-            .map((topic) => topic.trim())
-            .filter((topic) => topic.length > 0)
-            .join(", ")
+        topics.length > 0 ? (
+          topics.join(", ")
         ) : (
           <Typography fontStyle="italic">
             ไม่มีหัวข้อที่เกี่ยวข้อง

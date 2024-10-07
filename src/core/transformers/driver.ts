@@ -55,9 +55,15 @@ export const DRIVER_MODEL_TRANSFORMER = {
     driver: DriverModel | undefined
   ): DriverFormData => {
     if (driver !== undefined) {
-      return driver;
+      const formData: DriverFormData = {
+        name: driver.name.trim().normalize(),
+        surname: driver.surname.trim().normalize(),
+        contact: driver.contact.trim().normalize(),
+        license_type: "ท.1",
+      };
+      return formData;
     }
-    let formData: DriverFormData = {
+    const formData: DriverFormData = {
       name: "",
       surname: "",
       contact: "",

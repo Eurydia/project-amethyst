@@ -1,5 +1,6 @@
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
 import { tauriPostVehicle } from "$backend/database/post";
+import { compareStrings } from "$core/compare";
 import { filterObjects } from "$core/filter";
 import { VEHICLE_MODEL_TRANSFORMER } from "$core/transformers/vehicle";
 import { VEHICLE_VALIDATOR } from "$core/validators/vehicle";
@@ -23,7 +24,7 @@ const HEADER_DEFINITION: TableHeaderDefinition<VehicleEntry>[] =
     {
       label: "ทะเบียนรถ",
       compare: (a, b) =>
-        a.license_plate.localeCompare(b.license_plate),
+        compareStrings(a.license_plate, b.license_plate),
       render: ({ id, license_plate: licensePlate }) => (
         <BaseTypographyLink to={"/vehicles/info/" + id}>
           {licensePlate}
@@ -90,8 +91,10 @@ export const VehicleTable: FC<VehicleTableProps> = (
   const filteredEntries = filterObjects(entries, search, [
     (item) => item.license_plate,
     (item) => item.routes.map((route) => route.name),
-    (item) => item.drivers.map((driver) => driver.name),
-    (item) => item.drivers.map((driver) => driver.surname),
+    (item) =>
+      item.drivers.map(
+        (driver) => `${driver.name} ${driver.surname}`
+      ),
   ]);
 
   const { revalidate } = useRevalidator();
@@ -140,6 +143,7 @@ export const VehicleTable: FC<VehicleTableProps> = (
             value: search,
           },
           addButton: {
+            disabledReasons: [],
             onClick: () => setDialogOpen(true),
           },
           importButton: {
@@ -156,13 +160,7 @@ export const VehicleTable: FC<VehicleTableProps> = (
         defaultSortOrder="asc"
         defaultSortByColumn={0}
         entries={filteredEntries}
-        slotProps={{
-          body: {
-            emptyText: databaseHasNoVehicle
-              ? "ฐานข้อมูลว่าง"
-              : "ไม่พบรถรับส่งที่ค้นหา",
-          },
-        }}
+        databaseIsEmpty={databaseHasNoVehicle}
       />
       <VehicleForm
         editing={false}

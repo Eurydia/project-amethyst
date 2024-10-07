@@ -10,14 +10,10 @@ import { BaseSortableTableHead } from "./BaseSortableTableHead";
 
 type BaseSortableTableProps<T> = {
   entries: T[];
+  databaseIsEmpty: boolean;
   headers: TableHeaderDefinition<T>[];
   defaultSortByColumn: number;
   defaultSortOrder: "asc" | "desc";
-  slotProps: {
-    body: {
-      emptyText: string;
-    };
-  };
 };
 export const BaseSortableTable = <T,>(
   props: BaseSortableTableProps<T>
@@ -27,7 +23,7 @@ export const BaseSortableTable = <T,>(
     headers,
     defaultSortByColumn,
     defaultSortOrder,
-    slotProps,
+    databaseIsEmpty,
   } = props;
 
   const [sortOrder, setOrderDirection] = useState(
@@ -54,6 +50,11 @@ export const BaseSortableTable = <T,>(
       sortedEntries.reverse();
     }
   }
+
+  const emptyText = databaseIsEmpty
+    ? "ฐานข้อมูลว่าง"
+    : "ไม่พบรายการที่ค้นหา";
+
   return (
     <TableContainer>
       <Typography>พบ {entries.length} รายการ</Typography>
@@ -65,7 +66,7 @@ export const BaseSortableTable = <T,>(
           onRequestSort={handleRequestSort}
         />
         <BaseSortableTableBody
-          emptyText={slotProps.body.emptyText}
+          emptyText={emptyText}
           entries={sortedEntries}
           headers={headers}
         />

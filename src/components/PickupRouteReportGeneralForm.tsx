@@ -6,8 +6,9 @@ import {
   PickupRouteReportGeneralFormData,
   PickupRouteReportGeneralModel,
 } from "$types/models/pickup-route-report-general";
+import { Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { FC, ReactNode, useState } from "react";
+import { FC, Fragment, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BaseForm } from "./BaseForm";
@@ -57,15 +58,25 @@ export const PickupRouteReportGeneralForm: FC<
   PickupRouteReportGeneralFormProps
 > = (props) => {
   const { onClose, open, slotProps, editing } = props;
-
-  const title = editing
-    ? "แก้ไขข้อมูลเรื่องร้องเรียนสายรถ"
-    : "เพิ่มเรื่องร้องเรียนสายรถ";
   const initFormData =
     PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER.toFormData(
       editing ? props.report : undefined,
       slotProps.routeSelect.options[0]
     );
+  const title = editing ? (
+    <Fragment>
+      <Typography variant="h2">
+        {initFormData.route.name}
+      </Typography>
+      <Typography variant="h3">
+        แก้ไขข้อมูลเรื่องร้องเรียนสายรถ
+      </Typography>
+    </Fragment>
+  ) : (
+    <Typography variant="h2">
+      เพิ่มเรื่องร้องเรียนสายรถ
+    </Typography>
+  );
 
   const [fieldDate, setFieldDate] = useState(
     dayjs(initFormData.datetime)
@@ -112,12 +123,10 @@ export const PickupRouteReportGeneralForm: FC<
     const formData: PickupRouteReportGeneralFormData = {
       datetime,
       route: fieldRoute,
-      title:
-        fieldTitle.normalize().trim() ||
-        "เรื่องร้องเรียนสายรถ",
-      content: fieldContent.normalize().trim(),
+      title: fieldTitle.trim() || "เรื่องร้องเรียนสายรถ",
+      content: fieldContent.trim(),
       topics: fieldTopics
-        .map((topic) => topic.normalize().trim())
+        .map((topic) => topic.trim())
         .filter((topic) => topic.trim().length > 0),
     };
 
@@ -150,17 +159,21 @@ export const PickupRouteReportGeneralForm: FC<
   const isDateValid = dayjs(fieldTime).isValid();
   const isFormIncomplete = !isTimeValid || !isDateValid;
 
-  const formItems: {
-    label: string;
-    value: ReactNode;
-  }[] = [
+  const disabledReasons: string[] = [];
+  if (!isTimeValid) {
+    disabledReasons.push("เวลาไม่ถูกต้อง");
+  }
+  if (!isDateValid) {
+    disabledReasons.push("วันที่ไม่ถูกต้อง");
+  }
+
+  const formItems = [
     {
       label: "เวลา",
       value: (
         <BaseInputTimeField
           value={fieldTime}
           onChange={setFieldTime}
-          error={!isTimeValid}
         />
       ),
     },
@@ -170,7 +183,6 @@ export const PickupRouteReportGeneralForm: FC<
         <BaseInputDateField
           value={fieldDate}
           onChange={setFieldDate}
-          error={!isDateValid}
         />
       ),
     },
@@ -223,6 +235,7 @@ export const PickupRouteReportGeneralForm: FC<
       title={title}
       slotProps={{
         submitButton: {
+          disabledReasons,
           disabled: isFormIncomplete,
           onClick: handleSubmit,
         },

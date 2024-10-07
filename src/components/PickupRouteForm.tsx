@@ -77,7 +77,7 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
       return;
     }
     const formData: PickupRouteFormData = {
-      name: fieldName.trim().normalize(),
+      name: fieldName.trim(),
       arrival_time: fieldArrivalTime.format("HH:mm"),
       departure_time: fieldDepartureTime.format("HH:mm"),
     };
@@ -112,15 +112,15 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
     !isArrivalTimeValid ||
     !isDepartureTimeValid;
 
-  const submitDisabledReasons: string[] = [];
+  const disabledReasons: string[] = [];
   if (isMissingName) {
-    submitDisabledReasons.push("ต้องตั้งชื่อสายรถ");
+    disabledReasons.push("สายรถต้องมีชื่อ");
   }
   if (!isArrivalTimeValid) {
-    submitDisabledReasons.push("เวลารับเข้าไม่ถูกต้อง");
+    disabledReasons.push("เวลารับเข้าไม่ถูกต้อง");
   }
   if (!isDepartureTimeValid) {
-    submitDisabledReasons.push("เวลารับออกไม่ถูกต้อง");
+    disabledReasons.push("เวลารับออกไม่ถูกต้อง");
   }
   const formItems = [
     {
@@ -163,7 +163,7 @@ export const PickupRouteForm: FC<PickupRouteFormProps> = (
         submitButton: {
           disabled: isFormIncomplete,
           onClick: handleSubmit,
-          disabledReasons: submitDisabledReasons,
+          disabledReasons,
         },
       }}
     >

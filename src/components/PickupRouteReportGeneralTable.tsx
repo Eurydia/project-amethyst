@@ -96,8 +96,6 @@ export const PickupRouteReportGeneralTable: FC<
   const [dialogOpen, setDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const databaseHasNoRoute =
-    slotProps.form.routeSelect.options.length === 0;
   const filteredEntries = filterObjects(
     reportEntries,
     search,
@@ -107,20 +105,6 @@ export const PickupRouteReportGeneralTable: FC<
       (item) => item.routeName,
     ]
   );
-
-  let headers = [
-    DATETIME_HEADER_DEFINITION,
-    TITLE_HEADER_DEFINITION,
-    ROUTE_HEADER_DEFINITION,
-    TOPIC_HEADER_DEFINITION,
-  ];
-  if (hideRouteColumn) {
-    headers = [
-      DATETIME_HEADER_DEFINITION,
-      TITLE_HEADER_DEFINITION,
-      TOPIC_HEADER_DEFINITION,
-    ];
-  }
 
   const handleExport = async () => {
     if (filteredEntries.length === 0) {
@@ -142,6 +126,24 @@ export const PickupRouteReportGeneralTable: FC<
       () => toast.error("ดาวน์โหลดล้มเหลว")
     );
   };
+
+  const databaseHasNoReport = reportEntries.length === 0;
+  const databaseHasNoRoute =
+    slotProps.form.routeSelect.options.length === 0;
+
+  const headers = hideRouteColumn
+    ? [
+        DATETIME_HEADER_DEFINITION,
+        TITLE_HEADER_DEFINITION,
+        TOPIC_HEADER_DEFINITION,
+      ]
+    : [
+        DATETIME_HEADER_DEFINITION,
+        TITLE_HEADER_DEFINITION,
+        ROUTE_HEADER_DEFINITION,
+        TOPIC_HEADER_DEFINITION,
+      ];
+
   return (
     <Stack spacing={1}>
       <BaseSortableTableToolbar
@@ -154,15 +156,14 @@ export const PickupRouteReportGeneralTable: FC<
           },
           addButton: {
             disabled: databaseHasNoRoute,
+            disabledReasons: ["ยังไม่มีสายรถในฐานข้อมูล"],
             onClick: () => setDialogOpen(true),
           },
           importButton: {
-            disabled: true,
-            onFileSelect: () => {
-              throw new Error("Function not implemented.");
-            },
+            hidden: true,
           },
           exportButton: {
+            disabled: filteredEntries.length === 0,
             onClick: handleExport,
           },
         }}
@@ -172,13 +173,7 @@ export const PickupRouteReportGeneralTable: FC<
         defaultSortOrder="desc"
         entries={reportEntries}
         headers={headers}
-        slotProps={{
-          body: {
-            emptyText: databaseHasNoRoute
-              ? "ฐานข้อมูลว่าง"
-              : "ไม่พบเรื่องร้องเรียนที่ค้นหา",
-          },
-        }}
+        databaseIsEmpty={databaseHasNoReport}
       />
       {!databaseHasNoRoute && (
         <PickupRouteReportGeneralForm

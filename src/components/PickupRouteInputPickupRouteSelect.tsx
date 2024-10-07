@@ -27,7 +27,7 @@ export const PickupRouteInputPickupRouteSelect: FC<
       disableListWrap
       disablePortal
       disabled={isDisabled}
-      popupIcon={isDisabled ? <LockRounded /> : undefined}
+      popupIcon={isDisabled && <LockRounded />}
       onChange={(_, value) => {
         if (value === null) {
           return;
@@ -48,11 +48,14 @@ export const PickupRouteInputPickupRouteSelect: FC<
           </ListItemText>
         </ListItem>
       )}
-      filterOptions={(options, state) =>
-        filterObjects(options, state.inputValue, [
-          (option) => option.name,
-        ])
-      }
+      filterOptions={(options, state) => {
+        const inputValue = state.inputValue
+          .normalize()
+          .trim();
+        return filterObjects(options, inputValue, [
+          (option) => option.name.trim().normalize(),
+        ]);
+      }}
       renderInput={(params) => (
         <TextField
           {...params}

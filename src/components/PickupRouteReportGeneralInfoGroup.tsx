@@ -30,18 +30,22 @@ export const PickupRouteReportGeneralInfoGroup: FC<
 
   const infoItems = [
     {
-      label: "บันทึกเมื่อ",
-      value: dayjs(report.datetime)
-        .locale("th")
-        .format("HH:mm น. วันddddที่ DD MMMM YYYY"),
-    },
-    {
       label: "สายรถ",
       value: (
         <Link to={"/pickup-routes/info/" + route.id}>
-          {route.name}
+          {route.name} (รหัส {route.id})
         </Link>
       ),
+    },
+    {
+      label: "รหัส",
+      value: report.id,
+    },
+    {
+      label: "วันที่ลงบันทึก",
+      value: dayjs(report.datetime)
+        .locale("th")
+        .format("HH:mm น. วันddddที่ DD MMMM YYYY"),
     },
     {
       label: "เรื่อง",
@@ -61,7 +65,9 @@ export const PickupRouteReportGeneralInfoGroup: FC<
         topics.length > 0 ? (
           topics.join(", ")
         ) : (
-          <Typography fontStyle="italic">ไม่มี</Typography>
+          <Typography fontStyle="italic">
+            ไม่มีหัวข้อที่เกี่ยวข้อง
+          </Typography>
         ),
     },
   ];

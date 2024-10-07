@@ -1,5 +1,15 @@
-import { DriverIndexPage, driverIndexPageLoader } from "$pages/DriverIndexPage";
-import { DriverInfoPage, driverInfoPageLoader } from "$pages/DriverInfoPage";
+import {
+  AttendanceLogIndexPage,
+  attendanceLogIndexPageLoader,
+} from "$pages/AttendanceLogIndexPage";
+import {
+  DriverIndexPage,
+  driverIndexPageLoader,
+} from "$pages/DriverIndexPage";
+import {
+  DriverInfoPage,
+  driverInfoPageLoader,
+} from "$pages/DriverInfoPage";
 import {
   DriverReportGeneralIndexPage,
   driverReportGeneralIndexPageLoader,
@@ -40,7 +50,10 @@ import {
   VehicleIndexPage,
   vehicleIndexPageLoader,
 } from "$pages/VehicleIndexPage";
-import { VehicleInfoPage, vehicleInfoPageLoader } from "$pages/VehicleInfoPage";
+import {
+  VehicleInfoPage,
+  vehicleInfoPageLoader,
+} from "$pages/VehicleInfoPage";
 import {
   VehicleReportGeneralIndexPage,
   vehicleReportGeneralIndexPageLoader,
@@ -58,7 +71,10 @@ import {
   vehicleReportInspectionInfoPageLoader,
 } from "$pages/VehicleReportInspectionInfoPage";
 import { MainView } from "$views/MainView";
-import { createBrowserRouter, RouteObject } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouteObject,
+} from "react-router-dom";
 
 const DRIVER_ROUTES: RouteObject = {
   path: "drivers",
@@ -191,11 +207,15 @@ export const BROWSER_ROUTES = createBrowserRouter([
         element: <HomePage />,
         loader: homePageLoader,
       },
-
       {
         path: "operational-logs",
         element: <OperationalLogIndexPage />,
         loader: operationalLogIndexPageLoader,
+      },
+      {
+        path: "attendance-logs",
+        element: <AttendanceLogIndexPage />,
+        loader: attendanceLogIndexPageLoader,
       },
 
       PICKUP_ROUTE_ROUTES,

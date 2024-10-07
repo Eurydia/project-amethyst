@@ -16,7 +16,7 @@ export const VEHICLE_VALIDATOR = {
     const data_ = r.data;
 
     const formData: VehicleFormData = {
-      license_plate: data_["ประเภทรถ"].trim().normalize(),
+      license_plate: data_["ประเภทรถ"],
       vehicle_class: data_["ประเภทรถ"],
       registered_city: data_["จังหวัดที่จดทะเบียน"],
       vendor: data_["หจก."],

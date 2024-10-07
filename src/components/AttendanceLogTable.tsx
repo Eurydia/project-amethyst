@@ -5,7 +5,8 @@ import { ATTENDANCE_LOG_MODEL_TRANSFORMER } from "$core/transformers/attendance-
 import { exportWorkbook } from "$core/workbook";
 import { TableHeaderDefinition } from "$types/generics";
 import { AttendanceLogEntry } from "$types/models/attendance-log";
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
+import dayjs from "dayjs";
 import { FC, useState } from "react";
 import { toast } from "react-toastify";
 import { AttendanceLogTableCheckBox } from "./AttendanceLogTableCheckBox";
@@ -15,6 +16,17 @@ import { BaseTypographyLink } from "./BaseTypographyLink";
 
 const HEADER_DEFINITIONS: TableHeaderDefinition<AttendanceLogEntry>[] =
   [
+    {
+      label: "วันที่",
+      compare: null,
+      render: (item) => (
+        <Typography>
+          {dayjs(item.expected_arrival_datetime)
+            .locale("th")
+            .format("DD MMMM YYYY")}
+        </Typography>
+      ),
+    },
     {
       label: "สายรถ",
       compare: (a, b) =>

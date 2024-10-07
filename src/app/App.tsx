@@ -6,6 +6,7 @@ import { tauriGetOperationalLogToday } from "$backend/database/get/operational-l
 import { tauriGetPickupRoute } from "$backend/database/get/pickup-routes";
 import { tauriGetVehicle } from "$backend/database/get/vehicles";
 import { tauriPostAttendanceLog } from "$backend/database/post";
+import { AttendanceLogFormData } from "$types/models/attendance-log";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -34,20 +35,17 @@ export const App = () => {
           const route = await tauriGetPickupRoute(
             log.route_id
           );
-          if (route === null) {
-            return null;
-          }
-
           const driver = await tauriGetDriver(
             log.driver_id
           );
-          if (driver === null) {
-            return null;
-          }
           const vehicle = await tauriGetVehicle(
             log.vehicle_id
           );
-          if (vehicle === null) {
+          if (
+            vehicle === null ||
+            driver === null ||
+            route === null
+          ) {
             return null;
           }
 
@@ -69,7 +67,7 @@ export const App = () => {
             .set("minute", expectedDepartureTime.minute())
             .format();
 
-          return tauriPostAttendanceLog({
+          const formData: AttendanceLogFormData = {
             actual_arrival_datetime: null,
             actual_departure_datetime: null,
             expected_arrival_datetime:
@@ -77,10 +75,11 @@ export const App = () => {
             expected_departure_datetime:
               expectedDepartureDatetime,
 
-            route,
-            vehicle,
-            driver,
-          });
+            route_id: route.id,
+            vehicle_id: vehicle.id,
+            driver_id: driver.id,
+          };
+          return tauriPostAttendanceLog(formData);
         });
         await Promise.all(posts);
       }

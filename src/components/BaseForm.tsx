@@ -10,6 +10,8 @@ import {
   DialogTitle,
   IconButton,
   Stack,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import { FC, ReactNode } from "react";
 import { BaseFormTransition } from "./BaseFormTransition";
@@ -49,9 +51,11 @@ export const BaseForm: FC<BaseFormProps> = (props) => {
           alignItems: "flex-start",
         }}
       >
-        <IconButton onClick={onClose}>
-          <CloseRounded />
-        </IconButton>
+        <Tooltip title={<Typography>ปิด</Typography>}>
+          <IconButton onClick={onClose}>
+            <CloseRounded />
+          </IconButton>
+        </Tooltip>
         {title}
       </DialogTitle>
       <DialogContent>

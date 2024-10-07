@@ -2,6 +2,7 @@ import { BaseTypographyLink } from "$components/BaseTypographyLink";
 import { TypographyTooltip } from "$components/TypographyTooltip";
 import {
   AirportShuttleRounded,
+  ChecklistRounded,
   HistoryRounded,
   HomeRounded,
   KeyboardArrowUpRounded,
@@ -27,8 +28,6 @@ import {
   useState,
 } from "react";
 import { Outlet } from "react-router-dom";
-
-const CLOCK_FORMAT = "HH:mm น. วันddddที่ D MMMM YYYY";
 
 const PRIMARY_ROUTES = [
   {
@@ -56,13 +55,20 @@ const PRIMARY_ROUTES = [
     label: "ประวัติการเดินรถ",
     icon: <HistoryRounded />,
   },
+  {
+    path: "/attendance-logs",
+    label: "บันทึกเวลารับเข้าและรับออก",
+    icon: <ChecklistRounded />,
+  },
 ];
 
 export const MainView: FC = () => {
   const appBarRef = useRef<HTMLElement | null>(null);
   const [appBarHeight, setAppBarHeight] = useState("0px");
   const [clock, setClock] = useState(
-    dayjs().locale("th").format(CLOCK_FORMAT)
+    dayjs()
+      .locale("th")
+      .format("HH:mm น. วันddddที่ D MMMM YYYY")
   );
 
   useEffect(() => {
@@ -78,7 +84,11 @@ export const MainView: FC = () => {
 
   useEffect(() => {
     const id = setInterval(() => {
-      setClock(dayjs().locale("th").format(CLOCK_FORMAT));
+      setClock(
+        dayjs()
+          .locale("th")
+          .format("HH:mm น. วันddddที่ D MMMM YYYY")
+      );
     }, 1000);
     return () => clearInterval(id);
   }, []);

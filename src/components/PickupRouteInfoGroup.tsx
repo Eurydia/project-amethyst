@@ -18,9 +18,6 @@ export const PickupRouteInfoGroup: FC<
 
   const infoItems = [
     {
-      label: "รหัส",
-      value: route.id,
-    },    {
       label: "ชื่อสาย",
       value: route.name,
     },

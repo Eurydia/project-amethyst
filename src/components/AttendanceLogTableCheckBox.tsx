@@ -63,6 +63,7 @@ export const AttendanceLogTableCheckBox: FC<
       const lateByAmount = expectedDatetime
         .locale("th")
         .from(actual, true);
+
       lateBy = (
         <Typography color="error">
           สายไป {lateByAmount}

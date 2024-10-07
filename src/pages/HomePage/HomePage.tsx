@@ -8,6 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import dayjs from "dayjs";
 import { FC } from "react";
 import { useLoaderData } from "react-router-dom";
 import { HomePageLoaderData } from "./loader";
@@ -63,8 +64,18 @@ export const HomePage: FC = () => {
           </ListItem>
         ))}
       </List>
-      <Typography variant="h2">
+      <Typography
+        variant="h2"
+        sx={{
+          wordBreak: "keep-all",
+        }}
+      >
         ตารางบันทึกเวลารับเข้าและรับออก
+      </Typography>
+      <Typography>
+        {dayjs()
+          .locale("th")
+          .format("ประจำวันddddที่ DD MMMM YYYY")}
       </Typography>
       <AttendanceLogTable entries={logEntries} />
     </Stack>

@@ -37,7 +37,7 @@ export type PickupRouteReportGeneralModel = z.infer<
 
 export type PickupRouteReportGeneralFormData = Omit<
   PickupRouteReportGeneralModel,
-  "topics" | "id"
+  "topics" | "id" | "route_id"
 > & {
   route: PickupRouteModel;
   topics: string[];

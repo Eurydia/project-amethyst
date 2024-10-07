@@ -30,7 +30,9 @@ export const BaseGallery: FC<BaseGalleryProps> = (
   );
 
   let imageGallery = (
-    <Typography fontStyle="italic">คลังภาพว่าง</Typography>
+    <Typography fontStyle="italic">
+      ไม่พบรูปในคลังภาพ
+    </Typography>
   );
   if (images.length > 0) {
     imageGallery = (

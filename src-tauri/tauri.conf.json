@@ -8,25 +8,12 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "Operantional Logbook",
-    "version": "0.1.1"
+    "productName": "สมุดบันทึการเดินรถ",
+    "version": "0.1.2"
   },
   "tauri": {
     "allowlist": {
-      "dialog": {
-        "all": true
-      },
-      "fs": {
-        "all": true,
-        "scope": ["**", "**/*", "/**/*"]
-      },
-      "protocol": {
-        "all": true,
-        "assetScope": ["**", "**/*", "/**/*"]
-      },
-      "path": {
-        "all": true
-      }
+      "all": false
     },
     "bundle": {
       "active": true,
@@ -56,6 +43,9 @@
       "shortDescription": "",
       "targets": "all",
       "windows": {
+        "wix": {
+          "language": "th-TH"
+        },
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
         "timestampUrl": ""

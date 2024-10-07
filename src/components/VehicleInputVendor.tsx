@@ -11,16 +11,16 @@ import { FC } from "react";
 type VehicleInputVendorProps = {
   options: string[];
   value: string;
-  error?: boolean;
   onChange: (value: string) => void;
 };
 export const VehicleInputVendor: FC<
   VehicleInputVendorProps
 > = (props) => {
-  const { onChange, options, value, error } = props;
+  const { onChange, options, value } = props;
   const optionSet = new Set(
     options.map((option) => option.normalize().trim())
   );
+
   return (
     <Autocomplete
       freeSolo
@@ -35,7 +35,7 @@ export const VehicleInputVendor: FC<
       renderInput={(params) => (
         <TextField
           {...params}
-          error={error}
+          error={value.trim().length === 0}
         />
       )}
       renderOption={(optionProps, option) => {

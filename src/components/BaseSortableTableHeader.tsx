@@ -55,7 +55,7 @@ export const BaseSortableTableHeader = (
           </Typography>
         }
       >
-        <Typography>{header}</Typography>
+        {header}
       </Tooltip>
     );
   }

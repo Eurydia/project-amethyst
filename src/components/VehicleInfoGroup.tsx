@@ -1,4 +1,3 @@
-import { VEHICLE_MODEL_TRANSFORMER } from "$core/transformers/vehicle";
 import { FormalLayout } from "$layouts/FormalLayout";
 import { VehicleModel } from "$types/models/vehicle";
 import { EditRounded } from "@mui/icons-material";
@@ -26,21 +25,34 @@ export const VehicleInfoGroup: FC<VehicleInfoGroupProps> = (
   const { vehicle, slotProps } = props;
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const infoItems = Object.entries(
-    VEHICLE_MODEL_TRANSFORMER.toExportData(vehicle)
-  ).map(([label, value]) => ({
-    label,
-    value: value as ReactNode,
-  }));
-  infoItems.push({
-    label: "คลังภาพ",
-    value: (
-      <BaseGallery
-        dirPath={slotProps.gallery.dirPath}
-        fileEntries={slotProps.gallery.fileEntries}
-      />
-    ),
-  });
+  const infoItems: { label: string; value: ReactNode }[] = [
+    {
+      label: "เลขทะเบียน",
+      value: vehicle.license_plate,
+    },
+    {
+      label: "ประเภท",
+      value: vehicle.vehicle_class,
+    },
+    {
+      label: "หจก.",
+      value: vehicle.vendor,
+    },
+    {
+      label: "จังหวัดที่จดทะเบียน",
+      value: vehicle.registered_city,
+    },
+    {
+      label: "คลังภาพ",
+      value: (
+        <BaseGallery
+          dirPath={slotProps.gallery.dirPath}
+          fileEntries={slotProps.gallery.fileEntries}
+        />
+      ),
+    },
+  ];
+
   return (
     <Stack spacing={1}>
       <Button

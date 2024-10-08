@@ -1,5 +1,3 @@
-/** @format */
-
 import { AttendanceLogFormData } from "$types/models/attendance-log";
 import { DriverFormData } from "$types/models/driver";
 import { DriverReportFormData } from "$types/models/driver-report";

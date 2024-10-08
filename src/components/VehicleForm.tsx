@@ -102,12 +102,10 @@ export const VehicleForm: FC<VehicleFormProps> = (
           );
           revalidate();
         },
-        (err) => {
+        () =>
           toast.error(
             editing ? "แก้ไขล้มเหลว" : "เพิ่มล้มเหลว"
-          );
-          console.error(err);
-        }
+          )
       )
       .finally(() => {
         handleReset();

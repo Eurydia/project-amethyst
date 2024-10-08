@@ -70,6 +70,7 @@ export const DriverInfoPage: FC = () => {
         ตารางบันทึกประวัติการเดินรถ
       </Typography>
       <OperationalLogTable
+        hideDriverColumn
         entries={logEntries}
         slotProps={{
           form: {

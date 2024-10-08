@@ -85,17 +85,14 @@ export const PickupRouteTable: FC<PickupRouteTableProps> = (
   const [search, setSearch] = useState("");
   const [formDialogOpen, setFormDialogOpen] =
     useState(false);
-  console.log(routeEntries);
   const filteredEntries = filterObjects(
     routeEntries,
     search,
     [
       (item) => item.name,
+      (item) => item.drivers.map((driver) => driver.name),
       (item) =>
-        item.drivers.map(
-          (driver) => `${driver.name} ${driver.surname}`
-        ),
-
+        item.drivers.map((driver) => driver.surname),
       (item) =>
         item.vehicles.map(
           (vehicle) => vehicle.license_plate

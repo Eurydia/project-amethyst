@@ -75,9 +75,9 @@ export const App = () => {
             expected_departure_datetime:
               expectedDepartureDatetime,
 
-            route_id: route.id,
-            vehicle_id: vehicle.id,
-            driver_id: driver.id,
+            route,
+            vehicle,
+            driver,
           };
           return tauriPostAttendanceLog(formData);
         });

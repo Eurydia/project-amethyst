@@ -8,12 +8,23 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "สมุดบันทึการเดินรถ",
-    "version": "0.1.2"
+    "productName": "สมุดบันทึกการเดินรถ",
+    "version": "0.1.2-fix1"
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "protocol": {
+        "all": false,
+        "asset": true,
+        "assetScope": ["$APPLOCALDATA/**/*"]
+      },
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "all": true,
+        "scope": ["$APPLOCALDATA/**/*"]
+      }
     },
     "bundle": {
       "active": true,
@@ -52,7 +63,7 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
     },
     "updater": {
       "active": false

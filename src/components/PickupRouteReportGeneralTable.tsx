@@ -20,13 +20,15 @@ const DATETIME_HEADER_DEFINITION: TableHeaderDefinition<PickupRouteReportGeneral
     label: "เวลาและวันที่",
     compare: (a, b) =>
       dayjs(a.datetime).unix() - dayjs(b.datetime).unix(),
-    render: (item) => (
-      <Typography>
-        {dayjs(item.datetime)
-          .locale("th")
-          .format("HH:mm น. DD MMMM YYYY")}
-      </Typography>
-    ),
+    render: (item) => {
+      return (
+        <Typography>
+          {dayjs(item.datetime)
+            .locale("th")
+            .format("HH:mm น. DD MMMM YYYY")}
+        </Typography>
+      );
+    },
   };
 const ROUTE_HEADER_DEFINITION: TableHeaderDefinition<PickupRouteReportGeneralEntry> =
   {

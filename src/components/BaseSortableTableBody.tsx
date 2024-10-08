@@ -35,7 +35,7 @@ export const BaseSortableTableBody = <T,>(
       hover
     >
       {headers.map((header, cellIndex) => (
-        <TableCell key={`cell` + cellIndex + rowIndex}>
+        <TableCell key={"cell" + cellIndex + rowIndex}>
           {header.render(item)}
         </TableCell>
       ))}

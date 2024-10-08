@@ -229,7 +229,7 @@ pub async fn put_vehicle(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn put_vehicle_report_general(
     state: tauri::State<'_, crate::AppState>,
     id: i64,
@@ -263,10 +263,11 @@ pub async fn put_vehicle_report_general(
     }
 }
 
-#[tauri::command]
+#[tauri::command(rename_all = "snake_case")]
 pub async fn put_vehicle_report_inspection(
     state: tauri::State<'_, crate::AppState>,
     id: i64,
+    title: String,
     datetime: String,
     content: String,
     topics: Vec<String>,
@@ -286,10 +287,11 @@ pub async fn put_vehicle_report_inspection(
 ) -> Result<(), &'static str> {
     let query = sqlx::query(
         r#"
-            UPDATE vehicle_report_inspection
+            UPDATE vehicle_inspection_reports
             SET 
+                title           = ?,
                 datetime        = ?,
-                topics          = ?
+                topics          = ?,
                 content         = ?,
 
                 front_camera    = ?,
@@ -308,6 +310,7 @@ pub async fn put_vehicle_report_inspection(
 
         "#,
     )
+    .bind(title)
     .bind(datetime)
     .bind(topics.join(","))
     .bind(front_camera)
@@ -329,6 +332,9 @@ pub async fn put_vehicle_report_inspection(
 
     match query {
         Ok(_) => Ok(()),
-        Err(_) => Err("Update fail"),
+        Err(err) => {
+            dbg!(err);
+            return Err("Error found while trying to update report");
+        }
     }
 }

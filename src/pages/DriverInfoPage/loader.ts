@@ -1,5 +1,3 @@
-/** @format */
-
 import { tauriGetDriverReportGeneralAll } from "$backend/database/get/driver-general-reports";
 import { tauriGetDriverReportMedicalAll } from "$backend/database/get/driver-medical-reports";
 import { tauriGetDriver } from "$backend/database/get/drivers";

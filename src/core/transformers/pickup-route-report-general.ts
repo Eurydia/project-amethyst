@@ -21,9 +21,7 @@ export const PICKUP_ROUTE_REPORT_GENERAL_MODEL_TRANSFORMER =
       }
       const entry: PickupRouteReportGeneralEntry = {
         id: report.id,
-        datetime: dayjs(report.datetime)
-          .locale("th")
-          .format("HH:mm น., DD MMMM YYYY"),
+        datetime: report.datetime,
         title: report.title,
         topics: report.topics
           .split(",")

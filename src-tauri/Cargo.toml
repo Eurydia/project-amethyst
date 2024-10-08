@@ -22,7 +22,7 @@ futures = "0.3"
 serde = "1.0.203"
 chrono = "0.4.38"
 opener = "0.7.1"
-tauri = { version = "1.7.2", features = [] }
+tauri = { version = "1.7.2", features = [ "protocol-asset", "fs-all", "path-all"] }
 sqlx = { version = "0.8", features = [ "runtime-tokio", "tls-native-tls" , "sqlite", "derive", "macros", "time", "chrono", "migrate"] }
 
 

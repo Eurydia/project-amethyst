@@ -49,6 +49,7 @@ pub struct VehicleReportInspectionModel {
     pub vehicle_id: i64,
 
     pub datetime: String,
+    pub title: String,
     pub content: String,
     pub topics: String,
 

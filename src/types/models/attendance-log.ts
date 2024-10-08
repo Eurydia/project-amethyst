@@ -1,5 +1,8 @@
 import dayjs from "dayjs";
 import { z } from "zod";
+import { DriverModel } from "./driver";
+import { PickupRouteModel } from "./pickup-route";
+import { VehicleModel } from "./vehicle";
 
 export const attendanceLogModelSchema = z
   .object({
@@ -31,8 +34,12 @@ export type AttendanceLogModel = z.infer<
 
 export type AttendanceLogFormData = Omit<
   AttendanceLogModel,
-  "id"
->;
+  "id" | "driver_id" | "vehicle_id" | "route_id"
+> & {
+  driver: DriverModel;
+  vehicle: VehicleModel;
+  route: PickupRouteModel;
+};
 
 export type AttendanceLogEntry = {
   id: number;

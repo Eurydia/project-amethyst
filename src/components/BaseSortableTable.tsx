@@ -4,7 +4,7 @@ import {
   TableContainer,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { BaseSortableTableBody } from "./BaseSortableTableBody";
 import { BaseSortableTableHead } from "./BaseSortableTableHead";
 
@@ -56,21 +56,23 @@ export const BaseSortableTable = <T,>(
     : "ไม่พบรายการที่ค้นหา";
 
   return (
-    <TableContainer>
+    <Fragment>
       <Typography>พบ {entries.length} รายการ</Typography>
-      <Table sx={{ tableLayout: "fixed" }}>
-        <BaseSortableTableHead
-          headerDefinitions={headers}
-          order={sortOrder}
-          orderByColumn={sortByColumn}
-          onRequestSort={handleRequestSort}
-        />
-        <BaseSortableTableBody
-          emptyText={emptyText}
-          entries={sortedEntries}
-          headers={headers}
-        />
-      </Table>
-    </TableContainer>
+      <TableContainer>
+        <Table>
+          <BaseSortableTableHead
+            headerDefinitions={headers}
+            order={sortOrder}
+            orderByColumn={sortByColumn}
+            onRequestSort={handleRequestSort}
+          />
+          <BaseSortableTableBody
+            emptyText={emptyText}
+            entries={sortedEntries}
+            headers={headers}
+          />
+        </Table>
+      </TableContainer>
+    </Fragment>
   );
 };

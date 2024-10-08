@@ -48,7 +48,6 @@ export const BaseSortableTableHeader = (
             sx={{
               userSelect: "none",
               wordBreak: "keep-all",
-              wordWrap: "none",
             }}
           >
             {sortOrderLabel}

@@ -92,6 +92,7 @@ export const VehicleInfoPage: FC = () => {
       </Typography>
       <OperationalLogTable
         entries={logEntries}
+        hideVehicleColumn
         slotProps={{
           form: {
             vehicleSelect: {
@@ -115,6 +116,7 @@ export const VehicleInfoPage: FC = () => {
       </Typography>
       <VehicleReportGeneralTable
         entries={generalEntries}
+        hideVehicleColumn
         slotProps={{
           form: {
             vehicleSelect: {
@@ -135,6 +137,7 @@ export const VehicleInfoPage: FC = () => {
       </Typography>
       <VehicleReportInspectionTable
         entries={inspectionEntries}
+        hideVehicleColumn
         slotProps={{
           form: {
             vehicleSelect: {

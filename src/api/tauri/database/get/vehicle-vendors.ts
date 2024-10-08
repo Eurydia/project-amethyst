@@ -5,8 +5,9 @@ export const tauriGetVehicleVendorAll = async () => {
   const vendors = await tauri.invoke(
     "get_vehicle_vendor_all"
   );
-  const r = z.string().array().safeParse(vendors);
+  const r = z.string().array().array().safeParse(vendors);
   return (r.success ? r.data : [])
+    .flat()
     .map((vendor) => vendor.trim().normalize())
     .filter((vendor) => vendor.length > 0);
 };

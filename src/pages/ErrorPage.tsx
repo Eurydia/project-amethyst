@@ -15,8 +15,6 @@ export const ErrorPage: FC = () => {
     statusText = error.statusText;
   }
 
-  console.log(error);
-
   return (
     <Stack spacing={1}>
       <BaseTypographyLink to="/">

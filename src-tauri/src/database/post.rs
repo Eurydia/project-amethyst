@@ -341,6 +341,7 @@ pub async fn post_vehicle_report_inspection(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
     vehicle: super::models::VehicleModel,
+    title: String,
     datetime: String,
     content: String,
     topics: Vec<String>,
@@ -361,6 +362,7 @@ pub async fn post_vehicle_report_inspection(
         r#"
             INSERT INTO vehicle_inspection_reports (
                 vehicle_id, 
+                title,
 
                 datetime, 
                 content, 
@@ -379,10 +381,11 @@ pub async fn post_vehicle_report_inspection(
                 sideview_mirror, 
                 tires
             )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
         "#,
     )
     .bind(vehicle.id)
+    .bind(title)
     .bind(datetime)
     .bind(content)
     .bind(topics.join(","))

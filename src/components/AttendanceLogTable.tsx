@@ -14,19 +14,20 @@ import { BaseSortableTable } from "./BaseSortableTable";
 import { BaseSortableTableToolbar } from "./BaseSortableTableToolbar";
 import { BaseTypographyLink } from "./BaseTypographyLink";
 
+const DATE_HEADER: TableHeaderDefinition<AttendanceLogEntry> =
+  {
+    label: "วันที่",
+    compare: null,
+    render: (item) => (
+      <Typography>
+        {dayjs(item.expected_arrival_datetime)
+          .locale("th")
+          .format("DD MMMM YYYY")}
+      </Typography>
+    ),
+  };
 const HEADER_DEFINITIONS: TableHeaderDefinition<AttendanceLogEntry>[] =
   [
-    {
-      label: "วันที่",
-      compare: null,
-      render: (item) => (
-        <Typography>
-          {dayjs(item.expected_arrival_datetime)
-            .locale("th")
-            .format("DD MMMM YYYY")}
-        </Typography>
-      ),
-    },
     {
       label: "สายรถ",
       compare: (a, b) =>
@@ -93,14 +94,19 @@ const HEADER_DEFINITIONS: TableHeaderDefinition<AttendanceLogEntry>[] =
 
 type AttendanceLogTableProps = {
   entries: AttendanceLogEntry[];
+  hideDateColumn?: boolean;
 };
 export const AttendanceLogTable: FC<
   AttendanceLogTableProps
 > = (props) => {
-  const { entries } = props;
+  const { entries, hideDateColumn } = props;
   const [search, setSearch] = useState("");
 
   const filteredEntries = filterObjects(entries, search, [
+    (item) =>
+      dayjs(item.expected_arrival_datetime)
+        .locale("th")
+        .format("DD MMMM YYYY"),
     (item) => item.driver_name,
     (item) => item.driver_surname,
     (item) => item.vehicle_license_plate,
@@ -129,6 +135,9 @@ export const AttendanceLogTable: FC<
     );
   };
 
+  const headers = hideDateColumn
+    ? HEADER_DEFINITIONS
+    : [DATE_HEADER, ...HEADER_DEFINITIONS];
   const databaseHasNoLog = entries.length === 0;
 
   return (
@@ -155,7 +164,7 @@ export const AttendanceLogTable: FC<
       />
       <BaseSortableTable
         databaseIsEmpty={databaseHasNoLog}
-        headers={HEADER_DEFINITIONS}
+        headers={headers}
         defaultSortByColumn={0}
         defaultSortOrder="asc"
         entries={filteredEntries}

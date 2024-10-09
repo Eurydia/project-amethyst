@@ -77,7 +77,10 @@ export const HomePage: FC = () => {
           .locale("th")
           .format("ประจำวันddddที่ DD MMMM YYYY")}
       </Typography>
-      <AttendanceLogTable entries={logEntries} />
+      <AttendanceLogTable
+        hideDateColumn
+        entries={logEntries}
+      />
     </Stack>
   );
 };

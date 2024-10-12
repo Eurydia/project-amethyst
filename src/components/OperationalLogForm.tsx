@@ -1,5 +1,6 @@
 import { tauriPostOperationalLog } from "$backend/database/post";
 import { OPERATIONAL_LOG_MODEL_TRANSFORMER } from "$core/transformers/operational-log";
+import { useSyncLogAction } from "$hooks/useSyncLogAction";
 import { DriverModel } from "$types/models/driver";
 import { OperationalLogFormData } from "$types/models/operational-log";
 import { PickupRouteModel } from "$types/models/pickup-route";
@@ -36,6 +37,7 @@ export const OperationalLogForm: FC<
   OperationalLogFormProps
 > = (props) => {
   const { slotProps, onClose, open } = props;
+  const syncAction = useSyncLogAction();
   const { revalidate } = useRevalidator();
 
   const initFormData =
@@ -84,6 +86,7 @@ export const OperationalLogForm: FC<
       .then(
         () => {
           toast.success("เพิ่มสำเร็จ");
+          syncAction();
           revalidate();
         },
         () => toast.error("เพิ่มล้มเหลว")

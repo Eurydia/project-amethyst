@@ -12,6 +12,7 @@ pub struct OperationalLogModel {
 #[derive(Debug, sqlx::FromRow, serde::Serialize, serde::Deserialize)]
 pub struct AttendanceLogModel {
     pub id: i64,
+    pub operational_log_id: i64,
     pub driver_id: i64,
     pub vehicle_id: i64,
     pub route_id: i64,

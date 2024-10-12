@@ -2,6 +2,7 @@
 pub async fn post_attendance_log(
     _: tauri::AppHandle,
     state: tauri::State<'_, crate::AppState>,
+    operational_log: super::models::OperationalLogModel,
     driver: super::models::DriverModel,
     vehicle: super::models::VehicleModel,
     route: super::models::PickupRouteModel,
@@ -12,6 +13,7 @@ pub async fn post_attendance_log(
         r#"
             INSERT
             INTO attendance_logs(
+                operational_log_id,
                 driver_id,
                 vehicle_id,
                 route_id,
@@ -20,13 +22,14 @@ pub async fn post_attendance_log(
                 expected_departure_datetime
             )
             VALUES(
-                ?, ?, ?,
+                ?, ?, ?, ?,
 
                 ?, ?
 
             );
         "#,
     )
+    .bind(operational_log.id)
     .bind(driver.id)
     .bind(vehicle.id)
     .bind(route.id)
